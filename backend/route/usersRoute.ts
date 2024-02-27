@@ -1,6 +1,6 @@
 import express from 'express';
-import { User } from '../models/userModel.js';
-import { signupZod, signinZod } from '../zod/userZod.js';
+import { User, IUser } from '../models/userModel';
+import { signupZod, signinZod } from '../zod/userZod';
 
 const router = express.Router();
 
@@ -12,12 +12,12 @@ router.post('/singup', async (req, res) => {
 
         const result = signupZod.safeParse(req.body);
         if(result.success) {
-            const user = await User.create(req.body);
+            const user: IUser = await User.create(req.body);
             return res.status(200).send(user);
         }
         return res.status(401).send({message: 'Please send valid inputs'});
 
-    } catch (error) {
+    } catch (error: any) {
         console.log(error.message);
         return res.status(500).send({message: error.message});
     }

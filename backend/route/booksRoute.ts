@@ -1,5 +1,5 @@
 import express from "express";
-import { Book } from "../models/bookModel.js";
+import { Book, IBook } from "../models/bookModel";
 
 const router = express.Router();
 
@@ -19,12 +19,12 @@ router.post('/', async (req, res) => {
             publishYear: req.body.publishYear,
         };
 
-        const book = await Book.create(newBook);
+        const book: IBook = await Book.create(newBook);
 
         return res.status(201).send(book);
 
     }
-    catch(error) {
+    catch(error: any) {
         console.log(error.message);
         res.status(500).send({message: error.message});
     }
@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 
         return res.status(200).json({count: books.length, data: books});
     }
-    catch (error) {
+    catch (error: any) {
         console.log(error.message);
         res.status(500).send({message: error.message});
     }
@@ -50,7 +50,7 @@ router.get('/:id', async (req, res) => {
         const book = await Book.findById(id);
         res.status(200).json(book);
     }
-    catch (error) {
+    catch (error: any) {
         console.log(error.message);
         res.status(500).send({message: error.message});
     }
@@ -75,7 +75,7 @@ router.put('/:id', async (req, res) => {
         }
         res.status(200).send({message: 'Book updated successfully'});
     }
-    catch (error) {
+    catch (error: any) {
         console.log(error.message);
         res.status(500).send({message: error.message});
     }
@@ -94,7 +94,7 @@ router.delete('/:id', async (req, res) => {
         }
         res.status(200).send({message: 'Book deleted successfully'});
     }
-    catch (error) {
+    catch (error: any) {
         console.log(error.message);
         res.status(500).send({message: error.message});
     }

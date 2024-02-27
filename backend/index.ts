@@ -1,9 +1,9 @@
 import express, { response } from "express";
 import cors from 'cors';
-import { PORT, mongoDBURL } from "./config.js";
+import { PORT, mongoDBURL } from "./config";
 import mongoose from "mongoose";
-import booksRoute from './route/booksRoute.js';
-import usersRoute from './route/usersRoute.js';
+import booksRoute from './route/booksRoute';
+import usersRoute from './route/usersRoute';
 
 const app = express();
 
@@ -34,6 +34,6 @@ mongoose
             console.log(`App is listening to port: ${PORT}`);
         });        
     })
-    .catch(() => {
+    .catch((error) => {
         console.log(error);
     });

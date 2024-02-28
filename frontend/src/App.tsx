@@ -1,11 +1,9 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CreateBook from './pages/CreateBook';
 import DeleteBook from './pages/DeleteBook';
 import ShowBook from './pages/ShowBook';
 import EditBook from './pages/EditBook';
 import Home from './pages/Home';
-
 
 const App = () => {
   return (
@@ -19,4 +17,4 @@ const App = () => {
   )
 }
 
-export { App };
+export default App

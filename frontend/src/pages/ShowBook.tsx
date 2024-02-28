@@ -1,12 +1,21 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 
 
+interface BookState {
+    _id: string;
+    title: string;
+    author: string;
+    publishYear: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 const ShowBook = () => {
-    const [book, setBook] = useState({});
+    const [book, setBook] = useState<BookState>({_id:'', title:'', author: '', publishYear: '', createdAt: '', updatedAt:''});
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
 

@@ -7,7 +7,17 @@ import { BsInfoCircle } from "react-icons/bs";
 import { useState } from 'react';
 import BookModal from "./BookModal";
 
-const BookSingleCard = ({book}) => {
+interface Book {
+    _id: string;
+    title: string;
+    author: string;
+    publishYear: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+// const BookSingleCard = ({book}: Book) => {
+const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
@@ -38,7 +48,7 @@ const BookSingleCard = ({book}) => {
                 <Link to={`/books/edit/${book._id}`}>
                     <AiOutlineEdit className="text-2xl text-yellow-600 hover:text-black"/>
                 </Link>
-                <Link to={`/books/delete/${book.id}`}>
+                <Link to={`/books/delete/${book._id}`}>
                     <MdOutlineDelete className="text-2xl text-red-600 hover:text-black"/>
                 </Link>
             </div>

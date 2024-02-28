@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import axios from 'axios';
@@ -10,7 +10,7 @@ const CreateBook = () => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [publishYear, setPublishYear] = useState('');
-    const [loading, setLoading] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -31,7 +31,7 @@ const CreateBook = () => {
         .catch((error) => {
             setLoading(false);
             // alert('An error happened. Please check console');
-            enqueueSnackbar('Error', {variant: 'errro'});
+            enqueueSnackbar('Error', {variant: 'error'});
             console.log(error);
         })
     }

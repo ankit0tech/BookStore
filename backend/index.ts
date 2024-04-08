@@ -4,6 +4,7 @@ import { PORT, mongoDBURL } from "./config";
 import mongoose from "mongoose";
 import booksRoute from './route/booksRoute';
 import usersRoute from './route/usersRoute';
+/* removing it for now ->    /// <reference path="./custom.d.ts" /> */
 
 const app = express();
 

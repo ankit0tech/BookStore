@@ -1,28 +1,32 @@
 import express from "express";
 import { Book, IBook } from "../models/bookModel";
+import { bookZod } from "../zod/bookZod";
+import { resourceLimits } from "worker_threads";
+const util = require('util')
+
 
 const router = express.Router();
 
 // save a book
 router.post('/', async (req, res) => {
     try {
-        // request validation
-        if(!req.body.title || !req.body.author || !req.body.publishYear) {
-            return res.status(400).send({
-                message: 'send all required fields: title, author, publishYear',
-            });
+
+        const result = bookZod.safeParse(req.body);
+        console.log(result);
+        console.log(util.inspect(result));
+        if(result.success) {
+            const newBook = {
+                title: req.body.title,
+                author: req.body.author,
+                publishYear: req.body.publishYear,
+            };
+    
+            const book: IBook = await Book.create(newBook);    
+            return res.status(201).send(book);
         }
-        
-        const newBook = {
-            title: req.body.title,
-            author: req.body.author,
-            publishYear: req.body.publishYear,
-        };
-
-        const book: IBook = await Book.create(newBook);
-
-        return res.status(201).send(book);
-
+        return res.status(400).send({
+            message: 'send required fields title, author, and publishYear in proper format',
+        });
     }
     catch(error: any) {
         console.log(error.message);

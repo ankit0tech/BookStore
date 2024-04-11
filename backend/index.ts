@@ -4,6 +4,7 @@ import { PORT, mongoDBURL } from "./config";
 import mongoose from "mongoose";
 import booksRoute from './route/booksRoute';
 import usersRoute from './route/usersRoute';
+import cartRoute from './route/cartRoute';
 /* removing it for now ->    /// <reference path="./custom.d.ts" /> */
 
 const app = express();
@@ -25,6 +26,7 @@ app.get('/', (request, response)=> {
 
 app.use('/books', booksRoute);
 app.use('/users', usersRoute);
+app.use('/cart', cartRoute);
 
 mongoose
     .connect(mongoDBURL)

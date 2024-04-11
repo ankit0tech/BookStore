@@ -28,10 +28,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         }
         const { email } = decoded as JwtPayload;
         req.authEmail = email;
-        const mail = req.authEmail || 'Guest';
-        console.log(mail);
+        // const mail = req.authEmail || 'Guest';
+        // console.log(mail);
         next();
     });
     
-    next();
 }

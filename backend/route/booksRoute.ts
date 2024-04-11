@@ -2,6 +2,7 @@ import express from "express";
 import { Book, IBook } from "../models/bookModel";
 import { bookZod } from "../zod/bookZod";
 import { resourceLimits } from "worker_threads";
+import { authMiddleware } from "./middleware";
 const util = require('util')
 
 
@@ -38,6 +39,12 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const books = await Book.find({});
+        // if (req.authEmail) {
+        //     console.log(req.authEmail);
+        // }
+        // else {
+        //     console.log("No Email found");
+        // }
 
         return res.status(200).json({count: books.length, data: books});
     }

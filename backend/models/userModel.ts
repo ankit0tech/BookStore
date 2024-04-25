@@ -6,13 +6,14 @@ export interface IUser extends Document {
     firstName?: string;
     lastName?: string;
     password: string;
+    role: string
 }
 
 export const UserSchema: Schema<IUser> = new mongoose.Schema(
     {
         email: {
             type: String,
-            required: true
+            required: true,
         },
         firstName: {
             type: String,
@@ -22,7 +23,12 @@ export const UserSchema: Schema<IUser> = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true
+            required: true,
+        },
+        role: {
+            type: String,
+            enum: ['user', 'admin'],
+            default: 'user',
         }
     },
     {

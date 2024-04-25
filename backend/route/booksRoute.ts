@@ -3,26 +3,27 @@ import { Book, IBook } from "../models/bookModel";
 import { bookZod } from "../zod/bookZod";
 import { resourceLimits } from "worker_threads";
 import { authMiddleware } from "./middleware";
-const util = require('util')
+import { IUser, User } from "../models/userModel";
 
 
 const router = express.Router();
 
-// save a book
-router.post('/', async (req, res) => {
+// save a new book
+router.post('/', authMiddleware, async (req, res) => {
     try {
+        
+        const userMail = req.authEmail;
+        const user: IUser|null = await User.findOne({email: userMail});
+        if (!user) {
+            return res.status(400).send({message: "Authentication Issue"});
+        }
+        if (user && user.role != "admin") {
+            return res.status(403).send({message: "You are not authorized for this action"});
+        }
 
         const result = bookZod.safeParse(req.body);
-        console.log(result);
-        console.log(util.inspect(result));
         if(result.success) {
-            const newBook = {
-                title: req.body.title,
-                author: req.body.author,
-                publishYear: req.body.publishYear,
-            };
-    
-            const book: IBook = await Book.create(newBook);    
+            const book: IBook = await Book.create(req.body);
             return res.status(201).send(book);
         }
         return res.status(400).send({
@@ -68,23 +69,36 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a book using Id
-router.put('/:id', async (req, res) => {
+router.put('/:id', authMiddleware, async (req, res) => {
     try {
+        const userMail = req.authEmail;
+        const user: IUser|null = await User.findOne({email: userMail});
+        if (!user) {
+            return res.status(400).send({message: "Authentication Issue"});
+        }
+        if (user && user.role != "admin") {
+            return res.status(403).send({message: "You are not authorized for this action"});
+        }
+
         // request validation
-        if(!req.body.title || !req.body.author || !req.body.publishYear) {
-            return res.status(400).send({
-                message: 'send all required fields: title, author, publishYear',
-            });
+        // if(!req.body.title || !req.body.author || !req.body.publishYear) {
+        //     return res.status(400).send({
+        //         message: 'send all required fields: title, author, publishYear',
+        //     });
+        // }
+        const result = bookZod.safeParse(req.body);
+        if(result.success) {
+            const { id } = req.params;
+            const updatedBook = await Book.findByIdAndUpdate(id, req.body);
+            
+            if(!updatedBook) {
+                return res.status(400).json({message: `Book with id: ${id} could not be found`});
+            }
+            res.status(200).send({message: 'Book updated successfully'});
         }
-
-        const { id } = req.params;
-
-        const result = await Book.findByIdAndUpdate(id, req.body);
-        
-        if(!result) {
-            return res.status(400).json({message: `Book with id: ${id} could not be found`});
+        else {
+            return res.status(400).send({message: "Please send valid data with all required fields."});
         }
-        res.status(200).send({message: 'Book updated successfully'});
     }
     catch (error: any) {
         console.log(error.message);
@@ -93,12 +107,21 @@ router.put('/:id', async (req, res) => {
 });
 
 // delete a book with id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
     try {
+        const userMail = req.authEmail;
+        const user: IUser|null = await User.findOne({email: userMail});
+        if (!user) {
+            return res.status(400).send({message: "Authentication Issue"});
+        }
+        if (user && user.role != "admin") {
+            return res.status(403).send({message: "You are not authorized for this action"});
+        }
+
         const { id } = req.params;
 
         const result = await Book.findByIdAndDelete(id);
-        console.log(id)
+        console.log(`Deleted book with id ${id}`);
 
         if(!result) {
             return res.status(400).json({message: `Book with id: ${id} could not be found`});

@@ -1,9 +1,20 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtPayload {
+    email: string,
+    userid: string,
+    role: string,
+}
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [userRole, setUserRole] = useState('');
+    const navigate = useNavigate();
+
 
     const handleSignin = async () => {
         const data = {
@@ -13,10 +24,13 @@ const Login = () => {
 
         const response = await axios.post('http://localhost:5555/users/signin', data)
         const token = response.data.token;
+        const user = jwtDecode(token) as JwtPayload;
+        setUserRole(user.role);
         localStorage.setItem('authToken', token);
         // const decodedToken = JSON.parse(atob(token.split('.')[1]));
         // const expiryTimeInSec = decodedToken.exp;
         // const currentTime = Math.floor(Date.now() / 1000);
+        navigate('/');
     }
 
     return (
@@ -45,7 +59,7 @@ const Login = () => {
                 />
             </div>
             <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button className="rounded-full my-4 text-white bg-black my-3 px-4 py-2 border border-gray-300 " onClick={handleSignin}> 
+                <button className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 " onClick={handleSignin}> 
                    Sign in 
                 </button>
             </div>
@@ -57,7 +71,7 @@ const Login = () => {
             </div>
 
             <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button className="rounded-full my-4 text-white bg-black my-3 px-4 py-2 border border-gray-300 "> 
+                <button className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 "> 
                    Sign up 
                 </button>
             </div>

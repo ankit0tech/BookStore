@@ -60,7 +60,7 @@ router.post('/signin', async (req: Request, res: Response) => {
             }
             if (user.email === req.body.email && user.password === req.body.password) {
                 // console.log(user._id?.toString());
-                const token = jwt.sign({email: user.email, userId: user._id}, JWT_SECRET, {expiresIn: '1h'});
+                const token = jwt.sign({email: user.email, userId: user._id, role: user.role}, JWT_SECRET, {expiresIn: '1h'});
                 // req.authEmail = user.email;    // need to decide it later
 
                 return res.status(200).send({token: token});

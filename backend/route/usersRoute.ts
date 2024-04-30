@@ -7,7 +7,7 @@ import { authMiddleware } from './middleware';
 
 const router = express.Router();
 
-router.post('/singup', async (req: Request, res: Response) => {
+router.post('/signup', async (req: Request, res: Response) => {
     try {
         // if(!req.body.email || !req.body.password) {
         //     return res.status(401).send({message: 'Invalide input'});

@@ -1,50 +1,24 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from 'jwt-decode';
-import { useDispatch } from 'react-redux';
-import { setIsAdmin, loginSuccess, logoutSuccess } from "../redux/userSlice";
+// import { RootState } from "../types/index";
 
-interface JwtPayload {
-    email: string,
-    userid: string,
-    role: string,
-}
 
-const Login = () => {
+const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // const [userRole, setUserRole] = useState('');
+    const [role, setRole] = useState('');
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
-
-    const handleSignin = async () => {
+    const handleSignup = async () => {
         const data = {
             "email": email,
-            "password": password
+            "password": password,
+            "role": role,
         }
-
-        const response = await axios.post('http://localhost:5555/users/signin', data)
-        const token = response.data.token;
-        const user = jwtDecode(token) as JwtPayload;
-        if (user.role == 'admin') {
-            dispatch(setIsAdmin({'isAdmin': true,}));
-        }
-        else {
-            dispatch(setIsAdmin({'isAdmin': false,}));
-        }
-
-        dispatch(loginSuccess({'token': token}));
-        // localStorage.setItem('authToken', token);
-        // const decodedToken = JSON.parse(atob(token.split('.')[1]));
-        // const expiryTimeInSec = decodedToken.exp;
-        // const currentTime = Math.floor(Date.now() / 1000);
-        navigate('/');
-    }
-
-    const navigateToSignup = () => {
-        navigate('/signup');
+        const response = await axios.post('http://localhost:5555/users/signup', data);
+        console.log(response.data);
+        navigate('/login');
     }
 
     return (
@@ -73,24 +47,24 @@ const Login = () => {
                 />
             </div>
             <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 " onClick={handleSignin}> 
-                   Sign in 
-                </button>
+                <label>role</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                />
             </div>
-            <div className="relative flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto">
-
-                <hr className="w-full h-px my-2 bg-gray-200 border-0 dark:bg-gray-700" />
-                <div className="">New to the BookStore?</div>
-        
-            </div>
-
             <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 " onClick={navigateToSignup}> 
-                   Sign up 
+                <button className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 " onClick={handleSignup}> 
+                Sign up 
                 </button>
             </div>
+
         </div>
     );
+
+
 }
 
-export default Login;
+export default Signup;

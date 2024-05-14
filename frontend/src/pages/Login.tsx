@@ -35,7 +35,7 @@ const Login = () => {
             dispatch(setIsAdmin({'isAdmin': false,}));
         }
 
-        dispatch(loginSuccess({'token': token}));
+        dispatch(loginSuccess({'token': token, 'email': user.email }));
         // localStorage.setItem('authToken', token);
         // const decodedToken = JSON.parse(atob(token.split('.')[1]));
         // const expiryTimeInSec = decodedToken.exp;

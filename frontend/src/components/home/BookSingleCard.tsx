@@ -6,6 +6,8 @@ import { MdOutlineDelete } from "react-icons/md";
 import { BsInfoCircle } from "react-icons/bs";
 import { useState } from 'react';
 import BookModal from "./BookModal";
+import { useSelector } from "react-redux";
+import { RootState } from "../../types/index";
 
 interface Book {
     _id: string;
@@ -19,6 +21,7 @@ interface Book {
 // const BookSingleCard = ({book}: Book) => {
 const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
     const [showModal, setShowModal] = useState(false);
+    const { isAdmin } = useSelector((state: RootState) => state.userinfo);
 
     return (
         <div
@@ -45,12 +48,19 @@ const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
                 <Link to={`/books/details/${book._id}`}>
                     <BsInfoCircle className="text-2xl text-green-800 hover:text-black" />
                 </Link>
-                <Link to={`/books/edit/${book._id}`}>
-                    <AiOutlineEdit className="text-2xl text-yellow-600 hover:text-black"/>
-                </Link>
-                <Link to={`/books/delete/${book._id}`}>
-                    <MdOutlineDelete className="text-2xl text-purple-600 hover:text-black"/>
-                </Link>
+                
+                {isAdmin && (
+                    <>
+                        <Link to={`/books/edit/${book._id}`}>
+                            <AiOutlineEdit className="text-2xl text-yellow-600 hover:text-black"/>
+                        </Link>
+                        <Link to={`/books/delete/${book._id}`}>
+                            <MdOutlineDelete className="text-2xl text-purple-600 hover:text-black"/>
+                        </Link>
+                    </>    
+                )
+                }                
+                
             </div>
             {
                 showModal && (

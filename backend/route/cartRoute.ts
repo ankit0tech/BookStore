@@ -3,6 +3,7 @@ import { Cart, ICart } from "../models/cartModel";
 import { cartZod } from '../zod/cartZod';
 import { authMiddleware } from './middleware';
 import { IUser, User } from '../models/userModel';
+import { Book } from '../models/bookModel';
 
 const router = express.Router();
 
@@ -40,14 +41,21 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                     if (req.body.quantity < 1) {
                         return res.status(400).send({message: 'Please Enter valid quantity'});
                     }
+                    // const book = await Book.findOne({bookId: req.body.bookId});
+                    const book = await Book.findById(req.body.bookId);
+                    if (!book) {
+                        return res.status(400).send({message: "Error adding book to cart"});
+                    }
                     const newCart = {
                         userId: user._id,
                         bookId: req.body.bookId,
+                        bookTitle: book.title,
                         quantity: req.body.quantity,
                         purchased: false
                     };
                     const cartItem: ICart = await Cart.create(newCart);
-                    // console.log(cartItem);
+                    console.log('Added:', book.title);
+                    console.log(cartItem);
 
                     return res.status(200).send({message: "Cart updated successfully"});
                 }

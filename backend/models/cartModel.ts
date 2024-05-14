@@ -3,6 +3,7 @@ import mongoose, {Schema, Document} from "mongoose";
 export interface ICart extends Document {
     userId: Schema.Types.ObjectId;
     bookId: Schema.Types.ObjectId;
+    bookTitle: string,
     quantity: number;
     purchased: boolean
 }
@@ -17,6 +18,10 @@ export const CartSchema: Schema<ICart> = new mongoose.Schema(
         bookId: {
             type: Schema.Types.ObjectId,
             ref: 'Book',
+            required: true,
+        },
+        bookTitle: {
+            type: String,
             required: true,
         },
         quantity: {

@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 // import storage from 'redux-persist/lib/storage'; // Defaults to localStorage for web
 
 import userReducer from './userSlice';
+import cartReducer from './cartSlice';
 // import { checkTokenExpiry } from "./authMiddleware";
 // import { Middleware } from "redux";
 
@@ -19,6 +20,7 @@ import userReducer from './userSlice';
 const store = configureStore({
     reducer:{
         userinfo: userReducer,
+        cartinfo: cartReducer,
     },
     // reducer: persistedReducer,
 

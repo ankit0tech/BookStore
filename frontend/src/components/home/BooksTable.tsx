@@ -3,6 +3,10 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
 import { FcPlus } from "react-icons/fc";
+import { useNavigate } from 'react-router-dom';
+import { updateCart } from '../../utils/cartUtils';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../types';
 
 
 interface Book {
@@ -18,6 +22,22 @@ interface Book {
 
 
 const BooksTable = ({ books }: { books: Book[] }) => {
+    const navigate = useNavigate();
+    const userData = useSelector((state: RootState) => state.userinfo);
+    const authToken = userData.token;
+    
+    const handleAddToCart = (bookId: string) => {
+        
+        if (!authToken) {
+            navigate('/login');
+        }
+        else {
+            updateCart(bookId, 1, authToken);
+            navigate('/cart');
+        }
+    }
+
+
     return (
         <table className='w-full mx-auto max-w-[1000px] rounded-lg'>
             <thead>
@@ -43,9 +63,12 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                         <td className='text-center'>{book.price}</td>
                         <td className='text-center'>
                             <div className='flex justify-center gap-x-4'>
-                                <Link to={`/books/add-to-cart/${book._id}`}>
+                                {/* <Link to={`/books/add-to-cart/${book._id}`}>
                                     <FcPlus />
-                                </Link>
+                                </Link> */}
+                                {/* <div onClick={() => {handleAddToCart(book._id)}}> */}
+                                    <FcPlus onClick={() => {handleAddToCart(book._id)}} />
+                                {/* </div> */}
                                 <Link to={`/books/details/${book._id}`}>
                                     <BsInfoCircle className='text-2x1 text-green-800' />
                                 </Link>

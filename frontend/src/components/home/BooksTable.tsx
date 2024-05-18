@@ -28,8 +28,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
             navigate('/login');
         }
         else {
-            updateCart(bookId, 1, authToken);
-            // navigate('/cart');
+            await updateCart(bookId, 1, authToken);
             const items = await getCartItems(authToken);
             dispatch(setCartItemsSlice(items));
     

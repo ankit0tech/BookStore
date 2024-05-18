@@ -37,7 +37,7 @@ const NavBar = () => {
                 const items = await getCartItems(authToken);
                 // console.log("Items: ", items);
                 setCartItems(items);
-                dispatch(setCartItemsSlice(items.data));
+                dispatch(setCartItemsSlice(items));
                 // console.log('now will set loading = false');
                 // console.log("state: ", cartItems);
             }
@@ -57,7 +57,7 @@ const NavBar = () => {
     return (
         // <div className="flex justify-center items-center gap-x-4">
         <div className="flex justify-between px-4 bg-purple-500 h-10 text-white font-bold items-center">
-            <div className="flex">NavBar</div>
+            <button className="flex" onClick={() =>navigate('/')}>Home</button>
             { email ? 
                 (<div className="flex">
                     <button onClick={() => {setIsOpen(!isOpen)}}> Cart </button>

@@ -14,8 +14,7 @@ interface CartOverlayProps {
 const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
 
     const navigate = useNavigate();
-    const cartinfo = useSelector((state: RootState) => state.cartinfo);
-    const cartItems = cartinfo;
+    const cartItems = useSelector((state: RootState) => state.cartinfo);
 
     // console.log(cartItems);
     // console.log(typeof cartItems);

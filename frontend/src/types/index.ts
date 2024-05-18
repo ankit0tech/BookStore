@@ -14,6 +14,19 @@ export interface CartInterface {
         bookId: string,
         bookTitle: string,
         quantity: number,
+        // price: number,
         purchased: boolean
     } []
+}
+
+export interface Book {
+    _id: string;
+    title: string;
+    author: string;
+    price: number;
+    category: string;
+    publishYear: string;
+    quantity?: number;
+    createdAt: string;
+    updatedAt: string;
 }

@@ -4,7 +4,7 @@ export interface ICart extends Document {
     userId: Schema.Types.ObjectId;
     bookId: Schema.Types.ObjectId;
     bookTitle: string,
-    quantity: number;
+    quantity: number,
     purchased: boolean
 }
 

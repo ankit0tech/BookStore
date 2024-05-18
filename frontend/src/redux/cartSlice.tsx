@@ -20,7 +20,8 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         setCartItems: (state, action) => {
-            state.data = action.payload
+            state.count = action.payload.count
+            state.data = action.payload.data
         },
     }
 });

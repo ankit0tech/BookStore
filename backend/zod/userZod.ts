@@ -4,7 +4,8 @@ const signupZod = z.object({
     email: z.string().email(),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
-    password: z.string().min(6)
+    password: z.string().min(6),
+    role: z.string()
 });
 
 const signinZod = z.object({

@@ -10,12 +10,12 @@ interface BookState {
     title: string;
     author: string;
     publishYear: string;
-    createdAt: string;
-    updatedAt: string;
+    price: number;
+    category: string;
 }
 
 const ShowBook = () => {
-    const [book, setBook] = useState<BookState>({_id:'', title:'', author: '', publishYear: '', createdAt: '', updatedAt:''});
+    const [book, setBook] = useState<BookState>({_id:'', title:'', author: '', publishYear: '', price: 0, category:''});
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
 
@@ -43,30 +43,26 @@ const ShowBook = () => {
             {loading ? (
                 <Spinner />
             ) : (
-                <div className='flex flex-col border-2 border-sky-400 rounded-x1 w-fit p-4'>
+                <div className='flex flex flex-col border-t-2 border-purple-500 rounded-x1 w-fit p-4'>
                     <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Id</span>
-                        <span>{book._id}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Title</span>
+                        <span className='text-xl mr-4 text-grey-500'>Title:</span>
                         <span>{book.title}</span>
                     </div>
                     <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Author</span>
+                        <span className='text-xl mr-4 text-grey-500'>Author:</span>
                         <span>{book.author}</span>
                     </div>
                     <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Publish Year</span>
+                        <span className='text-xl mr-4 text-grey-500'>Publish Year:</span>
                         <span>{book.publishYear}</span>
                     </div>
                     <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Create Time</span>
-                        <span>{new Date(book.createdAt).toString()}</span>
+                        <span className='text-xl mr-4 text-grey-500'>Price:</span>
+                        <span>{book.price}</span>
                     </div>
                     <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Update Time</span>
-                        <span>{new Date(book.updatedAt).toString()}</span>
+                        <span className='text-xl mr-4 text-grey-500'>Category:</span>
+                        <span>{book.category}</span>
                     </div>
                 </div>
             )}

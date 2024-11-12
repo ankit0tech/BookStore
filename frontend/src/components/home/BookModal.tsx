@@ -3,12 +3,11 @@ import { PiBookOpenTextLight } from "react-icons/pi";
 import { BiUserCircle } from "react-icons/bi";
 
 interface Book {
-    _id: string;
     title: string;
     author: string;
     publishYear: string;
-    createdAt: string;
-    updatedAt: string;
+    price: string;
+    category: string;
 }
 
 
@@ -27,22 +26,29 @@ const BookModal: React.FC<{ book: Book; onClose: () => void;}> = ({ book, onClos
                     className="absolute right-6 top-6 text-3xl text-red-600 cursor-pointer"
                     onClick={onClose}
                 />
-                <h2 className="w-fit px-4 py-1 bg-red-300 rounded-lg">
+                {/* <h2 className="w-fit px-4 py-1 bg-red-300 rounded-lg">
                     {book.publishYear}
-                </h2>
-                <h4 className="my-2 text-gray-500">{book._id}</h4>
+                </h2> */}
+                {/* <h4 className="my-2 text-gray-500">{book._id}</h4> */}
                 <div className="flex justify-start items-center gap-x-2">
-                    <PiBookOpenTextLight className="text-red-300 text-2xl" />
+                    {/* <PiBookOpenTextLight className="text-red-300 text-2xl" /> */}
+                    <h2>Title: </h2>
                     <h2 className="my-1">{book.title}</h2>
                 </div>
                 <div className="flex justify-start items-center gap-x-2" >
-                    <BiUserCircle className="text-red-300 text-2xl" />
+                    {/* <BiUserCircle className="text-red-300 text-2xl" /> */}
+                    <h2>Author: </h2>
                     <h2 className="my-1">{book.author}</h2>
                 </div>
-                <p className="mt-4"> Anything you want to show</p>
-                <p className="my-2">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae veritatis error, autem rem eos ipsum sequi consectetur eaque numquam aspernatur quae ea ut laborum? Nisi laudantium officia natus dolores tempora?
-                </p>
+                <div className="flex justify-start items-center gap-x-2">
+                    <h2>Price: </h2>
+                    <h2 className="my-1">{book.price}</h2>
+                </div>
+                <div className="flex justify-start items-center gap-x-2">
+                    <h2>Category: </h2>
+                    <h2 className="my-1">{book.category}</h2>
+                </div>
+
             </div>
         </div>
     );

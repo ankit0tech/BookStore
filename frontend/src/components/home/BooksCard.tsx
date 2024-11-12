@@ -5,8 +5,8 @@ interface Book {
     title: string;
     author: string;
     publishYear: string;
-    createdAt: string;
-    updatedAt: string;
+    price: string;
+    category: string;
 }
 
 const BooksCard = ({ books }: { books: Book[] }) => {

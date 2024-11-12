@@ -2,16 +2,28 @@ import { useState , useEffect } from 'react'
 import axios from 'axios';
 import Spinner from '../components/Spinner';
 import { Link } from 'react-router-dom';
-import { MdOutlineAddBox } from 'react-icons/md';
+import { useSelector, useDispatch} from 'react-redux';
 import BooksTable from '../components/home/BooksTable';
 import BooksCard from '../components/home/BooksCard';
+// import { checkTokenExpiry } from '../redux/authMiddleware';
+// import { RootState } from '@reduxjs/toolkit/query';
+import { RootState } from '../types/index';
 
 
 const Home = () => {
 
+    // interface RootState {
+    //     userinfo: { isAdmin: boolean }
+    // }
+
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState('table');
+    const userinfo = useSelector((state: RootState) => state.userinfo);
+    const isAdmin = userinfo.isAdmin;
+    // const token = userinfo.token
+    // const dispatch = useDispatch();
+
 
     useEffect(()=> {
         setLoading(true);
@@ -26,9 +38,8 @@ const Home = () => {
             console.log(error);
             setLoading(false);
         });
-    }, [])
 
-    console.log(books);
+    }, [])
 
 
     return (
@@ -48,11 +59,18 @@ const Home = () => {
                 </button>
 
             </div>
-            <div className='flex justify-between item-center'>
-                <h1 className='text-3xl my-8'>Book List</h1>
-                <Link to='/books/create'>
-                    <MdOutlineAddBox className='text-sky-800 text-4xl'></MdOutlineAddBox>
-                </Link>
+            <div className='p-4'>
+                <div className="text-3xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">
+                    BookStore
+                </div>
+
+                {isAdmin &&
+                (<div className="text-2xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">
+                    <Link to='/books/create'>
+                        Create Book
+                    </Link>
+                </div>)
+                }   
             </div>
             {loading ? (
                 <Spinner />

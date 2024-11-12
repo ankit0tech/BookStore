@@ -131,7 +131,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                 await cartItem.save();
             });
 
-            return res.status(200).send({message: "Checked out"});
+            return res.status(200).send({message: "Checked out. All cart Items are purchased"});
         }
         else {
             return res.status(400).send({message: "Issue with your login"});

@@ -95,7 +95,7 @@ const Checkout = () => {
                             <p>Cart is empty...</p>
                         ) : (
                             books.map((item) => (
-                                <li key={item._id}>
+                                <li key={item.id}>
                                     {item.title} - {item.quantity}
                                 </li>
                             ))

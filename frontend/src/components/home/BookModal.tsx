@@ -29,7 +29,7 @@ const BookModal: React.FC<{ book: Book; onClose: () => void;}> = ({ book, onClos
                 {/* <h2 className="w-fit px-4 py-1 bg-red-300 rounded-lg">
                     {book.publishYear}
                 </h2> */}
-                {/* <h4 className="my-2 text-gray-500">{book._id}</h4> */}
+                {/* <h4 className="my-2 text-gray-500">{book.id}</h4> */}
                 <div className="flex justify-start items-center gap-x-2">
                     {/* <PiBookOpenTextLight className="text-red-300 text-2xl" /> */}
                     <h2>Title: </h2>

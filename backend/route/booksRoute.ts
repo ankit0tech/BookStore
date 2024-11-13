@@ -4,8 +4,10 @@ import { bookZod } from "../zod/bookZod";
 import { resourceLimits } from "worker_threads";
 import { authMiddleware } from "./middleware";
 import { IUser, User } from "../models/userModel";
+import { PrismaClient } from "@prisma/client";
+import { PrismaClientRustPanicError } from "@prisma/client/runtime/library";
 
-
+const prisma = new PrismaClient();
 const router = express.Router();
 
 // save a new book
@@ -13,17 +15,21 @@ router.post('/', authMiddleware, async (req, res) => {
     try {
         
         const userMail = req.authEmail;
-        const user: IUser|null = await User.findOne({email: userMail});
+        const user = await prisma.user.findUnique({
+            where: { email: userMail }
+        })
         if (!user) {
             return res.status(400).send({message: "Authentication Issue"});
         }
-        if (user && user.role != "admin") {
+        if (user && user.role != "ADMIN") {
             return res.status(403).send({message: "You are not authorized for this action"});
         }
 
         const result = bookZod.safeParse(req.body);
         if(result.success) {
-            const book: IBook = await Book.create(req.body);
+            const book = await prisma.book.create({
+                data: req.body
+            });
             return res.status(201).send(book);
         }
         return res.status(400).send({
@@ -39,7 +45,9 @@ router.post('/', authMiddleware, async (req, res) => {
 // return all the books
 router.get('/', async (req, res) => {
     try {
-        const books = await Book.find({});
+        const books = await prisma.book.findMany({});
+        console.log("All books: ");
+        console.log(books);
         // if (req.authEmail) {
         //     console.log(req.authEmail);
         // }
@@ -59,7 +67,11 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const book = await Book.findById(id);
+        const book = await prisma.book.findUnique({
+            where : {
+                id : Number(id)
+            }
+        });
         res.status(200).json(book);
     }
     catch (error: any) {
@@ -72,11 +84,13 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const userMail = req.authEmail;
-        const user: IUser|null = await User.findOne({email: userMail});
+        const user = await prisma.user.findUnique({
+            where: { email: userMail }
+        });
         if (!user) {
             return res.status(400).send({message: "Authentication Issue"});
         }
-        if (user && user.role != "admin") {
+        if (user && user.role != "ADMIN") {
             return res.status(403).send({message: "You are not authorized for this action"});
         }
 
@@ -89,7 +103,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
         const result = bookZod.safeParse(req.body);
         if(result.success) {
             const { id } = req.params;
-            const updatedBook = await Book.findByIdAndUpdate(id, req.body);
+            const updatedBook = await prisma.book.update({
+                where: { id: Number(id)}, 
+                data: req.body
+            });
             
             if(!updatedBook) {
                 return res.status(400).json({message: `Book with id: ${id} could not be found`});
@@ -110,11 +127,13 @@ router.put('/:id', authMiddleware, async (req, res) => {
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const userMail = req.authEmail;
-        const user: IUser|null = await User.findOne({email: userMail});
+        const user = await prisma.user.findUnique({
+            where: { email: userMail }
+        });
         if (!user) {
             return res.status(400).send({message: "Authentication Issue"});
         }
-        if (user && user.role != "admin") {
+        if (user && user.role != "ADMIN") {
             return res.status(403).send({message: "You are not authorized for this action"});
         }
 

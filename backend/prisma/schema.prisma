@@ -48,10 +48,10 @@ model Book {
 model Cart {
   id Int @id @default(autoincrement())
   userId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   bookId Int
-  book Book @relation(fields: [bookId], references: [id])
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   bookTitle String
   quantity Int @default(1)

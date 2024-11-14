@@ -139,7 +139,9 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
         const { id } = req.params;
 
-        const result = await Book.findByIdAndDelete(id);
+        const result = await prisma.book.delete({
+            where: { id: Number(id) }
+        });
         console.log(`Deleted book with id ${id}`);
 
         if(!result) {

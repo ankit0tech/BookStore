@@ -13,8 +13,12 @@ const DeleteBook = () => {
     
     const handleDeleteBook = () => {
         setLoading(true);
+
+        const authToken = localStorage.getItem('authToken');
+        const config = { headers: { Authorization: authToken }};
+
         axios
-        .delete(`http://localhost:5555/books/${id}`)
+        .delete(`http://localhost:5555/books/${id}`, config)
         .then(()=>{
             setLoading(false);
             enqueueSnackbar('Book deleted Successfully', {variant: 'success'})

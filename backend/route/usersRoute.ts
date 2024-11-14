@@ -74,10 +74,10 @@ router.post('/signin', async (req: Request, res: Response) => {
                 return res.status(401).send({message: 'Please enter valid email'});
             }
             if (user.email === req.body.email && user.password === req.body.password) {
-                // console.log(user._id?.toString());
+                // console.log(user.id?.toString());
                 const token = jwt.sign({email: user.email, userId: user.id, role: user.role}, JWT_SECRET, {expiresIn: '1h'});
                 // req.authEmail = user.email;    // need to decide it later
-
+                console.log("User singed in: ", user.email);
                 return res.status(200).send({token: token});
             }
         }

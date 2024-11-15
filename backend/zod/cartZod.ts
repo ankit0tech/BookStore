@@ -1,7 +1,7 @@
 import z from 'zod';
 
 const cartZod = z.object({
-    bookId: z.string(),
+    bookId: z.number().int(),
     quantity: z.number().int(),
 });
 

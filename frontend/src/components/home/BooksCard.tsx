@@ -1,7 +1,7 @@
 import BookSingleCard from "./BookSingleCard";
 
 interface Book {
-    _id: string;
+    id: string;
     title: string;
     author: string;
     publishYear: string;
@@ -13,7 +13,7 @@ const BooksCard = ({ books }: { books: Book[] }) => {
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {books.map((item) => (
-                <BookSingleCard key={item._id} book={item}/>
+                <BookSingleCard key={item.id} book={item}/>
             ))}
         </div>
     );

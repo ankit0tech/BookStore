@@ -24,7 +24,7 @@ const Signup = () => {
     return (
         <div className="p-4">
             <div className="text-3xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">BookStore</div>
-            <div className="text-2xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">Sign in</div>
+            <div className="text-2xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">Sign Up</div>
             <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
                 <label className="">Email</label>
                 <input

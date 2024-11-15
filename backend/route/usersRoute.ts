@@ -4,8 +4,11 @@ import { User, IUser } from '../models/userModel';
 import { signupZod, signinZod } from '../zod/userZod';
 import { JWT_SECRET } from '../config';
 import { authMiddleware } from './middleware';
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 const router = express.Router();
+
 
 router.post('/signup', async (req: Request, res: Response) => {
     try {
@@ -15,7 +18,12 @@ router.post('/signup', async (req: Request, res: Response) => {
 
         const result = signupZod.safeParse(req.body);
         if(result.success) {
-            const user: IUser = await User.create(req.body);
+            const user = await prisma.user.create(
+                {
+                    data: req.body
+                }
+            )
+            // const user: IUser = await User.create(req.body);
             console.log('--- USER ---');
             console.log(user);
     
@@ -51,18 +59,25 @@ router.get('/access', authMiddleware,  async (req: Request, res: Response) => {
 
 router.post('/signin', async (req: Request, res: Response) => {
     try {
-        const result = signinZod.safeParse(req.body);
+        const result = signinZod.safeParse(req.body);        
         if(result.success) {
-            const user: IUser|null = await User.findOne({email: req.body.email});
+            // const user: IUser|null = await User.findOne({email: req.body.email});
+            const user = await prisma.user.findUnique(
+                {
+                    where: {
+                        email: req.body.email
+                    }
+                }
+            )
 
             if (!user) {
                 return res.status(401).send({message: 'Please enter valid email'});
             }
             if (user.email === req.body.email && user.password === req.body.password) {
-                // console.log(user._id?.toString());
-                const token = jwt.sign({email: user.email, userId: user._id, role: user.role}, JWT_SECRET, {expiresIn: '1h'});
+                // console.log(user.id?.toString());
+                const token = jwt.sign({email: user.email, userId: user.id, role: user.role}, JWT_SECRET, {expiresIn: '1h'});
                 // req.authEmail = user.email;    // need to decide it later
-
+                console.log("User singed in: ", user.email);
                 return res.status(200).send({token: token});
             }
         }
@@ -76,7 +91,9 @@ router.post('/signin', async (req: Request, res: Response) => {
 router.get('/profile', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userMail = req.authEmail;
-        const user: IUser|null = await User.findOne({email: userMail});
+        const user = await prisma.user.findUnique({ 
+            where:{email: userMail}
+        });
         if (!user) {
             return res.status(400).send({message: "Authentication Issue"});
         }

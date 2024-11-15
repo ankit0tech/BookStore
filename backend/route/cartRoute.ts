@@ -4,8 +4,10 @@ import { cartZod } from '../zod/cartZod';
 import { authMiddleware } from './middleware';
 import { IUser, User } from '../models/userModel';
 import { Book } from '../models/bookModel';
+import { PrismaClient } from '@prisma/client';
 
 const router = express.Router();
+const prisma = new PrismaClient();
 
 // Update cart
 router.post('/update-cart', authMiddleware, async (req, res) =>{
@@ -17,24 +19,40 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
             // 2. update the existing entry. if we go below 1 then remove the entry from table
             // 3. create new entry if entry doesn't exists and make sure quantity is >=1
             const userEmail = req.authEmail;
-            const user: IUser|null = await User.findOne({email: userEmail});
+            const user = await prisma.user.findUnique({
+                where: { email: userEmail }
+            });
 
             if (user) {
-                const existingCartItem = await Cart.findOne({userId: user._id, bookId: req.body.bookId, purchased: false});
+                const existingCartItem = await prisma.cart.findFirst({
+                    where: {
+                        userId: user.id, bookId: req.body.bookId, purchased: false
+                    }
+                });
                 if (existingCartItem) {
                     console.log('there is an existing cart item, update the existing one');
 
                     if((existingCartItem.quantity + req.body.quantity) == 0){
-                        await Cart.findOneAndDelete({userId: user._id, bookId: req.body.bookId});
+                        await prisma.cart.deleteMany({ 
+                            where: {userId: user.id, bookId: req.body.bookId}
+                        });
                         return res.status(200).send({message: "Cart updated successfully"});
                     }
                     else if ((existingCartItem.quantity + req.body.quantity) < 0){
                         return res.status(400).send({message: "Invalid item quantity"})
                     }
 
-                    existingCartItem.quantity = existingCartItem.quantity + req.body.quantity;
-                    existingCartItem.save();
-                    
+                    await prisma.cart.updateMany({
+                        where: {
+                            userId: user.id, bookId: req.body.bookId, purchased: false
+                        },
+                        data: {
+                            quantity: existingCartItem.quantity + req.body.quantity
+                        }
+                    });
+                    // existingCartItem.quantity = existingCartItem.quantity + req.body.quantity;
+                    // existingCartItem.save();
+
                     return res.status(200).send({message: "Cart updated successfully"});
                 }
                 else {
@@ -42,18 +60,20 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                         return res.status(400).send({message: 'Please Enter valid quantity'});
                     }
                     // const book = await Book.findOne({bookId: req.body.bookId});
-                    const book = await Book.findById(req.body.bookId);
+                    const book = await prisma.book.findUnique({
+                        where: {id: req.body.bookId}
+                    });
                     if (!book) {
                         return res.status(400).send({message: "Error adding book to cart"});
                     }
                     const newCart = {
-                        userId: user._id,
+                        userId: user.id,
                         bookId: req.body.bookId,
                         bookTitle: book.title,
                         quantity: req.body.quantity,
                         purchased: false
                     };
-                    const cartItem: ICart = await Cart.create(newCart);
+                    const cartItem = await prisma.cart.create({data: newCart});
                     console.log('Added:', book.title);
                     console.log(cartItem);
 
@@ -80,9 +100,13 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 router.get('/get-cart-items', authMiddleware, async (req, res) => {
     try {
         const userEmail = req.authEmail;
-        const user: IUser|null = await User.findOne({email:userEmail});
+        const user = await prisma.user.findUnique({ 
+            where: { email:userEmail }
+        });
         if(user) {
-            const cartItems = await Cart.find({userId: user._id, purchased: false});
+            const cartItems = await prisma.cart.findMany({
+                where: {userId: user.id, purchased: false}
+            });
             return res.status(200).send({count: cartItems.length, data: cartItems});
         }
         else {
@@ -99,9 +123,13 @@ router.get('/get-cart-items', authMiddleware, async (req, res) => {
 router.get('/get-purchased-items', authMiddleware, async (req, res) => {
     try {
         const userEmail = req.authEmail;
-        const user: IUser|null = await User.findOne({email:userEmail});
+        const user = await prisma.user.findUnique({
+            where: { email: userEmail }
+        });
         if(user) {
-            const cartItems = await Cart.find({userId: user._id, purchased: true});
+            const cartItems = await prisma.cart.findMany({
+                where: { userId: user.id, purchased: true }
+            });
             return res.status(200).send({count: cartItems.length, data: cartItems});
         }
         else {
@@ -122,14 +150,24 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
     try {
         console.log("chekcout...");
         const userEmail = req.authEmail;
-        const user: IUser|null = await User.findOne({email: userEmail});
+        const user = await prisma.user.findUnique({
+            where: {email: userEmail}
+        });
         if (user) {
-            const cartItems = await Cart.find({userId: user._id, purchased: false});
+
             // // Apply transactions here
-            cartItems.forEach(async (cartItem) => {
-                cartItem.purchased = true;
-                await cartItem.save();
+            await prisma.cart.updateMany({
+                where: {
+                    userId: user.id, purchased: false
+                },
+                data: {
+                    purchased: true
+                }
             });
+            // cartItems.forEach(async (cartItem) => {
+            //     cartItem.purchased = true;
+            //     await cartItem.save();
+            // });
 
             return res.status(200).send({message: "Checked out. All cart Items are purchased"});
         }

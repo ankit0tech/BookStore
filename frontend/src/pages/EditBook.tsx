@@ -1,7 +1,8 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
-import axios from 'axios';
+// import axios from 'axios';
+import api from '../utils/api';
 import{ useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
@@ -37,7 +38,7 @@ const EditBook = () => {
 
     useEffect(() => {
         setLoading(true);
-        axios
+        api
         .get(`http://localhost:5555/books/${id}`)
         .then((response) => {
             setTitle(response.data.title);
@@ -69,7 +70,7 @@ const EditBook = () => {
         const config = {headers: { Authorization: authToken}};
 
         setLoading(true);
-        axios
+        api
         .put(`http://localhost:5555/books/${id}`, data, config)
         .then(() => {
             setLoading(false);

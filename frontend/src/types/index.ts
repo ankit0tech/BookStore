@@ -9,7 +9,7 @@ export interface RootState {
 export interface CartInterface {
     count: number,
     data: {
-        _id: string,
+        id: string,
         userId: string,
         bookId: string,
         bookTitle: string,
@@ -20,7 +20,7 @@ export interface CartInterface {
 }
 
 export interface Book {
-    _id: string;
+    id: string;
     title: string;
     author: string;
     price: number;

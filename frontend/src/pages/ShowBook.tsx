@@ -6,7 +6,7 @@ import Spinner from '../components/Spinner';
 
 
 interface BookState {
-    _id: string;
+    id: string;
     title: string;
     author: string;
     publishYear: string;
@@ -15,7 +15,7 @@ interface BookState {
 }
 
 const ShowBook = () => {
-    const [book, setBook] = useState<BookState>({_id:'', title:'', author: '', publishYear: '', price: 0, category:''});
+    const [book, setBook] = useState<BookState>({id:'', title:'', author: '', publishYear: '', price: 0, category:''});
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
 

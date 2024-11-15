@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { RootState } from '../types/index';
 import { useSelector } from 'react-redux';
 import { Book } from '../types/index';
-import axios from 'axios';
+// import axios from 'axios';
+import api from '../utils/api';
 import Spinner from '../components/Spinner';
 import { getCartItems } from '../utils/cartUtils';
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +34,7 @@ const Checkout = () => {
                 const fetchedBooks = await Promise.all(
                     cartItems.data.map(async (item) => {
                         try {
-                            const response = await axios.get(`http://localhost:5555/books/${item.bookId}`);
+                            const response = await api.get(`http://localhost:5555/books/${item.bookId}`);
                             
                             const bookInfo = response.data;
                             bookInfo['quantity'] = item.quantity; 
@@ -71,7 +72,7 @@ const Checkout = () => {
             } else {
 
                 const config = {headers: { Authorization: authToken }};
-                const response = await axios.post('http://localhost:5555/cart/checkout',null, config);
+                const response = await api.post('http://localhost:5555/cart/checkout',null, config);
 
                 // Update the cart items
                 const items = await getCartItems(authToken);
@@ -95,7 +96,7 @@ const Checkout = () => {
                             <p>Cart is empty...</p>
                         ) : (
                             books.map((item) => (
-                                <li key={item._id}>
+                                <li key={item.id}>
                                     {item.title} - {item.quantity}
                                 </li>
                             ))

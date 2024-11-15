@@ -28,7 +28,7 @@ const Login = () => {
         const response = await axios.post('http://localhost:5555/users/signin', data)
         const token = response.data.token;
         const user = jwtDecode(token) as JwtPayload;
-        if (user.role == 'admin') {
+        if (user.role == 'ADMIN') {
             dispatch(setIsAdmin({'isAdmin': true,}));
         }
         else {

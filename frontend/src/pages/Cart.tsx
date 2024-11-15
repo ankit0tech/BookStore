@@ -52,7 +52,7 @@ const Cart = () => {
                             <h2>Cart Items</h2>
                             <ul>
                                 {cartItems.data.map((item) => (
-                                    <li key={item._id}>
+                                    <li key={item.id}>
                                         <div>Book: { item.bookTitle } Quantity: { item.quantity }</div>
                                     </li>
                                 ))}

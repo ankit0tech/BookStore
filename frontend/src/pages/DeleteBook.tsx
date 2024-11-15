@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
-import axios from 'axios';
+// import axios from 'axios';
+import api from '../utils/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
@@ -17,7 +18,7 @@ const DeleteBook = () => {
         const authToken = localStorage.getItem('authToken');
         const config = { headers: { Authorization: authToken }};
 
-        axios
+        api
         .delete(`http://localhost:5555/books/${id}`, config)
         .then(()=>{
             setLoading(false);

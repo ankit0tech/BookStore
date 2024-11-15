@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from '../utils/api';
 import { CartInterface } from "../types";
 
 
@@ -11,7 +12,9 @@ const updateCart = async (bookId: string, quantity: number, authToken: string): 
     };
 
     try {
-        const response = await axios.post('http://localhost:5555/cart/update-cart', data, config);
+        console.log('UPDATING CART 1');
+        const response = await api.post('http://localhost:5555/cart/update-cart', data, config);
+        console.log('UPDATING CART 2');
         console.log("Response: ", response.data.message);
 
     }

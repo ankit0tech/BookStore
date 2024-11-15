@@ -1,7 +1,8 @@
 import { ChangeEvent, useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
-import axios from 'axios';
+// import axios from 'axios';
+import api from '../utils/api';
 import{ useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
@@ -47,7 +48,7 @@ const CreateBook = () => {
         const config = {headers: { Authorization: authToken }};
 
         setLoading(true);
-        axios
+        api
         .post('http://localhost:5555/books', data, config)
         .then(() => {
             setLoading(false);

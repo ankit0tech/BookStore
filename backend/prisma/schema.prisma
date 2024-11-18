@@ -19,43 +19,44 @@ enum Role {
   ADMIN
 }
 
-model User {
+model userinfo {
   id Int @id @default(autoincrement())
   email String @unique @db.VarChar(255)
-  firstName String?
-  lastName String?
+  first_name String?
+  last_name String?
   password String
   role Role @default(USER)
-  createdAt DateTime @default(now()) @map("createdAt")
-  updatedAt DateTime @updatedAt
+  verified Boolean @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  Cart Cart[]
+  cart cart[]
 }
 
-model Book {
+model book {
   id Int @id @default(autoincrement())
   title String
   author String
-  publishYear Int
+  publish_year Int
   price Int
   category String?
-  createdAt DateTime @default(now()) @map("createdAt")
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  Cart Cart[]
+  cart cart[]
 }
 
-model Cart {
+model cart {
   id Int @id @default(autoincrement())
-  userId Int
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  user_id Int
+  user userinfo @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  book_id Int
+  book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
 
-  bookId Int
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
-
-  bookTitle String
+  book_title String
   quantity Int @default(1)
   purchased Boolean @default(false)
-  createdAt DateTime @default(now()) @map("createdAt")
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

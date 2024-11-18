@@ -4,7 +4,7 @@ interface Book {
     id: string;
     title: string;
     author: string;
-    publishYear: string;
+    publish_year: string;
     price: string;
     category: string;
 }

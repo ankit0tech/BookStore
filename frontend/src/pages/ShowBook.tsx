@@ -9,13 +9,13 @@ interface BookState {
     id: string;
     title: string;
     author: string;
-    publishYear: string;
+    publish_year: string;
     price: number;
     category: string;
 }
 
 const ShowBook = () => {
-    const [book, setBook] = useState<BookState>({id:'', title:'', author: '', publishYear: '', price: 0, category:''});
+    const [book, setBook] = useState<BookState>({id:'', title:'', author: '', publish_year: '', price: 0, category:''});
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
 
@@ -54,7 +54,7 @@ const ShowBook = () => {
                     </div>
                     <div className='my-4'>
                         <span className='text-xl mr-4 text-grey-500'>Publish Year:</span>
-                        <span>{book.publishYear}</span>
+                        <span>{book.publish_year}</span>
                     </div>
                     <div className='my-4'>
                         <span className='text-xl mr-4 text-grey-500'>Price:</span>

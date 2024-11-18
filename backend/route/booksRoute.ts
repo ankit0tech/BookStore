@@ -15,7 +15,7 @@ router.post('/', authMiddleware, async (req, res) => {
     try {
         
         const userMail = req.authEmail;
-        const user = await prisma.user.findUnique({
+        const user = await prisma.userinfo.findUnique({
             where: { email: userMail }
         })
         if (!user) {
@@ -33,7 +33,7 @@ router.post('/', authMiddleware, async (req, res) => {
             return res.status(201).send(book);
         }
         return res.status(400).send({
-            message: 'send required fields title, author, and publishYear in proper format',
+            message: 'send required fields title, author, and publish_year in proper format',
         });
     }
     catch(error: any) {
@@ -84,7 +84,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const userMail = req.authEmail;
-        const user = await prisma.user.findUnique({
+        const user = await prisma.userinfo.findUnique({
             where: { email: userMail }
         });
         if (!user) {
@@ -127,7 +127,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const userMail = req.authEmail;
-        const user = await prisma.user.findUnique({
+        const user = await prisma.userinfo.findUnique({
             where: { email: userMail }
         });
         if (!user) {

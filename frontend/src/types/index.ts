@@ -10,9 +10,9 @@ export interface CartInterface {
     count: number,
     data: {
         id: string,
-        userId: string,
-        bookId: string,
-        bookTitle: string,
+        user_id: string,
+        book_id: string,
+        book_title: string,
         quantity: number,
         // price: number,
         purchased: boolean
@@ -25,8 +25,8 @@ export interface Book {
     author: string;
     price: number;
     category: string;
-    publishYear: string;
+    publish_year: string;
     quantity?: number;
-    createdAt: string;
-    updatedAt: string;
+    created_at: string;
+    updated_at: string;
 }

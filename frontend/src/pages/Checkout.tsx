@@ -34,7 +34,7 @@ const Checkout = () => {
                 const fetchedBooks = await Promise.all(
                     cartItems.data.map(async (item) => {
                         try {
-                            const response = await api.get(`http://localhost:5555/books/${item.bookId}`);
+                            const response = await api.get(`http://localhost:5555/books/${item.book_id}`);
                             
                             const bookInfo = response.data;
                             bookInfo['quantity'] = item.quantity; 
@@ -43,7 +43,7 @@ const Checkout = () => {
                             
                             return bookInfo;
                         } catch (error) {
-                            console.log(`Error fetching book with ID ${item.bookId}`, error);
+                            console.log(`Error fetching book with ID ${item.book_id}`, error);
                             return null;
                         }
                     })
@@ -72,7 +72,7 @@ const Checkout = () => {
             } else {
 
                 const config = {headers: { Authorization: authToken }};
-                const response = await api.post('http://localhost:5555/cart/checkout',null, config);
+                const response = await api.post('http://localhost:5555/cart/checkout',{}, config);
 
                 // Update the cart items
                 const items = await getCartItems(authToken);

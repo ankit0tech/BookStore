@@ -74,9 +74,9 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                                     {cartItems.data.map((item) => (
                                         <li key={item.id}>
                                             <div className="flex justify-start items-center gap-x-4">
-                                                { item.quantity } • { item.bookTitle }
-                                                <BiMinus onClick={() => {handleUpdateCart(item.bookId, -1)}} />
-                                                <BiPlus onClick={() => {handleUpdateCart(item.bookId, 1)}} />
+                                                { item.quantity } • { item.book_title }
+                                                <BiMinus onClick={() => {handleUpdateCart(item.book_id, -1)}} />
+                                                <BiPlus onClick={() => {handleUpdateCart(item.book_id, 1)}} />
                                             </div>
                                             {/* <FcPlus onClick={() => {handleAddToCart(book.id)}} /> */}
                                             {/* <h3 className="text-lg ">{item.bookTitle}</h3>

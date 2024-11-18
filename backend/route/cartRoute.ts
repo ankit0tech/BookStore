@@ -19,14 +19,14 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
             // 2. update the existing entry. if we go below 1 then remove the entry from table
             // 3. create new entry if entry doesn't exists and make sure quantity is >=1
             const userEmail = req.authEmail;
-            const user = await prisma.user.findUnique({
+            const user = await prisma.userinfo.findUnique({
                 where: { email: userEmail }
             });
 
             if (user) {
                 const existingCartItem = await prisma.cart.findFirst({
                     where: {
-                        userId: user.id, bookId: req.body.bookId, purchased: false
+                        user_id: user.id, book_id: req.body.book_id, purchased: false
                     }
                 });
                 if (existingCartItem) {
@@ -34,7 +34,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 
                     if((existingCartItem.quantity + req.body.quantity) == 0){
                         await prisma.cart.deleteMany({ 
-                            where: {userId: user.id, bookId: req.body.bookId}
+                            where: {user_id: user.id, book_id: req.body.book_id}
                         });
                         return res.status(200).send({message: "Cart updated successfully"});
                     }
@@ -44,7 +44,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 
                     await prisma.cart.updateMany({
                         where: {
-                            userId: user.id, bookId: req.body.bookId, purchased: false
+                            user_id: user.id, book_id: req.body.book_id, purchased: false
                         },
                         data: {
                             quantity: existingCartItem.quantity + req.body.quantity
@@ -61,15 +61,15 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                     }
                     // const book = await Book.findOne({bookId: req.body.bookId});
                     const book = await prisma.book.findUnique({
-                        where: {id: req.body.bookId}
+                        where: {id: req.body.book_id}
                     });
                     if (!book) {
                         return res.status(400).send({message: "Error adding book to cart"});
                     }
                     const newCart = {
-                        userId: user.id,
-                        bookId: req.body.bookId,
-                        bookTitle: book.title,
+                        user_id: user.id,
+                        book_id: req.body.book_id,
+                        book_title: book.title,
                         quantity: req.body.quantity,
                         purchased: false
                     };
@@ -99,13 +99,14 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 // retrieve current user cart
 router.get('/get-cart-items', authMiddleware, async (req, res) => {
     try {
+        console.log('GET CART ITEM')
         const userEmail = req.authEmail;
-        const user = await prisma.user.findUnique({ 
+        const user = await prisma.userinfo.findUnique({ 
             where: { email:userEmail }
         });
         if(user) {
             const cartItems = await prisma.cart.findMany({
-                where: {userId: user.id, purchased: false}
+                where: {user_id: user.id, purchased: false}
             });
             return res.status(200).send({count: cartItems.length, data: cartItems});
         }
@@ -123,12 +124,12 @@ router.get('/get-cart-items', authMiddleware, async (req, res) => {
 router.get('/get-purchased-items', authMiddleware, async (req, res) => {
     try {
         const userEmail = req.authEmail;
-        const user = await prisma.user.findUnique({
+        const user = await prisma.userinfo.findUnique({
             where: { email: userEmail }
         });
         if(user) {
             const cartItems = await prisma.cart.findMany({
-                where: { userId: user.id, purchased: true }
+                where: { user_id: user.id, purchased: true }
             });
             return res.status(200).send({count: cartItems.length, data: cartItems});
         }
@@ -150,7 +151,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
     try {
         console.log("chekcout...");
         const userEmail = req.authEmail;
-        const user = await prisma.user.findUnique({
+        const user = await prisma.userinfo.findUnique({
             where: {email: userEmail}
         });
         if (user) {
@@ -158,7 +159,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
             // // Apply transactions here
             await prisma.cart.updateMany({
                 where: {
-                    userId: user.id, purchased: false
+                    user_id: user.id, purchased: false
                 },
                 data: {
                     purchased: true

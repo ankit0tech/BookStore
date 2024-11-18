@@ -43,7 +43,7 @@ const EditBook = () => {
         .then((response) => {
             setTitle(response.data.title);
             setAuthor(response.data.author);
-            setPublishYear(response.data.publishYear);
+            setPublishYear(response.data.publish_year);
             setPrice(response.data.price);
             setCategory(response.data.category);
             setLoading(false);
@@ -62,7 +62,7 @@ const EditBook = () => {
         const data = {
             title,
             author,
-            publishYear: +publishYear,
+            publish_year: +publishYear,
             price: floatPrice,
             category
         };

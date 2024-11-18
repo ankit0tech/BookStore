@@ -5,7 +5,7 @@ import { BiUserCircle } from "react-icons/bi";
 interface Book {
     title: string;
     author: string;
-    publishYear: string;
+    publish_year: string;
     price: string;
     category: string;
 }

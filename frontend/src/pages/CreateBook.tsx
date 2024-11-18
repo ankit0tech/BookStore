@@ -40,12 +40,13 @@ const CreateBook = () => {
         const data = {
             title,
             author,
-            publishYear: +publishYear,
+            publish_year: +publishYear,
             price: +price,
             category
         };
 
         const config = {headers: { Authorization: authToken }};
+        
 
         setLoading(true);
         api

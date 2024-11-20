@@ -3,7 +3,6 @@ import { Cart, ICart } from "../models/cartModel";
 import { cartZod } from '../zod/cartZod';
 import { authMiddleware } from './middleware';
 import { IUser, User } from '../models/userModel';
-import { Book } from '../models/bookModel';
 import { PrismaClient } from '@prisma/client';
 
 const router = express.Router();

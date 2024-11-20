@@ -1,5 +1,5 @@
 import express from "express";
-import { Book, IBook } from "../models/bookModel";
+import { IBook } from "../models/bookModel";
 import { bookZod } from "../zod/bookZod";
 import { resourceLimits } from "worker_threads";
 import { authMiddleware } from "./middleware";
@@ -9,6 +9,35 @@ import { PrismaClientRustPanicError } from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 const router = express.Router();
+
+router.get('/search', async (req, res) => {
+    const queryString = req.query.query as string | undefined;
+    const query = queryString || '';
+    const categoryString = req.query.category as string | undefined;
+    const category = categoryString || '';
+
+    let allBooks: Array<IBook> = [];
+    if (category!='') {
+        allBooks = await prisma.book.findMany({
+            where: { category: category}
+        })
+    }
+    else {
+        allBooks = await prisma.book.findMany({});
+    }
+
+    let matchingBooks: Array<IBook> = [];
+    allBooks.forEach(element => {
+        if (element.title.toLowerCase().includes(query.toLowerCase()) 
+            || element.author.toLowerCase().includes(query.toLowerCase())) 
+        {
+            matchingBooks.push(element);
+        }
+    });
+
+    return res.status(200).send(matchingBooks);
+    
+});
 
 // save a new book
 router.post('/', authMiddleware, async (req, res) => {
@@ -64,7 +93,7 @@ router.get('/', async (req, res) => {
 });
 
 // get one book by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id(\\d+)', async (req, res) => {
     try {
         const { id } = req.params;
         const book = await prisma.book.findUnique({
@@ -81,7 +110,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a book using Id
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
     try {
         const userMail = req.authEmail;
         const user = await prisma.userinfo.findUnique({
@@ -124,7 +153,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 });
 
 // delete a book with id
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id(\\d+)', authMiddleware, async (req, res) => {
     try {
         const userMail = req.authEmail;
         const user = await prisma.userinfo.findUnique({

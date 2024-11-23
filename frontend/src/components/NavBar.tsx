@@ -9,14 +9,22 @@ import { useNavigate } from "react-router-dom";
 import { getCartItems } from "../utils/cartUtils";
 import { useDispatch } from "react-redux";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
+import axios from "axios";
+import { ChildProps } from '../App';
 
 
-const NavBar = () => {
+const NavBar = ({ books, setBooks}: ChildProps) => {
 
     const [cartItems, setCartItems] = useState<CartInterface|null>(null);
+    const [query, setQuery] = useState<string>('');
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const navigate = useNavigate();
 
+    const handleSearch = async () => {
+        const result = await axios.get(`http://localhost:5555/books/search?query=${query}`);
+        console.log('Search result: ', result);
+        setBooks(result.data);
+    }
 
     // const userData = useSelector((state: RootState) => state.userinfo);
     const [isOpen, setIsOpen] = useState(false);
@@ -58,18 +66,36 @@ const NavBar = () => {
         // <div className="flex justify-center items-center gap-x-4">
         <div className="flex justify-between px-4 bg-purple-500 h-10 text-white font-bold items-center">
             <button className="flex" onClick={() =>navigate('/')}>Home</button>
-            { email ? 
-                (<div className="flex">
-                    <button onClick={() => {setIsOpen(!isOpen)}}> Cart </button>
-                    <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
-                    <div className="px-4">{ email }</div>
-                    <div className=""><Signout/></div>
-                </div>)
-                :
-                (<Link to='/login'>
-                    Login
-                </Link>)
-            }
+            <div className="flex">
+                <div className="px-4 text-black font-normal">
+                    <label htmlFor="q"></label>
+                    <input 
+                        className="px-2" 
+                        type="sarch" 
+                        name="q" 
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if(e.key == 'Enter') handleSearch();
+                        }}
+                        placeholder="Search here..."
+                    >
+                    </input>
+                </div>
+                { email ? 
+                    (
+                        <>
+                            <button onClick={() => {setIsOpen(!isOpen)}}> Cart </button>
+                            <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
+                            <div className="px-4">{ email }</div>
+                            <div className=""><Signout/></div>
+                        </>
+                    )
+                    :
+                    (<Link to='/login'>
+                        Login
+                    </Link>)
+                }
+            </div>
 
         </div>
     );

@@ -8,15 +8,16 @@ import BooksCard from '../components/home/BooksCard';
 // import { checkTokenExpiry } from '../redux/authMiddleware';
 // import { RootState } from '@reduxjs/toolkit/query';
 import { RootState } from '../types/index';
+import { ChildProps } from '../App';
 
 
-const Home = () => {
+const Home = ({ books, setBooks}: ChildProps) => {
 
     // interface RootState {
     //     userinfo: { isAdmin: boolean }
     // }
 
-    const [books, setBooks] = useState([]);
+    // const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState('table');
     const userinfo = useSelector((state: RootState) => state.userinfo);

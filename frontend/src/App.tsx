@@ -9,14 +9,21 @@ import Signup from './pages/Signup';
 import { NavBar } from './components/NavBar';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import { useState } from 'react';
+import { Book } from './types';
 
+export interface ChildProps {
+  books: Book[];
+  setBooks: React.Dispatch<React.SetStateAction<Book[]>>;
+}
 
 const App = () => {
+  const [books, setBooks] = useState<Book[]>([]);
   return (
     <>
-      <NavBar />
+      <NavBar books={books} setBooks={setBooks} />
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route path='/' element={<Home books={books} setBooks={setBooks} />} />
         <Route path='/login' element={<Login /> } />
         <Route path='/signup' element={<Signup />} />
         <Route path='/books/create' element={<CreateBook />} />
@@ -30,4 +37,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;

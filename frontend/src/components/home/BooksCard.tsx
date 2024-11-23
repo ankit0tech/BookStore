@@ -1,13 +1,5 @@
 import BookSingleCard from "./BookSingleCard";
-
-interface Book {
-    id: string;
-    title: string;
-    author: string;
-    publish_year: string;
-    price: string;
-    category: string;
-}
+import { Book } from "../../types";
 
 const BooksCard = ({ books }: { books: Book[] }) => {
     return (

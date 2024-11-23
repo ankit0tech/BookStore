@@ -1,14 +1,7 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { PiBookOpenTextLight } from "react-icons/pi";
 import { BiUserCircle } from "react-icons/bi";
-
-interface Book {
-    title: string;
-    author: string;
-    publish_year: string;
-    price: string;
-    category: string;
-}
+import { Book } from "../../types";
 
 
 // const BookModal = ({book, onClose}) => {

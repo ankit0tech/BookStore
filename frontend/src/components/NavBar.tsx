@@ -64,13 +64,12 @@ const NavBar = ({ books, setBooks}: ChildProps) => {
 
     return (
         // <div className="flex justify-center items-center gap-x-4">
-        <div className="flex justify-between px-4 bg-purple-500 h-10 text-white font-bold items-center">
+        <div className="flex justify-between px-4 bg-purple-500 h-11 text-white font-bold items-center">
             <button className="flex" onClick={() =>navigate('/')}>Home</button>
             <div className="flex">
-                <div className="px-4 text-black font-normal">
-                    <label htmlFor="q"></label>
+                <div className="px-4 text-black font-normal">                    
                     <input 
-                        className="px-2" 
+                        className="transition-all duration-300 ease-in-out w-48 focus:w-64 px-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 border border-gray-300" 
                         type="sarch" 
                         name="q" 
                         onChange={(e) => setQuery(e.target.value)}

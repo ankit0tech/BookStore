@@ -7,4 +7,5 @@ export interface IBook {
     publish_year: number;
     price: number;
     category: string | null;
+    cover_image: string;
 }

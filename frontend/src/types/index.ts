@@ -29,4 +29,5 @@ export interface Book {
     quantity?: number;
     created_at: string;
     updated_at: string;
+    cover_image: string;
 }

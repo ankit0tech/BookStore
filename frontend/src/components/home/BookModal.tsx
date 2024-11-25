@@ -23,6 +23,14 @@ const BookModal: React.FC<{ book: Book; onClose: () => void;}> = ({ book, onClos
                     {book.publishYear}
                 </h2> */}
                 {/* <h4 className="my-2 text-gray-500">{book.id}</h4> */}
+                <div className="w-48 h-64 bg-gray-100 rounded-lg shadow-md overflow-hidden flex justify-center items-center">
+                    <img 
+                        src={book.cover_image}
+                        alt="Book Cover"
+                        className="w-full h-full object-cover object-scale-down"
+                    >
+                    </img>
+                </div>
                 <div className="flex justify-start items-center gap-x-2">
                     {/* <PiBookOpenTextLight className="text-red-300 text-2xl" /> */}
                     <h2>Title: </h2>

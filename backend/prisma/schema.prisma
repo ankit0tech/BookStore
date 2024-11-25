@@ -42,6 +42,7 @@ model book {
   category String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  cover_image String @db.VarChar(2083) @default("")
 
   cart cart[]
 }

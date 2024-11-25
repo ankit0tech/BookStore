@@ -8,15 +8,7 @@ import { useState } from 'react';
 import BookModal from "./BookModal";
 import { useSelector } from "react-redux";
 import { RootState } from "../../types/index";
-
-interface Book {
-    id: string;
-    title: string;
-    author: string;
-    publish_year: string;
-    price: string;
-    category: string;
-}
+import { Book } from "../../types/index";
 
 // const BookSingleCard = ({book}: Book) => {
 const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {

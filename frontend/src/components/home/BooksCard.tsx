@@ -3,7 +3,7 @@ import { Book } from "../../types";
 
 const BooksCard = ({ books }: { books: Book[] }) => {
     return (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="flex flex-col">
             {books.map((item) => (
                 <BookSingleCard key={item.id} book={item}/>
             ))}

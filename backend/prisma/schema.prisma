@@ -31,6 +31,7 @@ model userinfo {
   updated_at DateTime @updatedAt
 
   cart cart[]
+  address address[]
 }
 
 model book {
@@ -58,6 +59,22 @@ model cart {
   book_title String
   quantity Int @default(1)
   purchased Boolean @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model address {
+  id Int @id @default(autoincrement())
+
+  user_id Int
+  user userinfo @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  street_address String @db.VarChar(255)
+  city String @db.VarChar(255)
+  state String? @db.VarChar(255)
+  zip_code String
+  country String
+  is_default Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }

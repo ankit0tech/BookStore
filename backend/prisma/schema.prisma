@@ -77,4 +77,6 @@ model address {
   is_default Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@index([user_id])  // Optional for querying purposes
 }

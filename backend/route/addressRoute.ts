@@ -55,6 +55,32 @@ router.post('/', authMiddleware, async (req, res) => {
 
 });
 
+router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
+    try {
+        const userMail = req.authEmail;
+        const { id } = req.params;
+        const user = await prisma.userinfo.findUnique({
+            where: {email: userMail}
+        })
+        if(!user) {
+            return res.status(400).send({message: "Authentication failed"});
+        }
+
+        const address: IAddress | null = await prisma.address.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+        console.log(address);
+        return res.status(200).send(address);
+        
+    }
+    catch (error: any) {
+        console.log(error.message);
+        return res.status(500).send({message: error.message});
+    }
+});
+
 router.get('/default-address', authMiddleware, async(req, res) => {
     try {
         const userMail = req.authEmail;

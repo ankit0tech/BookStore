@@ -31,3 +31,14 @@ export interface Book {
     updated_at: string;
     cover_image: string;
 }
+
+export interface Address {
+    id: number;
+    user_id: number;
+    street_address: string;
+    city: string;
+    state: string;
+    zip_code: number;
+    country: string;
+    is_default: boolean;
+}

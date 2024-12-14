@@ -11,6 +11,10 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import { useState } from 'react';
 import { Book } from './types';
+import CreateAddress from './pages/CreateAddress';
+import UpdateAddress from './pages/UpdateAddress';
+import Addresses from './pages/Addresses';
+import DeleteAddress from './pages/DeleteAddress';
 
 export interface ChildProps {
   books: Book[];
@@ -30,6 +34,10 @@ const App = () => {
         <Route path='/books/details/:id' element={<ShowBook />} />
         <Route path='/books/edit/:id' element={<EditBook />} />
         <Route path='/books/delete/:id' element={<DeleteBook />} />
+        <Route path='/addresses' element={<Addresses />} />
+        <Route path='/address/create' element={<CreateAddress />} />
+        <Route path='/address/update/:id' element={<UpdateAddress />} />
+        <Route path='/address/delete/:id' element={<DeleteAddress />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
       </Routes>   

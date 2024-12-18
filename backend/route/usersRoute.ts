@@ -141,8 +141,8 @@ router.post('/signin', async (req: Request, res: Response) => {
                 }
             )
 
-            if (!user) {
-                return res.status(401).send({message: 'Please enter valid email'});
+            if (!user || !user.password) {
+                return res.status(401).send({message: 'Please enter valid credentials'});
             }
             if (user.email === req.body.email && user.password === req.body.password) {
                 // console.log(user.id?.toString());

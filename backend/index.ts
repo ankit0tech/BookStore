@@ -5,9 +5,15 @@ import mongoose from "mongoose";
 import booksRoute from './route/booksRoute';
 import usersRoute from './route/usersRoute';
 import cartRoute from './route/cartRoute';
+import authRoute from './route/auth';
 import { isAuthenticated } from "./middleware";
 import addressRoute from "./route/addressRoute";
 /* removing it for now ->    /// <reference path="./custom.d.ts" /> */
+import passport from 'passport';
+import session from 'express-session';
+
+require('./auth'); 
+
 
 const app = express();
 
@@ -22,6 +28,11 @@ app.use(cors());        // allow all origins
 //     })
 // );
 
+
+app.use(session({ secret: 'secret_key', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.get('/', (request, response)=> {
     return  response.status(234).send('Welcome to BookStore');
 });
@@ -30,6 +41,7 @@ app.use('/books', booksRoute);
 app.use('/users', usersRoute);
 app.use('/cart', cartRoute);
 app.use('/address', addressRoute);
+app.use('/auth', authRoute);
 
 
 app.listen(PORT, () => {

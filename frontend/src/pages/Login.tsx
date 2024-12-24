@@ -14,8 +14,9 @@ interface JwtPayload {
 
 const GoogleLogin = () => {
     const { signIn } = useGoogleLogin({
-        clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID ?? "",
+        clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? "",
         onSuccess: (response) => {
+            console.log('Login successful:', response);
             if ('tokenId' in response) {
                 const tokenId = response.tokenId;
                 fetch('http://localhost:5555/auth/google', {
@@ -24,12 +25,20 @@ const GoogleLogin = () => {
                     body: JSON.stringify({ tokenId: tokenId }),
                 })
                 .then((res) => res.json())
-                .then((data) => console.log(data));
+                .then((data) => console.log(data))
+                .then((error) => console.log(error));
             } else {
                 console.error('Offline response received, no tokenId available.');
             }
         },
-        onFailure: (error) => console.error(error),
+        onFailure: (error) => {
+            if(error.error = 'popup_closed_by_user') {
+                console.warn('User closed the popup before completing the login');
+                alert('Login was not completed. Please try again');
+            } else {
+                console.error('An error occurred', error);
+            }
+        },
     });
 
     return <button onClick={signIn}>Login with Google</button>

@@ -24,7 +24,9 @@ model userinfo {
   email String @unique @db.VarChar(255)
   first_name String?
   last_name String?
-  password String
+  password String?
+  googleId String? @unique
+  provider String @default("email")
   role Role @default(USER)
   verified Boolean @default(false)
   created_at DateTime @default(now())

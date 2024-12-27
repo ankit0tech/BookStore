@@ -26,6 +26,47 @@ app.use(cors());        // allow all origins
 //     })
 // );
 
+// app.use((req, res, next) => {
+//     res.setHeader(
+//         'Content-Security-Policy',
+//         "script-src 'self' https://www.gstatic.com https://accounts.google.com 'unsafe-inline' 'unsafe-eval'; " +
+//         "frame-src 'self' https://accounts.google.com; " +
+//         "connect-src 'self' https://www.googleapis.com https://www.gstatic.com; " +
+//         "default-src 'self';"
+//     );
+//     next();
+// })
+
+app.use((req, res, next) => {
+    res.setHeader(
+        'Content-Security-Policy',
+        "script-src 'self' gstatic.com google.com 'unsafe-inline' 'unsafe-eval'; " +
+        "frame-src 'self' https://*.google.com; " +
+        "connect-src 'self' https://*.googleapis.com https://*.gstatic.com; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "default-src 'self';"
+    );
+    next();
+});
+
+// app.use((req, res, next) => {
+//     res.setHeader(
+//         'Content-Security-Policy-Report-Only',
+//         "script-src 'self' https://accounts.google.com https://www.gstatic.com https://apis.google.com 'unsafe-inline' 'unsafe-eval'; " +
+//         "frame-src 'self' https://accounts.google.com https://apis.google.com; " +
+//         "connect-src 'self' https://www.googleapis.com https://www.gstatic.com; " +
+//         "default-src 'self';"
+//     );
+//     next();
+// });
+
+app.use((req, res, next) => { 
+    res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+    // res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
+
+    // res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp'); // Optional for iframe security
+    next();
+});
 
 app.use(session({
     secret: 'secret_key', 

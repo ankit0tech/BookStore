@@ -2,13 +2,11 @@ import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User, IUser } from '../models/userModel';
 import { signupZod, signinZod } from '../zod/userZod';
-import { JWT_SECRET } from '../config';
+import { config } from '../config';
 import { authMiddleware } from './middleware';
 import { PrismaClient } from "@prisma/client";
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
 
-dotenv.config();
 const prisma = new PrismaClient();
 const router = express.Router();
 
@@ -20,8 +18,8 @@ interface JwtPayload {
 
 
 const sendVerificationMail = (userMail: string, verificationLink: string): void => {
-    const senderMail: string|undefined = process.env.SMTP_MAIL
-    const senderPassword: string|undefined = process.env.SMTP_PASSWORD
+    const senderMail: string = config.smtp.email
+    const senderPassword: string = config.smtp.password
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -62,7 +60,7 @@ router.post('/signup', async (req: Request, res: Response) => {
             console.log('--- Signing Up user ---');
             console.log(user);
 
-            const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'verification'}, JWT_SECRET, {expiresIn: '1h'});
+            const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'verification'}, config.auth.jwtSecret, {expiresIn: '1h'});
             const verificationLink = `http://localhost:5555/users/verify-mail?verificationToken=${token}`
             // Action to send verification mail to user
             sendVerificationMail(user.email, verificationLink)
@@ -80,7 +78,7 @@ router.post('/signup', async (req: Request, res: Response) => {
 router.get('/verify-mail', async (req: Request, res: Response) => {
     const token: string = typeof req.query.verificationToken === 'string' ? req.query.verificationToken : '';
 
-    jwt.verify(token, JWT_SECRET, async (err, decoded) => {
+    jwt.verify(token, config.auth.jwtSecret, async (err, decoded) => {
         if (err) {
             console.log('ERROR OCCURRED')
             console.log(err);
@@ -146,7 +144,7 @@ router.post('/signin', async (req: Request, res: Response) => {
             }
             if (user.email === req.body.email && user.password === req.body.password) {
                 // console.log(user.id?.toString());
-                const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, JWT_SECRET, {expiresIn: '1h'});
+                const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, config.auth.jwtSecret, {expiresIn: '1h'});
                 // req.authEmail = user.email;    // need to decide it later
                 console.log("User singed in: ", user.email);
                 return res.status(200).send({token: token});

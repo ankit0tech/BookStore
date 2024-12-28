@@ -1,6 +1,6 @@
 import express, { response } from "express";
 import cors from 'cors';
-import { PORT } from "./config";
+import { config } from "./config";
 import mongoose from "mongoose";
 import booksRoute from './route/booksRoute';
 import usersRoute from './route/usersRoute';
@@ -86,8 +86,8 @@ app.use('/address', addressRoute);
 app.use('/auth', authRoute);
 
 
-app.listen(PORT, () => {
-    console.log(`App is listening to port: ${PORT}`);
+app.listen(config.server.port, () => {
+    console.log(`App is listening to port: ${config.server.port}`);
 });        
 
 // mongoose

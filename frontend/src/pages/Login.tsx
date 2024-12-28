@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { setIsAdmin, loginSuccess, logoutSuccess } from "../redux/userSlice";
-import { useGoogleLogin } from 'react-google-login';
-import { GoogleLogin as GoogleLoginButton } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 
 interface JwtPayload {
     email: string,
@@ -17,9 +16,9 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    return (
-        <GoogleLoginButton
-            onSuccess={ async (credentialResponse) => {
+        const login = useGoogleLogin({
+
+            onSuccess: async (credentialResponse) => {
                 try {
                     console.log(credentialResponse);
                     const response = await fetch('http://localhost:5555/auth/login/federated/google', {
@@ -28,16 +27,16 @@ const Login = () => {
                             'Content-type': 'application/json',
                         },
                         body: JSON.stringify({
-                            tokenId: credentialResponse.credential
+                            tokenId: credentialResponse.access_token
                         }),
                     });
-
+                    
                     const data = await response.json();
                     if(data.token) {
                         console.log("Fronted token: ", data.token);
                         localStorage.setItem('authToken', data.token);
                         const user = jwtDecode<JwtPayload>(data.token);
-
+                        
                         if( user.role == 'ADMIN') {
                             dispatch(setIsAdmin({ 'isAdmin': true }));
                         } else {
@@ -51,14 +50,20 @@ const Login = () => {
                 } catch (error) {
                     console.error('Login failed: ', error);
                 }
-
-            }}
-            onError={() => {
+                
+            },
+            onError: () => {
                 console.log('Login failed');
-            }}
-        />
-    );
-}
+            },
+            scope: 'openid email profile',
+
+        });
+
+        return (<div>
+                <button onClick={() => login()}>Sing in with Google</button>
+            </div>);
+
+    }
 
 // const GoogleLogin = () => {
 //     const { signIn } = useGoogleLogin({

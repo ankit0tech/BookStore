@@ -1,16 +1,17 @@
 import express from 'express';
 import passport from 'passport';
 // import GoogleStrategy from 'passport-google-oidc';
-import { Strategy as GoogleStrategy } from 'passport-google-oidc';
+// import { Strategy as GoogleStrategy } from 'passport-google-oidc';
 import { PrismaClient } from '@prisma/client';
-import { error } from 'console';
+// import { error } from 'console';
 // import { JWT, LoginTicket, OAuth2Client } from 'google-auth-library';
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 const router = express.Router();
 // const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 import { config } from '../config';
+// import { json } from 'stream/consumers';
 
 
 // passport.use(new GoogleStrategy({
@@ -88,91 +89,54 @@ import { config } from '../config';
 
 router.post('/login/federated/google', async (req, res) => {
 
-    console.log('/login/federated/google Verifying the token');
-    const { tokenId } = req.body;
-    console.log('TOKEN: ', tokenId);
-
     try {
-        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo',
-            {
-                headers: {
-                    Authorization: `Bearer ${tokenId}`,
-                },
-            }
-        );
-
-        const payload = await response.json();
-        if (!payload?.email) {
-            return res.status(401).json({ success: false });
-        }
-        const googleId = payload.sub;
-        let user = await prisma.userinfo.findUnique({
-            where: {
-                googleId: googleId,
+        const token = req.body.token;
+        
+        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: {
+                Authorization: `Bearer ${token}`
             }
         });
 
-        if(!user) {
+        const payload = await response.json();
+        if(!payload?.email) {
+            return res.status(401).json({ success: false});
+        }
+
+        let user = await prisma.userinfo.findUnique({
+            where: {
+                googleId: payload.sub,
+            }
+        });
+
+        if (!user) {
             user = await prisma.userinfo.create({
                 data: {
                     email: payload.email,
-                    googleId: googleId,
-                    provider: 'google',
                     role: 'USER',
+                    verified: true,
+                    googleId: payload.sub,
+                    provider: 'google'
                 }
             });
         }
 
-        const token = jwt.sign(
-            { userId: user.id, role: user.role , email: user.email },
+        const jwtToken = jwt.sign({
+                email: user.email,
+                userId: user.id,
+                role: user.role
+            },
             config.auth.jwtSecret,
             { expiresIn: '1h' }
-        );
+        )
 
-
-        // const ticket = await client.verifyIdToken({
-        //     idToken: tokenId,
-        //     audience: process.env.GOOGLE_CLIENT_ID,
-        // });
-        // const payload = ticket.getPayload();
-        // if (!payload?.email) {
-        //     return res.status(401).json({ success: false });
-        // }
-
-        // const googleId = payload?.sub;
-        
-        // let user = await prisma.userinfo.findUnique({
-        //     where: {
-        //         googleId: googleId,
-        //     }
-        // });
-
-        // // if (!payload || !payload.email) {
-        // //     return res.status(401).json({ failure: "Issue with authentication" });
-        // // }
-
-        // if(!user) {
-        //     user = await prisma.userinfo.create({
-        //         data: {
-        //             email: payload.email,
-        //             googleId: googleId,
-        //             provider: 'google',
-        //             role: 'USER',
-        //         }
-        //     });
-        // }
-
-        // const token = jwt.sign(
-        //     { userId: user.id, role: user.role , email: user.email },
-        //     JWT_SECRET,
-        //     { expiresIn: '1h' }
-        // );
-
-        res.status(200).json({ success: true, token });
-        
+        return res.status(200).json({
+            success: true,
+            token: jwtToken
+        })
     } catch (error) {
-        console.error('Token verification failed:', error);
-        res.status(401).json({ success: false, message: 'Invalid token' });
+        console.log('Token verification failed: ', error);
+        res.status(401).json({success: false, message: 'Invalid Token'});
     }
 });
 

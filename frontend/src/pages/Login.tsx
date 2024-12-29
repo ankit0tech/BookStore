@@ -5,10 +5,11 @@ import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { setIsAdmin, loginSuccess, logoutSuccess } from "../redux/userSlice";
 import { useGoogleLogin } from "@react-oauth/google";
+import { GiConsoleController } from "react-icons/gi";
 
 interface JwtPayload {
     email: string,
-    userid: string,
+    userId: string,
     role: string,
 }
 
@@ -16,54 +17,51 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-        const login = useGoogleLogin({
-
-            onSuccess: async (credentialResponse) => {
-                try {
-                    console.log(credentialResponse);
-                    const response = await fetch('http://localhost:5555/auth/login/federated/google', {
-                        method: 'POST',
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            tokenId: credentialResponse.access_token
-                        }),
-                    });
-                    
-                    const data = await response.json();
-                    if(data.token) {
-                        console.log("Fronted token: ", data.token);
-                        localStorage.setItem('authToken', data.token);
-                        const user = jwtDecode<JwtPayload>(data.token);
-                        
-                        if( user.role == 'ADMIN') {
-                            dispatch(setIsAdmin({ 'isAdmin': true }));
-                        } else {
-                            dispatch(setIsAdmin({ 'isAdmin': false }))
-                        }
-                        
-                        console.log("user from token: ", user);
-                        dispatch(loginSuccess({ 'token': data.token , 'email': user.email }));
-                        navigate('/');
+    const login = useGoogleLogin({
+        onSuccess: async (loginCredentials) => {
+            try {
+                const response = await axios.post('http://localhost:5555/auth/login/federated/google', {
+                    token: loginCredentials.access_token
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
                     }
-                } catch (error) {
-                    console.error('Login failed: ', error);
-                }
-                
-            },
-            onError: () => {
-                console.log('Login failed');
-            },
-            scope: 'openid email profile',
+                });
 
-        });
+                const jwtToken = response.data.token;
+                if(jwtToken) {
+                    const tokenData = jwtDecode<JwtPayload>(jwtToken);
+                    
+                    if (tokenData.role == 'ADMIN') {
+                        dispatch(setIsAdmin({'isAdmin': true}));
+                    } else {
+                        dispatch(setIsAdmin({'isAdmin': false}));
+                    }
+    
+                    dispatch(loginSuccess({
+                        'token': jwtToken, 
+                        'email': tokenData.email
+                    }));
+                    navigate('/');
+    
+                }                
+            } catch (error) {
+                console.error("Login failed: ", error);
+            }
+        },
+        onError: (error) => {
+            console.log("Error:", error);
+        },
+        scope: 'openid email',
+    });
 
-        return (<div>
-                <button onClick={() => login()}>Sing in with Google</button>
-            </div>);
-
-    }
+    return (
+            <button onClick={() => login()}>
+                Sing in with google
+            </button>
+        );
+}
 
 // const GoogleLogin = () => {
 //     const { signIn } = useGoogleLogin({

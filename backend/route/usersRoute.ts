@@ -6,6 +6,7 @@ import { config } from '../config';
 import { authMiddleware } from './middleware';
 import { PrismaClient } from "@prisma/client";
 import nodemailer from 'nodemailer';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -52,6 +53,9 @@ router.post('/signup', async (req: Request, res: Response) => {
 
         const result = signupZod.safeParse(req.body);
         if(result.success) {
+            const password = await bcrypt.hash(req.body.password, 10);
+            req.body.password = password
+
             const user = await prisma.userinfo.create(
                 {
                     data: req.body
@@ -138,19 +142,19 @@ router.post('/signin', async (req: Request, res: Response) => {
                     }
                 }
             )
+            
+            if (!user || user.provider == 'google' || !user.password || !(await bcrypt.compare(req.body.password, user.password))) {
+                return res.status(401).send({message: 'Invalid email or password'});
+            }
 
-            if (!user) {
-                return res.status(401).send({message: 'Please enter valid email'});
-            }
-            if (user.email === req.body.email && user.password === req.body.password) {
-                // console.log(user.id?.toString());
-                const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, config.auth.jwtSecret, {expiresIn: '1h'});
-                // req.authEmail = user.email;    // need to decide it later
-                console.log("User singed in: ", user.email);
-                return res.status(200).send({token: token});
-            }
+            // console.log(user.id?.toString());
+            const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, config.auth.jwtSecret, {expiresIn: '1h'});
+            // req.authEmail = user.email;    // need to decide it later
+            console.log("User singed in: ", user.email);
+            
+            return res.status(200).send({token: token});
         }
-        return res.status(401).send({message: 'Please send valid inputs'});
+        return res.status(401).send({message: 'Please enter valid inputs'});
     } catch(error: any) {
         console.log(error.message);
         return res.status(500).send({message: error.message});

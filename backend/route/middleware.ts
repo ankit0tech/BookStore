@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config';
+import { config } from '../config';
 
 interface JwtPayload {
     email: string,
@@ -22,7 +22,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         return res.status(401).send({ message: 'Authentication failed, Token not found' });
     }
 
-    jwt.verify(token, JWT_SECRET, (err, decoded)=> {
+    jwt.verify(token, config.auth.jwtSecret, (err, decoded)=> {
         if(err || !decoded) {
             return res.status(401).send({ message: 'Authentication failed, Invalid token' });
         }

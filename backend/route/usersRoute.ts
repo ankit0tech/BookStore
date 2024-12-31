@@ -7,18 +7,24 @@ import { authMiddleware } from './middleware';
 import { PrismaClient } from "@prisma/client";
 import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
+import rateLimit from 'express-rate-limit';
 
 const prisma = new PrismaClient();
 const router = express.Router();
 
 interface JwtPayload {
     email: string,
-    userId: string,
     type: string
 }
 
+const passwordResetRateLimit = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: "Password reset limit reached, please try again after some time"
+});
 
-const sendVerificationMail = (userMail: string, verificationLink: string): void => {
+
+const sendVerificationMail = (userMail: string, verificationLink: string, message: string, subject: string): void => {
     const senderMail: string = config.smtp.email
     const senderPassword: string = config.smtp.password
     const transporter = nodemailer.createTransport({
@@ -30,12 +36,20 @@ const sendVerificationMail = (userMail: string, verificationLink: string): void 
             pass: senderPassword,
         }
     });
+
+    transporter.verify((error, success) => {
+        if (error) {
+            console.log("SMTP configuration error: ", error);
+        } else {
+            console.log("SMTP configuration is correct", success);
+        }
+    })
     
     transporter.sendMail({
         from: `"Ankit Punia" <${senderMail}>`,
         to: userMail,
-        subject: 'Account Verification BookStore',
-        text: `Hi, ${senderMail} \nPlease verify your mail by clicking on the link below, valid for one hour. \n${verificationLink}\nRegards,\nBookStore Team`,
+        subject: subject,
+        text: `Hi, ${userMail} \n${message} \n${verificationLink}\nRegards,\nBookStore Team`,
     }, (error, info) => {
         if (error) {
             return console.log(error);
@@ -64,10 +78,12 @@ router.post('/signup', async (req: Request, res: Response) => {
             console.log('--- Signing Up user ---');
             console.log(user);
 
-            const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'verification'}, config.auth.jwtSecret, {expiresIn: '1h'});
+            const token = jwt.sign({email: user.email, type: 'verification'}, config.auth.jwtSecret, {expiresIn: '1h'});
             const verificationLink = `http://localhost:5555/users/verify-mail?verificationToken=${token}`
             // Action to send verification mail to user
-            sendVerificationMail(user.email, verificationLink)
+            const message = 'Please verify your mail by clicking on the link below, valid for one hour.';
+            const subject = 'BookStore account verification';
+            sendVerificationMail(user.email, verificationLink, message, subject);
 
             return res.status(200).send(user);
         }
@@ -94,11 +110,11 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
         if (err || !decoded) {
             return res.status(401).send({ message: 'Authentication failed, Invalid token' })
         }
-        const { userId, email, type } = decoded as JwtPayload;
+        const { email, type } = decoded as JwtPayload;
         if (type === 'verification') {
             await prisma.userinfo.update({
                 where: {
-                    id: Number(userId)
+                    email: email
                 },
                 data: {
                     verified: true
@@ -179,6 +195,77 @@ router.get('/profile', authMiddleware, async (req: Request, res: Response) => {
     catch(error: any) {
         console.log(error.message);
         return res.status(500).send({message: error.message});
+    }
+});
+
+router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Request, res: Response) => {
+    try {
+
+        const user = await prisma.userinfo.findUnique({
+            where: {
+                email: req.body.email,
+            }
+        });
+        console.log(`Sending mail to reset password for ${req.body.email}`);
+        
+        if (user) {
+
+            const token = jwt.sign({email: user.email, type: 'reset_password'}, config.auth.jwtSecret, {expiresIn: '1h'});
+            // const verificationLink = `http://localhost:5173reset-password/verify/${token}`
+            const verificationLink = `http://localhost:5173/reset-password/verify?verificationToken=${token}`
+            // Action to send verification mail to user
+            const message = 'Please click the link below to reset your password, valid for one hour.';
+            const subject = 'BookStore password reset';
+            sendVerificationMail(user.email, verificationLink, message, subject);
+            
+            return res.status(200).json({message: "verification mail sent"});
+        }
+        return res.status(400).json({message: "Error sending reset password mail"});
+
+    } catch (error: any) {
+        console.log(error.message);
+        return res.status(500).json({message: error.message});
+    }
+});
+
+
+router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request, res: Response) => {
+    try {
+        const token: string = req.body.verificationToken;
+        const password: string = req.body.password;
+
+        jwt.verify(token, config.auth.jwtSecret, async (err, decoded) => {
+            if (err) {
+                console.log('ERROR OCCURRED')
+                console.log(err);
+            }
+            if(!decoded) {
+                console.log('not decoded');
+            }
+            if (err || !decoded) {
+                return res.status(401).json({ message: 'Authentication failed, Invalid token' });
+            }
+
+            const { email } = decoded as JwtPayload;
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const user = await prisma.userinfo.update({
+                where: {
+                    email: email
+                },
+                data: {
+                    password: hashedPassword
+                }
+            });
+            if (user) {
+                console.log(`Password reset done for user: ${user.email}`);
+                return res.status(200).json({message: 'password updated'});
+            } else {
+                return res.status(400).json({message: 'Failed to updated password, please try again'});
+            }
+        });
+    } catch(error: any) {
+        console.log(error.message);
+        return res.status(500).json({message: error.message})
     }
 });
 

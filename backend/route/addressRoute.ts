@@ -106,7 +106,7 @@ router.get('/default-address', authMiddleware, async(req, res) => {
     }
     catch (error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.messgae});
+        return res.status(500).send({message: error.message});
     }
 });
 

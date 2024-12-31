@@ -8,8 +8,6 @@ import cartRoute from './route/cartRoute';
 import authRoute from './route/auth';
 import { isAuthenticated } from "./middleware";
 import addressRoute from "./route/addressRoute";
-import session from 'express-session';
-import passport from "passport";
 
 /* removing it for now ->    /// <reference path="./custom.d.ts" /> */
 import passport from 'passport';

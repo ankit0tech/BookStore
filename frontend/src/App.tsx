@@ -15,6 +15,9 @@ import CreateAddress from './pages/CreateAddress';
 import UpdateAddress from './pages/UpdateAddress';
 import Addresses from './pages/Addresses';
 import DeleteAddress from './pages/DeleteAddress';
+// import OAuthCallback from './components/OAuthCallback';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import ResetPassword from './pages/ResetPassword';
 
 export interface ChildProps {
   books: Book[];
@@ -24,7 +27,7 @@ export interface ChildProps {
 const App = () => {
   const [books, setBooks] = useState<Book[]>([]);
   return (
-    <>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <NavBar books={books} setBooks={setBooks} />
       <Routes>
         <Route path='/' element={<Home books={books} setBooks={setBooks} />} />
@@ -40,8 +43,10 @@ const App = () => {
         <Route path='/address/delete/:id' element={<DeleteAddress />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
+        <Route path='/reset-password/verify' element={<ResetPassword />} />
+        {/* <Route path='/oauth2/redirect/google' element={<OAuthCallback />} /> */}
       </Routes>   
-    </>
+    </ GoogleOAuthProvider>
   )
 }
 

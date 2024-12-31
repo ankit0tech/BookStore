@@ -37,10 +37,7 @@ const NavBar = ({ books, setBooks}: ChildProps) => {
         const authToken = userinfo.token;
         const fetchCartItems = async () => {
 
-            if (!authToken) {
-                navigate('/login');
-            }
-            else {
+            if (authToken) {
                 // console.log(authToken);
                 const items = await getCartItems(authToken);
                 // console.log("Items: ", items);

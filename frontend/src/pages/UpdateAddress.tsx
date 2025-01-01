@@ -136,7 +136,7 @@ const UpdateAddress = () => {
                 <label>
                     <input 
                         type="checkbox" 
-                        onClick={() => setIsDefault(!isDefault)}
+                        onChange={() => setIsDefault(!isDefault)}
                         checked={isDefault}
                     />
                     &nbsp;&nbsp;Make address default

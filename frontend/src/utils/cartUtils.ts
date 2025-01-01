@@ -12,10 +12,8 @@ const updateCart = async (book_id: string, quantity: number, authToken: string):
     };
 
     try {
-        console.log('UPDATING CART 1');
         const response = await api.post('http://localhost:5555/cart/update-cart', data, config);
-        console.log('UPDATING CART 2');
-        console.log("Response: ", response.data.message);
+        console.log(response.data.message);
 
     }
     catch (error) {

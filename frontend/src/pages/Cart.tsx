@@ -1,64 +1,58 @@
 import { useEffect, useState } from "react";
-import { getCartItems } from "../utils/cartUtils";
-import { useSelector } from "react-redux";
+import { getCartItems, updateCart } from "../utils/cartUtils";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../types";
 import { useNavigate } from "react-router-dom";
 import { CartInterface } from "../types";
 import BackButton from '../components/BackButton'
 import Spinner from "../components/Spinner";
+import { BiMinus, BiPlus } from "react-icons/bi";
+import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState<CartInterface>();
-    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
+    const cartItems = useSelector((state: RootState) => state.cartinfo);
     const userinfo = useSelector((state: RootState) => state.userinfo);
-    
-    useEffect(() => {
-        setLoading(true);
-        const authToken = userinfo.token;
-        const fetchCartItems = async () => {
+    const dispatch = useDispatch();
+    const authToken = userinfo.token;
 
-            if (!authToken) {
-                navigate('/login');
-            }
-            else {
-                const items = await getCartItems(authToken);
-                // console.log("Items: ", items);
-                setCartItems(items);
-                console.log('now will set loading = false');
-                setLoading(false);
-                // console.log("state: ", cartItems);
-            }
-
-            // navigate('/cart');
+    const handleUpdateCart = async (bookId: string, count: number) => {
+        if (!authToken) {
+            navigate('/login');
         }
-
-        fetchCartItems();
-
-    }, [])
+        else {
+            await updateCart(bookId, count, authToken);
+            const items = await getCartItems(authToken);
+            dispatch(setCartItemsSlice(items))
+        }
+    }
+    
 
     return(
         <div className="p-4">
            <BackButton />
-
-            {loading ? (
-                    <Spinner />
+            {
+                !cartItems ? (
+                    "Cart is Empty"
                 ) : (
-                    !cartItems ? (
-                        "Cart is Empty"
-                    ) : (
-                        <div>
-                            <h2>Cart Items</h2>
-                            <ul>
-                                {cartItems.data.map((item) => (
-                                    <li key={item.id}>
-                                        <div>Book: { item.book_title } Quantity: { item.quantity }</div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )
+                    <div>
+                        <h2 className="text-xl font-semibold my-4">Cart Items</h2>
+                        <ul>
+                            {cartItems.data.map((item) => (
+                                <li key={item.id}>
+                                    <div className="flex justify-start items-center gap-x-4">
+                                        { item.quantity } • { item.book_title }
+                                        <BiMinus onClick={() => {handleUpdateCart(item.book_id, -1)}} />
+                                        <BiPlus onClick={() => {handleUpdateCart(item.book_id, 1)}} />
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        <button type='button' onClick={() => navigate('/checkout')}  className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700">Checkout</button>
+
+                    </div>
                 )
             }
 

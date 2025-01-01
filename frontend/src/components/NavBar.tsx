@@ -80,6 +80,7 @@ const NavBar = ({ books, setBooks}: ChildProps) => {
                 { email ? 
                     (
                         <div className="flex flex-auto items-center">
+                            <button className="px-4" onClick={() => navigate('/profile')}> Profile </button>
                             <button onClick={() => {setIsOpen(!isOpen)}}> Cart </button>
                             <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
                             <div className="px-4">{ email }</div>

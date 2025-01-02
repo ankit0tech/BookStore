@@ -11,7 +11,6 @@ import { CartInterface } from "../types";
 // }
 
 const initialState: CartInterface = {
-    count: 0,
     data: []
 }
 
@@ -20,7 +19,6 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         setCartItems: (state, action) => {
-            state.count = action.payload.count
             state.data = action.payload.data
         },
     }

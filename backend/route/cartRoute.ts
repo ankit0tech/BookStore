@@ -1,12 +1,15 @@
 import express from 'express';
-import { Cart, ICart } from "../models/cartModel";
 import { cartZod } from '../zod/cartZod';
 import { authMiddleware } from './middleware';
-import { IUser, User } from '../models/userModel';
-import { PrismaClient } from '@prisma/client';
+import { book, PrismaClient } from '@prisma/client';
 
 const router = express.Router();
 const prisma = new PrismaClient();
+
+interface CartInterface {
+    book: book,
+    quantity : number,
+}
 
 // Update cart
 router.post('/update-cart', authMiddleware, async (req, res) =>{
@@ -98,16 +101,35 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 // retrieve current user cart
 router.get('/get-cart-items', authMiddleware, async (req, res) => {
     try {
-        console.log('GET CART ITEM')
+        
         const userEmail = req.authEmail;
         const user = await prisma.userinfo.findUnique({ 
             where: { email:userEmail }
         });
         if(user) {
-            const cartItems = await prisma.cart.findMany({
+            const cartData = await prisma.cart.findMany({
                 where: {user_id: user.id, purchased: false}
             });
-            return res.status(200).send({count: cartItems.length, data: cartItems});
+            
+            let cartItems: CartInterface[] = [];
+
+            const promises = cartData.map(async (item) => {
+                const book = await prisma.book.findUnique({
+                    where: {
+                        id: item.book_id
+                    }
+                });
+                if(book) {
+                    return { book, quantity: item.quantity };
+                }
+                return null;
+            });
+
+            const resolvedCartItems = await Promise.all(promises);
+            cartItems = resolvedCartItems.filter((item) => item != null) as CartInterface [];
+
+            return res.status(200).send({ data: cartItems });
+        
         }
         else {
             return res.status(400).send({message: "Issue with your login"});

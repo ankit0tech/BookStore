@@ -7,28 +7,21 @@ export interface RootState {
 }
 
 export interface CartInterface {
-    count: number,
     data: {
-        id: string,
-        user_id: string,
-        book_id: string,
-        book_title: string,
+        book: Book,
         quantity: number,
-        // price: number,
-        purchased: boolean
     } []
 }
 
 export interface Book {
-    id: string;
+    id: number;
     title: string;
     author: string;
+    publish_year: number;
     price: number;
-    category: string;
-    publish_year: string;
-    quantity?: number;
-    created_at: string;
-    updated_at: string;
+    category: string | null;
+    created_at: Date;
+    updated_at: Date;
     cover_image: string;
 }
 

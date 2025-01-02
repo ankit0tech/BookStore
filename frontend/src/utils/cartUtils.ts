@@ -3,7 +3,7 @@ import api from '../utils/api';
 import { CartInterface } from "../types";
 
 
-const updateCart = async (book_id: string, quantity: number, authToken: string): Promise<void> => {
+const updateCart = async (book_id: number, quantity: number, authToken: string): Promise<void> => {
 // async function updateCart (bookId: string): Promise<void> {
     const config = {headers: { Authorization: authToken }};    
     const data = {

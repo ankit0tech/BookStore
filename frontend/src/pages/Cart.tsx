@@ -18,7 +18,7 @@ const Cart = () => {
     const dispatch = useDispatch();
     const authToken = userinfo.token;
 
-    const handleUpdateCart = async (bookId: string, count: number) => {
+    const handleUpdateCart = async (bookId: number, count: number) => {
         if (!authToken) {
             navigate('/login');
         }
@@ -41,11 +41,11 @@ const Cart = () => {
                         <h2 className="text-xl font-semibold my-4">Cart Items</h2>
                         <ul>
                             {cartItems.data.map((item) => (
-                                <li key={item.id}>
+                                <li key={item.book.id}>
                                     <div className="flex justify-start items-center gap-x-4">
-                                        { item.quantity } • { item.book_title }
-                                        <BiMinus onClick={() => {handleUpdateCart(item.book_id, -1)}} />
-                                        <BiPlus onClick={() => {handleUpdateCart(item.book_id, 1)}} />
+                                        { item.quantity } • { item.book.title }
+                                        <BiMinus onClick={() => {handleUpdateCart(item.book.id, -1)}} />
+                                        <BiPlus onClick={() => {handleUpdateCart(item.book.id, 1)}} />
                                     </div>
                                 </li>
                             ))}

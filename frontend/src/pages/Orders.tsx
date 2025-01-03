@@ -43,7 +43,7 @@ const Orders = () => {
             : 
             <div>
                 {orders.data.length == 0 ?
-                    <div>No Orders history</div>
+                    <div className="p-4">No Orders history</div>
                 :
                     <div>
                         <div className="text-xl font-semibold my-4">Orders:</div>

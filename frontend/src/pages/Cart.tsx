@@ -34,8 +34,8 @@ const Cart = () => {
         <div className="p-4">
            <BackButton />
             {
-                !cartItems ? (
-                    "Cart is Empty"
+                !cartItems.data.length ? (
+                    <div className="p-4">Cart is Empty</div>
                 ) : (
                     <div>
                         <h2 className="text-xl font-semibold my-4">Cart Items</h2>

@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 interface JwtPayload {
     email: string,
@@ -33,4 +36,26 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         next();
     });
     
+}
+
+export const adminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    
+    try {
+        const user = await prisma.userinfo.findUnique({
+            where: {
+                email: req.authEmail
+            }
+        });
+        if(!user) {
+            return res.status(401).json({message: "Authentication failed"});
+        }
+
+        if(user.role !='admin') {
+            return res.status(403).json({message: "Access Denied!"});
+        }
+
+    } catch(error: any) {
+        console.log(error.message);
+        return res.status(401).json({message: error.message});
+    }
 }

@@ -15,8 +15,8 @@ datasource db {
 
 
 enum Role {
-  USER
-  ADMIN
+  user
+  admin
 }
 
 model userinfo {
@@ -27,7 +27,7 @@ model userinfo {
   password String?
   googleId String? @unique
   provider String @default("email")
-  role Role @default(USER)
+  role Role @default(user)
   verified Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

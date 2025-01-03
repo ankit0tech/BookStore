@@ -8,6 +8,7 @@ import cartRoute from './route/cartRoute';
 import authRoute from './route/auth';
 import { isAuthenticated } from "./middleware";
 import addressRoute from "./route/addressRoute";
+import adminRoute from './route/adminRoute';
 
 /* removing it for now ->    /// <reference path="./custom.d.ts" /> */
 import passport from 'passport';
@@ -119,6 +120,7 @@ app.use('/users', usersRoute);
 app.use('/cart', cartRoute);
 app.use('/address', addressRoute);
 app.use('/auth', authRoute);
+app.use('/admin', adminRoute);
 
 
 app.listen(config.server.port, () => {

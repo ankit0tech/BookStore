@@ -39,8 +39,7 @@ router.post('/', authMiddleware, async (req, res) => {
                 });
             });
 
-            console.log("Created Addess:");
-            console.log(address);
+            console.log("Address created:");
 
             return res.status(201).send(address);
         }
@@ -71,7 +70,7 @@ router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
                 id: Number(id)
             }
         });
-        console.log(address);
+        
         return res.status(200).send(address);
         
     }
@@ -125,7 +124,6 @@ router.get('/', authMiddleware, async (req, res) => {
                 user_id: user.id
             }
         });
-        console.log(addresses);
         return res.status(200).send(addresses);
         
     }

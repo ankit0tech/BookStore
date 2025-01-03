@@ -71,7 +71,6 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                     const newCart = {
                         user_id: user.id,
                         book_id: req.body.book_id,
-                        book_title: book.title,
                         quantity: req.body.quantity,
                         purchased: false
                     };

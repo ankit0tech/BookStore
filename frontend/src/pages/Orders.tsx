@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Spinner from "../components/Spinner";
 import api from "../utils/api";
 import { CartInterface } from "../types";
+import BackButton from "../components/BackButton";
 
 const initialState: CartInterface = {
     data: []
@@ -34,7 +35,8 @@ const Orders = () => {
     }, []);
 
     return (
-        <div>
+        <div className="p-4">
+            <BackButton />
             { loading ? (
                 <Spinner />
             )
@@ -44,7 +46,7 @@ const Orders = () => {
                     <div>No Orders history</div>
                 :
                     <div>
-                        <div className="font-bold">Orders:</div>
+                        <div className="text-xl font-semibold my-4">Orders:</div>
                         <ul>
                             {orders.data.map((item)=> (
                                 <li key={item.book.id}>

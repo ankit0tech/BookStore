@@ -5,6 +5,7 @@ import { Address } from "../types";
 import { Link } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
+import BackButton from "../components/BackButton";
 
 
 
@@ -34,6 +35,7 @@ const Addresses = () => {
 
     return (
         <div className="p-4">
+            <BackButton />
             {loading ? 
             <Spinner /> :
             <div>

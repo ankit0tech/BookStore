@@ -149,10 +149,30 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
             where: { email: userEmail }
         });
         if(user) {
-            const cartItems = await prisma.cart.findMany({
+            const cartData = await prisma.cart.findMany({
                 where: { user_id: user.id, purchased: true }
             });
-            return res.status(200).send({count: cartItems.length, data: cartItems});
+            
+            let cartItems: CartInterface[] = [];
+
+            const promises = cartData.map(async (item) => {
+                const book = await prisma.book.findUnique({
+                    where: {
+                        id: item.book_id
+                    }
+                });
+                if(book) {
+                    return { book, quantity: item.quantity };
+                }
+                return null;
+            });
+
+            const resolvedCartItems = await Promise.all(promises);
+            cartItems = resolvedCartItems.filter((item) => item != null) as CartInterface [];
+
+            return res.status(200).send({ data: cartItems });
+
+            // return res.status(200).send({count: cartItems.length, data: cartItems});
         }
         else {
             return res.status(400).send({message: "Issue with your login"});

@@ -4,7 +4,6 @@ import api from "../utils/api";
 import { CartInterface } from "../types";
 
 const initialState: CartInterface = {
-    count: 0,
     data: []
 }
 
@@ -41,16 +40,16 @@ const Orders = () => {
             )
             : 
             <div>
-                {orders.count == 0 ?
+                {orders.data.length == 0 ?
                     <div>No Orders history</div>
                 :
                     <div>
                         <div className="font-bold">Orders:</div>
                         <ul>
                             {orders.data.map((item)=> (
-                                <li key={item.id}>
+                                <li key={item.book.id}>
                                     <div className="flex justify-start items-center gap-x-4">
-                                        { item.quantity } • { item.book_title }
+                                        { item.quantity } • { item.book.title }
                                     </div>
                                 </li>
                             ))}

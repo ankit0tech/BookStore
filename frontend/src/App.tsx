@@ -19,7 +19,7 @@ import DeleteAddress from './pages/DeleteAddress';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
-import Orders from './pages/Orderes';
+import Orders from './pages/Orders';
 
 export interface ChildProps {
   books: Book[];

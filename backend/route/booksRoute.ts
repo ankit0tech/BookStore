@@ -75,8 +75,6 @@ router.post('/', authMiddleware, async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const books = await prisma.book.findMany({});
-        console.log("All books: ");
-        console.log(books);
         // if (req.authEmail) {
         //     console.log(req.authEmail);
         // }

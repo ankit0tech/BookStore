@@ -58,7 +58,6 @@ model cart {
   book_id Int
   book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
 
-  book_title String
   quantity Int @default(1)
   purchased Boolean @default(false)
   created_at DateTime @default(now())

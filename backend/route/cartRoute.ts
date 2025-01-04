@@ -10,6 +10,11 @@ interface CartInterface {
     book: book,
     quantity : number,
 }
+interface PurchaseInterface {
+    book: book,
+    purchase_date: Date,
+    quantity : number,
+}
 
 // Update cart
 router.post('/update-cart', authMiddleware, async (req, res) =>{
@@ -152,7 +157,7 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
                 where: { user_id: user.id, purchased: true }
             });
             
-            let cartItems: CartInterface[] = [];
+            let PurchasedItems: PurchaseInterface[] = [];
 
             const promises = cartData.map(async (item) => {
                 const book = await prisma.book.findUnique({
@@ -161,15 +166,14 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
                     }
                 });
                 if(book) {
-                    return { book, quantity: item.quantity };
+                    return { book, quantity: item.quantity, purchase_date: item.purchase_date };
                 }
                 return null;
             });
 
-            const resolvedCartItems = await Promise.all(promises);
-            cartItems = resolvedCartItems.filter((item) => item != null) as CartInterface [];
-
-            return res.status(200).send({ data: cartItems });
+            const resolvedPurchasedItems = await Promise.all(promises);
+            PurchasedItems = resolvedPurchasedItems.filter((item) => item != null) as PurchaseInterface [];
+            return res.status(200).send({ data: PurchasedItems });
 
             // return res.status(200).send({count: cartItems.length, data: cartItems});
         }
@@ -195,14 +199,14 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
             where: {email: userEmail}
         });
         if (user) {
-
             // // Apply transactions here
             await prisma.cart.updateMany({
                 where: {
                     user_id: user.id, purchased: false
                 },
                 data: {
-                    purchased: true
+                    purchased: true,
+                    purchase_date: new Date()
                 }
             });
             // cartItems.forEach(async (cartItem) => {

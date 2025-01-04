@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import Spinner from "../components/Spinner";
 import api from "../utils/api";
-import { CartInterface } from "../types";
+import { PurchaseInterface } from "../types";
 import BackButton from "../components/BackButton";
+import { v4 as uuidv4 } from 'uuid';
 
-const initialState: CartInterface = {
+
+const initialState: PurchaseInterface = {
     data: []
 }
 
@@ -13,6 +15,14 @@ const Orders = () => {
     const [ loading, setLoading ] = useState(false);
     const [ orders, setOrders ] = useState(initialState);
 
+    const formatDate = (date: Date) => {
+        const d = new Date(date);
+        return new Intl.DateTimeFormat('en-GB', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          }).format(d);          
+    }
 
     useEffect(() => {
 
@@ -46,12 +56,34 @@ const Orders = () => {
                     <div className="p-4">No Orders history</div>
                 :
                     <div>
-                        <div className="text-xl font-semibold my-4">Orders:</div>
+                        <div className="text-xl font-semibold m-4">Orders:</div>
                         <ul>
                             {orders.data.map((item)=> (
-                                <li key={item.book.id}>
-                                    <div className="flex justify-start items-center gap-x-4">
-                                        { item.quantity } • { item.book.title }
+                                <li className="flex justify-between max-w-full sm:max-w-[80vw] border rounded-lg m-4 p-4 border-2 rounded-lg px-4 relative hover:shadow-xl" key={uuidv4()}>
+                                    <div className="flex justify-between">
+                                        <div className="w-36 h-48 bg-gray-100 rounded-lg shadow-md overflow-hidden flex justify-center items-center">
+                                            <img
+                                                src={item.book.cover_image}
+                                                alt="book cover"
+                                                className="w-full h-full object-cover object-scale-down" 
+                                            ></img>
+                                        </div>
+                                        <div className="p-2">
+                                            { item.book.title }
+                                        </div>
+                                    </div>
+                                    <div className="">
+                                        <div className="border rounded-lg">
+                                            <div className="p-2">
+                                                Date: { formatDate(item.purchase_date) }
+                                            </div>
+                                            <div className="p-2">
+                                                Qty: { item.quantity }
+                                            </div>
+                                            <div className="p-2">
+                                                Total: { item.book.price * item.quantity }
+                                            </div>
+                                        </div>
                                     </div>
                                 </li>
                             ))}

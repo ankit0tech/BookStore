@@ -13,6 +13,14 @@ export interface CartInterface {
     } []
 }
 
+export interface PurchaseInterface {
+    data: {
+        book: Book,
+        purchase_date: Date,
+        quantity: number,
+    } []
+}
+
 export interface Book {
     id: number;
     title: string;

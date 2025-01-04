@@ -61,6 +61,7 @@ model cart {
 
   quantity Int @default(1)
   purchased Boolean @default(false)
+  purchase_date DateTime?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }

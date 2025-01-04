@@ -41,11 +41,32 @@ const Cart = () => {
                         <h2 className="text-xl font-semibold my-4">Cart Items</h2>
                         <ul>
                             {cartItems.data.map((item) => (
-                                <li key={item.book.id}>
-                                    <div className="flex justify-start items-center gap-x-4">
-                                        { item.quantity } • { item.book.title }
-                                        <BiMinus onClick={() => {handleUpdateCart(item.book.id, -1)}} />
-                                        <BiPlus onClick={() => {handleUpdateCart(item.book.id, 1)}} />
+                                <li className="flex justify-between max-w-full sm:max-w-[80vw] border rounded-lg m-4 p-4 border-2 rounded-lg px-4 relative hover:shadow-xl" key={item.book.id}>
+                                    <div className="flex justify-between">
+                                        <div className="w-36 h-48 bg-gray-100 rounded-lg shadow-md overflow-hidden flex justify-center items-center">
+                                            <img
+                                                src={item.book.cover_image}
+                                                alt="book cover"
+                                                className="w-full h-full object-cover object-scale-down" 
+                                            ></img>
+                                        </div>
+                                        <div className="p-2">
+                                            { item.book.title }
+                                        </div>
+                                    </div>
+                                    <div className="">
+                                        <div className="border rounded-lg">
+                                            <div className="p-2">
+                                                Qty: { item.quantity }
+                                            </div>
+                                            <div className="p-2">
+                                                Total: { item.book.price * item.quantity }
+                                            </div>
+                                            <div className="p-2 flex justify-around">
+                                                <BiMinus onClick={() => {handleUpdateCart(item.book.id, -1)}} />
+                                                <BiPlus onClick={() => {handleUpdateCart(item.book.id, 1)}} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </li>
                             ))}

@@ -19,12 +19,17 @@ const Home = ({ books, setBooks}: ChildProps) => {
 
     // const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [showType, setShowType] = useState('table');
+    const [showType, setShowType] = useState(() => {
+        return localStorage.getItem('homeStateShowType') || 'table';
+    });
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const isAdmin = userinfo.isAdmin;
     // const token = userinfo.token
     // const dispatch = useDispatch();
 
+    useEffect(() => {
+        localStorage.setItem('homeStateShowType', showType);
+    },[showType]);
 
     useEffect(()=> {
         setLoading(true);

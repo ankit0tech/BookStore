@@ -15,7 +15,6 @@ import { ChildProps } from '../App';
 
 const NavBar = ({ books, setBooks}: ChildProps) => {
 
-    const [cartItems, setCartItems] = useState<CartInterface|null>(null);
     const [query, setQuery] = useState<string>('');
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const navigate = useNavigate();
@@ -38,15 +37,9 @@ const NavBar = ({ books, setBooks}: ChildProps) => {
         const fetchCartItems = async () => {
 
             if (authToken) {
-                // console.log(authToken);
                 const items = await getCartItems(authToken);
-                // console.log("Items: ", items);
-                setCartItems(items);
                 dispatch(setCartItemsSlice(items));
-                // console.log('now will set loading = false');
-                // console.log("state: ", cartItems);
             }
-            // navigate('/cart');
         }
 
         fetchCartItems();
@@ -80,6 +73,7 @@ const NavBar = ({ books, setBooks}: ChildProps) => {
                 { email ? 
                     (
                         <div className="flex flex-auto items-center">
+                            <button className="px-4" onClick={() => navigate('/profile')}> Profile </button>
                             <button onClick={() => {setIsOpen(!isOpen)}}> Cart </button>
                             <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
                             <div className="px-4">{ email }</div>

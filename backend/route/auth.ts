@@ -38,7 +38,7 @@ router.post('/login/federated/google', async (req, res) => {
 
         let user = await prisma.userinfo.findUnique({
             where: {
-                googleId: payload.sub,
+                email: payload.email,
             }
         });
 
@@ -50,6 +50,15 @@ router.post('/login/federated/google', async (req, res) => {
                     verified: true,
                     googleId: payload.sub,
                     provider: 'google'
+                }
+            });
+        } else if (user.provider != 'google' && !user.googleId) {
+            user = await prisma.userinfo.update({
+                where: {
+                    email: payload.email,
+                },
+                data: {
+                    googleId: payload.sub,
                 }
             });
         }

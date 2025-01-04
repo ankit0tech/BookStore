@@ -40,7 +40,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
         navigate('/checkout');
     }
 
-    const handleUpdateCart = async (bookId: string, count: number) => {
+    const handleUpdateCart = async (bookId: number, count: number) => {
         if (!authToken) {
             navigate('/login');
         }
@@ -72,11 +72,11 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                             <div>
                                 <ul>
                                     {cartItems.data.map((item) => (
-                                        <li key={item.id}>
+                                        <li key={item.book.id}>
                                             <div className="flex justify-start items-center gap-x-4">
-                                                { item.quantity } • { item.book_title }
-                                                <BiMinus onClick={() => {handleUpdateCart(item.book_id, -1)}} />
-                                                <BiPlus onClick={() => {handleUpdateCart(item.book_id, 1)}} />
+                                                { item.quantity } • { item.book.title }
+                                                <BiMinus onClick={() => {handleUpdateCart(item.book.id, -1)}} />
+                                                <BiPlus onClick={() => {handleUpdateCart(item.book.id, 1)}} />
                                             </div>
                                             {/* <FcPlus onClick={() => {handleAddToCart(book.id)}} /> */}
                                             {/* <h3 className="text-lg ">{item.bookTitle}</h3>

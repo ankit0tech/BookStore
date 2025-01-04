@@ -36,7 +36,7 @@ const Login = () => {
                 if(jwtToken) {
                     const tokenData = jwtDecode<JwtPayload>(jwtToken);
                     
-                    if (tokenData.role == 'ADMIN') {
+                    if (tokenData.role == 'admin') {
                         dispatch(setIsAdmin({'isAdmin': true}));
                     } else {
                         dispatch(setIsAdmin({'isAdmin': false}));
@@ -73,7 +73,7 @@ const Login = () => {
         const response = await axios.post('http://localhost:5555/users/signin', data)
         const token = response.data.token;
         const user = jwtDecode(token) as JwtPayload;
-        if (user.role == 'ADMIN') {
+        if (user.role == 'admin') {
             dispatch(setIsAdmin({'isAdmin': true,}));
         }
         else {

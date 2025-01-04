@@ -15,8 +15,9 @@ datasource db {
 
 
 enum Role {
-  USER
-  ADMIN
+  user
+  admin
+  superadmin
 }
 
 model userinfo {
@@ -27,7 +28,7 @@ model userinfo {
   password String?
   googleId String? @unique
   provider String @default("email")
-  role Role @default(USER)
+  role Role @default(user)
   verified Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -58,9 +59,9 @@ model cart {
   book_id Int
   book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
 
-  book_title String
   quantity Int @default(1)
   purchased Boolean @default(false)
+  purchase_date DateTime?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }

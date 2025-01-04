@@ -3,7 +3,7 @@ import api from '../utils/api';
 import { CartInterface } from "../types";
 
 
-const updateCart = async (book_id: string, quantity: number, authToken: string): Promise<void> => {
+const updateCart = async (book_id: number, quantity: number, authToken: string): Promise<void> => {
 // async function updateCart (bookId: string): Promise<void> {
     const config = {headers: { Authorization: authToken }};    
     const data = {
@@ -12,10 +12,8 @@ const updateCart = async (book_id: string, quantity: number, authToken: string):
     };
 
     try {
-        console.log('UPDATING CART 1');
         const response = await api.post('http://localhost:5555/cart/update-cart', data, config);
-        console.log('UPDATING CART 2');
-        console.log("Response: ", response.data.message);
+        console.log(response.data.message);
 
     }
     catch (error) {

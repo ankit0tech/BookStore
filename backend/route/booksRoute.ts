@@ -50,7 +50,7 @@ router.post('/', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(400).send({message: "Authentication Issue"});
         }
-        if (user && user.role != "ADMIN") {
+        if (user && user.role != "admin") {
             return res.status(403).send({message: "You are not authorized for this action"});
         }
 
@@ -75,8 +75,6 @@ router.post('/', authMiddleware, async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const books = await prisma.book.findMany({});
-        console.log("All books: ");
-        console.log(books);
         // if (req.authEmail) {
         //     console.log(req.authEmail);
         // }
@@ -119,7 +117,7 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(400).send({message: "Authentication Issue"});
         }
-        if (user && user.role != "ADMIN") {
+        if (user && user.role != "admin") {
             return res.status(403).send({message: "You are not authorized for this action"});
         }
 
@@ -162,7 +160,7 @@ router.delete('/:id(\\d+)', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(400).send({message: "Authentication Issue"});
         }
-        if (user && user.role != "ADMIN") {
+        if (user && user.role != "admin") {
             return res.status(403).send({message: "You are not authorized for this action"});
         }
 

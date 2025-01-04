@@ -15,7 +15,6 @@ const Checkout = () => {
 
     // Expect that checkout option will be availble only when cart is not empty
     const cartItems = useSelector((state: RootState) => state.cartinfo);
-    const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [totalAmount, setTotalAmount] = useState<number>(0);
     const userData = useSelector((state: RootState) => state.userinfo);
@@ -27,45 +26,13 @@ const Checkout = () => {
     useEffect(() => {
         setLoading(true);
 
-        const fetchBooks = async () => {
-            // setLoading(true);
-
-            try {
-                const fetchedBooks = await Promise.all(
-                    cartItems.data.map(async (item) => {
-                        try {
-                            const response = await api.get(`http://localhost:5555/books/${item.book_id}`);
-                            
-                            const bookInfo = response.data;
-                            bookInfo['quantity'] = item.quantity; 
-                                                        
-                            // setTotalAmount(prevTotal => prevTotal + (item.quantity * response.data.price));
-                            
-                            return bookInfo;
-                        } catch (error) {
-                            console.log(`Error fetching book with ID ${item.book_id}`, error);
-                            return null;
-                        }
-                    })
-                );
-                const validBooks = fetchedBooks.filter(book => book != null)
-                setBooks(validBooks);
-
-                const total = validBooks.reduce((acc, book) => acc + (book.quantity * book.price), 0);
-                setTotalAmount(total);
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchBooks();
+        const total = cartItems.data.reduce((acc, item) => acc + (item.quantity * item.book.price), 0);
+        setTotalAmount(total);
+        setLoading(false);
 
     },[cartItems.data])
 
-    const BuyBooks = async () => {
+    const handleBuyBooks = async () => {
         try {
             if (!authToken) {
                 navigate('/login');
@@ -92,18 +59,18 @@ const Checkout = () => {
             ):(
                 <div className='w-full mx-auto max-w-[1000px] rounded-lg'>
                     <ul>
-                        {!books || books.length === 0 ? (
+                        {cartItems.data.length === 0 ? (
                             <p>Cart is empty...</p>
                         ) : (
-                            books.map((item) => (
-                                <li key={item.id}>
-                                    {item.title} - {item.quantity}
+                            cartItems.data.map((item) => (
+                                <li key={item.book.id}>
+                                    {item.book.title} - {item.quantity}
                                 </li>
                             ))
                         )}
                     </ul>
                     <p>Total Amount: {totalAmount}</p>
-                    <button type='button' onClick={BuyBooks} className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" >Buy</button>
+                    <button type='button' onClick={handleBuyBooks} className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" >Buy</button>
                 </div>
             )}
         </div>

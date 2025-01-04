@@ -22,7 +22,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const dispatch = useDispatch();
 
-    const handleAddToCart = async (bookId: string) => {
+    const handleAddToCart = async (bookId: number) => {
         
         if (!authToken) {
             navigate('/login');

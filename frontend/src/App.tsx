@@ -18,6 +18,8 @@ import DeleteAddress from './pages/DeleteAddress';
 // import OAuthCallback from './components/OAuthCallback';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ResetPassword from './pages/ResetPassword';
+import Profile from './pages/Profile';
+import Orders from './pages/Orders';
 
 export interface ChildProps {
   books: Book[];
@@ -44,6 +46,8 @@ const App = () => {
         <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/reset-password/verify' element={<ResetPassword />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path='/orders' element={<Orders />} />
         {/* <Route path='/oauth2/redirect/google' element={<OAuthCallback />} /> */}
       </Routes>   
     </ GoogleOAuthProvider>

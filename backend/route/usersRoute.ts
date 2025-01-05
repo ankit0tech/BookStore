@@ -5,9 +5,9 @@ import { signupZod, signinZod } from '../zod/userZod';
 import { config } from '../config';
 import { authMiddleware } from './middleware';
 import { PrismaClient } from "@prisma/client";
-import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
 import rateLimit from 'express-rate-limit';
+import { sendVerificationMail } from '../utils/emailUtils';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -24,40 +24,6 @@ const passwordResetRateLimit = rateLimit({
 });
 
 
-const sendVerificationMail = (userMail: string, verificationLink: string, message: string, subject: string): void => {
-    const senderMail: string = config.smtp.email
-    const senderPassword: string = config.smtp.password
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-            user: senderMail,
-            pass: senderPassword,
-        }
-    });
-
-    transporter.verify((error, success) => {
-        if (error) {
-            console.log("SMTP configuration error: ", error);
-        } else {
-            console.log("SMTP configuration is correct", success);
-        }
-    })
-    
-    transporter.sendMail({
-        from: `"Ankit Punia" <${senderMail}>`,
-        to: userMail,
-        subject: subject,
-        text: `Hi, ${userMail} \n${message} \n${verificationLink}\nRegards,\nBookStore Team`,
-    }, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message sent: %s', info.messageId)
-    });
-    
-}
 
 router.post('/signup', async (req: Request, res: Response) => {
     try {
@@ -83,9 +49,9 @@ router.post('/signup', async (req: Request, res: Response) => {
             // Action to send verification mail to user
             const message = 'Please verify your mail by clicking on the link below, valid for one hour.';
             const subject = 'BookStore account verification';
-            sendVerificationMail(user.email, verificationLink, message, subject);
+            sendVerificationMail(user.email, subject, message, verificationLink);
 
-            return res.status(200).send(user);
+            return res.status(200).send({message: 'Signup done!'});
         }
         return res.status(401).send({message: 'Please send valid inputs'});
 
@@ -96,34 +62,46 @@ router.post('/signup', async (req: Request, res: Response) => {
 })
 
 router.get('/verify-mail', async (req: Request, res: Response) => {
-    const token: string = typeof req.query.verificationToken === 'string' ? req.query.verificationToken : '';
 
-    jwt.verify(token, config.auth.jwtSecret, async (err, decoded) => {
-        if (err) {
-            console.log('ERROR OCCURRED')
-            console.log(err);
-        }
-        if(!decoded) {
-            console.log('not decoded');
-        }
+    try {
 
-        if (err || !decoded) {
-            return res.status(401).send({ message: 'Authentication failed, Invalid token' })
-        }
-        const { email, type } = decoded as JwtPayload;
-        if (type === 'verification') {
-            await prisma.userinfo.update({
-                where: {
-                    email: email
-                },
-                data: {
-                    verified: true
-                }
-            })
-        }
-        console.log(`${email} is verified!`);
-        res.status(200).send({message: "your email have been verified!"});
-    })
+        const token: string = typeof req.query.verificationToken === 'string' ? req.query.verificationToken : '';
+
+        jwt.verify(token, config.auth.jwtSecret, async (err, decoded) => {
+            if (err) {
+                console.log('ERROR OCCURRED')
+                console.log(err);
+            }
+            if(!decoded) {
+                console.log('not decoded');
+            }
+    
+            if (err || !decoded) {
+                return res.status(401).send({ message: 'Authentication failed, Invalid token' })
+            }
+            const { email, type } = decoded as JwtPayload;
+            if (type === 'verification') {
+                await prisma.userinfo.update({
+                    where: {
+                        email: email
+                    },
+                    data: {
+                        verified: true
+                    }
+                })
+                console.log(`${email} is verified!`);
+                return res.status(200).send({message: "your email have been verified!"});
+            } else {
+                return res.status(401).send({message: "Invalid token"});
+            }
+        });
+
+    } catch(error: any) {
+        console.log(error.message);
+        return res.status(400).json({ message: error.message });
+    }
+
+
 })
 
 router.get('/access', authMiddleware,  async (req: Request, res: Response) => {
@@ -216,7 +194,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
             // Action to send verification mail to user
             const message = 'Please click the link below to reset your password, valid for one hour.';
             const subject = 'BookStore password reset';
-            sendVerificationMail(user.email, verificationLink, message, subject);
+            sendVerificationMail(user.email, subject, message, verificationLink);
             
             return res.status(200).json({message: "verification mail sent"});
         }

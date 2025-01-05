@@ -38,24 +38,32 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     
 }
 
-export const adminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    
-    try {
-        const user = await prisma.userinfo.findUnique({
-            where: {
-                email: req.authEmail
-            }
-        });
-        if(!user) {
-            return res.status(401).json({message: "Authentication failed"});
-        }
+export const roleMiddleware = (allowedRoles: string[]) => {
 
-        if(user.role !='admin') {
-            return res.status(403).json({message: "Access Denied!"});
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // First authenticate the user and then check for addmin role
+            authMiddleware(req, res, async () => {
+                    const user = await prisma.userinfo.findUnique({
+                        where: {
+                            email: req.authEmail
+                        }
+                    });
+                    if(!user) {
+                        return res.status(401).json({message: "Authentication failed"});
+                    }
+        
+                    if(!allowedRoles.includes(user.role)) {
+                        return res.status(403).json({message: "Access denied!"});
+                    }
+                    
+                    next();        
+                }
+            );
+        
+        } catch(error: any) {
+            console.log(error.message);
+            return res.status(401).json({message: error.message});
         }
-
-    } catch(error: any) {
-        console.log(error.message);
-        return res.status(401).json({message: error.message});
-    }
+    } 
 }

@@ -13,7 +13,7 @@ import { Book } from "../../types/index";
 // const BookSingleCard = ({book}: Book) => {
 const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
     const [showModal, setShowModal] = useState(false);
-    const { isAdmin } = useSelector((state: RootState) => state.userinfo);
+    const { userRole } = useSelector((state: RootState) => state.userinfo);
 
     return (
         <div
@@ -51,7 +51,7 @@ const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
                         <BsInfoCircle className="text-2xl text-green-800 hover:text-black" />
                     </Link>
                     
-                    {isAdmin && (
+                    {(userRole == 'admin' || userRole == 'superadmin') && (
                         <>
                             <Link to={`/books/edit/${book.id}`}>
                                 <AiOutlineEdit className="text-2xl text-yellow-600 hover:text-black"/>

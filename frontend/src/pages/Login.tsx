@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from 'react-redux';
-import { setIsAdmin, loginSuccess, logoutSuccess } from "../redux/userSlice";
+import { setUserRole, loginSuccess, logoutSuccess } from "../redux/userSlice";
 import { useGoogleLogin } from "@react-oauth/google";
 import ResetPasswordOverlay from "../components/ResetPasswordOverlay";
 
@@ -36,12 +36,7 @@ const Login = () => {
                 if(jwtToken) {
                     const tokenData = jwtDecode<JwtPayload>(jwtToken);
                     
-                    if (tokenData.role == 'admin') {
-                        dispatch(setIsAdmin({'isAdmin': true}));
-                    } else {
-                        dispatch(setIsAdmin({'isAdmin': false}));
-                    }
-    
+                    dispatch(setUserRole({'userRole': tokenData.role}));
                     dispatch(loginSuccess({
                         'token': jwtToken, 
                         'email': tokenData.email
@@ -73,14 +68,10 @@ const Login = () => {
         const response = await axios.post('http://localhost:5555/users/signin', data)
         const token = response.data.token;
         const user = jwtDecode(token) as JwtPayload;
-        if (user.role == 'admin') {
-            dispatch(setIsAdmin({'isAdmin': true,}));
-        }
-        else {
-            dispatch(setIsAdmin({'isAdmin': false,}));
-        }
-
+        
+        dispatch(setUserRole({'userRole': user.role}));
         dispatch(loginSuccess({'token': token, 'email': user.email }));
+
         navigate('/');
     }
 

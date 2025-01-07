@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '../redux/store';
 
 const api = axios.create({
     baseURL: 'localhost',
@@ -6,6 +7,17 @@ const api = axios.create({
       'Content-Type': 'application/json',
     },
   
+});
+
+api.interceptors.request.use((config) => {
+    const state = store.getState();
+    const token = state.userinfo.token || localStorage.getItem('authToken');
+    if ( token ) {
+        config.headers.Authorization = token;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 api.interceptors.response.use(

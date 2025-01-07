@@ -13,22 +13,17 @@ import { ChildProps } from '../App';
 
 const Home = ({ books, setBooks}: ChildProps) => {
 
-    // interface RootState {
-    //     userinfo: { isAdmin: boolean }
-    // }
-
-    // const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
-        return localStorage.getItem('homeStateShowType') || 'table';
+        return localStorage.getItem('homeState') || 'table';
     });
     const userinfo = useSelector((state: RootState) => state.userinfo);
-    const isAdmin = userinfo.isAdmin;
+    const userRole = userinfo.userRole;
     // const token = userinfo.token
     // const dispatch = useDispatch();
 
     useEffect(() => {
-        localStorage.setItem('homeStateShowType', showType);
+        localStorage.setItem('homeState', showType);
     },[showType]);
 
     useEffect(()=> {
@@ -70,7 +65,7 @@ const Home = ({ books, setBooks}: ChildProps) => {
                     BookStore
                 </div>
 
-                {isAdmin &&
+                {(userRole == 'admin' || userRole == 'superadmin') &&
                 (<div className="text-2xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">
                     <Link to='/books/create'>
                         Create Book

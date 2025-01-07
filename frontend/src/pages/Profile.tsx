@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 const Profile = () => {
 
     const navigate = useNavigate();
-
+    const userRole = localStorage.getItem('userRole');
     const handleNavigate = (url: string) => {
         navigate(url);
     }
@@ -13,6 +13,11 @@ const Profile = () => {
             <button className="m-2 p-4 border-2 rounded-lg" onClick={() => handleNavigate('/addresses')}>Addresses</button>
             <button className="m-2 p-4 border-2 rounded-lg" onClick={() => handleNavigate('/cart')}>Cart</button>
             <button className="m-2 p-4 border-2 rounded-lg" onClick={() => handleNavigate('/orders')}>Orders</button>
+            {userRole == 'superadmin' ? 
+                <button className="m-2 p-4 border-2 rounded-lg" onClick={() => handleNavigate('/superadmin-panel')}>Superadmin Panel</button>
+            :
+                null
+            }
         </div>
     );
 }

@@ -144,7 +144,7 @@ router.post('/signin', async (req: Request, res: Response) => {
             // console.log(user.id?.toString());
             const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, config.auth.jwtSecret, {expiresIn: '1h'});
             // req.authEmail = user.email;    // need to decide it later
-            console.log("User singed in: ", user.email);
+            console.log("User signed in: ", user.email);
             
             return res.status(200).send({token: token});
         }

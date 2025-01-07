@@ -20,6 +20,10 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
+import AdminPanel from './pages/AdminPanel';
+import RegisterAdmin from './pages/RegisterAdmin';
+import AdminSignup from './pages/AdminSignup';
+import AdminLogin from './pages/AdminLogin';
 
 export interface ChildProps {
   books: Book[];
@@ -48,6 +52,10 @@ const App = () => {
         <Route path='/reset-password/verify' element={<ResetPassword />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/orders' element={<Orders />} />
+        <Route path='/superadmin-panel' element={<AdminPanel />} />
+        <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
+        <Route path='/admin/signup' element={<AdminSignup />} />
+        <Route path='/admin/login' element={<AdminLogin />} />
         {/* <Route path='/oauth2/redirect/google' element={<OAuthCallback />} /> */}
       </Routes>   
     </ GoogleOAuthProvider>

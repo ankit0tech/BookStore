@@ -5,8 +5,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 
 const ResetPassword = () => {
-    const [password1, setpassword1] = useState('');
-    const [password2, setpassword2] = useState('');
+    const [password1, setPassword1] = useState('');
+    const [password2, setPassword2] = useState('');
     const [showWarning, setShowWarning] = useState(false);
     const navigate = useNavigate();
     const [ searchParams ] = useSearchParams();
@@ -32,10 +32,6 @@ const ResetPassword = () => {
             const response = await axios.post('http://localhost:5555/users/reset-password/verify', {
                 verificationToken: token,
                 password: password1
-            }, {
-                headers : {
-                    'Content-Type': 'application/json',
-                }
             });
 
             if (response.status == 200) {
@@ -62,7 +58,7 @@ const ResetPassword = () => {
                     type="password" 
                     id="password1" 
                     value={password1}
-                    onChange={(e) => setpassword1(e.target.value)} >
+                    onChange={(e) => setPassword1(e.target.value)} >
                 </input>
             
                 <label 
@@ -74,7 +70,7 @@ const ResetPassword = () => {
                     type="password" 
                     id="password2" 
                     value={password2}
-                    onChange={(e) => setpassword2(e.target.value)} >
+                    onChange={(e) => setPassword2(e.target.value)} >
                 </input>
 
                 {showWarning ?

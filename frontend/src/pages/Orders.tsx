@@ -4,6 +4,8 @@ import api from "../utils/api";
 import { PurchaseInterface } from "../types";
 import BackButton from "../components/BackButton";
 import { v4 as uuidv4 } from 'uuid';
+import { useSelector } from 'react-redux';
+import { RootState } from '../types/index';
 
 
 const initialState: PurchaseInterface = {
@@ -14,6 +16,7 @@ const Orders = () => {
 
     const [ loading, setLoading ] = useState(false);
     const [ orders, setOrders ] = useState(initialState);
+    const userInfo = useSelector((state: RootState) => state.userinfo);
 
     const formatDate = (date: Date) => {
         const d = new Date(date);
@@ -25,14 +28,11 @@ const Orders = () => {
     }
 
     useEffect(() => {
-
-        const authToken = localStorage.getItem('authToken');
-        const config = { headers: { Authorization: authToken } };
-
+        
         setLoading(true);
 
         api
-        .get('http://localhost:5555/cart/get-purchased-items', config)
+        .get('http://localhost:5555/cart/get-purchased-items')
         .then((response) => {
             setOrders(response.data);
             setLoading(false);

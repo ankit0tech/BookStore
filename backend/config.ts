@@ -26,6 +26,8 @@ export const config = {
     },
     auth: {
         jwtSecret: process.env.JWT_SECRET,
+        adminJwtSecret: process.env.ADMIN_SECRET || '',
+        superAdminJwtSecret: process.env.SUPER_ADMIN_SECRET || '',
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET

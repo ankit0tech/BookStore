@@ -46,7 +46,7 @@ router.post('/login/federated/google', async (req, res) => {
             user = await prisma.userinfo.create({
                 data: {
                     email: payload.email,
-                    role: 'USER',
+                    role: 'user',
                     verified: true,
                     googleId: payload.sub,
                     provider: 'google'

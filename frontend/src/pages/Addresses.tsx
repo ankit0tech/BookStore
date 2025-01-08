@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
 import BackButton from "../components/BackButton";
+import { enqueueSnackbar } from "notistack";
 
 
 
@@ -15,21 +16,25 @@ const Addresses = () => {
     const [addresses, setAddresses] = useState<Address[]>([]);
     
     useEffect(()=>{
-        setLoading(true);
-        const authToken = localStorage.getItem('authToken');
-        const config = { headers: { Authorization: authToken } };
-                
-        api
-        .get('http://localhost:5555/address', config)
-        .then((response) => {
-            setAddresses(response.data);
-            setLoading(false);
-        })
-        .catch((error)=>{
-            console.log(error);
-            setLoading(false);
-        });
-
+        try {
+            setLoading(true);
+            const authToken = localStorage.getItem('authToken');
+            const config = { headers: { Authorization: authToken } };
+            
+            api
+            .get('http://localhost:5555/address', config)
+            .then((response) => {
+                setAddresses(response.data);
+                setLoading(false);
+            })
+            .catch((error)=>{
+                console.log(error);
+                setLoading(false);
+            });
+            
+        } catch(error: any) {
+            enqueueSnackbar("Issue while retrieving addresses", { variant: 'error' });
+        }
 
     },[]);
 
@@ -44,7 +49,7 @@ const Addresses = () => {
             {loading ? 
             <Spinner /> :
             addresses.length == 0  ? 
-            <div className="p-4">No Addresses added till now</div> :
+            <div className="p-4">No Addresses added</div> :
                 <div>
                     <table className='w-full mx-auto max-w-[1000px] rounded-lg'>
                         <thead>

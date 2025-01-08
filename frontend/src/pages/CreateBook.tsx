@@ -14,6 +14,7 @@ const CreateBook = () => {
     const [loading, setLoading] = useState(false);
     const [price, setPrice] = useState('');
     const [category, setCategory] = useState('');
+    const [imgUrl, setImgUrl] = useState('');
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -36,32 +37,40 @@ const CreateBook = () => {
     };
 
     const handleSaveBook = () => {
-        const authToken = localStorage.getItem('authToken');
-        const data = {
-            title,
-            author,
-            publish_year: +publishYear,
-            price: +price,
-            category
-        };
+        try {
+            
+            const authToken = localStorage.getItem('authToken');
+            const data = {
+                title,
+                author,
+                publish_year: +publishYear,
+                price: +price,
+                category,
+                cover_image: imgUrl
+            };
+    
+            const config = {headers: { Authorization: authToken }};
+            
+    
+            setLoading(true);
+            api
+            .post('http://localhost:5555/books', data, config)
+            .then(() => {
+                setLoading(false);
+                enqueueSnackbar('Book Created Successfully', {variant: 'success'});
+                navigate('/');
+            })
+            .catch((error) => {
+                setLoading(false);
+                // alert('An error happened. Please check console');
+                enqueueSnackbar('Error', {variant: 'error'});
+                console.log(error);
+            })
 
-        const config = {headers: { Authorization: authToken }};
-        
+        } catch(error: any) {
+            enqueueSnackbar("Error while saving new book", {variant: 'error'});
+        }
 
-        setLoading(true);
-        api
-        .post('http://localhost:5555/books', data, config)
-        .then(() => {
-            setLoading(false);
-            enqueueSnackbar('Book Created Successfully', {variant: 'success'});
-            navigate('/');
-        })
-        .catch((error) => {
-            setLoading(false);
-            // alert('An error happened. Please check console');
-            enqueueSnackbar('Error', {variant: 'error'});
-            console.log(error);
-        })
     }
 
     return (
@@ -121,6 +130,17 @@ const CreateBook = () => {
                     type="text"
                     value={publishYear}
                     onChange={(e) => setPublishYear(e.target.value)}
+                >
+                </input>
+            </div>
+
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>Cover image url</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type= "url"
+                    value={imgUrl}
+                    onChange={(e) => setImgUrl(e.target.value)}
                 >
                 </input>
             </div>

@@ -7,6 +7,7 @@ import { setUserRole, loginSuccess, logoutSuccess } from "../redux/userSlice";
 import { useGoogleLogin } from "@react-oauth/google";
 import ResetPasswordOverlay from "../components/ResetPasswordOverlay";
 import SignInForm from "../components/SignInForm";
+import { enqueueSnackbar } from "notistack";
 
 interface JwtPayload {
     email: string,
@@ -46,7 +47,7 @@ const Login = () => {
     
                 }                
             } catch (error) {
-                console.error("Login failed: ", error);
+                enqueueSnackbar("login with google failed", { variant: 'error'});
             }
         },
         onError: (error) => {
@@ -63,14 +64,19 @@ const Login = () => {
             "password": password
         }
 
-        const response = await axios.post('http://localhost:5555/users/signin', data)
-        const token = response.data.token;
-        const user = jwtDecode(token) as JwtPayload;
-        
-        dispatch(setUserRole({'userRole': user.role}));
-        dispatch(loginSuccess({'token': token, 'email': user.email }));
-
-        navigate('/');
+        try {
+            const response = await axios.post('http://localhost:5555/users/signin', data)
+            const token = response.data.token;
+            const user = jwtDecode(token) as JwtPayload;
+            
+            dispatch(setUserRole({'userRole': user.role}));
+            dispatch(loginSuccess({'token': token, 'email': user.email }));
+    
+            navigate('/');
+    
+        } catch(error) {
+            enqueueSnackbar("Error occurred while singing in", {variant: 'error'});
+        }
     }
 
     const navigateToSignup = () => {

@@ -33,7 +33,7 @@ const ResetPasswordOverlay: React.FC<PasswordOverLayProps> = ({ isOpen, setIsOpe
                     enqueueSnackbar('Issue resetting password, please try again', {variant: 'error'});
                 }
             } else {
-                enqueueSnackbar('Unexpected error occured, please try again', {variant: 'error'});
+                enqueueSnackbar('Unexpected error occurred, please try again', {variant: 'error'});
             }
         }
     }

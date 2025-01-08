@@ -14,6 +14,7 @@ const EditBook = () => {
     const [loading, setLoading] = useState(false);
     const [price, setPrice] = useState('');
     const [category, setCategory] = useState('');
+    const [imgUrl, setImgUrl] = useState('');
     const navigate = useNavigate();
     const { id } = useParams();
     const { enqueueSnackbar } = useSnackbar();
@@ -46,11 +47,12 @@ const EditBook = () => {
             setPublishYear(response.data.publish_year);
             setPrice(response.data.price);
             setCategory(response.data.category);
+            setImgUrl(response.data.cover_image);
             setLoading(false);
         })
         .catch((error)=>{
             setLoading(false);
-            alert("An error happened. Please check console")
+            enqueueSnackbar('Error occurred while editing book', {variant: 'error'});
             console.log(error);
         })
 
@@ -64,9 +66,10 @@ const EditBook = () => {
             author,
             publish_year: +publishYear,
             price: floatPrice,
-            category
+            category,
+            cover_image: imgUrl
         };
-        console.log(data);
+        
         const config = {headers: { Authorization: authToken}};
 
         setLoading(true);
@@ -77,11 +80,10 @@ const EditBook = () => {
             enqueueSnackbar('Book Edited Successfully', {variant: 'success'});
             navigate('/');
         })
-        .catch((error) => {
+        .catch((error: any) => {
             setLoading(false);
             // alert('An error happened. Please check console');
-            enqueueSnackbar('Error', {variant: 'error'});
-            console.log(error);
+            enqueueSnackbar('Error occurred while editing book', {variant: 'error'});
         })
     }
 
@@ -142,6 +144,17 @@ const EditBook = () => {
                     type="text"
                     value={publishYear}
                     onChange={(e) => setPublishYear(e.target.value)}
+                >
+                </input>
+            </div>
+
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>Cover image url</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type= "url"
+                    value={imgUrl}
+                    onChange={(e) => setImgUrl(e.target.value)}
                 >
                 </input>
             </div>

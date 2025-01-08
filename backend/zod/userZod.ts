@@ -5,8 +5,11 @@ const signupZod = z.object({
     first_name: z.string().optional(),
     last_name: z.string().optional(),
     password: z.string().min(6),
-    role: z.string()
 });
+
+const adminSignupZod = z.object({
+    password: z.string().min(6)
+})
 
 const signinZod = z.object({
     email: z.string().email(),
@@ -15,5 +18,6 @@ const signinZod = z.object({
 
 export {
     signupZod,
-    signinZod
+    signinZod,
+    adminSignupZod
 };

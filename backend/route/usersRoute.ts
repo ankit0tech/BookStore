@@ -33,14 +33,25 @@ router.post('/signup', async (req: Request, res: Response) => {
 
         const result = signupZod.safeParse(req.body);
         if(result.success) {
-            const password = await bcrypt.hash(req.body.password, 10);
-            req.body.password = password
 
-            const user = await prisma.userinfo.create(
-                {
-                    data: req.body
+            const existingUser = await prisma.userinfo.findUnique({
+                where: { email: req.body.email }
+            });
+            if(existingUser) {
+                return res.status(401).json({ message: "Account aleady exists, please try with different email" })
+            }
+
+            const password = await bcrypt.hash(req.body.password, 10);
+            const user = await prisma.userinfo.create({
+                data: {
+                    email: req.body.email,
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                    password: password,
+                    role: 'user'
                 }
-            )
+            });
+
             console.log('--- Signing Up user ---');
             console.log(user);
 
@@ -51,13 +62,13 @@ router.post('/signup', async (req: Request, res: Response) => {
             const subject = 'BookStore account verification';
             sendVerificationMail(user.email, subject, message, verificationLink);
 
-            return res.status(200).send({message: 'Signup done!'});
+            return res.status(200).json({message: 'Signup done!'});
         }
-        return res.status(401).send({message: 'Please send valid inputs'});
+        return res.status(401).json({message: 'Please send valid inputs'});
 
     } catch (error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.message});
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 })
 
@@ -77,7 +88,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
             }
     
             if (err || !decoded) {
-                return res.status(401).send({ message: 'Authentication failed, Invalid token' })
+                return res.status(401).json({ message: 'Authentication failed, Invalid token' })
             }
             const { email, type } = decoded as JwtPayload;
             if (type === 'verification') {
@@ -90,9 +101,9 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
                     }
                 })
                 console.log(`${email} is verified!`);
-                return res.status(200).send({message: "your email have been verified!"});
+                return res.status(200).json({message: "your email have been verified!"});
             } else {
-                return res.status(401).send({message: "Invalid token"});
+                return res.status(401).json({message: "Invalid token"});
             }
         });
 
@@ -106,7 +117,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
 
 router.get('/access', authMiddleware,  async (req: Request, res: Response) => {
     // console.log("Auth Email:", req.authEmail);
-    return res.status(200).send('Access is granted to you');
+    return res.status(200).json({message: 'Access is granted to you'});
 
     // const token = req.headers.authorization;
 
@@ -138,7 +149,7 @@ router.post('/signin', async (req: Request, res: Response) => {
             )
             
             if (!user || user.provider == 'google' || !user.password || !(await bcrypt.compare(req.body.password, user.password))) {
-                return res.status(401).send({message: 'Invalid email or password'});
+                return res.status(401).json({message: 'Invalid email or password'});
             }
 
             // console.log(user.id?.toString());
@@ -146,12 +157,12 @@ router.post('/signin', async (req: Request, res: Response) => {
             // req.authEmail = user.email;    // need to decide it later
             console.log("User signed in: ", user.email);
             
-            return res.status(200).send({token: token});
+            return res.status(200).json({token: token});
         }
-        return res.status(401).send({message: 'Please enter valid inputs'});
+        return res.status(401).json({message: 'Please enter valid inputs'});
     } catch(error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.message});
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 })
 
@@ -162,17 +173,17 @@ router.get('/profile', authMiddleware, async (req: Request, res: Response) => {
             where:{email: userMail}
         });
         if (!user) {
-            return res.status(400).send({message: "Authentication Issue"});
+            return res.status(400).json({message: "Authentication Issue"});
         }
         else {
             const { email, first_name, last_name, role } = user;
             const selectedProps = { email, first_name, last_name, role };
-            return res.status(200).send({user: selectedProps});
+            return res.status(200).json({user: selectedProps});
         }
     }
     catch(error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.message});
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -202,7 +213,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
 
     } catch (error: any) {
         console.log(error.message);
-        return res.status(500).json({message: error.message});
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -243,7 +254,7 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
         });
     } catch(error: any) {
         console.log(error.message);
-        return res.status(500).json({message: error.message})
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."})
     }
 });
 

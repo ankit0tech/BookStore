@@ -15,29 +15,35 @@ const CreateAddress = () => {
     const [isDefault, setIsDefault] = useState(false);
 
     const handleSaveAddress = () => {
-        const authToken = localStorage.getItem('authToken');
-        const data = {
-            street_address: street,
-            city: city,
-            state: state,
-            zip_code: zipCode,
-            country: country,
-            is_default: isDefault
-        };
+        try {
 
-        const config = {headers: { Authorization: authToken }};
-        setLoading(true);
-        
-        api.post('http://localhost:5555/address', data, config)
-        .then(() => {
-            setLoading(false);
-            enqueueSnackbar('Address added Successfully', {variant: 'success'});
-        })
-        .catch((error) => {
-            setLoading(false);
-            enqueueSnackbar('Error', {variant: 'error'});
-            console.log(error);
-        });
+            const authToken = localStorage.getItem('authToken');
+            const data = {
+                street_address: street,
+                city: city,
+                state: state,
+                zip_code: zipCode,
+                country: country,
+                is_default: isDefault
+            };
+    
+            const config = {headers: { Authorization: authToken }};
+            setLoading(true);
+            
+            api.post('http://localhost:5555/address', data, config)
+            .then(() => {
+                setLoading(false);
+                enqueueSnackbar('Address added Successfully', {variant: 'success'});
+            })
+            .catch((error) => {
+                setLoading(false);
+                enqueueSnackbar('Error', {variant: 'error'});
+                console.log(error);
+            });
+            
+        } catch(error: any) {
+            enqueueSnackbar("Error occurred while saving address", {variant: 'error'});
+        }
 
     }
 

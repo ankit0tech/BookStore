@@ -1,4 +1,5 @@
 import axios from "axios";
+import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { RootState } from "../types/index";
@@ -7,18 +8,29 @@ import { useNavigate } from "react-router-dom";
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('');
     const navigate = useNavigate();
 
     const handleSignup = async () => {
-        const data = {
-            "email": email,
-            "password": password,
-            "role": role,
+        try {
+            const data = {
+                "email": email,
+                "password": password,
+            }
+
+            await axios.post('http://localhost:5555/users/signup', data);
+
+            enqueueSnackbar("Signup successful", {variant: "success"});
+            navigate('/login');
+    
+        } catch(error: any) {
+            if (error.response) {
+                console.error('Error Response: ', error.response.data);
+                enqueueSnackbar(error.response.data.message || 'Error occurred while singin up', { variant: 'error' });
+            } else {
+                console.error('Error: ', error.message);
+                enqueueSnackbar("An unexpected error occurred", { variant: 'error' });
+            }
         }
-        const response = await axios.post('http://localhost:5555/users/signup', data);
-        console.log(response.data);
-        navigate('/login');
     }
 
     return (
@@ -44,15 +56,6 @@ const Signup = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                />
-            </div>
-            <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <label>role</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
                 />
             </div>
             <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">

@@ -8,6 +8,7 @@ import BackButton from '../components/BackButton'
 import Spinner from "../components/Spinner";
 import { BiMinus, BiPlus } from "react-icons/bi";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
+import { enqueueSnackbar } from "notistack";
 
 
 const Cart = () => {
@@ -17,15 +18,20 @@ const Cart = () => {
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const dispatch = useDispatch();
     const authToken = userinfo.token;
-
+    
     const handleUpdateCart = async (bookId: number, count: number) => {
-        if (!authToken) {
-            navigate('/login');
-        }
-        else {
-            await updateCart(bookId, count, authToken);
-            const items = await getCartItems(authToken);
-            dispatch(setCartItemsSlice(items))
+        try {
+            if (!authToken) {
+                navigate('/login');
+            }
+            else {
+                await updateCart(bookId, count, authToken);
+                const items = await getCartItems(authToken);
+                dispatch(setCartItemsSlice(items))
+            }
+            
+        } catch(error: any) {
+            enqueueSnackbar("Error while updating cart", {variant: 'error'});
         }
     }
     

@@ -14,24 +14,29 @@ const DeleteAddress = () => {
 
     
     const handleDeleteAddress = () => {
-        setLoading(loading);
-        const authToken = localStorage.getItem('authToken');
-        const config = { headers: { Authorization: authToken }};
-        
+        try {
+            setLoading(loading);
+            const authToken = localStorage.getItem('authToken');
+            const config = { headers: { Authorization: authToken }};
+            
+    
+            api
+            .delete(`http://localhost:5555/address/${id}`, config)
+            .then(()=>{
+                setLoading(false);
+                enqueueSnackbar('Address deleted Successfully', {variant: 'success'})
+                navigate('/addresses');
+            })
+            .catch((error)=>{
+                setLoading(false);
+                // alert('An error happened. Please check console');
+                enqueueSnackbar('Error', {variant: 'error'});
+                console.log(error);
+            });
 
-        api
-        .delete(`http://localhost:5555/address/${id}`, config)
-        .then(()=>{
-            setLoading(false);
-            enqueueSnackbar('Address deleted Successfully', {variant: 'success'})
-            navigate('/addresses');
-        })
-        .catch((error)=>{
-            setLoading(false);
-            // alert('An error happened. Please check console');
-            enqueueSnackbar('Error', {variant: 'error'});
-            console.log(error);
-        });
+        } catch(error: any) {
+            enqueueSnackbar("Error while deleting address", {variant: 'error'});
+        }
     }
 
     return (

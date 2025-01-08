@@ -13,24 +13,30 @@ const DeleteBook = () => {
     const { enqueueSnackbar } = useSnackbar();
     
     const handleDeleteBook = () => {
-        setLoading(true);
+        try {
+            
+            setLoading(true);
+    
+            const authToken = localStorage.getItem('authToken');
+            const config = { headers: { Authorization: authToken }};
+    
+            api
+            .delete(`http://localhost:5555/books/${id}`, config)
+            .then(()=>{
+                setLoading(false);
+                enqueueSnackbar('Book deleted Successfully', {variant: 'success'})
+                navigate('/');
+            })
+            .catch((error)=>{
+                setLoading(false);
+                // alert('An error happened. Please check console');
+                enqueueSnackbar('Error', {variant: 'error'});
+                console.log(error);
+            })
 
-        const authToken = localStorage.getItem('authToken');
-        const config = { headers: { Authorization: authToken }};
-
-        api
-        .delete(`http://localhost:5555/books/${id}`, config)
-        .then(()=>{
-            setLoading(false);
-            enqueueSnackbar('Book deleted Successfully', {variant: 'success'})
-            navigate('/');
-        })
-        .catch((error)=>{
-            setLoading(false);
-            // alert('An error happened. Please check console');
-            enqueueSnackbar('Error', {variant: 'error'});
-            console.log(error);
-        })
+        } catch(error: any) {
+            enqueueSnackbar("Error while deleting book", {variant: 'error'});
+        }
     }
 
 

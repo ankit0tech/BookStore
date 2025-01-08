@@ -15,23 +15,24 @@ const AdminSignup = () => {
 
     const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await axios.post('http://localhost:5555/admin/signup', {
-                password: password
-            },
-            {
-                headers: {
-                    Authorization: verificationToken,
+        try {
+            await axios.post('http://localhost:5555/admin/signup', 
+                {
+                    password: password
                 },
-            }
-        );
+                {
+                    headers: {
+                        Authorization: verificationToken,
+                    },
+                }
+            );
 
-        if(response.status == 200) {
             enqueueSnackbar(`Admin registration successful for ${email}`, { variant: 'success' });
             navigate('/admin/login');
-        } else {
+
+        } catch (error: any) {
             enqueueSnackbar('Admin registration failed, please try again', { variant: 'error' });
         }
-
     }
 
 

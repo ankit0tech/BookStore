@@ -1,6 +1,7 @@
 import axios from "axios";
 import api from '../utils/api';
 import { CartInterface } from "../types";
+import { enqueueSnackbar } from "notistack";
 
 
 const updateCart = async (book_id: number, quantity: number, authToken: string): Promise<void> => {
@@ -12,12 +13,10 @@ const updateCart = async (book_id: number, quantity: number, authToken: string):
     };
 
     try {
-        const response = await api.post('http://localhost:5555/cart/update-cart', data, config);
-        console.log(response.data.message);
-
+        await api.post('http://localhost:5555/cart/update-cart', data, config);
     }
     catch (error) {
-        console.error("Error: ", error);
+        enqueueSnackbar("Error occurred while updating cart", {variant: 'error'})
     }
     
 }
@@ -31,7 +30,7 @@ const getCartItems = async (authToken: string): Promise<CartInterface> => {
         return response.data;
     }
     catch (error) {
-        console.error("Error: ", error);
+        enqueueSnackbar("Error while fetching cart items", {variant: 'error'});
         throw error;
     }
 }

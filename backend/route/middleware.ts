@@ -54,6 +54,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
                     }
         
                     if(!allowedRoles.includes(user.role)) {
+                        console.log(`Access denied for ${user.email}`);
                         return res.status(403).json({message: "Access denied!"});
                     }
                     

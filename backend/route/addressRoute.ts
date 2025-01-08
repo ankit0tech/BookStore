@@ -14,7 +14,7 @@ router.post('/', authMiddleware, async (req, res) => {
             where: {email: userMail}
         })
         if(!user) {
-            return res.status(400).send({message: "Authentication failed"});
+            return res.status(401).json({message: "Authentication failed"});
         }
 
         const result = addressZod.safeParse(req.body);
@@ -24,7 +24,7 @@ router.post('/', authMiddleware, async (req, res) => {
                 user_id: user.id,
             }
 
-            // If we are setting address as default then make other non default
+            // If we are setting address as default then make others non default
             const address = await prisma.$transaction(async (prisma) => {
 
                 if (req.body.is_default == true) {
@@ -43,13 +43,11 @@ router.post('/', authMiddleware, async (req, res) => {
 
             return res.status(201).send(address);
         }
-        return res.send(400).send({
-            message: "Send required fields for address in proper format",
-        });
+        return res.status(400).json({ message: "Send required fields for address in proper format" });
     }
     catch (error: any) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 
 });
@@ -62,7 +60,7 @@ router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
             where: {email: userMail}
         })
         if(!user) {
-            return res.status(400).send({message: "Authentication failed"});
+            return res.status(401).json({message: "Authentication failed"});
         }
 
         const address: IAddress | null = await prisma.address.findUnique({
@@ -71,12 +69,16 @@ router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
             }
         });
         
-        return res.status(200).send(address);
+        if(address) {
+            return res.status(200).send(address);
+        } else {
+            return res.status(404).json({message: "Address not found"});
+        }
         
     }
     catch (error: any) {
-        console.log(error.message);
-        return res.status(500).send({message: error.message});
+        console.log("Internal server error: ", error.message);
+        return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
 
@@ -87,7 +89,7 @@ router.get('/default-address', authMiddleware, async(req, res) => {
             where: {email: userMail}
         });
         if(!user) {
-            return res.status(400).send({message: "Authentication failed"});
+            return res.status(401).json({message: "Authentication failed"});
         }
 
         const address: IAddress | null = await prisma.address.findFirst({
@@ -100,12 +102,12 @@ router.get('/default-address', authMiddleware, async(req, res) => {
         if (address) {
             return res.status(200).send(address);
         } else {
-            return res.status(404).send({ error: "Default address not found" });
+            return res.status(404).json({ error: "Default address not found" });
         }
     }
     catch (error: any) {
-        console.log(error.message);
-        return res.status(500).send({message: error.message});
+        console.log("Internal server error: ", error.message);
+        return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
 
@@ -116,7 +118,7 @@ router.get('/', authMiddleware, async (req, res) => {
             where: {email: userMail}
         })
         if(!user) {
-            return res.status(400).send({message: "Authentication failed"});
+            return res.status(401).json({message: "Authentication failed"});
         }
 
         const addresses: Array<IAddress> = await prisma.address.findMany({
@@ -128,8 +130,8 @@ router.get('/', authMiddleware, async (req, res) => {
         
     }
     catch (error: any) {
-        console.log(error.message);
-        return res.status(500).send({message: error.message});
+        console.log("Internal server error: ", error.message);
+        return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
 
@@ -141,7 +143,7 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
             where: {email: userMail}
         })
         if(!user) {
-            return res.status(400).send({message: "Authentication failed"});
+            return res.status(401).json({message: "Authentication failed"});
         }
 
         const existingAddress = await prisma.address.findUnique({
@@ -173,17 +175,17 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
             });
 
             if(!updatedAddress) {
-                return res.status(401).send({message: `Address with id: ${id} could not be updated`});
+                return res.status(404).json({message: `Address with id: ${id} could not be updated`});
             }
-            res.status(200).send({message: "Address updated successfully"});
+            res.status(200).json({message: "Address updated successfully"});
         } 
         else {
-            return res.status(400).send({message: "Please send valid data with all required fields."});
+            return res.status(400).json({message: "Please send valid data with all required fields."});
         }
     }
     catch (error: any) {
-        console.log(error.message);
-        return res.status(500).send({message: error.message});
+        console.log("Internal server error: ", error.message);
+        return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
 
@@ -194,17 +196,21 @@ router.delete('/:id(\\d+)', authMiddleware, async (req, res) => {
             where: {email: userMail}
         })
         if(!user) {
-            return res.status(400).send({message: "Authentication failed"});
+            return res.status(401).json({message: "Authentication failed"});
         }
         const { id } = req.params;
-        await prisma.address.delete({
+        const deletedAddress = await prisma.address.delete({
             where: {user_id: user.id, id: Number(id)}
         });
-        return res.status(200).send({message: "Address deleted successfully"}) ;   
+        if (deletedAddress) {
+            return res.status(200).json({message: "Address deleted successfully"}) ;   
+        } else {
+            return res.status(400).json({message: "Error occurred while deleting Address"});
+        }
     }
     catch(error: any) {
-        console.log(error.message);
-        return res.status(500).send({message: error.message});
+        console.log("Internal server error: ", error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later." });
     }
 })
 

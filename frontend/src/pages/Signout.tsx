@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { logoutSuccess } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { googleLogout } from "@react-oauth/google";
+import { enqueueSnackbar } from "notistack";
 
 const Signout = () => {
 
@@ -10,9 +11,16 @@ const Signout = () => {
     const navigate = useNavigate();
 
     const handleSignout = async () => {
-        dispatch(logoutSuccess());
-        googleLogout();
-        navigate('/login');
+
+        try {
+
+            dispatch(logoutSuccess());
+            googleLogout();
+            navigate('/login');
+        
+        } catch(error: any) {
+            enqueueSnackbar("Error while loggin out", {variant: 'error'});
+        }
     }
 
     return (

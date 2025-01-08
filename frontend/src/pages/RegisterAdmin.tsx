@@ -11,18 +11,16 @@ const RegisterAdmin = () => {
     const userRole = localStorage.getItem('userRole');
     
     const handleSubmit = async (e: React.FormEvent) => {
-        
-        e.preventDefault();
-        const response = await api.post('http://localhost:5555/admin/generate-admin-signup-token', {
-            email: email
-        });
-        console.log(response);
-        if(response.status == 200) {
+        try {
+            e.preventDefault();
+            await api.post('http://localhost:5555/admin/generate-admin-signup-token', {
+                email: email
+            });
             enqueueSnackbar(`Sent admin registration mail to ${email}`, { variant: 'success' });
-        } else {
+
+        } catch(error: any) {
             enqueueSnackbar('Error occurred please try again later', { variant: 'error' });
         }
-
     }
 
 

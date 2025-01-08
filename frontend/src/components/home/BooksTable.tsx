@@ -13,6 +13,7 @@ import Popup from '../../components/Popup';
 import { useDispatch } from "react-redux";
 import { setCartItems as setCartItemsSlice } from "../../redux/cartSlice";
 import { getCartItems } from "../../utils/cartUtils";
+import { enqueueSnackbar } from 'notistack';
 
 
 const BooksTable = ({ books }: { books: Book[] }) => {
@@ -23,15 +24,18 @@ const BooksTable = ({ books }: { books: Book[] }) => {
     const dispatch = useDispatch();
 
     const handleAddToCart = async (bookId: number) => {
-        
-        if (!authToken) {
-            navigate('/login');
-        }
-        else {
-            await updateCart(bookId, 1, authToken);
-            const items = await getCartItems(authToken);
-            dispatch(setCartItemsSlice(items));
-    
+
+        try {
+            if (!authToken) {
+                navigate('/login');
+            }
+            else {
+                await updateCart(bookId, 1, authToken);
+                const items = await getCartItems(authToken);
+                dispatch(setCartItemsSlice(items));
+            }
+        } catch(error) {
+            enqueueSnackbar('Error while loading books', {variant: 'error'})
         }
     }
 

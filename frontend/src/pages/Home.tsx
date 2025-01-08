@@ -9,6 +9,7 @@ import BooksCard from '../components/home/BooksCard';
 // import { RootState } from '@reduxjs/toolkit/query';
 import { RootState } from '../types/index';
 import { ChildProps } from '../App';
+import { enqueueSnackbar } from 'notistack';
 
 
 const Home = ({ books, setBooks}: ChildProps) => {
@@ -36,7 +37,7 @@ const Home = ({ books, setBooks}: ChildProps) => {
             setLoading(false);
         })
         .catch((error)=>{
-            console.log(error);
+            enqueueSnackbar("Error while loading books", {variant: 'error'});
             setLoading(false);
         });
 

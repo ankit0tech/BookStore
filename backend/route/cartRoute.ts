@@ -98,7 +98,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
     }
     catch (error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.message});
+        return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -141,7 +141,7 @@ router.get('/get-cart-items', authMiddleware, async (req, res) => {
     }
     catch (error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.message});
+        return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -183,7 +183,7 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
     }
     catch (error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.message});
+        return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -222,7 +222,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
     }
     catch (error: any) {
         console.log(error.message);
-        return res.status(500).send({message: error.message});
+        return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
+import { enqueueSnackbar } from 'notistack';
 
 
 interface BookState {
@@ -24,13 +25,11 @@ const ShowBook = () => {
 
         axios(`http://localhost:5555/books/${id}`)
         .then((response) => {
-            console.log("BOOK");
-            console.log(response.data);
             setBook(response.data);
             setLoading(false);
         })
         .catch((error) => {
-            console.log(error);
+            enqueueSnackbar("Error while loading book data");
             setLoading(false);
         })
 

@@ -64,8 +64,7 @@ const UpdateAddress = () => {
         })
         .catch((error) => {
             setLoading(false);
-            enqueueSnackbar('Error', {variant: 'error'});
-            console.log(error);
+            enqueueSnackbar('Error while updating address', {variant: 'error'});
         });
 
     }

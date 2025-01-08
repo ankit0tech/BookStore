@@ -4,6 +4,7 @@ import axios from "axios";
 import { loginSuccess, setUserRole } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
 
 interface JwtPayload {
     email: string,
@@ -18,21 +19,28 @@ const AdminLogin = () => {
     const dispatch = useDispatch();
 
     const handleSignin = async (e: React.FormEvent, email: string, password: string) => {
-        e.preventDefault();
 
-        const data = {
-            "email": email,
-            "password": password
+        try {
+
+            e.preventDefault();
+    
+            const data = {
+                "email": email,
+                "password": password
+            }
+            
+            const response = await axios.post('http://localhost:5555/admin/signin', data)
+            const token = response.data.token;
+            const user = jwtDecode(token) as JwtPayload;
+            
+            dispatch(setUserRole({'userRole': user.role}));
+            dispatch(loginSuccess({'token': token, 'email': user.email }));
+    
+            navigate('/');
+
+        } catch(error: any) {
+            enqueueSnackbar('Error while login', {variant: 'error'});
         }
-
-        const response = await axios.post('http://localhost:5555/admin/signin', data)
-        const token = response.data.token;
-        const user = jwtDecode(token) as JwtPayload;
-        
-        dispatch(setUserRole({'userRole': user.role}));
-        dispatch(loginSuccess({'token': token, 'email': user.email }));
-
-        navigate('/');
     }
 
 

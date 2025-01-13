@@ -21,7 +21,6 @@ export const userSlice = createSlice({
     reducers: {
         setUserRole: (state, action) => {
             state.userRole = action.payload.userRole
-            localStorage.setItem('userRole', action.payload.userRole);
         },
         loginSuccess: (state, action) => {
             state.isAuthenticated = true;

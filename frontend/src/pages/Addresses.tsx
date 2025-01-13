@@ -18,11 +18,9 @@ const Addresses = () => {
     useEffect(()=>{
         try {
             setLoading(true);
-            const authToken = localStorage.getItem('authToken');
-            const config = { headers: { Authorization: authToken } };
             
             api
-            .get('http://localhost:5555/address', config)
+            .get('http://localhost:5555/address')
             .then((response) => {
                 setAddresses(response.data);
                 setLoading(false);

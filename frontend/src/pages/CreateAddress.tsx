@@ -17,7 +17,6 @@ const CreateAddress = () => {
     const handleSaveAddress = () => {
         try {
 
-            const authToken = localStorage.getItem('authToken');
             const data = {
                 street_address: street,
                 city: city,
@@ -27,10 +26,9 @@ const CreateAddress = () => {
                 is_default: isDefault
             };
     
-            const config = {headers: { Authorization: authToken }};
             setLoading(true);
             
-            api.post('http://localhost:5555/address', data, config)
+            api.post('http://localhost:5555/address', data)
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar('Address added Successfully', {variant: 'success'});

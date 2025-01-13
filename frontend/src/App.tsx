@@ -15,7 +15,6 @@ import CreateAddress from './pages/CreateAddress';
 import UpdateAddress from './pages/UpdateAddress';
 import Addresses from './pages/Addresses';
 import DeleteAddress from './pages/DeleteAddress';
-// import OAuthCallback from './components/OAuthCallback';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
@@ -24,6 +23,10 @@ import AdminPanel from './pages/AdminPanel';
 import RegisterAdmin from './pages/RegisterAdmin';
 import AdminSignup from './pages/AdminSignup';
 import AdminLogin from './pages/AdminLogin';
+import useAuth from './hooks/useAuth';
+import { useSelector } from 'react-redux';
+import { RootState } from './types';
+import PageNotFound from './pages/PageNotFound';
 
 export interface ChildProps {
   books: Book[];
@@ -32,6 +35,10 @@ export interface ChildProps {
 
 const App = () => {
   const [books, setBooks] = useState<Book[]>([]);
+  const userinfo = useSelector((state: RootState) => state.userinfo);
+  const userRole = userinfo.userRole;
+  
+  useAuth();
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <NavBar books={books} setBooks={setBooks} />
@@ -39,10 +46,24 @@ const App = () => {
         <Route path='/' element={<Home books={books} setBooks={setBooks} />} />
         <Route path='/login' element={<Login /> } />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/books/create' element={<CreateBook />} />
+        {(userRole == 'admin' || userRole == 'superadmin') &&
+        (
+          <>
+            <Route path='/books/create' element={<CreateBook />} /> 
+            <Route path='/books/edit/:id' element={<EditBook />} />
+            <Route path='/books/delete/:id' element={<DeleteBook />} />
+            <Route path='/admin/signup' element={<AdminSignup />} />
+            <Route path='/admin/login' element={<AdminLogin />} />
+          </>
+        )}
+        {(userRole == 'superadmin') &&
+        (
+          <>
+            <Route path='/superadmin-panel' element={<AdminPanel />} />
+            <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
+          </>
+        )}
         <Route path='/books/details/:id' element={<ShowBook />} />
-        <Route path='/books/edit/:id' element={<EditBook />} />
-        <Route path='/books/delete/:id' element={<DeleteBook />} />
         <Route path='/addresses' element={<Addresses />} />
         <Route path='/address/create' element={<CreateAddress />} />
         <Route path='/address/update/:id' element={<UpdateAddress />} />
@@ -52,11 +73,7 @@ const App = () => {
         <Route path='/reset-password/verify' element={<ResetPassword />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/orders' element={<Orders />} />
-        <Route path='/superadmin-panel' element={<AdminPanel />} />
-        <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
-        <Route path='/admin/signup' element={<AdminSignup />} />
-        <Route path='/admin/login' element={<AdminLogin />} />
-        {/* <Route path='/oauth2/redirect/google' element={<OAuthCallback />} /> */}
+        <Route path='*' element={<PageNotFound />} />
       </Routes>   
     </ GoogleOAuthProvider>
   )

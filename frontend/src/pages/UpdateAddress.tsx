@@ -21,11 +21,9 @@ const UpdateAddress = () => {
 
     useEffect(()=>{
         setLoading(true);
-        const authToken = localStorage.getItem('authToken');
-        const config = { headers: { Authorization: authToken }};
-        // console.log(`http://localhost:5555/address/${id}`);
+
         api
-        .get(`http://localhost:5555/address/${id}`, config)
+        .get(`http://localhost:5555/address/${id}`)
         .then((response) => {
             setStreet(response.data.street_address);
             setCity(response.data.city);
@@ -44,7 +42,6 @@ const UpdateAddress = () => {
     }, []);
 
     const handleSaveAddress = () => {
-        const authToken = localStorage.getItem('authToken');
         const data = {
             street_address: street,
             city: city,
@@ -54,10 +51,9 @@ const UpdateAddress = () => {
             is_default: isDefault
         };
 
-        const config = {headers: { Authorization: authToken }};
         setLoading(true);
         
-        api.put(`http://localhost:5555/address/${id}`, data, config)
+        api.put(`http://localhost:5555/address/${id}`, data)
         .then(() => {
             setLoading(false);
             enqueueSnackbar('Address updated Successfully', {variant: 'success'});

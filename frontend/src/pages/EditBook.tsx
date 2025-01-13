@@ -59,7 +59,6 @@ const EditBook = () => {
     }, []);
 
     const handleEditBook = () => {
-        const authToken = localStorage.getItem('authToken');
         const floatPrice = +price;
         const data = {
             title,
@@ -70,11 +69,9 @@ const EditBook = () => {
             cover_image: imgUrl
         };
         
-        const config = {headers: { Authorization: authToken}};
-
         setLoading(true);
         api
-        .put(`http://localhost:5555/books/${id}`, data, config)
+        .put(`http://localhost:5555/books/${id}`, data)
         .then(() => {
             setLoading(false);
             enqueueSnackbar('Book Edited Successfully', {variant: 'success'});

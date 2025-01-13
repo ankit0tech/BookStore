@@ -39,7 +39,6 @@ const CreateBook = () => {
     const handleSaveBook = () => {
         try {
             
-            const authToken = localStorage.getItem('authToken');
             const data = {
                 title,
                 author,
@@ -48,13 +47,11 @@ const CreateBook = () => {
                 category,
                 cover_image: imgUrl
             };
-    
-            const config = {headers: { Authorization: authToken }};
-            
+                
     
             setLoading(true);
             api
-            .post('http://localhost:5555/books', data, config)
+            .post('http://localhost:5555/books', data)
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar('Book Created Successfully', {variant: 'success'});

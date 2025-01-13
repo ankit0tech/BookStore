@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../types";
+
 
 const Profile = () => {
 
     const navigate = useNavigate();
-    const userRole = localStorage.getItem('userRole');
+    const userRole = useSelector((state: RootState) => state.userinfo.userRole);
     const handleNavigate = (url: string) => {
         navigate(url);
     }

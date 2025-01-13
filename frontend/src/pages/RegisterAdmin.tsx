@@ -8,7 +8,7 @@ import { enqueueSnackbar } from "notistack";
 const RegisterAdmin = () => {
 
     const [ email, setEmail ] = useState('');
-    const userRole = localStorage.getItem('userRole');
+    const userRole = useSelector((state: RootState) => state.userinfo.userRole);
     
     const handleSubmit = async (e: React.FormEvent) => {
         try {

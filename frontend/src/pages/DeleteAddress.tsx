@@ -16,12 +16,9 @@ const DeleteAddress = () => {
     const handleDeleteAddress = () => {
         try {
             setLoading(loading);
-            const authToken = localStorage.getItem('authToken');
-            const config = { headers: { Authorization: authToken }};
-            
     
             api
-            .delete(`http://localhost:5555/address/${id}`, config)
+            .delete(`http://localhost:5555/address/${id}`)
             .then(()=>{
                 setLoading(false);
                 enqueueSnackbar('Address deleted Successfully', {variant: 'success'})

@@ -16,12 +16,9 @@ const DeleteBook = () => {
         try {
             
             setLoading(true);
-    
-            const authToken = localStorage.getItem('authToken');
-            const config = { headers: { Authorization: authToken }};
-    
+        
             api
-            .delete(`http://localhost:5555/books/${id}`, config)
+            .delete(`http://localhost:5555/books/${id}`)
             .then(()=>{
                 setLoading(false);
                 enqueueSnackbar('Book deleted Successfully', {variant: 'success'})

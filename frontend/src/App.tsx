@@ -34,11 +34,13 @@ export interface ChildProps {
 }
 
 const App = () => {
+  
   const [books, setBooks] = useState<Book[]>([]);
   const userinfo = useSelector((state: RootState) => state.userinfo);
   const userRole = userinfo.userRole;
   
   useAuth();
+
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <NavBar books={books} setBooks={setBooks} />
@@ -52,10 +54,10 @@ const App = () => {
             <Route path='/books/create' element={<CreateBook />} /> 
             <Route path='/books/edit/:id' element={<EditBook />} />
             <Route path='/books/delete/:id' element={<DeleteBook />} />
-            <Route path='/admin/signup' element={<AdminSignup />} />
-            <Route path='/admin/login' element={<AdminLogin />} />
           </>
         )}
+        <Route path='/admin/signup' element={<AdminSignup />} />
+        <Route path='/admin/login' element={<AdminLogin />} />
         {(userRole == 'superadmin') &&
         (
           <>

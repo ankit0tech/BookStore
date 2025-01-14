@@ -31,8 +31,6 @@ const useAuth = () => {
     useEffect(() => {
 
         if(!authToken || !isTokenValid(authToken)) {
-            dispatch(logoutSuccess());
-            navigate('/login');
             return;
         }
         

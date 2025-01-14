@@ -31,7 +31,7 @@ const AdminLogin = () => {
             
             const response = await axios.post('http://localhost:5555/admin/signin', data)
             const token = response.data.token;
-            const user = jwtDecode(token) as JwtPayload;
+            const user = jwtDecode(token.split(' ')[1]) as JwtPayload;
             
             dispatch(setUserRole({'userRole': user.role}));
             dispatch(loginSuccess({'token': token, 'email': user.email }));

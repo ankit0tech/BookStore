@@ -20,12 +20,13 @@ declare global {
 
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).send({ message: 'Authentication failed, Token not found' });
+    const bearerToken = req.headers.authorization;
+    if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
+        return res.status(401).send({ message: 'Authentication failed: Token not found or invalid' });
     }
+    const authToken = bearerToken.split(' ')[1];
 
-    jwt.verify(token, config.auth.jwtSecret, (err, decoded)=> {
+    jwt.verify(authToken, config.auth.jwtSecret, (err, decoded)=> {
         if(err || !decoded) {
             return res.status(401).send({ message: 'Authentication failed, Invalid token' });
         }

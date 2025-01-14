@@ -25,12 +25,13 @@ const useAuth = () => {
     const dispatch = useDispatch();
     const userData = useSelector((state: RootState) => state.userinfo);
     const authToken = userData.token || localStorage.getItem('authToken');
+    const token = authToken?.split(' ')[1] || '';
     const navigate = useNavigate();
 
 
     useEffect(() => {
 
-        if(!authToken || !isTokenValid(authToken)) {
+        if(!authToken || !isTokenValid(token)) {
             return;
         }
         

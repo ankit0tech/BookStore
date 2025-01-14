@@ -157,7 +157,7 @@ router.post('/signin', async (req: Request, res: Response) => {
             // req.authEmail = user.email;    // need to decide it later
             console.log("User signed in: ", user.email);
             
-            return res.status(200).json({token: token});
+            return res.status(200).json({token: `Bearer ${token}`});
         }
         return res.status(401).json({message: 'Please enter valid inputs'});
     } catch(error: any) {

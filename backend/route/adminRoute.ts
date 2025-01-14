@@ -116,7 +116,7 @@ router.post('/signin', async (req: Request, res: Response) => {
             const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, config.auth.jwtSecret, {expiresIn: '1h'});
             // req.authEmail = user.email;    // need to decide it later
             console.log("Admin signed in: ", user.email);
-            return res.status(200).json({token: token});
+            return res.status(200).json({token: `Bearer ${token}`});
         }
         return res.status(401).json({message: 'Please enter valid inputs'});
     } catch(error: any) {

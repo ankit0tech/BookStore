@@ -6,6 +6,7 @@ import { sendVerificationMail } from '../utils/emailUtils';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { adminSignupZod, signinZod, signupZod } from '../zod/userZod';
+import { logger } from '../utils/logger';
 
 interface JwtPayload {
     email: string,
@@ -37,7 +38,7 @@ router.post('/generate-admin-signup-token', roleMiddleware(['superadmin']), asyn
         
         return res.status(200).json({message: "Mail sent for new admin signup"});
     } catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(401).json({message: error.message});
     }
 });
@@ -55,10 +56,10 @@ router.post('/signup', (req: Request, res: Response) => {
             
             if(err || !decoded) {
                 if(err) {
-                    console.log("Error occurred while admin singup: ", err);
+                    logger.info("Error occurred while admin singup: ", err);
                 }
                 if(!decoded) {
-                    console.log("admin singup token not decoded");
+                    logger.info("admin singup token not decoded");
                 }
                 return res.status(401).json({message: "Access denied"});
             }
@@ -84,12 +85,12 @@ router.post('/signup', (req: Request, res: Response) => {
                 }
             });
 
-            console.log(`Created admin account for: ${adminUser.email}`);
+            logger.info(`Created admin account for: ${adminUser.email}`);
             return res.status(200).json({message: `Admin creation successful ${adminUser.email}`});
         });
 
     } catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -115,12 +116,12 @@ router.post('/signin', async (req: Request, res: Response) => {
             
             const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, config.auth.jwtSecret, {expiresIn: '1h'});
             // req.authEmail = user.email;    // need to decide it later
-            console.log("Admin signed in: ", user.email);
+            logger.info("Admin signed in: ", user.email);
             return res.status(200).json({token: `Bearer ${token}`});
         }
         return res.status(401).json({message: 'Please enter valid inputs'});
     } catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 })

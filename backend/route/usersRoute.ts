@@ -8,6 +8,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 import rateLimit from 'express-rate-limit';
 import { sendVerificationMail } from '../utils/emailUtils';
+import { logger } from '../utils/logger';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -52,8 +53,8 @@ router.post('/signup', async (req: Request, res: Response) => {
                 }
             });
 
-            console.log('--- Signing Up user ---');
-            console.log(user);
+            logger.info('--- Signing Up user ---');
+            logger.info(user);
 
             const token = jwt.sign({email: user.email, type: 'verification'}, config.auth.jwtSecret, {expiresIn: '1h'});
             const verificationLink = `http://localhost:5555/users/verify-mail?verificationToken=${token}`
@@ -67,7 +68,7 @@ router.post('/signup', async (req: Request, res: Response) => {
         return res.status(401).json({message: 'Please send valid inputs'});
 
     } catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 })
@@ -80,11 +81,10 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
 
         jwt.verify(token, config.auth.jwtSecret, async (err, decoded) => {
             if (err) {
-                console.log('ERROR OCCURRED')
-                console.log(err);
+                logger.error(err);
             }
             if(!decoded) {
-                console.log('not decoded');
+                logger.error('Error while decoding token');
             }
     
             if (err || !decoded) {
@@ -100,7 +100,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
                         verified: true
                     }
                 })
-                console.log(`${email} is verified!`);
+                logger.info(`${email} is verified!`);
                 return res.status(200).json({message: "your email have been verified!"});
             } else {
                 return res.status(401).json({message: "Invalid token"});
@@ -108,7 +108,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
         });
 
     } catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(400).json({ message: error.message });
     }
 
@@ -116,7 +116,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
 })
 
 router.get('/access', authMiddleware,  async (req: Request, res: Response) => {
-    // console.log("Auth Email:", req.authEmail);
+    // logger.info("Auth Email:", req.authEmail);
     return res.status(200).json({message: 'Access is granted to you'});
 
     // const token = req.headers.authorization;
@@ -152,16 +152,17 @@ router.post('/signin', async (req: Request, res: Response) => {
                 return res.status(401).json({message: 'Invalid email or password'});
             }
 
-            // console.log(user.id?.toString());
+            // logger.info(user.id?.toString());
             const token = jwt.sign({email: user.email, userId: user.id, role: user.role, type: 'login'}, config.auth.jwtSecret, {expiresIn: '1h'});
             // req.authEmail = user.email;    // need to decide it later
-            console.log("User signed in: ", user.email);
+            // logger.info("User signed in: ", user.email);
+            logger.info(`User signed in: ${user.email}`);
             
             return res.status(200).json({token: `Bearer ${token}`});
         }
         return res.status(401).json({message: 'Please enter valid inputs'});
     } catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 })
@@ -182,7 +183,7 @@ router.get('/profile', authMiddleware, async (req: Request, res: Response) => {
         }
     }
     catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -195,7 +196,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
                 email: req.body.email,
             }
         });
-        console.log(`Sending mail to reset password for ${req.body.email}`);
+        logger.info(`Sending mail to reset password for ${req.body.email}`);
         
         if (user) {
 
@@ -212,7 +213,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
         return res.status(400).json({message: "Error sending reset password mail"});
 
     } catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -225,11 +226,10 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
 
         jwt.verify(token, config.auth.jwtSecret, async (err, decoded) => {
             if (err) {
-                console.log('ERROR OCCURRED')
-                console.log(err);
+                logger.error(err);
             }
             if(!decoded) {
-                console.log('not decoded');
+                logger.error('Error occurred while verifying token');
             }
             if (err || !decoded) {
                 return res.status(401).json({ message: 'Authentication failed, Invalid token' });
@@ -246,14 +246,14 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
                 }
             });
             if (user) {
-                console.log(`Password reset done for user: ${user.email}`);
+                logger.info(`Password reset done for user: ${user.email}`);
                 return res.status(200).json({message: 'password updated'});
             } else {
                 return res.status(400).json({message: 'Failed to updated password, please try again'});
             }
         });
     } catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."})
     }
 });

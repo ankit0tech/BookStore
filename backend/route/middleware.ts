@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
 import { PrismaClient } from '@prisma/client';
+import { logger } from '../utils/logger';
 
 const prisma = new PrismaClient();
 
@@ -33,7 +34,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         const { email } = decoded as JwtPayload;
         req.authEmail = email;
         // const mail = req.authEmail || 'Guest';
-        // console.log(mail);
+        // logger.info(mail);
         next();
     });
     
@@ -55,7 +56,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
                     }
         
                     if(!allowedRoles.includes(user.role)) {
-                        console.log(`Access denied for ${user.email}`);
+                        logger.error(`Access denied for ${user.email}`);
                         return res.status(403).json({message: "Access denied!"});
                     }
                     
@@ -64,7 +65,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
             );
         
         } catch(error: any) {
-            console.log(error.message);
+            logger.error(error.message);
             return res.status(401).json({message: error.message});
         }
     } 

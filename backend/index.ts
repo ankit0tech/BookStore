@@ -7,6 +7,7 @@ import cartRoute from './route/cartRoute';
 import authRoute from './route/auth';
 import addressRoute from "./route/addressRoute";
 import adminRoute from './route/adminRoute';
+import { logger } from './utils/logger';
 
 /* removing it for now ->    /// <reference path="./custom.d.ts" /> */
 import session from 'express-session';
@@ -82,5 +83,5 @@ app.use('/admin', adminRoute);
 
 
 app.listen(config.server.port, () => {
-    console.log(`App is listening to port: ${config.server.port}`);
+    logger.info(`App is listening to port: ${config.server.port}`);
 });        

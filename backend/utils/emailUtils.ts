@@ -1,5 +1,6 @@
 import { config } from "../config";
 import nodemailer from 'nodemailer';
+import { logger } from "./logger";
 
 
 export const sendVerificationMail = (userMail: string, subject: string, message: string, verificationLink: string): void => {
@@ -17,9 +18,9 @@ export const sendVerificationMail = (userMail: string, subject: string, message:
 
     transporter.verify((error, success) => {
         if (error) {
-            console.log("SMTP configuration error: ", error);
+            logger.error("SMTP configuration error: ", error);
         } else {
-            console.log("SMTP configuration is correct", success);
+            logger.info("SMTP configuration is correct", success);
         }
     })
     
@@ -30,9 +31,9 @@ export const sendVerificationMail = (userMail: string, subject: string, message:
         text: `Hi, ${userMail} \n${message} \n${verificationLink}\nRegards,\nBookStore Team`,
     }, (error, info) => {
         if (error) {
-            return console.log(error);
+            return logger.error(error);
         }
-        console.log('Message sent: %s', info.messageId)
+        logger.info('Message sent: %s', info.messageId)
     });
     
 }

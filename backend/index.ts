@@ -64,11 +64,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(session({
-    secret: 'secret_key', 
-    resave: false, 
-    saveUninitialized: false 
-}));
 
 app.get('/', (request, response)=> {
     return  response.status(234).send('Welcome to BookStore');

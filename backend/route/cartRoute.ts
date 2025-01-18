@@ -80,9 +80,8 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                         quantity: req.body.quantity,
                         purchased: false
                     };
-                    const cartItem = await prisma.cart.create({data: newCart});
-                    logger.info('Added:', book.title);
-                    logger.info(cartItem);
+                    await prisma.cart.create({data: newCart});
+                    logger.info(`Added book to cart: ${book.title} for user: ${user.id}`);
 
                     return res.status(200).send({message: "Cart updated successfully"});
                 }

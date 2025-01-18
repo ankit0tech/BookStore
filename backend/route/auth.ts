@@ -74,7 +74,7 @@ router.post('/login/federated/google', async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            token: jwtToken
+            token: `Bearer ${jwtToken}`
         })
     } catch (error) {
         logger.error('Token verification failed: ', error);

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
 import { PrismaClient } from '@prisma/client';
+import { logger } from '../utils/logger';
 
 const prisma = new PrismaClient();
 
@@ -20,19 +21,20 @@ declare global {
 
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).send({ message: 'Authentication failed, Token not found' });
+    const bearerToken = req.headers.authorization;
+    if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
+        return res.status(401).send({ message: 'Authentication failed: Token not found or invalid' });
     }
+    const authToken = bearerToken.split(' ')[1];
 
-    jwt.verify(token, config.auth.jwtSecret, (err, decoded)=> {
+    jwt.verify(authToken, config.auth.jwtSecret, (err, decoded)=> {
         if(err || !decoded) {
             return res.status(401).send({ message: 'Authentication failed, Invalid token' });
         }
         const { email } = decoded as JwtPayload;
         req.authEmail = email;
         // const mail = req.authEmail || 'Guest';
-        // console.log(mail);
+        // logger.info(mail);
         next();
     });
     
@@ -54,7 +56,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
                     }
         
                     if(!allowedRoles.includes(user.role)) {
-                        console.log(`Access denied for ${user.email}`);
+                        logger.error(`Access denied for ${user.email}`);
                         return res.status(403).json({message: "Access denied!"});
                     }
                     
@@ -63,7 +65,7 @@ export const roleMiddleware = (allowedRoles: string[]) => {
             );
         
         } catch(error: any) {
-            console.log(error.message);
+            logger.error(error.message);
             return res.status(401).json({message: error.message});
         }
     } 

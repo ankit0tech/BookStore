@@ -1,5 +1,7 @@
 import z from 'zod';
 
+const urlRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\S*)?$/;
+
 const bookZod = z.object({
     title: z.string(),
     author: z.string(),
@@ -7,7 +9,7 @@ const bookZod = z.object({
     price: z.number(),
     category: z.string(),
     cover_image: z.union([
-        z.string().url({ message: "Invalid URL"}),
+        z.string().regex(urlRegex, { message: "Invalid URL"}),
         z.string().min(0).max(0),
         z.null(),
     ]),

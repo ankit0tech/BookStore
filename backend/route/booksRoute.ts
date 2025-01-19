@@ -4,6 +4,7 @@ import { bookZod } from "../zod/bookZod";
 import { authMiddleware, roleMiddleware } from "./middleware";
 import { IUser, User } from "../models/userModel";
 import { PrismaClient } from "@prisma/client";
+import { logger } from "../utils/logger";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -38,7 +39,7 @@ router.get('/search', async (req, res) => {
         return res.status(200).send(matchingBooks);
     
     } catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -59,7 +60,7 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
         });
     }
     catch(error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -71,7 +72,7 @@ router.get('/', async (req, res) => {
         return res.status(200).json({count: books.length, data: books});
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -88,7 +89,7 @@ router.get('/:id(\\d+)', async (req, res) => {
         res.status(200).send(book);
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -98,7 +99,7 @@ router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, re
     try {
 
         const result = bookZod.safeParse(req.body);
-        console.log(req.body);
+        logger.info(req.body);
 
         if(result.success) {
             const { id } = req.params;
@@ -117,7 +118,7 @@ router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, re
         }
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -130,7 +131,7 @@ router.delete('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req,
         const result = await prisma.book.delete({
             where: { id: Number(id) }
         });
-        console.log(`Deleted book with id ${id}`);
+        logger.info(`Deleted book with id ${id}`);
 
         if(!result) {
             return res.status(400).json({message: `Book with id: ${id} could not be found`});
@@ -138,7 +139,7 @@ router.delete('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req,
         res.status(200).json({message: 'Book deleted successfully'});
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });

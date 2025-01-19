@@ -2,6 +2,7 @@ import express from 'express';
 import { cartZod } from '../zod/cartZod';
 import { authMiddleware } from './middleware';
 import { book, PrismaClient } from '@prisma/client';
+import { logger } from '../utils/logger';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -37,7 +38,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                     }
                 });
                 if (existingCartItem) {
-                    console.log('there is an existing cart item, update the existing one');
+                    logger.info('there is an existing cart item, update the existing one');
 
                     if((existingCartItem.quantity + req.body.quantity) == 0){
                         await prisma.cart.deleteMany({ 
@@ -79,9 +80,8 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                         quantity: req.body.quantity,
                         purchased: false
                     };
-                    const cartItem = await prisma.cart.create({data: newCart});
-                    console.log('Added:', book.title);
-                    console.log(cartItem);
+                    await prisma.cart.create({data: newCart});
+                    logger.info(`Added book to cart: ${book.title} for user: ${user.id}`);
 
                     return res.status(200).send({message: "Cart updated successfully"});
                 }
@@ -97,7 +97,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
         }
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -140,7 +140,7 @@ router.get('/get-cart-items', authMiddleware, async (req, res) => {
         }
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -182,7 +182,7 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
         }
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -193,7 +193,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
     // take the user
     // take all the un-purchased items for the user and move them to purchased state
     try {
-        console.log("chekcout...");
+        logger.info("chekcout...");
         const userEmail = req.authEmail;
         const user = await prisma.userinfo.findUnique({
             where: {email: userEmail}
@@ -221,7 +221,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
         }
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });

@@ -1,11 +1,11 @@
 import express from 'express';
-import passport from 'passport';
 // import GoogleStrategy from 'passport-google-oidc';
 // import { Strategy as GoogleStrategy } from 'passport-google-oidc';
 import { PrismaClient } from '@prisma/client';
 // import { error } from 'console';
 // import { JWT, LoginTicket, OAuth2Client } from 'google-auth-library';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import { logger } from '../utils/logger';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -74,10 +74,10 @@ router.post('/login/federated/google', async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            token: jwtToken
+            token: `Bearer ${jwtToken}`
         })
     } catch (error) {
-        console.log('Token verification failed: ', error);
+        logger.error('Token verification failed: ', error);
         res.status(401).json({success: false, message: 'Invalid Token'});
     }
 });

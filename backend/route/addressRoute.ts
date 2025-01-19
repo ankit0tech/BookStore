@@ -3,6 +3,7 @@ import { addressZod } from '../zod/addressZod';
 import { IAddress } from '../models/addressModel';
 import { authMiddleware } from './middleware';
 import { PrismaClient } from '@prisma/client';
+import { logger } from '../utils/logger';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -39,14 +40,14 @@ router.post('/', authMiddleware, async (req, res) => {
                 });
             });
 
-            console.log("Address created:");
+            logger.info("Address created:");
 
             return res.status(201).send(address);
         }
         return res.status(400).json({ message: "Send required fields for address in proper format" });
     }
     catch (error: any) {
-        console.log(error.message);
+        logger.error(error.message);
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 
@@ -77,7 +78,7 @@ router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
         
     }
     catch (error: any) {
-        console.log("Internal server error: ", error.message);
+        logger.info("Internal server error: ", error.message);
         return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
@@ -106,7 +107,7 @@ router.get('/default-address', authMiddleware, async(req, res) => {
         }
     }
     catch (error: any) {
-        console.log("Internal server error: ", error.message);
+        logger.info("Internal server error: ", error.message);
         return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
@@ -130,7 +131,7 @@ router.get('/', authMiddleware, async (req, res) => {
         
     }
     catch (error: any) {
-        console.log("Internal server error: ", error.message);
+        logger.info("Internal server error: ", error.message);
         return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
@@ -184,7 +185,7 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
         }
     }
     catch (error: any) {
-        console.log("Internal server error: ", error.message);
+        logger.info("Internal server error: ", error.message);
         return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
 });
@@ -209,7 +210,7 @@ router.delete('/:id(\\d+)', authMiddleware, async (req, res) => {
         }
     }
     catch(error: any) {
-        console.log("Internal server error: ", error.message);
+        logger.info("Internal server error: ", error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later." });
     }
 })

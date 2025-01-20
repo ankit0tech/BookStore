@@ -35,6 +35,8 @@ model userinfo {
 
   cart cart[]
   address address[]
+  review review[]
+  wishlist wishlist[]
 }
 
 model book {
@@ -49,6 +51,9 @@ model book {
   cover_image String @db.VarChar(2083) @default("")
 
   cart cart[]
+  review review[]
+  wishlist wishlist[]
+  recently_viewed recently_viewed[]
 }
 
 model cart {
@@ -82,4 +87,36 @@ model address {
   updated_at DateTime @updatedAt
 
   @@index([user_id])  // Optional for querying purposes
+}
+
+model wishlist {
+  id Int @id @default(autoincrement())
+  user_id Int
+  user userinfo @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  book_id Int
+  book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model review {
+  id Int @id @default(autoincrement())
+  user_id Int
+  user userinfo @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  book_id Int
+  book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
+  rating Int
+  review_text String @db.VarChar(5000)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([user_id, book_id])
+}
+
+model recently_viewed {
+  id Int @id @default(autoincrement())
+  book_id Int
+  book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

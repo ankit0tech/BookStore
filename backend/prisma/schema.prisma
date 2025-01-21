@@ -37,6 +37,7 @@ model userinfo {
   address address[]
   review review[]
   wishlist wishlist[]
+  recently_viewed recently_viewed[]
 }
 
 model book {
@@ -97,6 +98,8 @@ model wishlist {
   book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@unique([user_id, book_id])
 }
 
 model review {
@@ -115,8 +118,12 @@ model review {
 
 model recently_viewed {
   id Int @id @default(autoincrement())
+  user_id Int
+  user userinfo @relation(fields: [user_id], references: [id], onDelete: Cascade)
   book_id Int
   book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@unique([user_id, book_id])
 }

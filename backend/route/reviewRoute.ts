@@ -3,33 +3,14 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { reviewZod } from '../zod/reviewZod';
 import { logger } from '../utils/logger';
+import { retrieveUser } from '../utils/userUtils';
+import { retrieveBook } from '../utils/bookUtils';
 
-const route = express.Router();
+
+const router = express.Router();
 const prisma = new PrismaClient();
 
-const retrieveUser = async (req: Request) => {
-    const user = await prisma.userinfo.findUnique({
-        where: {
-            email: req.authEmail
-        }
-    });
-
-    return user;
-}
-
-const retrieveBook = async (id: string, res: Response) => {
-    const book = await prisma.book.findUnique({
-        where: {
-            id: Number(id)
-        }
-    });
-    if (!book) {
-        logger.error('Error occurred while fetching book while adding review');
-        return res.status(404).json({ message: 'Error occurred, book not found'});
-    }
-}
-
-route.get('/book/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
+router.get('/book/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const reviews = await prisma.review.findMany({
@@ -46,16 +27,16 @@ route.get('/book/:id(\\d+)', authMiddleware, async (req: Request, res: Response)
     }
 });
 
-route.get('/book/:id(\\d+)/user', authMiddleware, async (req: Request, res: Response) => {
+router.get('/book/:id(\\d+)/user', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const user = await retrieveUser(req);
+        const user = await retrieveUser(req, prisma);
         if (!user) {
-            logger.error('Error occurred while fetching user while adding review');
+            logger.error('Error occurred fetching user while adding review');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
     
-        await retrieveBook(id, res);
+        await retrieveBook(id, res, prisma);
 
         const review = await prisma.review.findUnique({
             where: {
@@ -74,9 +55,9 @@ route.get('/book/:id(\\d+)/user', authMiddleware, async (req: Request, res: Resp
     }
 });
 
-route.get('/user', authMiddleware, async (req: Request, res: Response) => {
+router.get('/user', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const user = await retrieveUser(req);
+        const user = await retrieveUser(req, prisma);
         
         if (!user) {
             logger.error('Error occurred while fetching user while adding review');
@@ -97,38 +78,19 @@ route.get('/user', authMiddleware, async (req: Request, res: Response) => {
     }
 });
 
-route.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
+router.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const result = reviewZod.safeParse(req.body);
         if (result.success) {
-            // const user = await prisma.userinfo.findUnique({
-            //     where: {
-            //         email: req.authEmail
-            //     }
-            // });
-            // if (!user) {
-            //     logger.error('Error occurred while fetching user while adding review');
-            //     return res.status(401).json({ message: 'Error occurred, try again'});
-            // }
-
-            // const book = await prisma.book.findUnique({
-            //     where: {
-            //         id: Number(id)
-            //     }
-            // });
-            // if (!book) {
-            //     logger.error('Error occurred while fetching book while adding review');
-            //     return res.status(404).json({ message: 'Error occurred, book not found'});
-            // }
             
-            const user = await retrieveUser(req);
+            const user = await retrieveUser(req, prisma);
             if (!user) {
                 logger.error('Error occurred while fetching user while adding review');
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
         
-            await retrieveBook(id, res);
+            await retrieveBook(id, res, prisma);
 
             const review = await prisma.review.create({
                 data: {
@@ -158,39 +120,20 @@ route.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
     }
 });
 
-route.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
+router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     try {
 
         const { id } = req.params;
         const result = reviewZod.safeParse(req.body);
         if(result.success) {
 
-            // const user = await prisma.userinfo.findUnique({
-            //     where: {
-            //         email: req.authEmail
-            //     }
-            // });
-            // if (!user) { 
-            //     logger.error('Authentication failure while updating review')
-            //     return res.status(401).json({message: 'Authentication failure while updating review'});
-            // }
-            
-            // const book = await prisma.book.findUnique({
-            //     where: {
-            //         id: Number(id)
-            //     }
-            // })
-            // if (!book) {
-            //     return res.status(404).json({message: 'Book is not present in the database'});
-            // }
-
-            const user = await retrieveUser(req);
+            const user = await retrieveUser(req, prisma);
             if (!user) {
                 logger.error('Error occurred while fetching user while adding review');
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
         
-            await retrieveBook(id, res);
+            await retrieveBook(id, res, prisma);
 
             const updatedReview = await prisma.review.update({
                 where: {
@@ -223,16 +166,16 @@ route.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     }
 });
 
-route.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
+router.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const user = await retrieveUser(req);
+        const user = await retrieveUser(req, prisma);
         if (!user) {
             logger.error('Error occurred while fetching user while adding review');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
     
-        await retrieveBook(id, res);
+        await retrieveBook(id, res, prisma);
 
         const deletedReview = await prisma.review.delete({
             where: {
@@ -256,4 +199,4 @@ route.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) =
     }
 });
 
-export default route;
+export default router;

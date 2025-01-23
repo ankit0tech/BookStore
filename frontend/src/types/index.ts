@@ -43,3 +43,13 @@ export interface Address {
     country: string;
     is_default: boolean;
 }
+
+export interface Review {
+    id: number,
+    user_id: number,
+    book_id: number,
+    rating: number,
+    review_text: string;
+    created_at: Date;
+    updated_at: Date;
+}

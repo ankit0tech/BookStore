@@ -6,6 +6,7 @@ import BackButton from "../components/BackButton";
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
 import { RootState } from '../types/index';
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 const initialState: PurchaseInterface = {
@@ -17,6 +18,7 @@ const Orders = () => {
     const [ loading, setLoading ] = useState(false);
     const [ orders, setOrders ] = useState(initialState);
     const userInfo = useSelector((state: RootState) => state.userinfo);
+    const navigate = useNavigate();
 
     const formatDate = (date: Date) => {
         const d = new Date(date);
@@ -83,6 +85,11 @@ const Orders = () => {
                                             <div className="p-2">
                                                 Total: { item.book.price * item.quantity }
                                             </div>
+                                        </div>
+                                        <div className="my-2 p-2 border rounded-lg">
+                                            <button onClick={() => { navigate(`/review/${item.book.id}`)}}>
+                                                Add a review
+                                            </button>
                                         </div>
                                     </div>
                                 </li>

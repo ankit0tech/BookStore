@@ -82,6 +82,7 @@ router.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) =>
     try {
         const { id } = req.params;
         const result = reviewZod.safeParse(req.body);
+        
         if (result.success) {
             
             const user = await retrieveUser(req, prisma);

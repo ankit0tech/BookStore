@@ -5,7 +5,7 @@ import { enqueueSnackbar } from "notistack";
 
 
 
-const Reviews: React.FC<{id:number}>= ({ id }) => {
+const Reviews: React.FC<{id:number}> = ({ id }) => {
 
     const [reviews, setReviews] = useState<Review[]>([]);
 

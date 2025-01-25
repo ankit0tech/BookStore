@@ -27,6 +27,7 @@ import useAuth from './hooks/useAuth';
 import { useSelector } from 'react-redux';
 import { RootState } from './types';
 import PageNotFound from './pages/PageNotFound';
+import AddReview from './pages/AddReview';
 
 export interface ChildProps {
   books: Book[];
@@ -75,6 +76,8 @@ const App = () => {
         <Route path='/reset-password/verify' element={<ResetPassword />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/orders' element={<Orders />} />
+        <Route path='/review/:id' element={<AddReview />} />
+        
         <Route path='*' element={<PageNotFound />} />
       </Routes>   
     </ GoogleOAuthProvider>

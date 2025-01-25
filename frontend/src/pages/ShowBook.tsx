@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import { enqueueSnackbar } from 'notistack';
+import Reviews from '../components/review/Reviews';
 
 
 interface BookState {
@@ -42,28 +43,34 @@ const ShowBook = () => {
             {loading ? (
                 <Spinner />
             ) : (
-                <div className='flex flex flex-col border-t-2 border-purple-500 rounded-x1 w-fit p-4'>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Title:</span>
-                        <span>{book.title}</span>
+                <div className="p-4 flex flex-row justify-between">
+                    <div className='flex flex flex-col border-t-2 border-purple-500 rounded-x1 w-fit min-w-[200px] p-4 md:ml-20'>
+                        <div className='my-4'>
+                            <span className='text-xl mr-4 text-grey-500'>Title:</span>
+                            <span>{book.title}</span>
+                        </div>
+                        <div className='my-4'>
+                            <span className='text-xl mr-4 text-grey-500'>Author:</span>
+                            <span>{book.author}</span>
+                        </div>
+                        <div className='my-4'>
+                            <span className='text-xl mr-4 text-grey-500'>Publish Year:</span>
+                            <span>{book.publish_year}</span>
+                        </div>
+                        <div className='my-4'>
+                            <span className='text-xl mr-4 text-grey-500'>Price:</span>
+                            <span>{book.price}</span>
+                        </div>
+                        <div className='my-4'>
+                            <span className='text-xl mr-4 text-grey-500'>Category:</span>
+                            <span>{book.category}</span>
+                        </div>
                     </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Author:</span>
-                        <span>{book.author}</span>
+
+                    <div className='m-4 md:mr-20'>
+                        <Reviews id={Number(book.id)} />
                     </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Publish Year:</span>
-                        <span>{book.publish_year}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Price:</span>
-                        <span>{book.price}</span>
-                    </div>
-                    <div className='my-4'>
-                        <span className='text-xl mr-4 text-grey-500'>Category:</span>
-                        <span>{book.category}</span>
-                    </div>
-                </div>
+                </ div>
             )}
         </div>
     );

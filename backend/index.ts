@@ -7,11 +7,10 @@ import cartRoute from './route/cartRoute';
 import authRoute from './route/auth';
 import addressRoute from "./route/addressRoute";
 import adminRoute from './route/adminRoute';
+import reviewRoute from './route/reviewRoute';
+import wishlistRoute from './route/wishlistRoute';
+import recentlyviewedRoute from './route/recentlyviewedRoute';
 import { logger } from './utils/logger';
-
-/* removing it for now ->    /// <reference path="./custom.d.ts" /> */
-import session from 'express-session';
-// require('./auth'); 
 
 
 const app = express();
@@ -75,6 +74,9 @@ app.use('/cart', cartRoute);
 app.use('/address', addressRoute);
 app.use('/auth', authRoute);
 app.use('/admin', adminRoute);
+app.use('/review', reviewRoute);
+app.use('/wishlist', wishlistRoute);
+app.use('/recently-viewed', recentlyviewedRoute);
 
 
 app.listen(config.server.port, () => {

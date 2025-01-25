@@ -63,30 +63,38 @@ const AddReview = () => {
     }
 
     return (
-        <form className="p-4">
-            <label htmlFor="rating">Overall Rating:</label>
-            <input 
-                id='rating'
-                type='number'
-                name='number'
-                min='1'
-                max='5'
-                value={rating.toString()} 
-                onChange={(e) => {setRating(Number(e.target.value))}}>
+        <form 
+            className="p-4 flex flex-col min-w-1/4 max-w-[300px] mx-auto"  
+            onSubmit={handleSubmit}>
+        
+                <label htmlFor="rating">Overall Rating:</label>
+                <input 
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    id='rating'
+                    type='number'
+                    name='number'
+                    min='1'
+                    max='5'
+                    value={rating.toString()} 
+                    onChange={(e) => {setRating(Number(e.target.value))}}>
 
-            </input>
-            
-            <label htmlFor="review_text">Review:</label>
-            <input 
-                id='review_text'
-                type='text'
-                name='review_text'
-                value={review}
-                onChange={(e) => {setReview(e.target.value)}}>
+                </input>
+                
+                <label htmlFor="review_text">Review:</label>
+                <textarea 
+                    className="h-40 appearance-none rounded-lg my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    id='review_text'
+                    name='review_text'
+                    value={review}
+                    onChange={(e) => {setReview(e.target.value)}}>
 
-            </input>
-            
-            <button type='submit' onClick={handleSubmit}>Save</button>
+                </textarea>
+                
+                <button 
+                    className="rounded-full mt-2 text-white bg-purple-500 px-4 py-2 border border-gray-300"
+                    type='submit'>
+                        Save
+                </button>
         </form>
     );
 }

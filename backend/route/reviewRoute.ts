@@ -3,9 +3,20 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { reviewZod } from '../zod/reviewZod';
 import { logger } from '../utils/logger';
-import { retrieveUser } from '../utils/userUtils';
+import { getUserFromId, retrieveUser } from '../utils/userUtils';
 import { retrieveBook } from '../utils/bookUtils';
 
+interface reviewsInterface {
+    id: number;
+    created_at: Date;
+    updated_at: Date;
+    user_id: number;
+    book_id: number;
+    rating: number;
+    review_text: string;
+    user_email?: string | null;
+    book_title?: string | null;
+}
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -13,13 +24,23 @@ const prisma = new PrismaClient();
 router.get('/book/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const reviews = await prisma.review.findMany({
+        const reviews: reviewsInterface[] = await prisma.review.findMany({
             where: {
                 book_id: Number(id),
             }
         });
 
-        return res.status(200).json(reviews);
+        const updatedReviews = await Promise.all(
+            reviews.map(async (review) => {
+                const user = await getUserFromId(review.user_id, prisma);
+                return {
+                    ...review,
+                    user_email: user?.email,
+                }
+            })
+        );
+
+        return res.status(200).json(updatedReviews);
 
     } catch (e) {
         logger.error('Error while fetching review for book');
@@ -36,8 +57,6 @@ router.get('/book/:id(\\d+)/user', authMiddleware, async (req: Request, res: Res
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
     
-        await retrieveBook(id, res, prisma);
-
         const review = await prisma.review.findUnique({
             where: {
                 user_id_book_id: {
@@ -64,13 +83,25 @@ router.get('/user', authMiddleware, async (req: Request, res: Response) => {
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
 
-        const reviews = await prisma.review.findMany({
+        const reviews: reviewsInterface[] = await prisma.review.findMany({
             where: {
                 user_id: user.id,
             }
         });
 
-        return res.status(200).json(reviews);
+        
+        const updatedReviews = await Promise.all(
+            reviews.map(async (review) => {
+                const book = await retrieveBook(review.book_id, prisma);
+                return {
+                    ...review,
+                    book_title: book?.title,
+                }
+            })
+        );
+
+
+        return res.status(200).json(updatedReviews);
 
     } catch (e) {
         logger.error('Error while fetching review for book');
@@ -91,8 +122,6 @@ router.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) =>
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
         
-            await retrieveBook(id, res, prisma);
-
             const review = await prisma.review.create({
                 data: {
                     rating: req.body.rating,
@@ -134,8 +163,6 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
         
-            await retrieveBook(id, res, prisma);
-
             const updatedReview = await prisma.review.update({
                 where: {
                     user_id_book_id: {
@@ -176,8 +203,6 @@ router.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) 
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
     
-        await retrieveBook(id, res, prisma);
-
         const deletedReview = await prisma.review.delete({
             where: {
                 user_id_book_id: {

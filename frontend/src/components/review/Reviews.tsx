@@ -10,6 +10,7 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
     const [reviews, setReviews] = useState<Review[]>([]);
 
     useEffect(() => {
+        if (!id) return;
         try {
             api.get(`http://localhost:5555/review/book/${id}`)
             .then((response)=> {
@@ -21,7 +22,7 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
         } catch(error: any) {
             enqueueSnackbar('Error fetching reviews', { variant: 'error' });
         }
-            
+        
     }, []);
 
 
@@ -31,12 +32,15 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
                 <div> No reviews for this book till now !!!</div> 
                     :
                 <div>
-                    <div> Reviews:</div>
+                    <div className="my-4 font-bold"> Reviews:</div>
                     <ul>
                         {reviews.map((review) => (
-                            <li key={review.id}>
-                                <div> Rating:  {review.rating} </div>
-                                <div> Review:  {review.review_text} </div>
+                            <li 
+                                key={review.id}
+                                className="border rounded-lg p-2 my-4">
+                                    <div className="my-1"> By User: {review.user_email} </div>
+                                    <div className="my-1"> Rating:  {review.rating} </div>
+                                    <div className="my-1"> Review:  {review.review_text} </div>
                             </li>    
                         ))}
                     </ul>

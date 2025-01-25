@@ -25,12 +25,12 @@ const UpdateAddress = () => {
         api
         .get(`http://localhost:5555/address/${id}`)
         .then((response) => {
-            setStreet(response.data.street_address);
-            setCity(response.data.city);
-            setState(response.data.state);
-            setZipcode(response.data.zip_code);
-            setCountry(response.data.country);
-            setIsDefault(response.data.is_default);
+            setStreet(response.data.street_address || '');
+            setCity(response.data.city || '');
+            setState(response.data.state || '');
+            setZipcode(response.data.zip_code || '');
+            setCountry(response.data.country || '');
+            setIsDefault(response.data.is_default || false);
             setLoading(false);
         })
         .catch((error)=>{

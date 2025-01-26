@@ -5,7 +5,7 @@ import { RootState } from "../types/index";
 import { useSelector } from "react-redux";
 import { FcMinus, FcPlus } from "react-icons/fc";
 import { BiMinus, BiPlus } from "react-icons/bi";
-import { getCartItems, updateCart } from "../utils/cartUtils";
+import { getCartItems, updateCart, useHandleCartUpdate } from "../utils/cartUtils";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 import { useDispatch } from "react-redux";
 
@@ -23,6 +23,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
     const userData = useSelector((state: RootState) => state.userinfo);
     const authToken = userData.token;
     const dispatch = useDispatch();
+    const { handleCartUpdate } = useHandleCartUpdate();
 
     // console.log(cartItems);
     // console.log(typeof cartItems);
@@ -40,17 +41,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
         navigate('/checkout');
     }
 
-    const handleUpdateCart = async (bookId: number, count: number) => {
-        if (!authToken) {
-            navigate('/login');
-        }
-        else {
-            await updateCart(bookId, count, authToken);
-            const items = await getCartItems(authToken);
-            dispatch(setCartItemsSlice(items))
-        }
-    }
-
+    
     return (
         <>
         {isOpen ? (
@@ -75,8 +66,8 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                                         <li key={item.book.id}>
                                             <div className="flex justify-start items-center gap-x-4">
                                                 { item.quantity } • { item.book.title }
-                                                <BiMinus onClick={() => {handleUpdateCart(item.book.id, -1)}} />
-                                                <BiPlus onClick={() => {handleUpdateCart(item.book.id, 1)}} />
+                                                <BiMinus onClick={() => {handleCartUpdate(item.book.id, -1)}} />
+                                                <BiPlus onClick={() => {handleCartUpdate(item.book.id, 1)}} />
                                             </div>
                                             {/* <FcPlus onClick={() => {handleAddToCart(book.id)}} /> */}
                                             {/* <h3 className="text-lg ">{item.bookTitle}</h3>

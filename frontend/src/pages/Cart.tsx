@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCartItems, updateCart } from "../utils/cartUtils";
+import { useHandleCartUpdate } from "../utils/cartUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../types";
 import { useNavigate } from "react-router-dom";
@@ -7,33 +7,18 @@ import { CartInterface } from "../types";
 import BackButton from '../components/BackButton'
 import Spinner from "../components/Spinner";
 import { BiMinus, BiPlus } from "react-icons/bi";
-import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
-import { enqueueSnackbar } from "notistack";
+// import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
+// import { enqueueSnackbar } from "notistack";
 
 
 const Cart = () => {
 
     const navigate = useNavigate();
     const cartItems = useSelector((state: RootState) => state.cartinfo);
-    const userinfo = useSelector((state: RootState) => state.userinfo);
-    const dispatch = useDispatch();
-    const authToken = userinfo.token;
-    
-    const handleUpdateCart = async (bookId: number, count: number) => {
-        try {
-            if (!authToken) {
-                navigate('/login');
-            }
-            else {
-                await updateCart(bookId, count, authToken);
-                const items = await getCartItems(authToken);
-                dispatch(setCartItemsSlice(items))
-            }
-            
-        } catch(error: any) {
-            enqueueSnackbar("Error while updating cart", {variant: 'error'});
-        }
-    }
+    // const userinfo = useSelector((state: RootState) => state.userinfo);
+    // const dispatch = useDispatch();
+    // const authToken = userinfo.token;
+    const { handleCartUpdate } = useHandleCartUpdate();
     
 
     return(
@@ -69,8 +54,8 @@ const Cart = () => {
                                                 Total: { item.book.price * item.quantity }
                                             </div>
                                             <div className="p-2 flex justify-around">
-                                                <BiMinus onClick={() => {handleUpdateCart(item.book.id, -1)}} />
-                                                <BiPlus onClick={() => {handleUpdateCart(item.book.id, 1)}} />
+                                                <BiMinus onClick={() => {handleCartUpdate(item.book.id, -1)}} />
+                                                <BiPlus onClick={() => {handleCartUpdate(item.book.id, 1)}} />
                                             </div>
                                         </div>
                                     </div>

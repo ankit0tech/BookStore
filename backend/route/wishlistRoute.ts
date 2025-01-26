@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { logger } from '../utils/logger';
 import { retrieveUser } from '../utils/userUtils';
-import { retrieveBook } from '../utils/bookUtils';
 
 
 const router = express.Router();
@@ -18,7 +17,6 @@ router.post('/add/:id(\\d+)', authMiddleware, async (req: Request, res: Response
             logger.error('Error fetching user while adding item to wishlist');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
-        await retrieveBook(id, res, prisma);
         
         const wishlistItem = await prisma.wishlist.create({
             data: {
@@ -77,7 +75,6 @@ router.delete('/remove/:id(\\d+)', authMiddleware, async ( req: Request, res: Re
             logger.error('Error fetching user while deleting item from wishlist');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
-        await retrieveBook(id, res, prisma);
 
         const deletedItem = await prisma.wishlist.delete({
             where: {

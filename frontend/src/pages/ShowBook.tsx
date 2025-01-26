@@ -5,6 +5,7 @@ import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import { enqueueSnackbar } from 'notistack';
 import Reviews from '../components/review/Reviews';
+import { useHandleCartUpdate } from '../utils/cartUtils';
 
 
 interface BookState {
@@ -20,6 +21,11 @@ const ShowBook = () => {
     const [book, setBook] = useState<BookState>({id:'', title:'', author: '', publish_year: '', price: 0, category:''});
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
+    const { handleCartUpdate } =useHandleCartUpdate();
+
+    const handleAddToWishList = (id: number) => {
+        console.log("Add item to wishlist");
+    }
 
     useEffect(() => {
         setLoading(true);
@@ -64,6 +70,16 @@ const ShowBook = () => {
                         <div className='my-4'>
                             <span className='text-xl mr-4 text-grey-500'>Category:</span>
                             <span>{book.category}</span>
+                        </div>
+                        <div className='my-4'>
+                            <button
+                                className="mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700"
+                                onClick={() => handleCartUpdate(Number(book.id), 1)}
+                            >Add to cart</button>
+                            <button
+                                className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700"
+                                onClick={() => handleAddToWishList(Number(book.id))}
+                            >Add to wishlist</button>
                         </div>
                     </div>
 

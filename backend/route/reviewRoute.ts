@@ -27,20 +27,17 @@ router.get('/book/:id(\\d+)', authMiddleware, async (req: Request, res: Response
         const reviews: reviewsInterface[] = await prisma.review.findMany({
             where: {
                 book_id: Number(id),
-            }
+            },
+            include: {
+                user: {
+                    select: {
+                        email: true,
+                    },
+                },
+            },
         });
 
-        const updatedReviews = await Promise.all(
-            reviews.map(async (review) => {
-                const user = await getUserFromId(review.user_id, prisma);
-                return {
-                    ...review,
-                    user_email: user?.email,
-                }
-            })
-        );
-
-        return res.status(200).json(updatedReviews);
+        return res.status(200).json(reviews);
 
     } catch (e) {
         logger.error('Error while fetching review for book');
@@ -86,22 +83,17 @@ router.get('/user', authMiddleware, async (req: Request, res: Response) => {
         const reviews: reviewsInterface[] = await prisma.review.findMany({
             where: {
                 user_id: user.id,
+            },
+            include: {
+                book: {
+                    select: {
+                        title: true
+                    }
+                }
             }
         });
 
-        
-        const updatedReviews = await Promise.all(
-            reviews.map(async (review) => {
-                const book = await retrieveBook(review.book_id, prisma);
-                return {
-                    ...review,
-                    book_title: book?.title,
-                }
-            })
-        );
-
-
-        return res.status(200).json(updatedReviews);
+        return res.status(200).json(reviews);
 
     } catch (e) {
         logger.error('Error while fetching review for book');

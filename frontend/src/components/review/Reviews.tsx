@@ -38,7 +38,7 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
                             <li 
                                 key={review.id}
                                 className="border rounded-lg p-2 my-4">
-                                    <div className="my-1"> By User: {review.user_email} </div>
+                                    <div className="my-1"> By User: {review.user?.email} </div>
                                     <div className="my-1"> Rating:  {review.rating} </div>
                                     <div className="my-1"> Review:  {review.review_text} </div>
                             </li>    

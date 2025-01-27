@@ -48,8 +48,8 @@ export interface Review {
     id: number;
     user_id: number;
     book_id: number;
-    user_email: string | null;
-    book_title: string | null;
+    user?: { email : string };
+    book?: { title: string};
     rating: number;
     review_text: string;
     created_at: Date;

@@ -7,7 +7,7 @@ const AdminPanel = () => {
     return (
         <div className="p-4 ">
             <button
-                className="m-2 p-2 border-2 rounded-xl" 
+                className="m-2 p-4 border-2 rounded-lg"
                 onClick={() => navigate('/superadmin/register-admin')}
             >
                     Add new admin

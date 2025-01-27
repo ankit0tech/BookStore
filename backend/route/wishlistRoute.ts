@@ -49,6 +49,9 @@ router.get('/items', authMiddleware, async ( req: Request, res: Response) => {
         const wishlist = await prisma.wishlist.findMany({
             where: {
                 user_id: user.id
+            },
+            include: {
+                book: true
             }
         });
         

@@ -28,6 +28,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from './types';
 import PageNotFound from './pages/PageNotFound';
 import AddReview from './pages/AddReview';
+import Wishlist from './pages/Wishlist';
 
 export interface ChildProps {
   books: Book[];
@@ -77,6 +78,7 @@ const App = () => {
         <Route path='/profile' element={<Profile />} />
         <Route path='/orders' element={<Orders />} />
         <Route path='/review/:id' element={<AddReview />} />
+        <Route path='/wishlist' element={<Wishlist />} />
         
         <Route path='*' element={<PageNotFound />} />
       </Routes>   

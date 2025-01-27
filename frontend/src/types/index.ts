@@ -55,3 +55,12 @@ export interface Review {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface Wishlist {
+    id: number;
+    book: Book;
+    book_id: number;
+    user_id: number;
+    created_at: Date;
+    updated_at: Date;
+}

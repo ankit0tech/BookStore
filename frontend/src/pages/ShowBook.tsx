@@ -6,6 +6,7 @@ import Spinner from '../components/Spinner';
 import { enqueueSnackbar } from 'notistack';
 import Reviews from '../components/review/Reviews';
 import { useHandleCartUpdate } from '../utils/cartUtils';
+import api from '../utils/api';
 
 
 interface BookState {
@@ -24,7 +25,17 @@ const ShowBook = () => {
     const { handleCartUpdate } =useHandleCartUpdate();
 
     const handleAddToWishList = (id: number) => {
-        console.log("Add item to wishlist");
+
+        api.post(`http://localhost:5555/wishlist/add/${id}`)
+        .then((response) => {
+            console.log(response);
+            enqueueSnackbar('Added item to wishlist', { variant: 'success' });
+        })
+        .catch((error) => {
+            console.log(error);
+            enqueueSnackbar('Error while adding item to wishlist', { variant: 'error' });
+        });
+
     }
 
     useEffect(() => {

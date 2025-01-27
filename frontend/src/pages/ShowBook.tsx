@@ -28,7 +28,6 @@ const ShowBook = () => {
 
         api.post(`http://localhost:5555/wishlist/add/${id}`)
         .then((response) => {
-            console.log(response);
             enqueueSnackbar('Added item to wishlist', { variant: 'success' });
         })
         .catch((error) => {

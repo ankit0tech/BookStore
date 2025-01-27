@@ -24,7 +24,7 @@ const DeleteReviewOverlay: React.FC<OverlayProps> = ({ id, isOpen, onClose }) =>
 
         api.delete(`http://localhost:5555/review/${id}`)
         .then((response) => {
-            console.log(response.data);
+            
             enqueueSnackbar('Deleted review successfully', { variant: 'success'});
             navigate(-1);
         })

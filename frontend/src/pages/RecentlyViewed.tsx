@@ -1,59 +1,57 @@
 import { useEffect, useState } from "react";
+import BackButton from "../components/BackButton";
+import Spinner from "../components/Spinner";
+import { RecentlyViewed as RecentlyViewedInterface } from "../types";
+import { Link } from "react-router-dom";
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
-import Spinner from "../components/Spinner";
-import { Wishlist as WishListInterface } from "../types";
-import { Link } from "react-router-dom";
-import BackButton from "../components/BackButton";
 
-
-
-const Wishlist = () => {
-
+const RecentlyViewed = () => {
+    
     const [loading, setLoading] = useState(false);
-    const [wishlist, setWishlist] = useState<WishListInterface[]>([]);
+    const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewedInterface[]>([]);
 
 
     useEffect( ()=> {
-
-        const fetchWishlist = async () => {
+        
+        const fetchRecentlyViewed = async () => {
         
             setLoading(true);
     
-            await api.get(`http://localhost:5555/wishlist/items`)
+            await api.get(`http://localhost:5555/recently-viewed`)
             .then((response)=> {
-                setWishlist(response.data);
+                setRecentlyViewed(response.data);
                 setLoading(false);
             })
             .catch((error) =>{
                 console.log(error);
-                enqueueSnackbar('Error while loading wishlist items');
+                enqueueSnackbar('Error while loading recently viewed items');
                 setLoading(false);
             });
-    
         }
     
-        fetchWishlist();
+        fetchRecentlyViewed();
 
     }, []);
 
     const heandleRemove = async (id: number) => {
 
-        const originalWishList = [...wishlist];
+        const originalRecentlyViewed = [...recentlyViewed];
 
-        setWishlist((prev) => prev.filter((item) => item.book.id != id));
+        setRecentlyViewed((prev) => prev.filter((item) => item.book.id != id));
 
-        await api.delete(`http://localhost:5555/wishlist/remove/${id}`)
+        await api.delete(`http://localhost:5555/recently-viewed/remove/${id}`)
         .then((response) =>{
-            enqueueSnackbar('Removed from wishlist successfully', { variant: 'success'});
+            enqueueSnackbar('Removed from recently viewed successfully', { variant: 'success'});
         })
         .catch((error) => {
             console.log(error);
-            setWishlist(originalWishList);
-            enqueueSnackbar('Error while removing item from wishlist', { variant: 'error'});
+            setRecentlyViewed(originalRecentlyViewed);
+            enqueueSnackbar('Error while removing item from recently viewed', { variant: 'error'});
         })
 
     }
+
 
     return (
         <div className="p-4">
@@ -62,10 +60,10 @@ const Wishlist = () => {
                 <Spinner />
                 :
                 <div>
-                    { !wishlist.length ? 
-                        <div className="p-4">No recently wishlist</div> 
+                    { !recentlyViewed.length ? 
+                        <div className="p-4">No recently viewed item</div> 
                     :
-                        wishlist && wishlist.map((item) => (
+                        recentlyViewed && recentlyViewed.map((item) => (
                             <div 
                                 key={item.id}
                                 className="flex p-4"    
@@ -86,17 +84,11 @@ const Wishlist = () => {
                                     > Title: {item.book.title} </Link>
                                     <div> Price: {item.book.price} </div>
                                     <div> Author: {item.book.author} </div>
-                                    <div> Item added: {new Date(item.updated_at).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric',
-                                            })}
-                                    </div>
                                     <button
                                         className="bg-purple-500 text-white py-1 px-4 my-1 font-bold rounded-full hover:bg-purple-700"
                                         onClick={() => {heandleRemove(item.book.id)}}
                                     >
-                                        Remove from whishlist
+                                        Remove from recently viewed
                                     </button>
                                 </div>
                             </div>
@@ -108,4 +100,4 @@ const Wishlist = () => {
     );
 }
 
-export default Wishlist;
+export default RecentlyViewed;

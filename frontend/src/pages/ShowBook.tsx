@@ -7,6 +7,8 @@ import { enqueueSnackbar } from 'notistack';
 import Reviews from '../components/review/Reviews';
 import { useHandleCartUpdate } from '../utils/cartUtils';
 import api from '../utils/api';
+import { RootState } from '../types';
+import { useSelector } from 'react-redux';
 
 
 interface BookState {
@@ -23,6 +25,7 @@ const ShowBook = () => {
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const { handleCartUpdate } =useHandleCartUpdate();
+    const isAuthenticated = useSelector((state: RootState) => state.userinfo.isAuthenticated);
 
     const handleAddToWishList = (id: number) => {
 
@@ -49,6 +52,18 @@ const ShowBook = () => {
             enqueueSnackbar("Error while loading book data");
             setLoading(false);
         })
+
+        // If user is logged in then add book to recently viewed
+        if (isAuthenticated) {
+
+            api.post(`http://localhost:5555/recently-viewed/add/${id}`)
+            .then(() => {
+            })
+            .catch((error) =>{
+                console.log('Error fetching recently viewed items');
+            });
+
+        }
 
     }, []);
 

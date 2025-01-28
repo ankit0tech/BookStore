@@ -64,3 +64,12 @@ export interface Wishlist {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface RecentlyViewed {
+    id: number;
+    book: Book;
+    book_id: number;
+    user_id: number;
+    created_at: Date;
+    updated_at: Date;
+}

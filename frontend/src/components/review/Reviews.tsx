@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import api from "../../utils/api";
 import { Review } from "../../types";
 import { enqueueSnackbar } from "notistack";
+import axios from "axios";
 
 
 
@@ -12,7 +12,7 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
     useEffect(() => {
         if (!id) return;
         try {
-            api.get(`http://localhost:5555/review/book/${id}`)
+            axios.get(`http://localhost:5555/review/book/${id}`)
             .then((response)=> {
                 setReviews(response.data);
             })

@@ -9,7 +9,7 @@ import { retrieveUser } from '../utils/userUtils';
 const router = express.Router();
 const prisma = new PrismaClient();
 
-router.get('/book/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
+router.get('/book/:id(\\d+)', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const reviews = await prisma.review.findMany({

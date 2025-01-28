@@ -3,44 +3,29 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { reviewZod } from '../zod/reviewZod';
 import { logger } from '../utils/logger';
-import { getUserFromId, retrieveUser } from '../utils/userUtils';
-import { retrieveBook } from '../utils/bookUtils';
+import { retrieveUser } from '../utils/userUtils';
 
-interface reviewsInterface {
-    id: number;
-    created_at: Date;
-    updated_at: Date;
-    user_id: number;
-    book_id: number;
-    rating: number;
-    review_text: string;
-    user_email?: string | null;
-    book_title?: string | null;
-}
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-router.get('/book/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
+router.get('/book/:id(\\d+)', async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const reviews: reviewsInterface[] = await prisma.review.findMany({
+        const reviews = await prisma.review.findMany({
             where: {
                 book_id: Number(id),
-            }
+            },
+            include: {
+                user: {
+                    select: {
+                        email: true,
+                    },
+                },
+            },
         });
 
-        const updatedReviews = await Promise.all(
-            reviews.map(async (review) => {
-                const user = await getUserFromId(review.user_id, prisma);
-                return {
-                    ...review,
-                    user_email: user?.email,
-                }
-            })
-        );
-
-        return res.status(200).json(updatedReviews);
+        return res.status(200).json(reviews);
 
     } catch (e) {
         logger.error('Error while fetching review for book');
@@ -83,25 +68,20 @@ router.get('/user', authMiddleware, async (req: Request, res: Response) => {
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
 
-        const reviews: reviewsInterface[] = await prisma.review.findMany({
+        const reviews = await prisma.review.findMany({
             where: {
                 user_id: user.id,
+            },
+            include: {
+                book: {
+                    select: {
+                        title: true
+                    }
+                }
             }
         });
 
-        
-        const updatedReviews = await Promise.all(
-            reviews.map(async (review) => {
-                const book = await retrieveBook(review.book_id, prisma);
-                return {
-                    ...review,
-                    book_title: book?.title,
-                }
-            })
-        );
-
-
-        return res.status(200).json(updatedReviews);
+        return res.status(200).json(reviews);
 
     } catch (e) {
         logger.error('Error while fetching review for book');

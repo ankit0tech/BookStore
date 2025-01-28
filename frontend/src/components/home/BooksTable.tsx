@@ -3,41 +3,27 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
 import { FcPlus } from "react-icons/fc";
-import { useNavigate } from 'react-router-dom';
-import { updateCart } from '../../utils/cartUtils';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../types';
+// import { useNavigate } from 'react-router-dom';
+import { useHandleCartUpdate } from '../../utils/cartUtils';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../../types';
 import { Book } from '../../types';
 import { useState } from 'react';
 import Popup from '../../components/Popup';
-import { useDispatch } from "react-redux";
-import { setCartItems as setCartItemsSlice } from "../../redux/cartSlice";
-import { getCartItems } from "../../utils/cartUtils";
-import { enqueueSnackbar } from 'notistack';
+// import { useDispatch } from "react-redux";
+// import { setCartItems as setCartItemsSlice } from "../../redux/cartSlice";
+// import { getCartItems } from "../../utils/cartUtils";
+// import { enqueueSnackbar } from 'notistack';
 
 
 const BooksTable = ({ books }: { books: Book[] }) => {
-    const navigate = useNavigate();
-    const userData = useSelector((state: RootState) => state.userinfo);
-    const authToken = userData.token;
+
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const dispatch = useDispatch();
-
-    const handleAddToCart = async (bookId: number) => {
-
-        try {
-            if (!authToken) {
-                navigate('/login');
-            }
-            else {
-                await updateCart(bookId, 1, authToken);
-                const items = await getCartItems(authToken);
-                dispatch(setCartItemsSlice(items));
-            }
-        } catch(error) {
-            enqueueSnackbar('Error while loading books', {variant: 'error'})
-        }
-    }
+    const { handleCartUpdate } = useHandleCartUpdate();
+    
+    // const handleAddToCart = (id: number, count: number) => {
+    //     addToCart(id, count);
+    // }
 
 
     return (
@@ -73,7 +59,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                                         <FcPlus />
                                     </Link> */}
                                     {/* <div onClick={() => {handleAddToCart(book.id)}}> */}
-                                        <FcPlus onClick={() => {handleAddToCart(book.id)}} />
+                                        <FcPlus onClick={() => {handleCartUpdate(book.id, 1)}} />
                                     {/* </div> */}
                                     <Link to={`/books/details/${book.id}`}>
                                         <BsInfoCircle className='text-2x1 text-green-800' />

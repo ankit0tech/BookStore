@@ -8,6 +8,7 @@ import axios from "axios";
 const Reviews: React.FC<{id:number}> = ({ id }) => {
 
     const [reviews, setReviews] = useState<Review[]>([]);
+    const [averageRating, setAverageRating] = useState(0);
 
     useEffect(() => {
         if (!id) return;
@@ -15,6 +16,12 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
             axios.get(`http://localhost:5555/review/book/${id}`)
             .then((response)=> {
                 setReviews(response.data);
+                
+                if(response.data.length != 0) {
+                    const sum = response.data.reduce((acc: number, item:Review) => acc + item.rating, 0);
+                    setAverageRating(sum / response.data.length);
+                }
+
             })
             .catch((error: any)=> {
                 console.log(error);
@@ -32,6 +39,11 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
                 <div> No reviews for this book till now !!!</div> 
                     :
                 <div>
+                    {averageRating != 0 ?
+                        <div>Average Rating: {averageRating}</div>
+                    : 
+                        null
+                    }
                     <div className="my-4 font-bold"> Reviews:</div>
                     <ul>
                         {reviews.map((review) => (

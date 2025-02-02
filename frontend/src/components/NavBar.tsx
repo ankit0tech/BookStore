@@ -11,18 +11,38 @@ import { useDispatch } from "react-redux";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 import axios from "axios";
 import { ChildProps } from '../App';
+import { enqueueSnackbar } from "notistack";
 
 
-const NavBar = ({ books, setBooks}: ChildProps) => {
+const NavBar = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: ChildProps) => {
 
     const [query, setQuery] = useState<string>('');
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const navigate = useNavigate();
 
-    const handleSearch = async () => {
-        const result = await axios.get(`http://localhost:5555/books/search?query=${query}`);
-        console.log('Search result: ', result);
-        setBooks(result.data);
+    const handleSearch = () => {
+        if (query) {
+            axios.get(`http://localhost:5555/books/search?query=${query}`)
+            .then((response) => {
+                console.log('Search result: ', response);
+                setBooks(response.data);
+                setPrevCursor(null);
+                setNextCursor(null);
+            }
+            ).catch((error)=>{
+                enqueueSnackbar("Error while loading books", {variant: 'error'});
+            });
+        } else {
+            axios
+            .get('http://localhost:5555/books')
+            .then((response) => {
+                setBooks(response.data.data);
+                setPrevCursor(response.data.prevCursor);
+                setNextCursor(response.data.nextCursor);
+            }).catch((error)=>{
+                enqueueSnackbar("Error while loading books", {variant: 'error'});
+            });
+        }
     }
 
     // const userData = useSelector((state: RootState) => state.userinfo);

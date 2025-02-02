@@ -18,19 +18,14 @@ import Popup from '../../components/Popup';
 
 const BooksTable = ({ books }: { books: Book[] }) => {
 
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    // const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const { handleCartUpdate } = useHandleCartUpdate();
-    
-    // const handleAddToCart = (id: number, count: number) => {
-    //     addToCart(id, count);
-    // }
-
 
     return (
         <div>
-            <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
+            {/* <Popup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
                 <h2>Book Added to the cart</h2>
-            </Popup>
+            </Popup> */}
             <table className='w-full mx-auto max-w-[1000px] rounded-lg'>
                 <thead>
                     <tr className='rounded-full text-white bg-purple-500 h-8'>
@@ -47,6 +42,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                 <tbody>
                     {books && books.map((book, index) => (
                         <tr key={book.id} className='h-8'>
+                            {/* <td className='text-center'>{pageNumber*10 + index + 1}</td> */}
                             <td className='text-center'>{index + 1}</td>
                             <td className='text-center'>{book.title}</td>
                             <td className='text-center max-md:hidden'>{book.author}</td>

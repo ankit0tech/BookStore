@@ -12,35 +12,61 @@ import { ChildProps } from '../App';
 import { enqueueSnackbar } from 'notistack';
 
 
-const Home = ({ books, setBooks}: ChildProps) => {
+const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: ChildProps) => {
 
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
         return localStorage.getItem('homeState') || 'table';
     });
+    // const [prevCursor, setPrevCursor] = useState<Number|null>(null);
+    // const [nextCursor, setNextCursor] = useState<Number|null>(null);
+    
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const userRole = userinfo.userRole;
     // const token = userinfo.token
     // const dispatch = useDispatch();
 
-    useEffect(() => {
-        localStorage.setItem('homeState', showType);
-    },[showType]);
 
-    useEffect(()=> {
+    const handleFetchBooks = (direction?: string) => {
+        
         setLoading(true);
         
+        let url = 'http://localhost:5555/books';
+
+        if(direction) { 
+            
+            if (direction == 'prev') {
+                url = url + `?cursor=${prevCursor}&direction=${direction}`;       
+            } else {
+                url = url + `?cursor=${nextCursor}&direction=${direction}`;       
+            }
+        }
+
         axios
-        .get('http://localhost:5555/books')
+        .get(url)
         .then((response) => {
             setBooks(response.data.data);
+            setPrevCursor(response.data.prevCursor);
+            setNextCursor(response.data.nextCursor);
+
             setLoading(false);
         })
         .catch((error)=>{
             enqueueSnackbar("Error while loading books", {variant: 'error'});
             setLoading(false);
         });
+    }
 
+    const handleDirectionClick = (direction: string) => {
+        handleFetchBooks(direction);
+    }
+
+    useEffect(() => {
+        localStorage.setItem('homeState', showType);
+    },[showType]);
+
+    useEffect(()=> {
+        handleFetchBooks();
     }, [])
 
 
@@ -76,7 +102,20 @@ const Home = ({ books, setBooks}: ChildProps) => {
             </div>
             {loading ? (
                 <Spinner />
-            ):( showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />))}
+            ):( <div>
+                    {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
+                    {prevCursor && (<button 
+                        className='m-2 p-1 px-2 border rounded-lg' 
+                        type='button'
+                        onClick={() => handleDirectionClick('prev')}    
+                    > prev </button>) }
+                    {nextCursor && (<button 
+                        className='m-2 p-1 px-2 border rounded-lg' 
+                        type='button'
+                        onClick={() => handleDirectionClick('next')}
+                    > next </button>) }
+                </div>
+            )}
         </div>
     );
 }

@@ -9,7 +9,7 @@ import Signup from './pages/Signup';
 import { NavBar } from './components/NavBar';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Book } from './types';
 import CreateAddress from './pages/CreateAddress';
 import UpdateAddress from './pages/UpdateAddress';
@@ -34,11 +34,19 @@ import RecentlyViewed from './pages/RecentlyViewed';
 export interface ChildProps {
   books: Book[];
   setBooks: React.Dispatch<React.SetStateAction<Book[]>>;
+  prevCursor: Number | null;
+  setPrevCursor: React.Dispatch<React.SetStateAction<Number|null>>;
+  nextCursor: Number | null;
+  setNextCursor: React.Dispatch<React.SetStateAction<Number|null>>;
+
 }
 
 const App = () => {
   
   const [books, setBooks] = useState<Book[]>([]);
+  const [prevCursor, setPrevCursor] = useState<Number|null>(null);
+  const [nextCursor, setNextCursor] = useState<Number|null>(null);
+
   const userinfo = useSelector((state: RootState) => state.userinfo);
   const userRole = userinfo.userRole;
   
@@ -46,9 +54,19 @@ const App = () => {
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <NavBar books={books} setBooks={setBooks} />
+      <NavBar 
+        books={books} setBooks={setBooks} 
+        prevCursor={prevCursor} setPrevCursor={setPrevCursor} 
+        nextCursor={nextCursor} setNextCursor={setNextCursor}
+      />
       <Routes>
-        <Route path='/' element={<Home books={books} setBooks={setBooks} />} />
+        <Route
+          path='/' 
+            element={<Home books={books} setBooks={setBooks}
+            prevCursor={prevCursor} setPrevCursor={setPrevCursor} 
+            nextCursor={nextCursor} setNextCursor={setNextCursor}
+          />}
+        />
         <Route path='/login' element={<Login /> } />
         <Route path='/signup' element={<Signup />} />
         {(userRole == 'admin' || userRole == 'superadmin') &&

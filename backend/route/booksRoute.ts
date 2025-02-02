@@ -15,28 +15,30 @@ router.get('/search', async (req, res) => {
         const queryString = req.query.query as string | undefined;
         const query = queryString || '';
         const categoryString = req.query.category as string | undefined;
-        const category = categoryString || '';
-    
-        let allBooks: Array<IBook> = [];
-        if (category!='') {
-            allBooks = await prisma.book.findMany({
-                where: { category: category}
-            })
-        }
-        else {
-            allBooks = await prisma.book.findMany({});
-        }
-    
-        let matchingBooks: Array<IBook> = [];
-        allBooks.forEach(element => {
-            if (element.title.toLowerCase().includes(query.toLowerCase()) 
-                || element.author.toLowerCase().includes(query.toLowerCase())) 
-            {
-                matchingBooks.push(element);
-            }
+        // const category = categoryString || '';
+
+        const books = await prisma.book.findMany({
+            where: {
+                OR: [
+                    {
+                        title: {
+                            contains: query,
+                            mode: 'insensitive',
+                        },
+                        category: categoryString 
+                    },
+                    {
+                        author: {
+                            contains: query,
+                            mode: 'insensitive',
+                        },
+                        category: categoryString
+                    },
+                ],
+            },
         });
     
-        return res.status(200).send(matchingBooks);
+        return res.status(200).send(books);
     
     } catch(error: any) {
         logger.error(error.message);
@@ -68,8 +70,60 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
 // return all the books
 router.get('/', async (req, res) => {
     try {
-        const books = await prisma.book.findMany({});
-        return res.status(200).json({count: books.length, data: books});
+        const cursor  = Number(req.query.cursor) || 0;
+        const direction = req.query.direction || '';
+
+        let books;
+        let nextCursor;
+        let prevCursor;
+
+        if ( direction == 'prev') {
+            books = await prisma.book.findMany({
+                where: cursor ? { id: { lt: Number(cursor) } } : undefined,
+                take: -11,
+                orderBy: {
+                    id: 'asc'
+                }
+            });
+
+            if(books.length > 10) {
+                books.shift();
+                prevCursor = books[0].id;
+            }
+
+            nextCursor = books.length !== 0 ? books[books.length-1].id : null;
+            if (nextCursor) {
+                const lastBook = await prisma.book.findFirst({ orderBy: { id: 'desc'}});
+                if(lastBook && lastBook.id == nextCursor) {
+                    nextCursor = null;
+                }
+            }
+
+        } else {
+            books = await prisma.book.findMany({
+                where: cursor ? { id: { gt: Number(cursor) } } : undefined,
+                take: 11,
+                orderBy: {
+                    id: 'asc'
+                }
+            });
+
+            if(books.length > 10) {
+                books.pop();
+                nextCursor = books[books.length-1].id;
+            }
+            prevCursor = books.length !== 0 ? books[0].id : null;
+
+            if(prevCursor) {
+                const firstBook = await prisma.book.findFirst({ orderBy: { id: 'asc'}});
+                if(firstBook && firstBook.id == prevCursor) {
+                    prevCursor = null;
+                }
+            }
+
+        }
+
+        return res.status(200).json({ count: books.length, data: books, nextCursor: nextCursor, prevCursor: prevCursor });
     }
     catch (error: any) {
         logger.error(error.message);

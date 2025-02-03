@@ -102,18 +102,20 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
             </div>
             {loading ? (
                 <Spinner />
-            ):( <div>
+            ):( <div className='flex flex-col justify-center items-center gap-x-4'>
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
-                    {prevCursor && (<button 
-                        className='m-2 p-1 px-2 border rounded-lg' 
-                        type='button'
-                        onClick={() => handleDirectionClick('prev')}    
-                    > prev </button>) }
-                    {nextCursor && (<button 
-                        className='m-2 p-1 px-2 border rounded-lg' 
-                        type='button'
-                        onClick={() => handleDirectionClick('next')}
-                    > next </button>) }
+                    <div>
+                        {prevCursor && (<button 
+                            className='m-2 p-1 px-2 border rounded-lg' 
+                            type='button'
+                            onClick={() => handleDirectionClick('prev')}    
+                        > prev </button>) }
+                        {nextCursor && (<button 
+                            className='m-2 p-1 px-2 border rounded-lg' 
+                            type='button'
+                            onClick={() => handleDirectionClick('next')}
+                        > next </button>) }
+                    </div>
                 </div>
             )}
         </div>

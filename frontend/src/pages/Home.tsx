@@ -1,4 +1,4 @@
-import { useState , useEffect } from 'react'
+import { useState , useEffect, useRef } from 'react'
 import axios from 'axios';
 import Spinner from '../components/Spinner';
 import { Link } from 'react-router-dom';
@@ -23,6 +23,7 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
     
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const userRole = userinfo.userRole;
+    const observeRef = useRef(null);
     // const token = userinfo.token
     // const dispatch = useDispatch();
 
@@ -45,7 +46,11 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         axios
         .get(url)
         .then((response) => {
-            setBooks(response.data.data);
+            setBooks((prev) => {
+                const newBookIds = new Set(prev.map((b) => b.id));
+                const newBooks = response.data.data.filter((book: any) => !newBookIds.has(book.id));
+                return [...prev, ...newBooks];
+            });
             setPrevCursor(response.data.prevCursor);
             setNextCursor(response.data.nextCursor);
 
@@ -57,9 +62,9 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         });
     }
 
-    const handleDirectionClick = (direction: string) => {
-        handleFetchBooks(direction);
-    }
+    // const handleDirectionClick = (direction: string) => {
+    //     handleFetchBooks(direction);
+    // }
 
     useEffect(() => {
         localStorage.setItem('homeState', showType);
@@ -69,6 +74,25 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         handleFetchBooks();
     }, [])
 
+    useEffect(() => {
+        if(!nextCursor || !observeRef.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if(entries[0].isIntersecting) {
+                    handleFetchBooks('next');
+                }
+            },
+            { threshold: 1 }
+        );
+
+        if (observeRef.current) observer.observe(observeRef.current);
+
+        return () => {
+            if (observeRef.current) observer.unobserve(observeRef.current);
+            observer.disconnect();
+        }
+    }, [nextCursor, books.length]);
 
     return (
         <div className='p-4'>
@@ -100,22 +124,25 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
                 </div>)
                 }   
             </div>
-            {loading ? (
-                <Spinner />
-            ):( <div>
+            <div>
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
-                    {prevCursor && (<button 
-                        className='m-2 p-1 px-2 border rounded-lg' 
-                        type='button'
-                        onClick={() => handleDirectionClick('prev')}    
-                    > prev </button>) }
-                    {nextCursor && (<button 
-                        className='m-2 p-1 px-2 border rounded-lg' 
-                        type='button'
-                        onClick={() => handleDirectionClick('next')}
-                    > next </button>) }
-                </div>
-            )}
+                
+                    { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
+
+                    {/* <div>
+                        {prevCursor && (<button 
+                            className='m-2 p-1 px-2 border rounded-lg' 
+                            type='button'
+                            onClick={() => handleDirectionClick('prev')}
+                        > prev </button>)}
+                        {nextCursor && (<button 
+                            className='m-2 p-1 px-2 border rounded-lg' 
+                            type='button'
+                            onClick={() => handleDirectionClick('next')}
+                        > next </button>) }
+                    </div> */}
+            </div>
+            
         </div>
     );
 }

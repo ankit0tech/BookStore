@@ -21,7 +21,7 @@ import { Provider } from 'react-redux';
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <SnackbarProvider>
         {/* <div style={{ backgroundColor: '#d1d5db', minHeight: '100vh'}}> */}
@@ -34,5 +34,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         {/* </div> */}
       </SnackbarProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

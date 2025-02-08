@@ -46,7 +46,11 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         axios
         .get(url)
         .then((response) => {
-            setBooks((prev) => [...prev, ...response.data.data]);
+            setBooks((prev) => {
+                const newBookIds = new Set(prev.map((b) => b.id));
+                const newBooks = response.data.data.filter((book: any) => !newBookIds.has(book.id));
+                return [...prev, ...newBooks];
+            });
             setPrevCursor(response.data.prevCursor);
             setNextCursor(response.data.nextCursor);
 
@@ -120,7 +124,7 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
                 </div>)
                 }   
             </div>
-            <div className='flex flex-col justify-center items-center gap-x-4'>
+            <div>
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
                 
                     { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}

@@ -38,6 +38,9 @@ model userinfo {
   review review[]
   wishlist wishlist[]
   recently_viewed recently_viewed[]
+
+  category_created category[] @relation("creator")
+  category_updated category[] @relation("updator")
 }
 
 model book {
@@ -46,7 +49,8 @@ model book {
   author String
   publish_year Int
   price Int
-  category String?
+  category_id Int?
+  category category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   cover_image String @db.VarChar(2083) @default("")
@@ -55,6 +59,22 @@ model book {
   review review[]
   wishlist wishlist[]
   recently_viewed recently_viewed[]
+}
+
+model category {
+  id Int @id @default(autoincrement())
+  title String
+  parent_id Int?
+  created_by Int @default(-1)
+  updated_by Int?
+
+  parent category? @relation("CategoryParent", fields: [parent_id], references: [id], onDelete: Cascade)
+  sub_category category[] @relation("CategoryParent")
+
+  creator userinfo @relation("creator", fields: [created_by], references: [id], onDelete: SetDefault)
+  updator userinfo? @relation("updator", fields: [updated_by], references: [id])
+
+  book book[]
 }
 
 model cart {

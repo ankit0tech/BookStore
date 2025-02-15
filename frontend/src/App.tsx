@@ -30,6 +30,8 @@ import PageNotFound from './pages/PageNotFound';
 import AddReview from './pages/AddReview';
 import Wishlist from './pages/Wishlist';
 import RecentlyViewed from './pages/RecentlyViewed';
+import CreateCategory from './pages/category/CreateCategory';
+import Categories from './pages/category/Categories';
 
 export interface ChildProps {
   books: Book[];
@@ -75,6 +77,9 @@ const App = () => {
             <Route path='/books/create' element={<CreateBook />} /> 
             <Route path='/books/edit/:id' element={<EditBook />} />
             <Route path='/books/delete/:id' element={<DeleteBook />} />
+            <Route path='/categories' element={<Categories />} />
+            <Route path='/category/create' element={<CreateCategory />} />
+            <Route path='/category/edit/:id' element={<CreateCategory />} />
           </>
         )}
         <Route path='/admin/signup' element={<AdminSignup />} />

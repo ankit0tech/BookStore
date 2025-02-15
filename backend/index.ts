@@ -10,6 +10,7 @@ import adminRoute from './route/adminRoute';
 import reviewRoute from './route/reviewRoute';
 import wishlistRoute from './route/wishlistRoute';
 import recentlyviewedRoute from './route/recentlyviewedRoute';
+import categoryRoute from './route/categoryRoute';
 import { logger } from './utils/logger';
 
 
@@ -77,6 +78,7 @@ app.use('/admin', adminRoute);
 app.use('/review', reviewRoute);
 app.use('/wishlist', wishlistRoute);
 app.use('/recently-viewed', recentlyviewedRoute);
+app.use('/category', categoryRoute);
 
 
 app.listen(config.server.port, () => {

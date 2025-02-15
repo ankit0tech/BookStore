@@ -1,15 +1,16 @@
 import { enqueueSnackbar } from "notistack";
-import api from "../../utils/api";
+import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 
 
 interface OverlayProps {
-    id: string | undefined
+    deleteUrl: string;
+    itemName?: string;
     isOpen: boolean;
     onClose: () => void;
 }
 
-const DeleteReviewOverlay: React.FC<OverlayProps> = ({ id, isOpen, onClose }) => {
+const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, onClose }) => {
     
     const navigate = useNavigate();
 
@@ -22,14 +23,14 @@ const DeleteReviewOverlay: React.FC<OverlayProps> = ({ id, isOpen, onClose }) =>
 
     const handleDeleteReview = () => {
 
-        api.delete(`http://localhost:5555/review/${id}`)
+        api.delete(deleteUrl)
         .then((response) => {
             
-            enqueueSnackbar('Deleted review successfully', { variant: 'success'});
+            enqueueSnackbar(`Deleted ${itemName || 'item'} successfully`, { variant: 'success'});
             navigate(-1);
         })
         .catch((error: any) =>{
-            enqueueSnackbar('Error while deleting review', {variant: 'error'});
+            enqueueSnackbar(`Error while deleting ${itemName || 'item'}`, {variant: 'error'});
         });
     }
 
@@ -42,10 +43,10 @@ const DeleteReviewOverlay: React.FC<OverlayProps> = ({ id, isOpen, onClose }) =>
             >
                 <div className="flex flex-col bg-white p-6 rounded-[18px] border border-b-2 border-black">
                     <div className="p-2">
-                        Please confirm you want to delete the review
+                        {`Please confirm you want to delete ${itemName || "item"}`}
                     </div>
                     <button
-                        className="rounded-full mt-2 text-white bg-red-600 px-4 py-2 border border-gray-300"
+                        className="rounded-full mt-2 text-white bg-red-500 px-4 py-2 border border-gray-300"
                         onClick={handleDeleteReview}
                     >
                         Confirm Delete
@@ -58,4 +59,4 @@ const DeleteReviewOverlay: React.FC<OverlayProps> = ({ id, isOpen, onClose }) =>
     );
 }
 
-export default DeleteReviewOverlay;
+export default DeleteOverlay;

@@ -1,7 +1,8 @@
 import z from 'zod';
 
 const categoryZod = z.object({
-    name: z.string()
+    title: z.string(),
+    parent_id: z.number().nullable().optional()
 });
 
 export {

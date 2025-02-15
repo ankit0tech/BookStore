@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
 import {  useNavigate, useParams } from "react-router-dom";
-import DeleteReviewOverlay from "../components/review/DeleteReviewOverlay";
+import DeleteOverlay from "../components/DeleteOverlay";
 
 
 const AddReview = () => {
@@ -104,9 +104,14 @@ const AddReview = () => {
                 <>
                     <button 
                         onClick={() => {setShowConfirmDelete(true)}}
-                        className="rounded-full mt-2 text-white bg-red-600 px-4 py-2 border border-gray-300"
+                        className="rounded-full mt-2 text-white bg-red-500 px-4 py-2 border border-gray-300"
                     >Delete</button>
-                    <DeleteReviewOverlay id={id} isOpen={showConfirmDelete} onClose={onClose} />
+                    <DeleteOverlay 
+                        deleteUrl={`http://localhost:5555/review/${id}`} 
+                        itemName="review" 
+                        isOpen={showConfirmDelete} 
+                        onClose={onClose} 
+                    />
                 </>
             }
         </div>

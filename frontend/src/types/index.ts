@@ -73,3 +73,21 @@ export interface RecentlyViewed {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface Category {
+    id: number;
+    title: string;
+    sub_category: SubCategory[];
+    parent_id: number|null;
+    created_by: number|null;
+    updated_by: number|null;
+}
+
+export interface SubCategory {
+    id: number;
+    title: string;
+    parent_id: number|null;
+    created_by: number|null;
+    updated_by: number|null;
+
+}

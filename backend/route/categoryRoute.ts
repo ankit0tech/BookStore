@@ -76,14 +76,14 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
         if (result.success) {
             const createdCategory = await prisma.category.create({
                 data: {
-                    name: data.name,
+                    title: data.title,
                     parent_id: data.parent_id || null,
                     created_by: user.id,
                     updated_by: user.id
                 }
             });
 
-            logger.info(`Added new category ${createdCategory.name}`);
+            logger.info(`Added new category ${createdCategory.title}`);
             return res.status(201).json({message: 'Added new category', data: createdCategory });
 
         } else {
@@ -120,7 +120,7 @@ router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, re
                     id: id
                 },
                 data: {
-                    name: req.body.name,
+                    title: req.body.title,
                     updated_by: user.id,
                     ...(req.body.parent_id ? {parent_id: req.body.parent_id} : {})
                 }

@@ -48,6 +48,10 @@ const Profile = () => {
                 Recently Viewed
             </button>
 
+            {(userRole=='admin' || userRole == 'superadmin') &&
+                <button className="m-2 p-4 border-2 rounded-lg" onClick={() => handleNavigate('/categories')}>Categories</button>
+            }
+
             {userRole == 'superadmin' ? 
                 <button className="m-2 p-4 border-2 rounded-lg" onClick={() => handleNavigate('/superadmin-panel')}>Superadmin Panel</button>
             :

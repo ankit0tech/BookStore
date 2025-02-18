@@ -14,8 +14,6 @@ router.get('/search', async (req, res) => {
     try {
         const queryString = req.query.query as string | undefined;
         const query = queryString || '';
-        const categoryString = req.query.category as string | undefined;
-        // const category = categoryString || '';
 
         const books = await prisma.book.findMany({
             where: {
@@ -24,16 +22,14 @@ router.get('/search', async (req, res) => {
                         title: {
                             contains: query,
                             mode: 'insensitive',
-                        },
-                        category: categoryString 
+                        }
                     },
                     {
                         author: {
                             contains: query,
                             mode: 'insensitive',
-                        },
-                        category: categoryString
-                    },
+                        }
+                    }
                 ],
             },
         });
@@ -58,7 +54,8 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
             return res.status(201).send(book);
         }
         return res.status(400).json({
-            message: 'send required fields title, author, and publish_year in proper format',
+            message: 'Invalid inputs',
+            errors: result.error.format()
         });
     }
     catch(error: any) {

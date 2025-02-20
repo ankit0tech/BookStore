@@ -69,6 +69,8 @@ router.get('/', async (req, res) => {
     try {
         const cursor  = Number(req.query.cursor) || 0;
         const direction = req.query.direction || '';
+        const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
+        console.log("categoryId", categoryId);
 
         let books;
         let nextCursor;
@@ -76,7 +78,11 @@ router.get('/', async (req, res) => {
 
         if ( direction == 'prev') {
             books = await prisma.book.findMany({
-                where: cursor ? { id: { lt: Number(cursor) } } : undefined,
+                where: {
+                    category_id: categoryId ? categoryId : undefined,
+                    id: cursor ? {gt: cursor} : undefined
+                },
+    
                 take: -11,
                 orderBy: {
                     id: 'asc'
@@ -98,7 +104,11 @@ router.get('/', async (req, res) => {
 
         } else {
             books = await prisma.book.findMany({
-                where: cursor ? { id: { gt: Number(cursor) } } : undefined,
+                where: {
+                    category_id: categoryId ? categoryId : undefined,
+                    id: cursor ? {gt: cursor} : undefined
+                },
+
                 take: 11,
                 orderBy: {
                     id: 'asc'
@@ -124,7 +134,7 @@ router.get('/', async (req, res) => {
     }
     catch (error: any) {
         logger.error(error.message);
-        res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -194,5 +204,6 @@ router.delete('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req,
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
+
 
 export default router;

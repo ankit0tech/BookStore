@@ -14,8 +14,6 @@ router.get('/search', async (req, res) => {
     try {
         const queryString = req.query.query as string | undefined;
         const query = queryString || '';
-        const categoryString = req.query.category as string | undefined;
-        // const category = categoryString || '';
 
         const books = await prisma.book.findMany({
             where: {
@@ -24,16 +22,14 @@ router.get('/search', async (req, res) => {
                         title: {
                             contains: query,
                             mode: 'insensitive',
-                        },
-                        category: categoryString 
+                        }
                     },
                     {
                         author: {
                             contains: query,
                             mode: 'insensitive',
-                        },
-                        category: categoryString
-                    },
+                        }
+                    }
                 ],
             },
         });
@@ -58,7 +54,8 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
             return res.status(201).send(book);
         }
         return res.status(400).json({
-            message: 'send required fields title, author, and publish_year in proper format',
+            message: 'Invalid inputs',
+            errors: result.error.format()
         });
     }
     catch(error: any) {
@@ -72,6 +69,8 @@ router.get('/', async (req, res) => {
     try {
         const cursor  = Number(req.query.cursor) || 0;
         const direction = req.query.direction || '';
+        const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
+        console.log("categoryId", categoryId);
 
         let books;
         let nextCursor;
@@ -79,7 +78,11 @@ router.get('/', async (req, res) => {
 
         if ( direction == 'prev') {
             books = await prisma.book.findMany({
-                where: cursor ? { id: { lt: Number(cursor) } } : undefined,
+                where: {
+                    category_id: categoryId ? categoryId : undefined,
+                    id: cursor ? {gt: cursor} : undefined
+                },
+    
                 take: -11,
                 orderBy: {
                     id: 'asc'
@@ -101,7 +104,11 @@ router.get('/', async (req, res) => {
 
         } else {
             books = await prisma.book.findMany({
-                where: cursor ? { id: { gt: Number(cursor) } } : undefined,
+                where: {
+                    category_id: categoryId ? categoryId : undefined,
+                    id: cursor ? {gt: cursor} : undefined
+                },
+
                 take: 11,
                 orderBy: {
                     id: 'asc'
@@ -127,7 +134,7 @@ router.get('/', async (req, res) => {
     }
     catch (error: any) {
         logger.error(error.message);
-        res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -197,5 +204,6 @@ router.delete('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req,
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
+
 
 export default router;

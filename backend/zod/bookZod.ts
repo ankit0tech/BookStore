@@ -7,7 +7,7 @@ const bookZod = z.object({
     author: z.string(),
     publish_year: z.number(),
     price: z.number(),
-    category: z.string(),
+    category_id: z.number(),
     cover_image: z.union([
         z.string().regex(urlRegex, { message: "Invalid URL"}),
         z.string().min(0).max(0),

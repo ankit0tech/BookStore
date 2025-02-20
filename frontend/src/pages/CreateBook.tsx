@@ -1,10 +1,11 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 // import axios from 'axios';
 import api from '../utils/api';
 import{ useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { Category } from '../types';
 
 
 const CreateBook = () => {
@@ -13,7 +14,8 @@ const CreateBook = () => {
     const [publishYear, setPublishYear] = useState('');
     const [loading, setLoading] = useState(false);
     const [price, setPrice] = useState('');
-    const [category, setCategory] = useState('');
+    const [categories, setCategories] = useState<Category[]|null>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string|null>(null);
     const [imgUrl, setImgUrl] = useState('');
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
@@ -42,12 +44,13 @@ const CreateBook = () => {
             const data = {
                 title,
                 author,
-                publish_year: +publishYear,
-                price: +price,
-                category,
+                publish_year: Number(publishYear),
+                price: Number(price),
+                category_id: Number(selectedCategory),
                 cover_image: imgUrl
             };
-                
+            
+            console.log(data);
     
             setLoading(true);
             api
@@ -69,6 +72,21 @@ const CreateBook = () => {
         }
 
     }
+
+    const fetchCategories = () => {
+        api.get('http://localhost:5555/category')
+        .then((response) => {
+            setCategories(response.data.data);
+        })
+        .catch((error) => {
+            console.log(error);
+            enqueueSnackbar('Error while fetching categories', { variant: 'error' });
+        });
+    }
+
+    useEffect(()=>{
+        fetchCategories();
+    }, []);
 
     return (
         <div className='p-4'>
@@ -110,14 +128,28 @@ const CreateBook = () => {
             </div>
 
             <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Category</label>
-                <input
+                <label>Select Category</label>
+                <select
+                    value={selectedCategory || ""}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    disabled={!categories?.length}
+                >
+                    { categories?.map((category) => (
+                        <optgroup key={category.id} label={category.title}>
+                            {category.sub_category.map((sub)=> (
+                                <option key={sub.id} value={sub.id}>{sub.title}</option>
+                            ))}
+                        </optgroup>
+                    ))}
+                </select>
+
+                {/* <input
                     className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
                     type="text"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                 >
-                </input>
+                </input> */}
             </div>
 
             <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>

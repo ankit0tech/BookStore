@@ -31,11 +31,11 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                     <tr className='rounded-full text-white bg-purple-500 h-8'>
                     {/* <tr className='rounded-full my-4 text-white bg-black my-3 px-4 py-2 border border-gray-300'> */}
                         <th className='rounded-full rounded-r-lg my-4 px-4 py-2'>No</th>
-                        <th className=''>Title</th>
-                        <th className='max-md:hidden'>Author</th>
-                        <th className='max-md:hidden'>Publish Year</th>
-                        <th className='max-md:hidden'>Category</th>
-                        <th className=''>Price</th>
+                        <th className='px-2'>Title</th>
+                        <th className='px-2 max-md:hidden'>Author</th>
+                        <th className='px-2 max-md:hidden'>Publish Year</th>
+                        <th className='px-2 max-md:hidden'>Category</th>
+                        <th className='px-2'>Price</th>
                         <th className='rounded-full rounded-l-lg'>Operations</th>
                     </tr>
                 </thead>
@@ -69,9 +69,17 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                                 </div>
                             </td>
                         </tr>
-                    ))}
+                    ))
+                    
+                }
                 </tbody>
             </table>
+            
+            {books.length == 0 &&
+                <div className='p-4'>
+                    No Data...
+                </div>
+            }
         </div>
     );
 }

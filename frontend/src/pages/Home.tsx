@@ -7,9 +7,10 @@ import BooksTable from '../components/home/BooksTable';
 import BooksCard from '../components/home/BooksCard';
 // import { checkTokenExpiry } from '../redux/authMiddleware';
 // import { RootState } from '@reduxjs/toolkit/query';
-import { RootState } from '../types/index';
+import { Book, RootState } from '../types/index';
 import { ChildProps } from '../App';
 import { enqueueSnackbar } from 'notistack';
+import SideBar from '../components/home/SideBar';
 
 
 const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: ChildProps) => {
@@ -18,38 +19,42 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
     const [showType, setShowType] = useState(() => {
         return localStorage.getItem('homeState') || 'table';
     });
-    // const [prevCursor, setPrevCursor] = useState<Number|null>(null);
-    // const [nextCursor, setNextCursor] = useState<Number|null>(null);
     
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const userRole = userinfo.userRole;
     const observeRef = useRef(null);
-    // const token = userinfo.token
-    // const dispatch = useDispatch();
+    const [categoryId, setCategoryId] = useState<number|null>(null);
 
 
-    const handleFetchBooks = (direction?: string) => {
+    const handleFetchBooks = (prevBooks: Book[], direction?: string) => {
         
         setLoading(true);
-        
         let url = 'http://localhost:5555/books';
 
-        if(direction) { 
-            
+        if(direction) {
             if (direction == 'prev') {
                 url = url + `?cursor=${prevCursor}&direction=${direction}`;       
             } else {
-                url = url + `?cursor=${nextCursor}&direction=${direction}`;       
+                url = url + `?cursor=${nextCursor}&direction=${direction}`;
+            }
+        }
+        
+        if(categoryId) {
+            if(url.includes('?')) {
+                url = url + `&cid=${categoryId}`
+            } else {
+                url = url + `?cid=${categoryId}`
             }
         }
 
+        
         axios
         .get(url)
         .then((response) => {
-            setBooks((prev) => {
-                const newBookIds = new Set(prev.map((b) => b.id));
+            setBooks(() => {
+                const newBookIds = new Set(prevBooks.map((b) => b.id));
                 const newBooks = response.data.data.filter((book: any) => !newBookIds.has(book.id));
-                return [...prev, ...newBooks];
+                return [...prevBooks, ...newBooks];
             });
             setPrevCursor(response.data.prevCursor);
             setNextCursor(response.data.nextCursor);
@@ -62,16 +67,12 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         });
     }
 
-    // const handleDirectionClick = (direction: string) => {
-    //     handleFetchBooks(direction);
-    // }
-
     useEffect(() => {
         localStorage.setItem('homeState', showType);
     },[showType]);
 
     useEffect(()=> {
-        handleFetchBooks();
+        handleFetchBooks(books);
     }, [])
 
     useEffect(() => {
@@ -80,7 +81,7 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         const observer = new IntersectionObserver(
             (entries) => {
                 if(entries[0].isIntersecting) {
-                    handleFetchBooks('next');
+                    handleFetchBooks(books, 'next');
                 }
             },
             { threshold: 1 }
@@ -124,23 +125,19 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
                 </div>)
                 }   
             </div>
-            <div>
+            <div className='flex justify-evenly gap-2'>
+                <SideBar
+                    handleFetchBooks={handleFetchBooks}
+                    categoryId={categoryId} setCategoryId={setCategoryId} 
+                    books={books} setBooks={setBooks}
+                    prevCursor={prevCursor} setPrevCursor={setPrevCursor} 
+                    nextCursor={nextCursor} setNextCursor={setNextCursor}
+                />
+                <div>
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
-                
                     { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
+                </div>
 
-                    {/* <div>
-                        {prevCursor && (<button 
-                            className='m-2 p-1 px-2 border rounded-lg' 
-                            type='button'
-                            onClick={() => handleDirectionClick('prev')}
-                        > prev </button>)}
-                        {nextCursor && (<button 
-                            className='m-2 p-1 px-2 border rounded-lg' 
-                            type='button'
-                            onClick={() => handleDirectionClick('next')}
-                        > next </button>) }
-                    </div> */}
             </div>
             
         </div>

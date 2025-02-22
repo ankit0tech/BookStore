@@ -1,27 +1,32 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Book, Category } from "../../types";
 import { enqueueSnackbar } from "notistack";
 import api from "../../utils/api";
 import { ChildProps } from "../../App";
+import { MdOutlineSportsRugby } from "react-icons/md";
 
 interface Extended extends ChildProps {
     handleFetchBooks: (prevBooks: Book[], direction?:string) => void
-    categoryId: number|null;
+    categoryId: number | null;
     setCategoryId: React.Dispatch<React.SetStateAction<number|null>>;
+    minPrice: number | null;
+    setMinPrice: React.Dispatch<React.SetStateAction<number|null>>;
+    maxPrice: number | null;
+    setMaxPrice: React.Dispatch<React.SetStateAction<number|null>>;
+    sortBy: string | null;
+    setSortBy: React.Dispatch<React.SetStateAction<string|null>>;
+    sortOrder: string | null;
+    setSortOrder: React.Dispatch<React.SetStateAction<string|null>>;
+
 }
 
-const SideBar = ({handleFetchBooks, categoryId, setCategoryId, books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: Extended) => {
-    // 1. Price
-    // < 100
-    // 100 to 200
-    // 200 to 500
-    // 500 to 1000
-    // 1000 <
-
-    // 2. Category
-    // 3. Reviews / Rating
+const SideBar = ({sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: Extended) => {
+ 
+    // sort by Price, Rating
 
     const [categories, setCategories] = useState<Category[] | null>([]);
+    const [activeCategory, setActiveCategory] = useState<number|null>(null);
+    const [activePrice, setActivePrice] = useState<number|null>(null);
 
     const fetchCategories = () => {
         api.get('http://localhost:5555/category')
@@ -34,18 +39,48 @@ const SideBar = ({handleFetchBooks, categoryId, setCategoryId, books, setBooks, 
         });
     }
 
-
-
     useEffect(()=> {
         fetchCategories();
     }, []);
 
-    useEffect(()=>{
-        if(categoryId) {
-            handleFetchBooks([], 'next');
-        }
-    }, [categoryId]);
 
+    const updateMinPrice = (price: number|null) => {
+        if (minPrice === price) {
+            setMinPrice(null);
+            setActivePrice(null);
+        } else {
+            setMinPrice(price);
+            setActivePrice(price);
+        }
+    }
+
+    const updateMaxPrice = (price: number|null) => {
+        if(maxPrice === price) {
+            setMaxPrice(null);
+        } else {
+            setMaxPrice(price);
+        }
+    }
+
+    const updateCategoryId = (id: number|null) => {
+        if(categoryId === id) {
+            setCategoryId(null);
+            setActiveCategory(null);
+        } else {
+            setCategoryId(id);
+            setActiveCategory(id);
+        }
+    }
+
+    const setSorting = (by: string|null, order: string|null) => {
+        if(sortBy === by && sortOrder === order) {
+            setSortBy(null);
+            setSortOrder(null);
+        } else {
+            setSortBy(by);
+            setSortOrder(order);
+        }
+    }
 
     return (
         <div className="border rounded-xl py-2 px-4">
@@ -53,18 +88,61 @@ const SideBar = ({handleFetchBooks, categoryId, setCategoryId, books, setBooks, 
             <div className="p-2">
                 <div className="font-bold">Sort By</div>
                 <div>Price
-                    <div className="pl-4">Higest first</div>
-                    <div className="pl-4">Lowest first</div>
+                    <div 
+                        className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'price' && sortOrder === 'desc' && "text-purple-600"}`}
+                        onClick={() => setSorting('price', 'desc')}
+                    >Higest first</div>
+                    <div 
+                        className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'price' && sortOrder == 'asc' && "text-purple-600"}`}
+                        onClick={() => setSorting('price', 'asc')}
+                    >Lowest first</div>
                 </div>
-                <div>Reviews</div>
+                <div 
+                    className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'reviews' && "text-purple-600"}`}
+                    onClick={() => setSorting('rating', 'desc')}
+                >Reviews</div>
             </div>
             
 
             <div className="p-2">
-                <div className="font-bold">Filter By</div>
-                <div>Price</div>
-                <label>Category</label>
-                <ul>
+                <div className="font-bold text-xl">Filter By</div>
+                <div>
+                    <label htmlFor="PriceFilter" className="m-2 font-bold text-xl block">Price</label>
+                    <ul id="PriceFilter">
+                        <li 
+                        className={`cursor-pointer hover:text-purple-600 
+                            ${activePrice === 0 && "text-purple-600"}`}
+                        onClick={() => {updateMinPrice(0); updateMaxPrice(100)}} >
+                            Under &#8377;100
+                        </li>
+                        <li 
+                        className={`cursor-pointer hover:text-purple-600
+                            ${activePrice === 100 && "text-purple-600"}`} 
+                        onClick={() => {updateMinPrice(100); updateMaxPrice(200)}} >
+                            &#8377;100 - &#8377;200
+                        </li>
+                        <li 
+                        className={`cursor-pointer hover:text-purple-600 
+                            ${activePrice === 200 && "text-purple-600"}`} 
+                        onClick={() => {updateMinPrice(200); updateMaxPrice(500)}} >
+                            &#8377;200 - &#8377;500
+                        </li>
+                        <li 
+                        className={`cursor-pointer hover:text-purple-600 
+                            ${activePrice === 500 && "text-purple-600"}`}
+                        onClick={() => {updateMinPrice(500); updateMaxPrice(1000)}} >
+                            &#8377;500 - &#8377;1000
+                        </li>
+                        <li 
+                        className={`cursor-pointer hover:text-purple-600 
+                            ${activePrice === 1000 && "text-purple-600"}`}
+                        onClick={() => {updateMinPrice(1000); updateMaxPrice(null)}} >
+                            Over &#8377;1000
+                        </li>
+                    </ul>
+                </div>
+                <label htmlFor="categoryList" className="m-2 font-bold text-xl block">Category</label>
+                <ul id="categoryList">
                     {categories?.map((category) => (
                         <li key={category.id} className="font-bold">
                             {category.title}
@@ -72,9 +150,10 @@ const SideBar = ({handleFetchBooks, categoryId, setCategoryId, books, setBooks, 
                                 <ul className="ml-4 font-normal">
                                     {category.sub_category.map((sub) => (
                                         <li 
-                                            onClick={() => setCategoryId(sub.id)} 
+                                            onClick={() => updateCategoryId(sub.id)} 
                                             key={sub.id} 
-                                            className="cursor-pointer hover:text-purple-600">
+                                            className={`cursor-pointer hover:text-purple-600 
+                                                ${activeCategory === sub.id && "text-purple-600"}`}>
                                                     - {sub.title}
                                         </li>
                                     ))}

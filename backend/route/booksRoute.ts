@@ -70,22 +70,26 @@ router.get('/', async (req, res) => {
         const cursor  = Number(req.query.cursor) || 0;
         const direction = req.query.direction || '';
         const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
-        console.log("categoryId", categoryId);
+        const minPrice = req.query.minPrice ? Number(req.query.minPrice) : undefined;
+        const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
+        const sortBy: string = req.query.sortBy ? String(req.query.sortBy) : 'id';
+        const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
 
         let books;
         let nextCursor;
         let prevCursor;
-
+        
         if ( direction == 'prev') {
             books = await prisma.book.findMany({
                 where: {
                     category_id: categoryId ? categoryId : undefined,
-                    id: cursor ? {gt: cursor} : undefined
+                    id: cursor ? {gt: cursor} : undefined,
+                    price: { gte: minPrice , lte: maxPrice },
                 },
     
                 take: -11,
                 orderBy: {
-                    id: 'asc'
+                    [sortBy]: sortOrder
                 }
             });
 
@@ -106,12 +110,13 @@ router.get('/', async (req, res) => {
             books = await prisma.book.findMany({
                 where: {
                     category_id: categoryId ? categoryId : undefined,
-                    id: cursor ? {gt: cursor} : undefined
+                    id: cursor ? {gt: cursor} : undefined,
+                    price: { gte: minPrice , lte: maxPrice },
                 },
 
                 take: 11,
                 orderBy: {
-                    id: 'asc'
+                    [sortBy]: sortOrder
                 }
             });
 

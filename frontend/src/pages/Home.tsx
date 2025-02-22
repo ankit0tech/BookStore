@@ -24,11 +24,16 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
     const userRole = userinfo.userRole;
     const observeRef = useRef(null);
     const [categoryId, setCategoryId] = useState<number|null>(null);
+    const [minPrice, setMinPrice] = useState<number|null>(null);
+    const [maxPrice, setMaxPrice] = useState<number|null>(null);
+    const [sortBy, setSortBy] = useState<string|null>(null);
+    const [sortOrder, setSortOrder] = useState<string|null>(null);
 
 
     const handleFetchBooks = (prevBooks: Book[], direction?: string) => {
         
         setLoading(true);
+
         let url = 'http://localhost:5555/books';
 
         if(direction) {
@@ -41,13 +46,36 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         
         if(categoryId) {
             if(url.includes('?')) {
-                url = url + `&cid=${categoryId}`
+                url = url + `&cid=${categoryId}`;
             } else {
-                url = url + `?cid=${categoryId}`
+                url = url + `?cid=${categoryId}`;
             }
         }
 
         
+        if (maxPrice) {
+            if(url.includes('?')) {
+                url = url + `&maxPrice=${maxPrice}`;
+            } else {
+                url = url + `?maxPrice=${maxPrice}`;
+            }
+        }
+        if (minPrice) {
+            if(url.includes('?')) {
+                url = url + `&minPrice=${minPrice}`;
+            } else {
+                url = url + `?minPrice=${minPrice}`;
+            }
+        }
+
+        if (sortBy) {
+            if(url.includes('?')) {
+                url = url + `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+            }else {
+                url = url + `?sortBy=${sortBy}&sortOrder=${sortOrder}`;
+            }
+        }
+
         axios
         .get(url)
         .then((response) => {
@@ -72,8 +100,8 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
     },[showType]);
 
     useEffect(()=> {
-        handleFetchBooks(books);
-    }, [])
+        handleFetchBooks([]);
+    }, [categoryId, minPrice, maxPrice, sortBy, sortOrder])
 
     useEffect(() => {
         if(!nextCursor || !observeRef.current) return;
@@ -94,6 +122,8 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
             observer.disconnect();
         }
     }, [nextCursor, books.length]);
+
+
 
     return (
         <div className='p-4'>
@@ -127,6 +157,10 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
             </div>
             <div className='flex justify-evenly gap-2'>
                 <SideBar
+                    sortBy={sortBy} setSortBy={setSortBy}
+                    sortOrder={sortOrder} setSortOrder={setSortOrder}
+                    minPrice={minPrice} setMinPrice={setMinPrice}
+                    maxPrice={maxPrice} setMaxPrice={setMaxPrice}
                     handleFetchBooks={handleFetchBooks}
                     categoryId={categoryId} setCategoryId={setCategoryId} 
                     books={books} setBooks={setBooks}

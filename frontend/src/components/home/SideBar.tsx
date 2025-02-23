@@ -6,7 +6,7 @@ import { ChildProps } from "../../App";
 import { MdOutlineSportsRugby } from "react-icons/md";
 
 interface Extended extends ChildProps {
-    handleFetchBooks: (prevBooks: Book[], direction?:string) => void
+    handleFetchBooks: (prevBooks: Book[], cursor:number|null) => void
     categoryId: number | null;
     setCategoryId: React.Dispatch<React.SetStateAction<number|null>>;
     minPrice: number | null;
@@ -20,7 +20,7 @@ interface Extended extends ChildProps {
 
 }
 
-const SideBar = ({sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: Extended) => {
+const SideBar = ({sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, nextCursor, setNextCursor}: Extended) => {
  
     // sort by Price, Rating
 

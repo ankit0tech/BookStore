@@ -15,7 +15,7 @@ import api from "../utils/api";
 import { AiOutlineClose } from "react-icons/ai";
 
 
-const NavBar = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: ChildProps) => {
+const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     const [query, setQuery] = useState<string>('');
     const userinfo = useSelector((state: RootState) => state.userinfo);
@@ -69,7 +69,6 @@ const NavBar = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNex
             .then((response) => {
                 console.log('Search result: ', response);
                 setBooks(response.data);
-                setPrevCursor(null);
                 setNextCursor(null);
             }
             ).catch((error)=>{
@@ -80,7 +79,6 @@ const NavBar = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNex
             .get('http://localhost:5555/books')
             .then((response) => {
                 setBooks(response.data.data);
-                setPrevCursor(response.data.prevCursor);
                 setNextCursor(response.data.nextCursor);
             }).catch((error)=>{
                 enqueueSnackbar("Error while loading books", {variant: 'error'});

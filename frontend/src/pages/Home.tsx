@@ -13,7 +13,7 @@ import { enqueueSnackbar } from 'notistack';
 import SideBar from '../components/home/SideBar';
 
 
-const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextCursor}: ChildProps) => {
+const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
@@ -30,51 +30,24 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
     const [sortOrder, setSortOrder] = useState<string|null>(null);
 
 
-    const handleFetchBooks = (prevBooks: Book[], direction?: string) => {
+    // taking cursor manually as useState was updating it asynchronously
+    const handleFetchBooks = (prevBooks: Book[], cursor: number|null) => {
         
         setLoading(true);
 
-        let url = 'http://localhost:5555/books';
+        const params = new URLSearchParams();
 
-        if(direction) {
-            if (direction == 'prev') {
-                url = url + `?cursor=${prevCursor}&direction=${direction}`;       
-            } else {
-                url = url + `?cursor=${nextCursor}&direction=${direction}`;
-            }
+        if(params) params.append('cursor', String(cursor));
+        if(categoryId) params.append('cid', String(categoryId));
+        if(maxPrice) params.append('maxPrice', String(maxPrice));
+        if(minPrice) params.append('minPrice', String(minPrice));
+        if(sortBy) {
+            params.append('sortBy', sortBy);
+            if(sortOrder) params.append('sortOrder', sortOrder);
         }
         
-        if(categoryId) {
-            if(url.includes('?')) {
-                url = url + `&cid=${categoryId}`;
-            } else {
-                url = url + `?cid=${categoryId}`;
-            }
-        }
 
-        
-        if (maxPrice) {
-            if(url.includes('?')) {
-                url = url + `&maxPrice=${maxPrice}`;
-            } else {
-                url = url + `?maxPrice=${maxPrice}`;
-            }
-        }
-        if (minPrice) {
-            if(url.includes('?')) {
-                url = url + `&minPrice=${minPrice}`;
-            } else {
-                url = url + `?minPrice=${minPrice}`;
-            }
-        }
-
-        if (sortBy) {
-            if(url.includes('?')) {
-                url = url + `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-            }else {
-                url = url + `?sortBy=${sortBy}&sortOrder=${sortOrder}`;
-            }
-        }
+        const url = `http://localhost:5555/books?${params.toString()}`;
 
         axios
         .get(url)
@@ -84,9 +57,7 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
                 const newBooks = response.data.data.filter((book: any) => !newBookIds.has(book.id));
                 return [...prevBooks, ...newBooks];
             });
-            setPrevCursor(response.data.prevCursor);
             setNextCursor(response.data.nextCursor);
-
             setLoading(false);
         })
         .catch((error)=>{
@@ -100,7 +71,8 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
     },[showType]);
 
     useEffect(()=> {
-        handleFetchBooks([]);
+        setNextCursor(null);
+        handleFetchBooks([], null);
     }, [categoryId, minPrice, maxPrice, sortBy, sortOrder])
 
     useEffect(() => {
@@ -109,7 +81,7 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
         const observer = new IntersectionObserver(
             (entries) => {
                 if(entries[0].isIntersecting) {
-                    handleFetchBooks(books, 'next');
+                    handleFetchBooks(books, nextCursor);
                 }
             },
             { threshold: 1 }
@@ -164,7 +136,6 @@ const Home = ({ books, setBooks, prevCursor, setPrevCursor, nextCursor, setNextC
                     handleFetchBooks={handleFetchBooks}
                     categoryId={categoryId} setCategoryId={setCategoryId} 
                     books={books} setBooks={setBooks}
-                    prevCursor={prevCursor} setPrevCursor={setPrevCursor} 
                     nextCursor={nextCursor} setNextCursor={setNextCursor}
                 />
                 <div>

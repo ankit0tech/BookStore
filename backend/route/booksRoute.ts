@@ -68,69 +68,36 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const cursor  = Number(req.query.cursor) || 0;
-        const direction = req.query.direction || '';
         const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
-        console.log("categoryId", categoryId);
+        const minPrice = req.query.minPrice ? Number(req.query.minPrice) : undefined;
+        const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
+        const sortBy: string = req.query.sortBy ? String(req.query.sortBy) : 'id';
+        const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
 
         let books;
         let nextCursor;
-        let prevCursor;
+        
+        books = await prisma.book.findMany({
+            where: {
+                category_id: categoryId ? categoryId : undefined,
+                price: { gte: minPrice , lte: maxPrice },
+            },
 
-        if ( direction == 'prev') {
-            books = await prisma.book.findMany({
-                where: {
-                    category_id: categoryId ? categoryId : undefined,
-                    id: cursor ? {gt: cursor} : undefined
-                },
-    
-                take: -11,
-                orderBy: {
-                    id: 'asc'
-                }
-            });
+            take: 11,
+            orderBy: [
+                { [sortBy]: sortOrder },
+                { id: 'asc' }
+            ],
+            cursor: cursor ? { id: cursor} : undefined
 
-            if(books.length > 10) {
-                books.shift();
-                prevCursor = books[0].id;
-            }
+        });
 
-            nextCursor = books.length !== 0 ? books[books.length-1].id : null;
-            if (nextCursor) {
-                const lastBook = await prisma.book.findFirst({ orderBy: { id: 'desc'}});
-                if(lastBook && lastBook.id == nextCursor) {
-                    nextCursor = null;
-                }
-            }
-
-        } else {
-            books = await prisma.book.findMany({
-                where: {
-                    category_id: categoryId ? categoryId : undefined,
-                    id: cursor ? {gt: cursor} : undefined
-                },
-
-                take: 11,
-                orderBy: {
-                    id: 'asc'
-                }
-            });
-
-            if(books.length > 10) {
-                books.pop();
-                nextCursor = books[books.length-1].id;
-            }
-            prevCursor = books.length !== 0 ? books[0].id : null;
-
-            if(prevCursor) {
-                const firstBook = await prisma.book.findFirst({ orderBy: { id: 'asc'}});
-                if(firstBook && firstBook.id == prevCursor) {
-                    prevCursor = null;
-                }
-            }
-
+        if(books.length > 10) {
+            books.pop();
+            nextCursor = books[books.length-1].id;
         }
 
-        return res.status(200).json({ count: books.length, data: books, nextCursor: nextCursor, prevCursor: prevCursor });
+        return res.status(200).json({ count: books.length, data: books, nextCursor: nextCursor });
     }
     catch (error: any) {
         logger.error(error.message);

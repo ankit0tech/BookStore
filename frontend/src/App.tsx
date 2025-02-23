@@ -36,18 +36,15 @@ import Categories from './pages/category/Categories';
 export interface ChildProps {
   books: Book[];
   setBooks: React.Dispatch<React.SetStateAction<Book[]>>;
-  prevCursor: Number | null;
-  setPrevCursor: React.Dispatch<React.SetStateAction<Number|null>>;
-  nextCursor: Number | null;
-  setNextCursor: React.Dispatch<React.SetStateAction<Number|null>>;
+  nextCursor: number | null;
+  setNextCursor: React.Dispatch<React.SetStateAction<number|null>>;
 
 }
 
 const App = () => {
   
   const [books, setBooks] = useState<Book[]>([]);
-  const [prevCursor, setPrevCursor] = useState<Number|null>(null);
-  const [nextCursor, setNextCursor] = useState<Number|null>(null);
+  const [nextCursor, setNextCursor] = useState<number|null>(null);
 
   const userinfo = useSelector((state: RootState) => state.userinfo);
   const userRole = userinfo.userRole;
@@ -58,14 +55,12 @@ const App = () => {
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <NavBar 
         books={books} setBooks={setBooks} 
-        prevCursor={prevCursor} setPrevCursor={setPrevCursor} 
         nextCursor={nextCursor} setNextCursor={setNextCursor}
       />
       <Routes>
         <Route
           path='/' 
             element={<Home books={books} setBooks={setBooks}
-            prevCursor={prevCursor} setPrevCursor={setPrevCursor} 
             nextCursor={nextCursor} setNextCursor={setNextCursor}
           />}
         />

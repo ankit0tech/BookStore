@@ -19,7 +19,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import ResetPassword from './pages/ResetPassword';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
-import AdminPanel from './pages/AdminPanel';
+import SuperAdminPanel from './pages/SuperAdminPanel';
 import RegisterAdmin from './pages/RegisterAdmin';
 import AdminSignup from './pages/AdminSignup';
 import AdminLogin from './pages/AdminLogin';
@@ -82,7 +82,7 @@ const App = () => {
         {(userRole == 'superadmin') &&
         (
           <>
-            <Route path='/superadmin-panel' element={<AdminPanel />} />
+            <Route path='/superadmin-panel' element={<SuperAdminPanel />} />
             <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
           </>
         )}

@@ -3,7 +3,7 @@ import { IBook } from "../models/bookModel";
 import { bookZod } from "../zod/bookZod";
 import { authMiddleware, roleMiddleware } from "./middleware";
 import { IUser, User } from "../models/userModel";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, review } from "@prisma/client";
 import { logger } from "../utils/logger";
 
 const prisma = new PrismaClient();
@@ -79,7 +79,7 @@ router.get('/', async (req, res) => {
         
         books = await prisma.book.findMany({
             where: {
-                category_id: categoryId ? categoryId : undefined,
+                category_id: categoryId || undefined,
                 price: { gte: minPrice , lte: maxPrice },
             },
 

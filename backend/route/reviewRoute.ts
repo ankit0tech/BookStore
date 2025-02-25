@@ -92,6 +92,11 @@ router.get('/user', authMiddleware, async (req: Request, res: Response) => {
 router.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+        const bookId = Number(id);
+        if(isNaN(bookId)) {
+            return res.status(400).json({message: 'Invalid book id'});
+        }
+
         const result = reviewZod.safeParse(req.body);
         
         if (result.success) {
@@ -102,13 +107,32 @@ router.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) =>
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
         
-            const review = await prisma.review.create({
-                data: {
-                    rating: req.body.rating,
-                    review_text: req.body.review_text,
-                    user_id: user.id,
-                    book_id: Number(id)
-                }
+            const review = await prisma.$transaction(async (prisma) => {
+
+                const newReview = await prisma.review.create({
+                    data: {
+                        rating: req.body.rating,
+                        review_text: req.body.review_text,
+                        user_id: user.id,
+                        book_id: bookId
+                    }
+                });
+            
+                const avgRating = await prisma.review.aggregate({
+                    _avg: { rating: true},
+                    where: { book_id: bookId}
+                });
+                
+                const book = await prisma.book.update({
+                    where: {
+                        id: bookId
+                    },
+                    data: {
+                        average_rating: avgRating._avg.rating || 0
+                    }
+                });
+
+                return newReview;
             });
 
             if (!review) {
@@ -134,6 +158,11 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
     try {
 
         const { id } = req.params;
+        const bookId = Number(id);
+        if(isNaN(bookId)) {
+            return res.status(400).json({message: 'Invalid book id'});
+        }
+
         const result = reviewZod.safeParse(req.body);
         if(result.success) {
 
@@ -142,21 +171,42 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
                 logger.error('Error occurred while fetching user while adding review');
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
-        
-            const updatedReview = await prisma.review.update({
-                where: {
-                    user_id_book_id: {
-                        user_id: user.id,
-                        book_id: Number(id)
+
+            const review = await prisma.$transaction(async (prisma) => {
+
+                
+                const updatedReview = await prisma.review.update({
+                    where: {
+                        user_id_book_id: {
+                            user_id: user.id,
+                            book_id: Number(id)
+                        }
+                    },
+                    data: {
+                        rating: req.body.rating,
+                        review_text: req.body.review_text,
                     }
-                },
-                data: {
-                    rating: req.body.rating,
-                    review_text: req.body.review_text,
-                }
+                });
+
+                const avgRating = await prisma.review.aggregate({
+                    _avg: { rating: true},
+                    where: { book_id: bookId}
+                });
+                
+                const book = await prisma.book.update({
+                    where: {
+                        id: bookId
+                    },
+                    data: {
+                        average_rating: avgRating._avg.rating || 0
+                    }
+                });
+
+                return updatedReview;
             });
 
-            if(updatedReview) {
+
+            if(review) {
                 logger.info('Updated the review');
                 return res.status(200).json({message: 'Updated the review'});
             } else {
@@ -177,22 +227,46 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
 router.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+        const bookId = Number(id);
+        if(isNaN(bookId)) {
+            return res.status(400).json({message: 'Invalid book id'});
+        }
+
         const user = await retrieveUser(req, prisma);
         if (!user) {
             logger.error('Error occurred while fetching user while adding review');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
     
-        const deletedReview = await prisma.review.delete({
-            where: {
-                user_id_book_id: {
-                    user_id: user.id,
-                    book_id: Number(id)
+        const review = await prisma.$transaction(async (prisma) => {
+
+            const deletedReview = await prisma.review.delete({
+                where: {
+                    user_id_book_id: {
+                        user_id: user.id,
+                        book_id: Number(id)
+                    }
                 }
-            }
+            });
+
+            const avgRating = await prisma.review.aggregate({
+                _avg: { rating: true},
+                where: { book_id: bookId}
+            });
+            
+            const book = await prisma.book.update({
+                where: {
+                    id: bookId
+                },
+                data: {
+                    average_rating: avgRating._avg.rating || 0
+                }
+            });
+
+            return deletedReview;
         });
         
-        if(!deletedReview) {
+        if(!review) {
             logger.error('Error while deleting review');
             return res.status(403).json({ message: 'Error while deleting review' });
         }

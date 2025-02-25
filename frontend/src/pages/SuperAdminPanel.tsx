@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const AdminPanel = () => {
+const SuperAdminPanel = () => {
 
     const navigate = useNavigate();
 
@@ -17,4 +17,4 @@ const AdminPanel = () => {
 
 }
 
-export default AdminPanel;
+export default SuperAdminPanel;

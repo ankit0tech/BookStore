@@ -51,6 +51,7 @@ model book {
   price Int
   category_id Int?
   category category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  average_rating Decimal @db.Decimal(3,2) @default(0)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   cover_image String @db.VarChar(2083) @default("")

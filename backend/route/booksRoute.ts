@@ -73,6 +73,7 @@ router.get('/', async (req, res) => {
         const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
         const sortBy: string = req.query.sortBy ? String(req.query.sortBy) : 'id';
         const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
+        const sortByAverageRating = req.query.sortByAverageRating !== undefined;
 
         let books;
         let nextCursor;
@@ -81,6 +82,7 @@ router.get('/', async (req, res) => {
             where: {
                 category_id: categoryId || undefined,
                 price: { gte: minPrice , lte: maxPrice },
+                average_rating: sortByAverageRating ? { gte: 4 } : undefined,
             },
 
             take: 11,

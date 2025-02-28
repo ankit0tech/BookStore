@@ -84,6 +84,9 @@ router.get('/', async (req, res) => {
                 price: { gte: minPrice , lte: maxPrice },
                 average_rating: sortByAverageRating ? { gte: 4 } : undefined,
             },
+            include: {
+                category: true,
+            },
 
             take: 11,
             orderBy: [

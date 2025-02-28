@@ -9,20 +9,11 @@ import { useHandleCartUpdate } from '../utils/cartUtils';
 import api from '../utils/api';
 import { RootState } from '../types';
 import { useSelector } from 'react-redux';
+import { Book } from '../types';
 
-
-interface BookState {
-    id: string;
-    title: string;
-    author: string;
-    publish_year: string;
-    price: number;
-    category: string;
-    average_rating: number;
-}
 
 const ShowBook = () => {
-    const [book, setBook] = useState<BookState>({id:'', title:'', author: '', publish_year: '', price: 0, category:'', average_rating: 0});
+    const [book, setBook] = useState<Book|null>(null);
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const { handleCartUpdate } =useHandleCartUpdate();
@@ -72,7 +63,7 @@ const ShowBook = () => {
         <div className='p-4'>
             <BackButton />
             <h1 className='text-3xl my-4'>Show Book</h1>
-            {loading ? (
+            {loading || !book ? (
                 <Spinner />
             ) : (
                 <div className="p-4 flex flex-row justify-between">
@@ -95,7 +86,7 @@ const ShowBook = () => {
                         </div>
                         <div className='my-4'>
                             <span className='text-xl mr-4 text-grey-500'>Category:</span>
-                            <span>{book.category}</span>
+                            <span>{book.category.title}</span>
                         </div>
                         <div className='my-4'>
                             <button

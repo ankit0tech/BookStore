@@ -32,6 +32,9 @@ router.get('/search', async (req, res) => {
                     }
                 ],
             },
+            include: {
+                category: true,
+            }
         });
     
         return res.status(200).send(books);
@@ -117,6 +120,9 @@ router.get('/:id(\\d+)', async (req, res) => {
         const book = await prisma.book.findUnique({
             where : {
                 id : Number(id)
+            },
+            include: {
+                category: true
             }
         });
         res.status(200).send(book);

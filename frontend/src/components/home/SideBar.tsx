@@ -17,10 +17,11 @@ interface Extended extends ChildProps {
     setSortBy: React.Dispatch<React.SetStateAction<string|null>>;
     sortOrder: string | null;
     setSortOrder: React.Dispatch<React.SetStateAction<string|null>>;
-
+    sortByAverageRating: boolean
+    setSortByAverageRating: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SideBar = ({sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, nextCursor, setNextCursor}: Extended) => {
+const SideBar = ({sortByAverageRating, setSortByAverageRating, sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, nextCursor, setNextCursor}: Extended) => {
  
     // sort by Price, Rating
 
@@ -98,9 +99,9 @@ const SideBar = ({sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPr
                     >Lowest first</div>
                 </div>
                 <div 
-                    className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'reviews' && "text-purple-600"}`}
-                    onClick={() => setSorting('rating', 'desc')}
-                >Reviews</div>
+                    className={`pl-4 cursor-pointer hover:text-purple-600  ${sortByAverageRating && "text-purple-600"}`}
+                    onClick={() => setSortByAverageRating(!sortByAverageRating)}
+                >4+ Rating</div>
             </div>
             
 

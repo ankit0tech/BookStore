@@ -28,6 +28,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     const [maxPrice, setMaxPrice] = useState<number|null>(null);
     const [sortBy, setSortBy] = useState<string|null>(null);
     const [sortOrder, setSortOrder] = useState<string|null>(null);
+    const [sortByAverageRating, setSortByAverageRating] = useState<boolean>(false);
 
 
     // taking cursor manually as useState was updating it asynchronously
@@ -45,6 +46,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
             params.append('sortBy', sortBy);
             if(sortOrder) params.append('sortOrder', sortOrder);
         }
+        if(sortByAverageRating) params.append('sortByAverageRating', '');
         
 
         const url = `http://localhost:5555/books?${params.toString()}`;
@@ -73,7 +75,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     useEffect(()=> {
         setNextCursor(null);
         handleFetchBooks([], null);
-    }, [categoryId, minPrice, maxPrice, sortBy, sortOrder])
+    }, [categoryId, minPrice, maxPrice, sortBy, sortOrder, sortByAverageRating])
 
     useEffect(() => {
         if(!nextCursor || !observeRef.current) return;
@@ -129,6 +131,8 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
             </div>
             <div className='flex justify-evenly gap-2'>
                 <SideBar
+                    sortByAverageRating={sortByAverageRating}
+                    setSortByAverageRating={setSortByAverageRating}
                     sortBy={sortBy} setSortBy={setSortBy}
                     sortOrder={sortOrder} setSortOrder={setSortOrder}
                     minPrice={minPrice} setMinPrice={setMinPrice}

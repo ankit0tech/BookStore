@@ -3,7 +3,7 @@ import { IBook } from "../models/bookModel";
 import { bookZod } from "../zod/bookZod";
 import { authMiddleware, roleMiddleware } from "./middleware";
 import { IUser, User } from "../models/userModel";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, review } from "@prisma/client";
 import { logger } from "../utils/logger";
 
 const prisma = new PrismaClient();
@@ -73,14 +73,16 @@ router.get('/', async (req, res) => {
         const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
         const sortBy: string = req.query.sortBy ? String(req.query.sortBy) : 'id';
         const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
+        const sortByAverageRating = req.query.sortByAverageRating !== undefined;
 
         let books;
         let nextCursor;
         
         books = await prisma.book.findMany({
             where: {
-                category_id: categoryId ? categoryId : undefined,
+                category_id: categoryId || undefined,
                 price: { gte: minPrice , lte: maxPrice },
+                average_rating: sortByAverageRating ? { gte: 4 } : undefined,
             },
 
             take: 11,

@@ -5,10 +5,9 @@ import axios from "axios";
 
 
 
-const Reviews: React.FC<{id:number}> = ({ id }) => {
+const Reviews: React.FC<{averageRating: number, id:number}> = ({averageRating, id }) => {
 
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [averageRating, setAverageRating] = useState(0);
 
     useEffect(() => {
         if (!id) return;
@@ -16,12 +15,6 @@ const Reviews: React.FC<{id:number}> = ({ id }) => {
             axios.get(`http://localhost:5555/review/book/${id}`)
             .then((response)=> {
                 setReviews(response.data);
-                
-                if(response.data.length != 0) {
-                    const sum = response.data.reduce((acc: number, item:Review) => acc + item.rating, 0);
-                    setAverageRating(sum / response.data.length);
-                }
-
             })
             .catch((error: any)=> {
                 console.log(error);

@@ -18,10 +18,11 @@ interface BookState {
     publish_year: string;
     price: number;
     category: string;
+    average_rating: number;
 }
 
 const ShowBook = () => {
-    const [book, setBook] = useState<BookState>({id:'', title:'', author: '', publish_year: '', price: 0, category:''});
+    const [book, setBook] = useState<BookState>({id:'', title:'', author: '', publish_year: '', price: 0, category:'', average_rating: 0});
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const { handleCartUpdate } =useHandleCartUpdate();
@@ -109,7 +110,7 @@ const ShowBook = () => {
                     </div>
 
                     <div className='m-4 md:mr-20'>
-                        <Reviews id={Number(book.id)} />
+                        <Reviews averageRating={book.average_rating}id={Number(book.id)} />
                     </div>
                 </ div>
             )}

@@ -60,6 +60,25 @@ model book {
   review review[]
   wishlist wishlist[]
   recently_viewed recently_viewed[]
+  book_stats book_stats[]
+  special_offers special_offers[] @relation("BookOnOffer")
+}
+
+model book_stats {
+  book_id Int @id
+  purchase_count Int @default(0)
+  book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
+}
+
+model special_offers {
+  id Int @id @default(autoincrement())
+  discount_percentage Int
+  offer_type String
+  description String
+  offer_valid_from DateTime
+  offer_valid_until DateTime
+
+  books book[] @relation("BookOnOffer")
 }
 
 model category {

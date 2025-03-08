@@ -136,7 +136,9 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
                                         key={item.id}
                                         className="flex flex-row p-2"
                                     >
-                                        <div>{item.book.title}</div>
+                                        <Link to={`/books/details/${item.book.id}`}> 
+                                            <div>{item.book.title}</div> 
+                                        </Link>
                                         <AiOutlineClose 
                                             className="m-1 cursor-pointer border rounded"
                                             onClick={(e) => {

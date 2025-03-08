@@ -47,7 +47,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                             <td className='text-center'>{book.title}</td>
                             <td className='text-center max-md:hidden'>{book.author}</td>
                             <td className='text-center max-md:hidden'>{book.publish_year}</td>
-                            <td className='text-center max-md:hidden'>{book.category}</td>
+                            <td className='text-center max-md:hidden'>{book.category.title}</td>
                             <td className='text-center'>{book.price}</td>
                             <td className='text-center'>
                                 <div className='flex justify-center gap-x-4'>

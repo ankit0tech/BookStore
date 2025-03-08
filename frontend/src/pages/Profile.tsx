@@ -49,7 +49,16 @@ const Profile = () => {
             </button>
 
             {(userRole=='admin' || userRole == 'superadmin') &&
-                <button className="m-2 p-4 border-2 rounded-lg" onClick={() => handleNavigate('/categories')}>Categories</button>
+                <div>
+                    <button 
+                        className="m-2 p-4 border-2 rounded-lg" 
+                        onClick={() => handleNavigate('/categories')}
+                    >Categories</button>
+                    <button 
+                        className="m-2 p-4 border-2 rounded-lg" 
+                        onClick={() => handleNavigate('/offers')}
+                    >Offers</button>
+                </div>
             }
 
             {userRole == 'superadmin' ? 

@@ -11,6 +11,7 @@ import reviewRoute from './route/reviewRoute';
 import wishlistRoute from './route/wishlistRoute';
 import recentlyviewedRoute from './route/recentlyviewedRoute';
 import categoryRoute from './route/categoryRoute';
+import offerRoute from './route/offersRoute';
 import { logger } from './utils/logger';
 
 
@@ -79,6 +80,7 @@ app.use('/review', reviewRoute);
 app.use('/wishlist', wishlistRoute);
 app.use('/recently-viewed', recentlyviewedRoute);
 app.use('/category', categoryRoute);
+app.use('/offer', offerRoute);
 
 
 app.listen(config.server.port, () => {

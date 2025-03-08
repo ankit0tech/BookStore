@@ -32,6 +32,9 @@ router.get('/search', async (req, res) => {
                     }
                 ],
             },
+            include: {
+                category: true,
+            }
         });
     
         return res.status(200).send(books);
@@ -84,6 +87,9 @@ router.get('/', async (req, res) => {
                 price: { gte: minPrice , lte: maxPrice },
                 average_rating: sortByAverageRating ? { gte: 4 } : undefined,
             },
+            include: {
+                category: true,
+            },
 
             take: 11,
             orderBy: [
@@ -114,6 +120,9 @@ router.get('/:id(\\d+)', async (req, res) => {
         const book = await prisma.book.findUnique({
             where : {
                 id : Number(id)
+            },
+            include: {
+                category: true
             }
         });
         res.status(200).send(book);

@@ -98,6 +98,11 @@ const SideBar = ({sortByAverageRating, setSortByAverageRating, sortBy, setSortBy
                         onClick={() => setSorting('price', 'asc')}
                     >Lowest first</div>
                 </div>
+                <div
+                    className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'price' && sortOrder === 'desc' && "text-purple-600"}`}
+                    onClick={() => setSorting('created_at', 'desc')}
+
+                >New Arrivals</div>
                 <div 
                     className={`pl-4 cursor-pointer hover:text-purple-600  ${sortByAverageRating && "text-purple-600"}`}
                     onClick={() => setSortByAverageRating(!sortByAverageRating)}

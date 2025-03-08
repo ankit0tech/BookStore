@@ -198,17 +198,64 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
         const user = await prisma.userinfo.findUnique({
             where: {email: userEmail}
         });
+
         if (user) {
-            // // Apply transactions here
-            await prisma.cart.updateMany({
-                where: {
-                    user_id: user.id, purchased: false
-                },
-                data: {
-                    purchased: true,
-                    purchase_date: new Date()
+            await prisma.$transaction(async (prisma) => {
+                const cartItems = await prisma.cart.findMany({
+                    where: {
+                        user_id: user.id, purchased: false
+                    },
+                    select: {
+                        book_id: true,
+                        quantity: true,
+                    }
+                });
+
+                await prisma.cart.updateMany({
+                    where: {
+                        user_id: user.id,
+                        purchased: false
+                    },
+                    data: {
+                        purchased: true,
+                        purchase_date: new Date()
+                    }
+                });
+
+                for(const item of cartItems) {
+                    await prisma.book_stats.upsert({
+                        where: { book_id: item.book_id },
+                        create: {
+                            book_id: item.book_id,
+                            purchase_count: item.quantity,
+                        },
+                        update: {
+                            purchase_count: { increment: item.quantity }
+                        }
+                    });
                 }
             });
+            console.log("Purchased...");
+
+            // await prisma.cart.updateMany({
+            //     where: {
+            //         user_id: user.id, purchased: false
+            //     },
+            //     data: {
+            //         purchased: true,
+            //         purchase_date: new Date()
+            //     }
+            // });
+            
+            // await prisma.book_stats.updateMany({
+            //     where: {
+
+            //     },
+            //     data: {
+
+            //     }
+            // });
+
             // cartItems.forEach(async (cartItem) => {
             //     cartItem.purchased = true;
             //     await cartItem.save();

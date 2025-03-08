@@ -27,10 +27,12 @@ export interface Book {
     author: string;
     publish_year: number;
     price: number;
-    category: string | null;
+    category_id: number;
+    average_rating: number;
     created_at: Date;
     updated_at: Date;
     cover_image: string;
+    category: SubCategory;
 }
 
 export interface Address {
@@ -90,4 +92,13 @@ export interface SubCategory {
     created_by: number|null;
     updated_by: number|null;
 
+}
+
+export interface Offer {
+    id: number,
+    discount_percentage: number;
+    offer_type: string;
+    description: string;
+    offer_valid_from: Date;
+    offer_valid_until: Date;
 }

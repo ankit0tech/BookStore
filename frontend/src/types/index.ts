@@ -93,3 +93,12 @@ export interface SubCategory {
     updated_by: number|null;
 
 }
+
+export interface Offer {
+    id: number,
+    discount_percentage: number;
+    offer_type: string;
+    description: string;
+    offer_valid_from: Date;
+    offer_valid_until: Date;
+}

@@ -38,7 +38,6 @@ router.get('/', roleMiddleware(['admin', 'superadmin']), async (req: Request, re
             where:{}
         });
 
-        console.log(offers);
         return res.status(200).json(offers);
 
     } catch(error: any) {

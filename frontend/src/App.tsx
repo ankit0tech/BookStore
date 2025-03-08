@@ -32,6 +32,9 @@ import Wishlist from './pages/Wishlist';
 import RecentlyViewed from './pages/RecentlyViewed';
 import CreateCategory from './pages/category/CreateCategory';
 import Categories from './pages/category/Categories';
+import Offers from './pages/special_offers/Offers';
+import CreateOffer from './pages/special_offers/CreateOffers';
+import DeleteOffer from './pages/special_offers/DeleteOffer';
 
 export interface ChildProps {
   books: Book[];
@@ -75,6 +78,10 @@ const App = () => {
             <Route path='/categories' element={<Categories />} />
             <Route path='/category/create' element={<CreateCategory />} />
             <Route path='/category/edit/:id' element={<CreateCategory />} />
+            <Route path='/offers' element={<Offers />} />
+            <Route path='/offer/create' element={<CreateOffer />} />
+            <Route path='/offer/edit/:id' element={<CreateOffer />} />
+            <Route path='/offer/delete/:id' element={<DeleteOffer />} />
           </>
         )}
         <Route path='/admin/signup' element={<AdminSignup />} />

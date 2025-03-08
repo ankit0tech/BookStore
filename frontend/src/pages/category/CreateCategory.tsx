@@ -43,11 +43,11 @@ const CreateCategory = () => {
 
         apiCall
         .then((response) => {
-            enqueueSnackbar('Category created successfully', { variant: 'success' });
+            enqueueSnackbar('Success', { variant: 'success' });
         })
         .catch((error) => {
             console.log(error);
-            enqueueSnackbar('Error while creating new category', { variant: 'error' });
+            enqueueSnackbar('Error', { variant: 'error' });
         });
 
     }

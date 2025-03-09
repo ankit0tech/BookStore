@@ -52,7 +52,6 @@ const CreateOffer = () => {
         .then((response) => {
 
             setUpdateOffer(true);
-            console.log("get category: ", response);
             
             setDiscountPercentage(response.data.discount_percentage);
             setOfferType(response.data.offer_type);

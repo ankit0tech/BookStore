@@ -33,7 +33,7 @@ import RecentlyViewed from './pages/RecentlyViewed';
 import CreateCategory from './pages/category/CreateCategory';
 import Categories from './pages/category/Categories';
 import Offers from './pages/special_offers/Offers';
-import CreateOffer from './pages/special_offers/CreateOffers';
+import CreateOffer from './pages/special_offers/CreateOffer';
 import DeleteOffer from './pages/special_offers/DeleteOffer';
 
 export interface ChildProps {

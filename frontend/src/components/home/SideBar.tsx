@@ -88,6 +88,22 @@ const SideBar = ({sortByAverageRating, setSortByAverageRating, sortBy, setSortBy
  
             <div className="p-2">
                 <div className="font-bold">Sort By</div>
+                
+                <div
+                    className={`cursor-pointer hover:text-purple-600  ${sortBy === 'created_at' && sortOrder === 'desc' && "text-purple-600"}`}
+                    onClick={() => setSorting('created_at', 'desc')}
+                >New Arrivals</div>
+
+                <div
+                    className={`cursor-pointer hover:text-purple-600  ${sortByAverageRating && "text-purple-600"}`}
+                    onClick={() => setSortByAverageRating(!sortByAverageRating)}
+                >4+ Rating</div>
+                
+                <div
+                    className={`cursor-pointer hover:text-purple-600  ${sortBy === 'purchase_count' && "text-purple-600"}`}
+                    onClick={() => setSorting('purchase_count', 'desc')}
+                >Bestsellers</div>
+                
                 <div>Price
                     <div 
                         className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'price' && sortOrder === 'desc' && "text-purple-600"}`}
@@ -98,15 +114,6 @@ const SideBar = ({sortByAverageRating, setSortByAverageRating, sortBy, setSortBy
                         onClick={() => setSorting('price', 'asc')}
                     >Lowest first</div>
                 </div>
-                <div
-                    className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'price' && sortOrder === 'desc' && "text-purple-600"}`}
-                    onClick={() => setSorting('created_at', 'desc')}
-
-                >New Arrivals</div>
-                <div 
-                    className={`pl-4 cursor-pointer hover:text-purple-600  ${sortByAverageRating && "text-purple-600"}`}
-                    onClick={() => setSortByAverageRating(!sortByAverageRating)}
-                >4+ Rating</div>
             </div>
             
 

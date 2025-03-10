@@ -213,8 +213,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
 
                 await prisma.cart.updateMany({
                     where: {
-                        user_id: user.id,
-                        purchased: false
+                        user_id: user.id, purchased: false
                     },
                     data: {
                         purchased: true,
@@ -222,18 +221,17 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                     }
                 });
 
-                for(const item of cartItems) {
-                    await prisma.book_stats.upsert({
-                        where: { book_id: item.book_id },
-                        create: {
-                            book_id: item.book_id,
-                            purchase_count: item.quantity,
-                        },
-                        update: {
+                const updatePromises = cartItems.map(item => 
+                    prisma.book.update({
+                        where: { id: item.book_id },
+                        data: {
                             purchase_count: { increment: item.quantity }
                         }
-                    });
-                }
+                    })
+                );
+
+                await Promise.all(updatePromises);  // run all promises in parallel
+
             });
             console.log("Purchased...");
 

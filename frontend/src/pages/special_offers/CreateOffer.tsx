@@ -2,7 +2,7 @@ import { RecordWithTtl } from "dns";
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 const CreateOffer = () => {
@@ -16,7 +16,7 @@ const CreateOffer = () => {
     const [offerValidFromTime, setOfferValidFromTime] = useState<string>('');
     const [offerValidUntilTime, setOfferValidUntilTime] = useState<string>('');
     const [updateOffer, setUpdateOffer] = useState<boolean>(false);
-
+    const navigate = useNavigate();
     
 
     const handleFormSubmit = (e: React.FormEvent) => {
@@ -38,6 +38,7 @@ const CreateOffer = () => {
         apiCall
         .then((response) => {
             enqueueSnackbar("Success", { variant: "success"});
+            navigate(-1);
         })
         .catch((error) => {
             console.log(error);
@@ -52,7 +53,6 @@ const CreateOffer = () => {
         .then((response) => {
 
             setUpdateOffer(true);
-            console.log("get category: ", response);
             
             setDiscountPercentage(response.data.discount_percentage);
             setOfferType(response.data.offer_type);

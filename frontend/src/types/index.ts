@@ -33,6 +33,8 @@ export interface Book {
     updated_at: Date;
     cover_image: string;
     category: SubCategory;
+
+    special_offers: Offer[] | null;
 }
 
 export interface Address {

@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response } from "express";
 import { IBook } from "../models/bookModel";
 import { bookZod } from "../zod/bookZod";
 import { authMiddleware, roleMiddleware } from "./middleware";
@@ -77,6 +77,7 @@ router.get('/', async (req, res) => {
         const sortBy: string = req.query.sortBy ? String(req.query.sortBy) : 'id';
         const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
         const sortByAverageRating = req.query.sortByAverageRating !== undefined;
+        const selectWithSpecialOffer = req.query.selectWithSpecialOffer !== undefined;
 
         let books;
         let nextCursor;
@@ -86,9 +87,18 @@ router.get('/', async (req, res) => {
                 category_id: categoryId || undefined,
                 price: { gte: minPrice , lte: maxPrice },
                 average_rating: sortByAverageRating ? { gte: 4 } : undefined,
+                special_offers: selectWithSpecialOffer ? 
+                    {
+                        some: {
+                            offer_valid_until: {
+                                gte: new Date()
+                            }
+                        }
+                    }: undefined
             },
             include: {
                 category: true,
+                special_offers: true,
             },
 
             take: 11,
@@ -122,7 +132,8 @@ router.get('/:id(\\d+)', async (req, res) => {
                 id : Number(id)
             },
             include: {
-                category: true
+                category: true,
+                special_offers: true,
             }
         });
         res.status(200).send(book);
@@ -182,6 +193,72 @@ router.delete('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req,
         res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
+
+router.post('/add-offer-for-book/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
+    try {
+        const bookId = Number(req.params.id);
+        if (isNaN(bookId)) {
+            return res.status(400).json({message: 'Please send valid id'});
+        }
+
+        const offerId = req.body.offerId;
+
+        const book = await prisma.book.update({
+            where: {
+                id: bookId
+            },
+            data: {
+                special_offers: {
+                    connect: { id: offerId }
+                }
+            }
+        });
+
+        if(!book) {
+            return res.status(400).json({message: 'Error. Operation failed'});
+        }
+        
+        return res.status(200).json(book);
+
+    } catch(error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+router.delete('/remove-offer/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async(req: Request, res: Response) => {
+    try {
+
+        const bookId = Number(req.params.id);
+        if (isNaN(bookId)) {
+            return res.status(400).json({message: 'Please send valid id'});
+        }
+
+        const offerId = req.body.offerId;
+
+        const book = await prisma.book.update({
+            where: {
+                id: bookId
+            },
+            data: {
+                special_offers: {
+                    disconnect: { id: offerId }
+                }
+            }
+        });
+
+        if(!book) {
+            return res.status(400).json({message: 'Error. Operation failed'});
+        }
+        
+        return res.status(200).json(book);
+        
+
+    } catch (error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+    }
+})
 
 
 export default router;

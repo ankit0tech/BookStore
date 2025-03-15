@@ -8,6 +8,29 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 
+router.get('/active-offers', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
+    try {
+
+        const offers = await prisma.special_offers.findMany({
+            where: {
+                offer_valid_until: {
+                    gte: new Date()
+                }
+            }
+        });
+        if(!offers) {
+            return res.status(400).json({message: "Error while retrieving special offer"});
+        }
+
+        return res.status(200).json(offers);
+
+    } catch (error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+
 router.get('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async(req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
@@ -45,6 +68,39 @@ router.get('/', roleMiddleware(['admin', 'superadmin']), async (req: Request, re
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
+
+
+// router.post('/add-offer-for-book/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
+//     try {
+//         const bookId = Number(req.params.id);
+//         if (isNaN(bookId)) {
+//             return res.status(400).json({message: 'Please send valid id'});
+//         }
+
+//         const offerId = req.body.offerId;
+
+//         const book = await prisma.book.update({
+//             where: {
+//                 id: bookId
+//             },
+//             data: {
+//                 special_offers: {
+//                     connect: { id: offerId }
+//                 }
+//             }
+//         });
+
+//         if(!book) {
+//             return res.status(400).json({message: 'Error. Operation failed'});
+//         }
+        
+//         return res.status(200).json(book);
+
+//     } catch(error: any) {
+//         logger.error(error.message);
+//         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+//     }
+// });
 
 router.post('/', roleMiddleware(['admin', 'superadmin']), async(req: Request, res: Response) => {
     try {

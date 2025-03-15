@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import { enqueueSnackbar } from 'notistack';
@@ -10,6 +10,7 @@ import api from '../utils/api';
 import { RootState } from '../types';
 import { useSelector } from 'react-redux';
 import { Book } from '../types';
+import { MdOutlineDelete } from 'react-icons/md';
 
 
 const ShowBook = () => {
@@ -17,7 +18,8 @@ const ShowBook = () => {
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const { handleCartUpdate } =useHandleCartUpdate();
-    const isAuthenticated = useSelector((state: RootState) => state.userinfo.isAuthenticated);
+    const userinfo = useSelector((state: RootState) => state.userinfo);
+
 
     const handleAddToWishList = (id: number) => {
 
@@ -29,7 +31,22 @@ const ShowBook = () => {
             console.log(error);
             enqueueSnackbar('Error while adding item to wishlist', { variant: 'error' });
         });
+    }
 
+    const handleRemoveOffer = (offerId: number) => {
+        const data = {
+            "offerId": offerId,
+        }
+
+        api.delete(`http://localhost:5555/books/remove-offer/${id}`, { data })
+        .then((response) => {
+            console.log(response);
+            enqueueSnackbar('Offer removed successfully', { variant: "success" });
+        })
+        .catch((error: any) => {
+            console.log(error);
+            enqueueSnackbar('Error while removing offer', { variant: "error" });
+        });
     }
 
     useEffect(() => {
@@ -38,6 +55,7 @@ const ShowBook = () => {
         axios(`http://localhost:5555/books/${id}`)
         .then((response) => {
             setBook(response.data);
+            console.log(response.data);
             setLoading(false);
         })
         .catch((error) => {
@@ -46,7 +64,7 @@ const ShowBook = () => {
         })
 
         // If user is logged in then add book to recently viewed
-        if (isAuthenticated) {
+        if (userinfo.isAuthenticated) {
 
             api.post(`http://localhost:5555/recently-viewed/add/${id}`)
             .then(() => {
@@ -97,11 +115,32 @@ const ShowBook = () => {
                                 className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700"
                                 onClick={() => handleAddToWishList(Number(book.id))}
                             >Add to wishlist</button>
+                            <Link 
+                                className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" 
+                                to={`/books/add-offer/${book.id}`}
+                            >Add Offer</Link>
                         </div>
                     </div>
 
                     <div className='m-4 md:mr-20'>
-                        <Reviews averageRating={book.average_rating}id={Number(book.id)} />
+                        <Reviews averageRating={book.average_rating} id={Number(book.id)} />
+
+                        <div>
+                            <div className='font-bold py-2'> offers: </div>
+                                <ul className=''>
+                                    { book.special_offers?.map((offer) => (
+                                        <li key={offer.id} className='flex flex-row items-center gap-x-4'> {offer.offer_type } 
+                                        
+                                        {(userinfo.userRole == 'admin' || userinfo.userRole == 'superadmin')
+                                            && 
+                                            <MdOutlineDelete onClick={() => handleRemoveOffer(offer.id)} className='text-2x1 text-red-600' />
+                                        }
+                                    
+                                    </li>
+                                    )) }
+                                </ul>
+                        </div>
+
                     </div>
                 </ div>
             )}

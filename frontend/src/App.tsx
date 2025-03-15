@@ -35,6 +35,7 @@ import Categories from './pages/category/Categories';
 import Offers from './pages/special_offers/Offers';
 import CreateOffer from './pages/special_offers/CreateOffer';
 import DeleteOffer from './pages/special_offers/DeleteOffer';
+import AddOfferToBook from './pages/AddOfferToBook';
 
 export interface ChildProps {
   books: Book[];
@@ -82,6 +83,7 @@ const App = () => {
             <Route path='/offer/create' element={<CreateOffer />} />
             <Route path='/offer/edit/:id' element={<CreateOffer />} />
             <Route path='/offer/delete/:id' element={<DeleteOffer />} />
+            <Route path='/books/add-offer/:id' element={<AddOfferToBook />} />
           </>
         )}
         <Route path='/admin/signup' element={<AdminSignup />} />

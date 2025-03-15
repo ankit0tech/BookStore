@@ -17,11 +17,13 @@ interface Extended extends ChildProps {
     setSortBy: React.Dispatch<React.SetStateAction<string|null>>;
     sortOrder: string | null;
     setSortOrder: React.Dispatch<React.SetStateAction<string|null>>;
-    sortByAverageRating: boolean
+    sortByAverageRating: boolean;
     setSortByAverageRating: React.Dispatch<React.SetStateAction<boolean>>;
+    selectWithSpecialOffer: boolean;
+    setSelectWithSpecialOffer: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SideBar = ({sortByAverageRating, setSortByAverageRating, sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, nextCursor, setNextCursor}: Extended) => {
+const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAverageRating, setSortByAverageRating, sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, nextCursor, setNextCursor}: Extended) => {
  
     // sort by Price, Rating
 
@@ -88,6 +90,11 @@ const SideBar = ({sortByAverageRating, setSortByAverageRating, sortBy, setSortBy
  
             <div className="p-2">
                 <div className="font-bold">Sort By</div>
+ 
+                 <div
+                    className={`cursor-pointer hover:text-purple-600  ${selectWithSpecialOffer && "text-purple-600"}`}
+                    onClick={() => setSelectWithSpecialOffer(!selectWithSpecialOffer)}
+                >Specail offers</div>
                 
                 <div
                     className={`cursor-pointer hover:text-purple-600  ${sortBy === 'created_at' && sortOrder === 'desc' && "text-purple-600"}`}

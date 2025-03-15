@@ -42,6 +42,9 @@ const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
                     <BiUserCircle className="text-purple-600 text-2xl" />
                     <h2 className="my-1">{book.author}</h2>
                 </div>
+                <div>
+                    price: {book.price}
+                </div>
                 <div className="flex items-center gap-x-5 mt-4 p-4">
                     <BiShow 
                         className="text-3xl text-blue-800 hover:text-black cursor-pointer"

@@ -29,6 +29,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     const [sortBy, setSortBy] = useState<string|null>(null);
     const [sortOrder, setSortOrder] = useState<string|null>(null);
     const [sortByAverageRating, setSortByAverageRating] = useState<boolean>(false);
+    const [selectWithSpecialOffer, setSelectWithSpecialOffer] = useState<boolean>(false);
 
 
     // taking cursor manually as useState was updating it asynchronously
@@ -47,6 +48,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
             if(sortOrder) params.append('sortOrder', sortOrder);
         }
         if(sortByAverageRating) params.append('sortByAverageRating', '');
+        if(selectWithSpecialOffer) params.append('selectWithSpecialOffer', '');
         
 
         const url = `http://localhost:5555/books?${params.toString()}`;
@@ -75,7 +77,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     useEffect(()=> {
         setNextCursor(null);
         handleFetchBooks([], null);
-    }, [categoryId, minPrice, maxPrice, sortBy, sortOrder, sortByAverageRating])
+    }, [categoryId, minPrice, maxPrice, sortBy, sortOrder, sortByAverageRating, selectWithSpecialOffer])
 
     useEffect(() => {
         if(!nextCursor || !observeRef.current) return;
@@ -131,6 +133,8 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
             </div>
             <div className='flex justify-evenly gap-2'>
                 <SideBar
+                    selectWithSpecialOffer={selectWithSpecialOffer} 
+                    setSelectWithSpecialOffer={setSelectWithSpecialOffer}
                     sortByAverageRating={sortByAverageRating}
                     setSortByAverageRating={setSortByAverageRating}
                     sortBy={sortBy} setSortBy={setSortBy}

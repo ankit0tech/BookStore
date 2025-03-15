@@ -77,6 +77,7 @@ router.get('/', async (req, res) => {
         const sortBy: string = req.query.sortBy ? String(req.query.sortBy) : 'id';
         const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
         const sortByAverageRating = req.query.sortByAverageRating !== undefined;
+        const selectWithSpecialOffer = req.query.selectWithSpecialOffer !== undefined;
 
         let books;
         let nextCursor;
@@ -86,9 +87,18 @@ router.get('/', async (req, res) => {
                 category_id: categoryId || undefined,
                 price: { gte: minPrice , lte: maxPrice },
                 average_rating: sortByAverageRating ? { gte: 4 } : undefined,
+                special_offers: selectWithSpecialOffer ? 
+                    {
+                        some: {
+                            offer_valid_until: {
+                                gte: new Date()
+                            }
+                        }
+                    }: undefined
             },
             include: {
                 category: true,
+                special_offers: true,
             },
 
             take: 11,

@@ -31,18 +31,28 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                 where: { email: userEmail }
             });
 
+            console.log(req.body);
+
             if (user) {
                 const existingCartItem = await prisma.cart.findFirst({
                     where: {
-                        user_id: user.id, book_id: req.body.book_id, purchased: false
+                        user_id: user.id, 
+                        book_id: req.body.book_id, 
+                        offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : null,
+                        purchased: false
                     }
                 });
+                
                 if (existingCartItem) {
                     logger.info('there is an existing cart item, update the existing one');
 
                     if((existingCartItem.quantity + req.body.quantity) == 0){
                         await prisma.cart.deleteMany({ 
-                            where: {user_id: user.id, book_id: req.body.book_id}
+                            where: {
+                                user_id: user.id, 
+                                book_id: req.body.book_id,
+                                offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : null,
+                            }
                         });
                         return res.status(200).send({message: "Cart updated successfully"});
                     }
@@ -52,7 +62,10 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 
                     await prisma.cart.updateMany({
                         where: {
-                            user_id: user.id, book_id: req.body.book_id, purchased: false
+                            user_id: user.id, 
+                            book_id: req.body.book_id, 
+                            offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : null,
+                            purchased: false
                         },
                         data: {
                             quantity: existingCartItem.quantity + req.body.quantity
@@ -78,6 +91,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                         user_id: user.id,
                         book_id: req.body.book_id,
                         quantity: req.body.quantity,
+                        offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : undefined,
                         purchased: false
                     };
                     await prisma.cart.create({data: newCart});
@@ -111,27 +125,19 @@ router.get('/get-cart-items', authMiddleware, async (req, res) => {
             where: { email:userEmail }
         });
         if(user) {
-            const cartData = await prisma.cart.findMany({
-                where: {user_id: user.id, purchased: false}
+            const cartItems = await prisma.cart.findMany({
+                where: {
+                    user_id: user.id, 
+                    purchased: false,
+                },
+                select: {
+                    id: true,
+                    quantity: true,
+                    special_offers: true,
+                    book: true
+                }
             });
             
-            let cartItems: CartInterface[] = [];
-
-            const promises = cartData.map(async (item) => {
-                const book = await prisma.book.findUnique({
-                    where: {
-                        id: item.book_id
-                    }
-                });
-                if(book) {
-                    return { book, quantity: item.quantity };
-                }
-                return null;
-            });
-
-            const resolvedCartItems = await Promise.all(promises);
-            cartItems = resolvedCartItems.filter((item) => item != null) as CartInterface [];
-
             return res.status(200).send({ data: cartItems });
         
         }

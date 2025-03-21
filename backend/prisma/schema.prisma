@@ -72,6 +72,7 @@ model special_offers {
   offer_valid_from DateTime
   offer_valid_until DateTime
 
+  cart cart[]
   books book[] @relation("BookOnOffer")
 }
 
@@ -102,6 +103,10 @@ model cart {
   quantity Int @default(1)
   purchased Boolean @default(false)
   purchase_date DateTime?
+
+  offer_id Int?
+  special_offers special_offers? @relation(fields: [offer_id], references: [id], onDelete: Cascade)
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }

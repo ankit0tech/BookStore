@@ -58,19 +58,27 @@ const Checkout = () => {
                 <Spinner />
             ):(
                 <div className='w-full mx-auto max-w-[1000px] rounded-lg'>
-                    <ul>
                         {cartItems.data.length === 0 ? (
                             <p>Cart is empty...</p>
                         ) : (
-                            cartItems.data.map((item) => (
-                                <li key={item.book.id}>
-                                    {item.book.title} - {item.quantity}
-                                </li>
-                            ))
+                        <div>
+                            <ul>
+                                { cartItems.data.map((item) => (
+                                    <li key={item.book.id}>
+                                        {item.book.title} - qty: {item.quantity}
+                                    </li>
+                                )) }
+                            </ul>
+                   
+                            <p>Total Amount: {totalAmount}</p>
+                            <button 
+                                type='button' 
+                                onClick={handleBuyBooks} 
+                                className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" >
+                                    Buy
+                            </button>
+                        </div>
                         )}
-                    </ul>
-                    <p>Total Amount: {totalAmount}</p>
-                    <button type='button' onClick={handleBuyBooks} className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" >Buy</button>
                 </div>
             )}
         </div>

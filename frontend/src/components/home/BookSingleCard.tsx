@@ -43,7 +43,7 @@ const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
                     <h2 className="my-1">{book.author}</h2>
                 </div>
                 <div>
-                    price: {book.price}
+                    &#8377; {book.price}
                 </div>
                 <div className="flex items-center gap-x-5 mt-4 p-4">
                     <BiShow 

@@ -8,8 +8,10 @@ export interface RootState {
 
 export interface CartInterface {
     data: {
-        book: Book,
+        id: number,
         quantity: number,
+        book: Book,
+        special_offers: Offer,
     } []
 }
 

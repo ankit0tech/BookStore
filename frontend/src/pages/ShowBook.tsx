@@ -19,6 +19,7 @@ const ShowBook = () => {
     const { id } = useParams();
     const { handleCartUpdate } =useHandleCartUpdate();
     const userinfo = useSelector((state: RootState) => state.userinfo);
+    const [selectedOffer, setSelectedOffer] = useState<number|null>(null);
 
 
     const handleAddToWishList = (id: number) => {
@@ -55,7 +56,6 @@ const ShowBook = () => {
         axios(`http://localhost:5555/books/${id}`)
         .then((response) => {
             setBook(response.data);
-            console.log(response.data);
             setLoading(false);
         })
         .catch((error) => {
@@ -106,10 +106,45 @@ const ShowBook = () => {
                             <span className='text-xl mr-4 text-grey-500'>Category:</span>
                             <span>{book.category.title}</span>
                         </div>
+
+                        <div>
+                            <ul className=''>
+                                { book.special_offers?.length ? 
+                                    <div className='font-bold py-2'>Select one offer: </div> 
+                                        : 
+                                    null
+                                }
+
+                                { book.special_offers?.map((offer) => (
+                                    <li key={offer.id} className='flex flex-row items-center gap-x-4'> 
+                                        
+                                        <input 
+                                            type='radio' 
+                                            id={offer.id.toString()} 
+                                            value={offer.id}
+                                            checked={selectedOffer?.toString() === offer.id.toString()}
+                                            onChange={(e) => setSelectedOffer(Number(e.target.value))} 
+                                        ></input>
+                                        <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
+
+                                        {(userinfo.userRole == 'admin' || userinfo.userRole == 'superadmin')
+                                            && 
+                                            <MdOutlineDelete onClick={() => handleRemoveOffer(offer.id)} className='text-2x1 text-red-600' />
+                                        }
+                                    
+                                    </li>
+                                )) }
+                                
+                                { (book.special_offers && selectedOffer) && 
+                                    <button onClick={() => setSelectedOffer(null)}>Clear offer</button> 
+                                }
+                            </ul>
+                        </div>
+
                         <div className='my-4'>
                             <button
                                 className="mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700"
-                                onClick={() => handleCartUpdate(Number(book.id), 1)}
+                                onClick={() => handleCartUpdate(Number(book.id), 1, selectedOffer)}
                             >Add to cart</button>
                             <button
                                 className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700"
@@ -124,22 +159,6 @@ const ShowBook = () => {
 
                     <div className='m-4 md:mr-20'>
                         <Reviews averageRating={book.average_rating} id={Number(book.id)} />
-
-                        <div>
-                            <div className='font-bold py-2'> offers: </div>
-                                <ul className=''>
-                                    { book.special_offers?.map((offer) => (
-                                        <li key={offer.id} className='flex flex-row items-center gap-x-4'> {offer.offer_type } 
-                                        
-                                        {(userinfo.userRole == 'admin' || userinfo.userRole == 'superadmin')
-                                            && 
-                                            <MdOutlineDelete onClick={() => handleRemoveOffer(offer.id)} className='text-2x1 text-red-600' />
-                                        }
-                                    
-                                    </li>
-                                    )) }
-                                </ul>
-                        </div>
 
                     </div>
                 </ div>

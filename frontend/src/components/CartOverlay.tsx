@@ -63,11 +63,11 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                             <div>
                                 <ul>
                                     {cartItems.data.map((item) => (
-                                        <li key={item.book.id}>
+                                        <li key={item.id}>
                                             <div className="flex justify-start items-center gap-x-4">
-                                                { item.quantity } • { item.book.title }
-                                                <BiMinus onClick={() => {handleCartUpdate(item.book.id, -1)}} />
-                                                <BiPlus onClick={() => {handleCartUpdate(item.book.id, 1)}} />
+                                                { item.quantity } • { item.book.title } <div className="text-red-500"> {item.special_offers && `${item.special_offers.discount_percentage} %` } </div>
+                                                <BiMinus onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offers ? item.special_offers.id : null)}} />
+                                                <BiPlus onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offers ? item.special_offers.id : null)}} />
                                             </div>
                                             {/* <FcPlus onClick={() => {handleAddToCart(book.id)}} /> */}
                                             {/* <h3 className="text-lg ">{item.bookTitle}</h3>

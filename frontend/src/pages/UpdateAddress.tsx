@@ -10,6 +10,7 @@ import Spinner from '../components/Spinner';
 const UpdateAddress = () => {
 
     const [loading, setLoading] = useState(false);
+    const [houseNumber, setHouseNumber] = useState('');
     const [street, setStreet] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
@@ -25,6 +26,7 @@ const UpdateAddress = () => {
         api
         .get(`http://localhost:5555/address/${id}`)
         .then((response) => {
+            setHouseNumber(response.data.house_number || '');
             setStreet(response.data.street_address || '');
             setCity(response.data.city || '');
             setState(response.data.state || '');
@@ -43,6 +45,7 @@ const UpdateAddress = () => {
 
     const handleSaveAddress = () => {
         const data = {
+            house_number: houseNumber,
             street_address: street,
             city: city,
             state: state,
@@ -71,6 +74,17 @@ const UpdateAddress = () => {
             <BackButton destination='/addresses' />
             <h1 className='text-3x1 my-4'>Edit Address</h1>
             {loading ? <Spinner />:''}
+
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+            <label>House Number / Apartment / Company name</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={houseNumber}
+                    onChange={(e) => setHouseNumber(e.target.value)}
+                >
+                </input>
+            </div>
 
             <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
                 <label>Street</label>

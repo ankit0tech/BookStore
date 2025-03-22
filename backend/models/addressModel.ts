@@ -1,5 +1,6 @@
 export interface IAddress {
     id?: number;
+    house_number: string;
     user_id: number;
     street_address: string;
     city: string;

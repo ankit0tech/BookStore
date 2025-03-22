@@ -33,7 +33,6 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
             .then((response) => {
                 setShowRecentlyViewedPalet(true);
                 setRecentlyViewed(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.log(error);

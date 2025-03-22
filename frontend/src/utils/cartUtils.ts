@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCartItems as setCartItemsSlice} from "../redux/cartSlice";
 
 
-const updateCart = async (book_id: number, quantity: number, authToken: string): Promise<void> => {
+const updateCart = async (book_id: number, quantity: number, authToken: string, selectedOfferId?: number|null, ): Promise<void> => {
 
     const config = {headers: { Authorization: authToken }};
     const data = {
         book_id: book_id,
         quantity: quantity,
+        selected_offer_id: selectedOfferId
     };
 
     try {
@@ -29,7 +30,6 @@ const getCartItems = async (authToken: string): Promise<CartInterface> => {
     
     try {
         const response = await axios.get('http://localhost:5555/cart/get-cart-items', config);
-        // console.log("Response: ", response.data);
         return response.data;
     }
     catch (error) {
@@ -44,7 +44,7 @@ const useHandleCartUpdate = () => {
     const userData = useSelector((state: RootState) => state.userinfo);
     const dispatch = useDispatch();
     
-    const handleCartUpdate = async (bookId: number, count: number) => {
+    const handleCartUpdate = async (bookId: number, count: number, selectedOfferId?: number|null) => {
         const authToken = userData?.token;
 
         try {
@@ -52,7 +52,7 @@ const useHandleCartUpdate = () => {
                 navigate('/login');
             }
             else {
-                await updateCart(bookId, count, authToken);
+                await updateCart(bookId, count, authToken, selectedOfferId);
                 const items = await getCartItems(authToken);
                 dispatch(setCartItemsSlice(items));
                 enqueueSnackbar('Cart updated', {variant: 'success'});

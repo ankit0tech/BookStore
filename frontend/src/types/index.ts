@@ -41,6 +41,7 @@ export interface Book {
 
 export interface Address {
     id: number;
+    house_number: string;
     user_id: number;
     street_address: string;
     city: string;

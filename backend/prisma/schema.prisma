@@ -117,6 +117,7 @@ model address {
   user_id Int
   user userinfo @relation(fields: [user_id], references: [id], onDelete: Cascade)
   
+  house_number String @db.VarChar(255)
   street_address String @db.VarChar(255)
   city String @db.VarChar(255)
   state String? @db.VarChar(255)

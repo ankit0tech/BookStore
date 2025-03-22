@@ -53,6 +53,7 @@ const Addresses = () => {
                         <thead>
                             <tr className='rounded-full text-white bg-purple-500 h-8'>
                                 <th className='rounded-full rounded-r-lg my-4 px-4 py-2'>No</th>
+                                <th className=''>House Number</th>
                                 <th className=''>Street</th>
                                 <th className=''>City</th>
                                 <th className=''>State</th>
@@ -66,6 +67,7 @@ const Addresses = () => {
                             {addresses && addresses.map((address, index) => (
                                 <tr key={address.id}>
                                     <td className='text-center'>{index + 1}</td>
+                                    <td className='text-center'>{address.house_number}</td>
                                     <td className='text-center'>{address.street_address}</td>
                                     <td className='text-center'>{address.city}</td>
                                     <td className='text-center'>{address.state}</td>

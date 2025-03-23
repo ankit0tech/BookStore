@@ -108,13 +108,14 @@ const ShowBook = () => {
                         </div>
 
                         <div>
-                            <ul className=''>
-                                { book.special_offers?.length ? 
-                                    <div className='font-bold py-2'>Select one offer: </div> 
-                                        : 
-                                    null
-                                }
 
+                            { book.special_offers?.length ? 
+                                <div className='font-bold py-2'>Select one offer: </div> 
+                                    : 
+                                null
+                            }
+
+                            <ul className=''>
                                 { book.special_offers?.map((offer) => (
                                     <li key={offer.id} className='flex flex-row items-center gap-x-4'> 
                                         
@@ -129,7 +130,11 @@ const ShowBook = () => {
 
                                         {(userinfo.userRole == 'admin' || userinfo.userRole == 'superadmin')
                                             && 
-                                            <MdOutlineDelete onClick={() => handleRemoveOffer(offer.id)} className='text-2x1 text-red-600' />
+                                            <button
+                                                onClick={() => handleRemoveOffer(offer.id)}
+                                            >
+                                                <MdOutlineDelete  className='text-2x1 text-red-600' /> 
+                                            </button>
                                         }
                                     
                                     </li>

@@ -20,6 +20,7 @@ const Checkout = () => {
     const [defaultAddress, setDefaultAddress] = useState<Address|null>(null);
     const [allUserAddresses, setAllUserAddresses] = useState<Address[]>([]);
     const [showAllUserAddresses, setShowAllUserAddresses] = useState<boolean>(false);
+    const [selectedAddress, setSelectedAddress] = useState<number|null>(null);
 
     const userData = useSelector((state: RootState) => state.userinfo);
     const authToken = userData.token;
@@ -40,6 +41,7 @@ const Checkout = () => {
         .then((response) => {
             console.log(response);
             setDefaultAddress(response.data);
+            setSelectedAddress(response.data.id);
         })
         .catch((error: any) => {
             console.log(error);
@@ -56,8 +58,11 @@ const Checkout = () => {
                 navigate('/login');
             } else {
 
-                const config = {headers: { Authorization: authToken }};
-                const response = await api.post('http://localhost:5555/cart/checkout',{}, config);
+                const config = { headers: { Authorization: authToken }};
+                const data = {
+                    delivery_address_id: selectedAddress
+                }
+                const response = await api.post('http://localhost:5555/cart/checkout', data, config);
 
                 // Update the cart items
                 const items = await getCartItems(authToken);
@@ -71,10 +76,15 @@ const Checkout = () => {
     }
 
     const loadAllUserAddresses = () => {
+        setShowAllUserAddresses(true); 
+
         api.get('http://localhost:5555/address/')
         .then((response) => {
             console.log(response.data);
             setAllUserAddresses(response.data);
+            if (defaultAddress && response.data.some((addr: Address) => addr.id === defaultAddress.id)) {
+                setSelectedAddress(defaultAddress.id);
+            }
         })
         .catch((error:any) => {
             console.log(error);
@@ -109,7 +119,6 @@ const Checkout = () => {
                                 
                                 <button 
                                     onClick={() => {
-                                        setShowAllUserAddresses(true); 
                                         loadAllUserAddresses()
                                     }}
                                 >
@@ -118,13 +127,24 @@ const Checkout = () => {
                             
                             </div>}
                             
-                            <div>
-                                { (showAllUserAddresses && (allUserAddresses.length > 0)) && 
-                                    allUserAddresses.map((address) => (
-                                        <div key={address.id}> {address.house_number}, {address.zip_code}, {address.street_address} </div>
-                                    ))
-                                }
-                            </div>
+                            <ul>
+                            {(showAllUserAddresses && (allUserAddresses.length > 0)) && 
+                            allUserAddresses.map((address) => (
+                                <li 
+                                    key={address.id}
+                                > 
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            value={address.id}
+                                            checked={selectedAddress?.toString() === address.id.toString()}
+                                            onChange={(e) => setSelectedAddress(Number(e.target.value))}
+                                        />
+                                    {address.house_number}, {address.zip_code}, {address.street_address} 
+                                    </label>
+                                </li>
+                            ))}
+                            </ul>
 
                             { showAllUserAddresses && 
                                 <Link className='py-2' to='/address/create' >Add new address</Link>
@@ -133,10 +153,9 @@ const Checkout = () => {
                             <button 
                                 type='button' 
                                 onClick={handleBuyBooks} 
-                                className='py-2'
-                                // className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" 
+                                className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" 
                                 >
-                                    Buy
+                                    Buy now
                             </button>
                         </div>
                         )}

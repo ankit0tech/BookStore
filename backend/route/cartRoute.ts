@@ -207,6 +207,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
 
         if (user) {
             await prisma.$transaction(async (prisma) => {
+                
                 const cartItems = await prisma.cart.findMany({
                     where: {
                         user_id: user.id, purchased: false
@@ -223,7 +224,8 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                     },
                     data: {
                         purchased: true,
-                        purchase_date: new Date()
+                        purchase_date: new Date(),
+                        address_id: req.body.delivery_address_id
                     }
                 });
 

@@ -107,6 +107,9 @@ model cart {
   offer_id Int?
   special_offers special_offers? @relation(fields: [offer_id], references: [id], onDelete: Cascade)
 
+  address_id Int?
+  address address? @relation(fields: [address_id], references: [id], onDelete: Cascade)
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
@@ -126,6 +129,8 @@ model address {
   is_default Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  cart cart[]
 
   @@index([user_id])  // Optional for querying purposes
 }

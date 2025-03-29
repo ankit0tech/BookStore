@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import api from "../utils/api";
@@ -15,7 +15,9 @@ const CreateAddress = () => {
     const [isDefault, setIsDefault] = useState(false);
     const [houseNumber, setHouseNumber] = useState('');
 
-    const handleSaveAddress = () => {
+    const handleSaveAddress = (e: React.FormEvent) => {
+        e.preventDefault();
+        
         try {
 
             const data = {
@@ -53,88 +55,91 @@ const CreateAddress = () => {
         <h1 className="text-3x1 my-4">Add Address</h1>
         {loading ? <Spinner /> : ''}
         
-        <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-            <label>House Number / Apartment / Company name</label>
-            <input
-                className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                type="text"
-                value={houseNumber}
-                onChange={(e) => setHouseNumber(e.target.value)}
-            >
-            </input>
-        </div>
+        <form onSubmit={handleSaveAddress} >
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>House Number / Apartment / Company name</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={houseNumber}
+                    onChange={(e) => setHouseNumber(e.target.value)}
+                    >
+                </input>
+            </div>
 
-        <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-            <label>Street</label>
-            <input
-                className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                type="text"
-                value={street}
-                onChange={(e) => setStreet(e.target.value)}
-            >
-            </input>
-        </div>
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>Street</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                    >
+                </input>
+            </div>
 
-        <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-            <label>City</label>
-            <input
-                className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                type="text"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-            >
-            </input>
-        </div>
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>City</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                >
+                </input>
+            </div>
 
-        <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-            <label>State</label>
-            <input
-                className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                type="text"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-            >
-            </input>
-        </div>
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>State</label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    >
+                </input>
+            </div>
 
-        <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-            <label>Zip code </label>
-            <input
-                className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                type="text"
-                value={zipCode}
-                onChange={(e) => setZipcode(e.target.value)}
-            >
-            </input>
-        </div>
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>Zip code </label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={zipCode}
+                    onChange={(e) => setZipcode(e.target.value)}
+                >
+                </input>
+            </div>
 
-        <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-            <label>Country </label>
-            <input
-                className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                type="text"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-            >
-            </input>
-        </div>
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>Country </label>
+                <input
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    type="text"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                >
+                </input>
+            </div>
 
-        <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-            <label>
-                <input type="checkbox" onClick={() => setIsDefault(!isDefault)}/>
-                &nbsp;&nbsp;Make address default
-            </label>
-        </div>
+            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                <label>
+                    <input type="checkbox" onClick={() => setIsDefault(!isDefault)}/>
+                    &nbsp;&nbsp;Make address default
+                </label>
+            </div>
 
-        <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-            <button 
-                className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 "
-                onClick={handleSaveAddress}
-            > 
-                Save 
-            </button>
-        </div>
+            <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
+                <button 
+                    className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 "
+                    type="submit"
+                    
+                    > 
+                    Save 
+                </button>
+            </div>
 
+        </form>
 
     </div>
     );

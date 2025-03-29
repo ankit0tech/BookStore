@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 // import axios from 'axios';
@@ -38,9 +38,10 @@ const CreateBook = () => {
 
     };
 
-    const handleSaveBook = () => {
-        try {
-            
+    const handleSaveBook = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        try {    
             const data = {
                 title,
                 author,
@@ -93,95 +94,90 @@ const CreateBook = () => {
             <BackButton />
             <h1 className='text-3x1 my-4'>Create Book</h1>
             {loading ? <Spinner />:''}
-            
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Title</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                >
-                </input>
-            </div>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Author</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                >
-                </input>
-            </div>
+            <form onSubmit={handleSaveBook}>
+                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                    <label>Title</label>
+                    <input
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        >
+                    </input>
+                </div>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Price</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={price.toString()}
-                    onChange={handlePriceInputChange}
-                >
-                </input>
-            </div>
+                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                    <label>Author</label>
+                    <input
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        type="text"
+                        value={author}
+                        onChange={(e) => setAuthor(e.target.value)}
+                    >
+                    </input>
+                </div>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Select Category</label>
-                <select
-                    value={selectedCategory || ""}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    disabled={!categories?.length}
-                >
-                    { categories?.map((category) => (
-                        <optgroup key={category.id} label={category.title}>
-                            {category.sub_category.map((sub)=> (
-                                <option key={sub.id} value={sub.id}>{sub.title}</option>
-                            ))}
-                        </optgroup>
-                    ))}
-                </select>
+                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                    <label>Price</label>
+                    <input
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        type="text"
+                        value={price.toString()}
+                        onChange={handlePriceInputChange}
+                    >
+                    </input>
+                </div>
 
-                {/* <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                >
-                </input> */}
-            </div>
+                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                    <label>Select Category</label>
+                    <select
+                        value={selectedCategory || ""}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        disabled={!categories?.length}
+                    >
+                        { categories?.map((category) => (
+                            <optgroup key={category.id} label={category.title}>
+                                {category.sub_category.map((sub)=> (
+                                    <option key={sub.id} value={sub.id}>{sub.title}</option>
+                                ))}
+                            </optgroup>
+                        ))}
+                    </select>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Publish Year</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={publishYear}
-                    onChange={(e) => setPublishYear(e.target.value)}
-                >
-                </input>
-            </div>
+                </div>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Cover image url</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type= "url"
-                    value={imgUrl}
-                    onChange={(e) => setImgUrl(e.target.value)}
-                >
-                </input>
-            </div>
+                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                    <label>Publish Year</label>
+                    <input
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        type="text"
+                        value={publishYear}
+                        onChange={(e) => setPublishYear(e.target.value)}
+                        >
+                    </input>
+                </div>
 
-            <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button 
-                    className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 "
-                    onClick={handleSaveBook}
-                > 
-                   Save 
-                </button>
-            </div>
+                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
+                    <label>Cover image url</label>
+                    <input
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        type= "url"
+                        value={imgUrl}
+                        onChange={(e) => setImgUrl(e.target.value)}
+                    >
+                    </input>
+                </div>
+
+                <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
+                    <button 
+                        className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 "
+                        type='submit'
+                    > 
+                    Save 
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }

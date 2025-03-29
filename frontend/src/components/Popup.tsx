@@ -7,7 +7,6 @@ interface PopupProps {
 }
 
 const Popup: React.FC<PopupProps> = ({isOpen, onClose, children}) => {
-    // const [isOpen, setisOpen] = useState(false);
     if (!isOpen) {
         return null;
     }

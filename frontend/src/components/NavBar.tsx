@@ -21,7 +21,6 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const navigate = useNavigate();
     const searchBarRef = useRef(null);
-    // const userData = useSelector((state: RootState) => state.userinfo);
     const [isOpen, setIsOpen] = useState(false);
     const email: string | null = userinfo.email;
     const dispatch = useDispatch();
@@ -40,7 +39,6 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     }
 
     const handleOnBlur = () => {
-        // setTimeout(() => setShowRecentlyViewedPalet(false), 150);
         setShowRecentlyViewedPalet(false);
     }
 
@@ -106,7 +104,6 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     }
 
     return (
-        // <div className="flex justify-center items-center gap-x-4">
         <div className="flex justify-between px-4 bg-purple-500 h-12 text-white font-bold items-center">
             <button className="flex" onClick={() =>navigate('/')}>Home</button>
             <div className="flex">

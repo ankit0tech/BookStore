@@ -9,6 +9,7 @@ import { getCartItems } from '../utils/cartUtils';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
+import { enqueueSnackbar } from 'notistack';
 
 
 const Checkout = () => {
@@ -62,11 +63,23 @@ const Checkout = () => {
                 const data = {
                     delivery_address_id: selectedAddress
                 }
-                const response = await api.post('http://localhost:5555/cart/checkout', data, config);
-
-                // Update the cart items
-                const items = await getCartItems(authToken);
-                dispatch(setCartItemsSlice(items));
+                
+                api.post('http://localhost:5555/cart/checkout', data, config)
+                .then((response) => {
+                    getCartItems(authToken)
+                    .then((response) => {
+                        // Update the cart items
+                        dispatch(setCartItemsSlice(response));
+                    })
+                    .catch((error) => {
+                        console.error('Error while fetching cart:', error);
+                        enqueueSnackbar('Error while fetching cart:', {variant: 'error'});
+                    })
+                })
+                .catch((error) => {
+                    console.log(error);
+                    enqueueSnackbar('Error while checkout', {variant: 'error'});
+                });
 
             }
         } catch (error) {

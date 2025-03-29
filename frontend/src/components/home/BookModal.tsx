@@ -1,6 +1,4 @@
 import { AiOutlineClose } from "react-icons/ai";
-import { PiBookOpenTextLight } from "react-icons/pi";
-import { BiUserCircle } from "react-icons/bi";
 import { Book } from "../../types";
 
 
@@ -19,10 +17,6 @@ const BookModal: React.FC<{ book: Book; onClose: () => void;}> = ({ book, onClos
                     className="absolute right-6 top-6 text-3xl text-red-600 cursor-pointer"
                     onClick={onClose}
                 />
-                {/* <h2 className="w-fit px-4 py-1 bg-red-300 rounded-lg">
-                    {book.publishYear}
-                </h2> */}
-                {/* <h4 className="my-2 text-gray-500">{book.id}</h4> */}
                 <div className="w-48 h-64 bg-gray-100 rounded-lg shadow-md overflow-hidden flex justify-center items-center">
                     <img 
                         src={book.cover_image}
@@ -32,12 +26,10 @@ const BookModal: React.FC<{ book: Book; onClose: () => void;}> = ({ book, onClos
                     </img>
                 </div>
                 <div className="flex justify-start items-center gap-x-2">
-                    {/* <PiBookOpenTextLight className="text-red-300 text-2xl" /> */}
                     <h2>Title: </h2>
                     <h2 className="my-1">{book.title}</h2>
                 </div>
                 <div className="flex justify-start items-center gap-x-2" >
-                    {/* <BiUserCircle className="text-red-300 text-2xl" /> */}
                     <h2>Author: </h2>
                     <h2 className="my-1">{book.author}</h2>
                 </div>
@@ -47,7 +39,7 @@ const BookModal: React.FC<{ book: Book; onClose: () => void;}> = ({ book, onClos
                 </div>
                 <div className="flex justify-start items-center gap-x-2">
                     <h2>Category: </h2>
-                    <h2 className="my-1">{book.category}</h2>
+                    <h2 className="my-1">{book.category.title}</h2>
                 </div>
 
             </div>

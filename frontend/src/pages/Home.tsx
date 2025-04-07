@@ -103,7 +103,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     return (
         <div className='p-4'>
-            <div className='flex justify-center items-center gap-x-4'>
+            <div className='flex justify-center items-center gap-x-4 py-2'>
                 <button
                     className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
                     onClick={() => setShowType('table')}
@@ -116,21 +116,8 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
                 >
                     Card
                 </button>
-
             </div>
-            <div className='p-4'>
-                <div className="text-3xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">
-                    BookStore
-                </div>
-
-                {(userRole == 'admin' || userRole == 'superadmin') &&
-                (<div className="text-2xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">
-                    <Link to='/books/create'>
-                        Create Book
-                    </Link>
-                </div>)
-                }   
-            </div>
+            
             <div className='flex justify-evenly gap-2'>
                 <SideBar
                     selectWithSpecialOffer={selectWithSpecialOffer} 

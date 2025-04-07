@@ -105,7 +105,7 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     return (
         <div className="flex justify-between px-4 bg-purple-500 h-12 text-white font-bold items-center">
-            <button className="flex" onClick={() =>navigate('/')}>Home</button>
+            <button className="flex" onClick={() =>navigate('/')}>BookStore</button>
             <div className="flex">
                 <div className="relative flex flex-col px-4 text-black font-normal">                    
                     <input 

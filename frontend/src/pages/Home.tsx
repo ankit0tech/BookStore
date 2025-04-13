@@ -102,8 +102,8 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
 
     return (
-        <div className='p-4'>
-            <div className='flex justify-center items-center gap-x-4 py-2'>
+        <div className='p-4 h-full'>
+            {/* <div className='flex justify-center items-center gap-x-4 py-2'>
                 <button
                     className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
                     onClick={() => setShowType('table')}
@@ -116,24 +116,26 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
                 >
                     Card
                 </button>
-            </div>
+            </div> */}
             
-            <div className='flex justify-evenly gap-2'>
-                <SideBar
-                    selectWithSpecialOffer={selectWithSpecialOffer} 
-                    setSelectWithSpecialOffer={setSelectWithSpecialOffer}
-                    sortByAverageRating={sortByAverageRating}
-                    setSortByAverageRating={setSortByAverageRating}
-                    sortBy={sortBy} setSortBy={setSortBy}
-                    sortOrder={sortOrder} setSortOrder={setSortOrder}
-                    minPrice={minPrice} setMinPrice={setMinPrice}
-                    maxPrice={maxPrice} setMaxPrice={setMaxPrice}
-                    handleFetchBooks={handleFetchBooks}
-                    categoryId={categoryId} setCategoryId={setCategoryId} 
-                    books={books} setBooks={setBooks}
-                    nextCursor={nextCursor} setNextCursor={setNextCursor}
-                />
-                <div>
+            <div className='flex gap-1 h-full'>
+                <div className='overflow-y-auto pe-3'>
+                    <SideBar
+                        selectWithSpecialOffer={selectWithSpecialOffer} 
+                        setSelectWithSpecialOffer={setSelectWithSpecialOffer}
+                        sortByAverageRating={sortByAverageRating}
+                        setSortByAverageRating={setSortByAverageRating}
+                        sortBy={sortBy} setSortBy={setSortBy}
+                        sortOrder={sortOrder} setSortOrder={setSortOrder}
+                        minPrice={minPrice} setMinPrice={setMinPrice}
+                        maxPrice={maxPrice} setMaxPrice={setMaxPrice}
+                        handleFetchBooks={handleFetchBooks}
+                        categoryId={categoryId} setCategoryId={setCategoryId} 
+                        books={books} setBooks={setBooks}
+                        nextCursor={nextCursor} setNextCursor={setNextCursor}
+                    />
+                </div>
+                <div className='flex-1 overflow-y-auto'>
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
                     { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
                 </div>

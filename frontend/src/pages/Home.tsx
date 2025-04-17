@@ -17,7 +17,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
-        return localStorage.getItem('homeState') || 'table';
+        return 'card';
     });
     
     const userinfo = useSelector((state: RootState) => state.userinfo);

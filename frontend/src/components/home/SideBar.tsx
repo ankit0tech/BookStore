@@ -86,7 +86,7 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
     }
 
     return (
-        <div className="border rounded-xl py-2 px-4">
+        <div className="py-2 px-4">
  
             <div className="p-2">
                 <div className="font-bold">Sort By</div>
@@ -125,43 +125,43 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
             
 
             <div className="p-2">
-                <div className="font-bold text-xl">Filter By</div>
+                <div className="font-bold">Filter By</div>
                 <div>
-                    <label htmlFor="PriceFilter" className="m-2 font-bold text-xl block">Price</label>
+                    <label htmlFor="PriceFilter" className="font-bold block">Price</label>
                     <ul id="PriceFilter">
                         <li 
-                        className={`cursor-pointer hover:text-purple-600 
+                        className={`ml-4 cursor-pointer hover:text-purple-600 
                             ${activePrice === 0 && "text-purple-600"}`}
                         onClick={() => {updateMinPrice(0); updateMaxPrice(100)}} >
                             Under &#8377;100
                         </li>
                         <li 
-                        className={`cursor-pointer hover:text-purple-600
+                        className={`ml-4 cursor-pointer hover:text-purple-600
                             ${activePrice === 100 && "text-purple-600"}`} 
                         onClick={() => {updateMinPrice(100); updateMaxPrice(200)}} >
                             &#8377;100 - &#8377;200
                         </li>
                         <li 
-                        className={`cursor-pointer hover:text-purple-600 
+                        className={`ml-4 cursor-pointer hover:text-purple-600 
                             ${activePrice === 200 && "text-purple-600"}`} 
                         onClick={() => {updateMinPrice(200); updateMaxPrice(500)}} >
                             &#8377;200 - &#8377;500
                         </li>
                         <li 
-                        className={`cursor-pointer hover:text-purple-600 
+                        className={`ml-4 cursor-pointer hover:text-purple-600 
                             ${activePrice === 500 && "text-purple-600"}`}
                         onClick={() => {updateMinPrice(500); updateMaxPrice(1000)}} >
                             &#8377;500 - &#8377;1000
                         </li>
                         <li 
-                        className={`cursor-pointer hover:text-purple-600 
+                        className={`ml-4 cursor-pointer hover:text-purple-600 
                             ${activePrice === 1000 && "text-purple-600"}`}
                         onClick={() => {updateMinPrice(1000); updateMaxPrice(null)}} >
                             Over &#8377;1000
                         </li>
                     </ul>
                 </div>
-                <label htmlFor="categoryList" className="m-2 font-bold text-xl block">Category</label>
+                <label htmlFor="categoryList" className="my-1 font-bold block">Category</label>
                 <ul id="categoryList">
                     {categories?.map((category) => (
                         <li key={category.id} className="font-bold">

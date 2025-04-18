@@ -56,62 +56,69 @@ const App = () => {
   useAuth();
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <NavBar 
-        books={books} setBooks={setBooks} 
-        nextCursor={nextCursor} setNextCursor={setNextCursor}
-      />
-      <Routes>
-        <Route
-          path='/' 
-            element={<Home books={books} setBooks={setBooks}
+    <div className='h-screen flex flex-col'>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <div className='shrink-0'>      
+          <NavBar 
+            books={books} setBooks={setBooks} 
             nextCursor={nextCursor} setNextCursor={setNextCursor}
-          />}
-        />
-        <Route path='/login' element={<Login /> } />
-        <Route path='/signup' element={<Signup />} />
-        {(userRole == 'admin' || userRole == 'superadmin') &&
-        (
-          <>
-            <Route path='/books/create' element={<CreateBook />} /> 
-            <Route path='/books/edit/:id' element={<EditBook />} />
-            <Route path='/books/delete/:id' element={<DeleteBook />} />
-            <Route path='/categories' element={<Categories />} />
-            <Route path='/category/create' element={<CreateCategory />} />
-            <Route path='/category/edit/:id' element={<CreateCategory />} />
-            <Route path='/offers' element={<Offers />} />
-            <Route path='/offer/create' element={<CreateOffer />} />
-            <Route path='/offer/edit/:id' element={<CreateOffer />} />
-            <Route path='/offer/delete/:id' element={<DeleteOffer />} />
-            <Route path='/books/add-offer/:id' element={<AddOfferToBook />} />
-          </>
-        )}
-        <Route path='/admin/signup' element={<AdminSignup />} />
-        <Route path='/admin/login' element={<AdminLogin />} />
-        {(userRole == 'superadmin') &&
-        (
-          <>
-            <Route path='/superadmin-panel' element={<SuperAdminPanel />} />
-            <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
-          </>
-        )}
-        <Route path='/books/details/:id' element={<ShowBook />} />
-        <Route path='/addresses' element={<Addresses />} />
-        <Route path='/address/create' element={<CreateAddress />} />
-        <Route path='/address/update/:id' element={<UpdateAddress />} />
-        <Route path='/address/delete/:id' element={<DeleteAddress />} />
-        <Route path='/cart' element={<Cart />} />
-        <Route path='/checkout' element={<Checkout />} />
-        <Route path='/reset-password/verify' element={<ResetPassword />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/orders' element={<Orders />} />
-        <Route path='/review/:id' element={<AddReview />} />
-        <Route path='/wishlist' element={<Wishlist />} />
-        <Route path='/recently-viewed' element={<RecentlyViewed />} />
-        
-        <Route path='*' element={<PageNotFound />} />
-      </Routes>   
-    </ GoogleOAuthProvider>
+          />
+        </div>
+
+        <div className='flex-1 overflow-hidden' >  
+          <Routes>
+            <Route
+              path='/' 
+                element={<Home books={books} setBooks={setBooks}
+                nextCursor={nextCursor} setNextCursor={setNextCursor}
+              />}
+            />
+            <Route path='/login' element={<Login /> } />
+            <Route path='/signup' element={<Signup />} />
+            {(userRole == 'admin' || userRole == 'superadmin') &&
+            (
+              <>
+                <Route path='/books/create' element={<CreateBook />} /> 
+                <Route path='/books/edit/:id' element={<EditBook />} />
+                <Route path='/books/delete/:id' element={<DeleteBook />} />
+                <Route path='/categories' element={<Categories />} />
+                <Route path='/category/create' element={<CreateCategory />} />
+                <Route path='/category/edit/:id' element={<CreateCategory />} />
+                <Route path='/offers' element={<Offers />} />
+                <Route path='/offer/create' element={<CreateOffer />} />
+                <Route path='/offer/edit/:id' element={<CreateOffer />} />
+                <Route path='/offer/delete/:id' element={<DeleteOffer />} />
+                <Route path='/books/add-offer/:id' element={<AddOfferToBook />} />
+              </>
+            )}
+            <Route path='/admin/signup' element={<AdminSignup />} />
+            <Route path='/admin/login' element={<AdminLogin />} />
+            {(userRole == 'superadmin') &&
+            (
+              <>
+                <Route path='/superadmin-panel' element={<SuperAdminPanel />} />
+                <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
+              </>
+            )}
+            <Route path='/books/details/:id' element={<ShowBook />} />
+            <Route path='/addresses' element={<Addresses />} />
+            <Route path='/address/create' element={<CreateAddress />} />
+            <Route path='/address/update/:id' element={<UpdateAddress />} />
+            <Route path='/address/delete/:id' element={<DeleteAddress />} />
+            <Route path='/cart' element={<Cart />} />
+            <Route path='/checkout' element={<Checkout />} />
+            <Route path='/reset-password/verify' element={<ResetPassword />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/orders' element={<Orders />} />
+            <Route path='/review/:id' element={<AddReview />} />
+            <Route path='/wishlist' element={<Wishlist />} />
+            <Route path='/recently-viewed' element={<RecentlyViewed />} />
+            
+            <Route path='*' element={<PageNotFound />} />
+          </Routes>
+        </div>
+      </ GoogleOAuthProvider>
+    </div>
   )
 }
 

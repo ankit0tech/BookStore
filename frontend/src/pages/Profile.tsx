@@ -58,6 +58,10 @@ const Profile = () => {
                         className="m-2 p-4 border-2 rounded-lg" 
                         onClick={() => handleNavigate('/offers')}
                     >Offers</button>
+                    <button
+                        className="m-2 p-4 border-2 rounded-lg"
+                        onClick={() => handleNavigate('/books/create')}
+                    >Add new book</button>
                 </div>
             }
 

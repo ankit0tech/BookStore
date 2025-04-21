@@ -17,7 +17,7 @@ import Addresses from './pages/Addresses';
 import DeleteAddress from './pages/DeleteAddress';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ResetPassword from './pages/ResetPassword';
-import Profile from './pages/Profile';
+import Dashboard from './pages/Dashboard';
 import Orders from './pages/Orders';
 import SuperAdminPanel from './pages/SuperAdminPanel';
 import RegisterAdmin from './pages/RegisterAdmin';
@@ -108,7 +108,7 @@ const App = () => {
             <Route path='/cart' element={<Cart />} />
             <Route path='/checkout' element={<Checkout />} />
             <Route path='/reset-password/verify' element={<ResetPassword />} />
-            <Route path='/profile' element={<Profile />} />
+            <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/orders' element={<Orders />} />
             <Route path='/review/:id' element={<AddReview />} />
             <Route path='/wishlist' element={<Wishlist />} />

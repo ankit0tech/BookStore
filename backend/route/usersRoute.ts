@@ -167,7 +167,7 @@ router.post('/signin', async (req: Request, res: Response) => {
     }
 })
 
-router.get('/profile', authMiddleware, async (req: Request, res: Response) => {
+router.get('/dashboard', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userMail = req.authEmail;
         const user = await prisma.userinfo.findUnique({ 

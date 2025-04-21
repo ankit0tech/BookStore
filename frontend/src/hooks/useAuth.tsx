@@ -37,14 +37,14 @@ const useAuth = () => {
         
         const fetchRole = () => {
             
-            api.get('http://localhost:5555/users/profile')
+            api.get('http://localhost:5555/users/dashboard')
             .then((response) => {
                 dispatch(setUserRole({'userRole': response.data.user.role}));
                 setHasFailed(false);
             })
             .catch((error) => {
 
-                console.error('Error fetching user profile', error);
+                console.error('Error fetching user dashboard', error);
                 setHasFailed(true);
                 if(error.response?.status == 401) {
                     dispatch(logoutSuccess());

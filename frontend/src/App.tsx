@@ -36,6 +36,7 @@ import Offers from './pages/special_offers/Offers';
 import CreateOffer from './pages/special_offers/CreateOffer';
 import DeleteOffer from './pages/special_offers/DeleteOffer';
 import AddOfferToBook from './pages/AddOfferToBook';
+import DashboardHome from './pages/DashboardHome';
 
 export interface ChildProps {
   books: Book[];
@@ -78,13 +79,10 @@ const App = () => {
             {(userRole == 'admin' || userRole == 'superadmin') &&
             (
               <>
-                <Route path='/books/create' element={<CreateBook />} /> 
                 <Route path='/books/edit/:id' element={<EditBook />} />
                 <Route path='/books/delete/:id' element={<DeleteBook />} />
-                <Route path='/categories' element={<Categories />} />
                 <Route path='/category/create' element={<CreateCategory />} />
                 <Route path='/category/edit/:id' element={<CreateCategory />} />
-                <Route path='/offers' element={<Offers />} />
                 <Route path='/offer/create' element={<CreateOffer />} />
                 <Route path='/offer/edit/:id' element={<CreateOffer />} />
                 <Route path='/offer/delete/:id' element={<DeleteOffer />} />
@@ -96,23 +94,37 @@ const App = () => {
             {(userRole == 'superadmin') &&
             (
               <>
-                <Route path='/superadmin-panel' element={<SuperAdminPanel />} />
                 <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
               </>
             )}
             <Route path='/books/details/:id' element={<ShowBook />} />
-            <Route path='/addresses' element={<Addresses />} />
             <Route path='/address/create' element={<CreateAddress />} />
             <Route path='/address/update/:id' element={<UpdateAddress />} />
             <Route path='/address/delete/:id' element={<DeleteAddress />} />
-            <Route path='/cart' element={<Cart />} />
             <Route path='/checkout' element={<Checkout />} />
             <Route path='/reset-password/verify' element={<ResetPassword />} />
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/orders' element={<Orders />} />
+            <Route path='/dashboard' element={<Dashboard />} >
+              <Route index element={<DashboardHome />} />
+              <Route path='addresses' element={<Addresses />} />
+              <Route path='cart' element={<Cart />} />
+              <Route path='orders' element={<Orders />} />
+              <Route path='wishlist' element={<Wishlist />} />
+              <Route path='recently-viewed' element={<RecentlyViewed />} />
+              {(userRole == 'admin' || userRole == 'superadmin') && (
+                <>
+                  <Route path='categories' element={<Categories />} />
+                  <Route path='offers' element={<Offers />} />
+                  <Route path='books/create' element={<CreateBook />} /> 
+
+                </>
+              )}
+
+              {(userRole == 'superadmin') && (
+                <Route path='superadmin-panel' element={<SuperAdminPanel />} />
+              )}
+              
+            </Route>
             <Route path='/review/:id' element={<AddReview />} />
-            <Route path='/wishlist' element={<Wishlist />} />
-            <Route path='/recently-viewed' element={<RecentlyViewed />} />
             
             <Route path='*' element={<PageNotFound />} />
           </Routes>

@@ -2,12 +2,15 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../types";
 import { getDashboardMenuItems } from "../config/dashboardMenu";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { useState } from "react";
 
 
 const Dashboard = () => {
 
     const navigate = useNavigate();
     const userRole = useSelector((state: RootState) => state.userinfo.userRole);
+    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
     
     const handleNavigate = (url: string) => {
         navigate(`/dashboard${url}`);
@@ -22,12 +25,17 @@ const Dashboard = () => {
 
     return (
         <div className="h-full flex">
-            <aside className="w-56 p-4 overflow-y-auto h-full">
-                <button 
-                    className="text-2xl mb-6 m-2 px-4 py-3"
-                    onClick={() => handleNavigate('/')}> 
-                        Dashboard 
-                </button>
+            <aside className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'} overflow-y-auto`}>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl px-4 m-2 text-gray-800">Dashboard</h2>
+                    <button
+                        className="p-2 rounded-lg hover:bg-gray-100"
+                        onClick={() => setIsSidebarOpen(false)}
+                    >
+                        <FaTimes className="text-gray-600" />
+                    </button>
+                </div>
+
                 <nav>
                     <ul className="">
                         {menuItems.map((item) => (
@@ -42,7 +50,16 @@ const Dashboard = () => {
                     </ul>
                 </nav>
             </aside>
-            <main className="p-6 flex-1 overflow-y-auto h-full">
+
+            <main className='flex-1 p-6 overflow-y-auto'>
+                {!isSidebarOpen && (
+                    <button
+                        className="p-2 rounded-lg hover:bg-gray-50"
+                        onClick={() => setIsSidebarOpen(true)}
+                    >
+                        <FaBars className="text-gray-600" />
+                    </button>
+                )}
                 <Outlet/>
             </main>
         </div>

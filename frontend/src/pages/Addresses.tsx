@@ -38,7 +38,6 @@ const Addresses = () => {
 
     return (
         <div className="p-4">
-            <BackButton />
             <div className="text-2xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto my-2">
                     <Link to='/address/create'>
                         Add new address

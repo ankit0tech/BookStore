@@ -87,7 +87,7 @@ const Orders = () => {
                                             </div>
                                         </div>
                                         <div className="my-2 p-2 border rounded-lg">
-                                            <button onClick={() => { navigate(`/review/${item.book.id}`)}}>
+                                            <button onClick={() => { navigate(`/dashboard/review/${item.book.id}`)}}>
                                                 Add a review
                                             </button>
                                         </div>

@@ -24,7 +24,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
     }
     const goToCheckout = () => {
         onClose();
-        navigate('/checkout');
+        navigate('/dashboard/checkout');
     }
 
     

@@ -12,7 +12,7 @@ const Reviews: React.FC<{averageRating: number, id:number}> = ({averageRating, i
     useEffect(() => {
         if (!id) return;
         try {
-            axios.get(`http://localhost:5555/review/book/${id}`)
+            axios.get(`http://localhost:5555/dashboard/book/${id}`)
             .then((response)=> {
                 setReviews(response.data);
             })

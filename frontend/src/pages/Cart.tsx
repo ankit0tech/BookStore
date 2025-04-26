@@ -62,13 +62,11 @@ const Cart = () => {
                                 </li>
                             ))}
                         </ul>
-                        <button type='button' onClick={() => navigate('/checkout')}  className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700">Checkout</button>
+                        <button type='button' onClick={() => navigate('/dashboard/checkout')}  className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700">Checkout</button>
 
                     </div>
                 )
             }
-
-           {/* <h1 className="text-3xl my-4">Cart</h1> */}
         </div>
     );
 }

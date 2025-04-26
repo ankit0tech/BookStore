@@ -47,7 +47,7 @@ const Categories = () => {
             
             <button
                 className="p-4 m-4 border rounded-xl" 
-                onClick={() => navigate('/category/create')}
+                onClick={() => navigate('/dashboard/category/create')}
                 >Create new category
             </button>
 
@@ -66,7 +66,7 @@ const Categories = () => {
                                     <div className="p-2">
                                         <AiOutlineEdit 
                                             className='text-2x1 text-yellow-600'
-                                            onClick={() => navigate(`/category/edit/${item.id}`)}>
+                                            onClick={() => navigate(`/dashboard/category/edit/${item.id}`)}>
                                         </AiOutlineEdit>
                                     </div>
                                     
@@ -96,7 +96,7 @@ const Categories = () => {
                                                     <div className="p-2">
                                                         <AiOutlineEdit 
                                                             className='text-2x1 text-yellow-600'
-                                                            onClick={() => navigate(`/category/edit/${sub.id}`)}>
+                                                            onClick={() => navigate(`/dashboard/category/edit/${sub.id}`)}>
                                                         </AiOutlineEdit>
                                                     </div>
                                                     

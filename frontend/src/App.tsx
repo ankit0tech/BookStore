@@ -76,55 +76,54 @@ const App = () => {
             />
             <Route path='/login' element={<Login /> } />
             <Route path='/signup' element={<Signup />} />
-            {(userRole == 'admin' || userRole == 'superadmin') &&
-            (
-              <>
-                <Route path='/books/edit/:id' element={<EditBook />} />
-                <Route path='/books/delete/:id' element={<DeleteBook />} />
-                <Route path='/category/create' element={<CreateCategory />} />
-                <Route path='/category/edit/:id' element={<CreateCategory />} />
-                <Route path='/offer/create' element={<CreateOffer />} />
-                <Route path='/offer/edit/:id' element={<CreateOffer />} />
-                <Route path='/offer/delete/:id' element={<DeleteOffer />} />
-                <Route path='/books/add-offer/:id' element={<AddOfferToBook />} />
-              </>
-            )}
+            
             <Route path='/admin/signup' element={<AdminSignup />} />
             <Route path='/admin/login' element={<AdminLogin />} />
-            {(userRole == 'superadmin') &&
-            (
-              <>
-                <Route path='/superadmin/register-admin' element={<RegisterAdmin />} />
-              </>
-            )}
+            
             <Route path='/books/details/:id' element={<ShowBook />} />
-            <Route path='/address/create' element={<CreateAddress />} />
-            <Route path='/address/update/:id' element={<UpdateAddress />} />
-            <Route path='/address/delete/:id' element={<DeleteAddress />} />
-            <Route path='/checkout' element={<Checkout />} />
             <Route path='/reset-password/verify' element={<ResetPassword />} />
+            
             <Route path='/dashboard' element={<Dashboard />} >
               <Route index element={<DashboardHome />} />
               <Route path='addresses' element={<Addresses />} />
+              <Route path='address/create' element={<CreateAddress />} />
+              <Route path='address/update/:id' element={<UpdateAddress />} />
+              <Route path='address/delete/:id' element={<DeleteAddress />} />
+
               <Route path='cart' element={<Cart />} />
               <Route path='orders' element={<Orders />} />
+              <Route path='checkout' element={<Checkout />} />
+              <Route path='review/:id' element={<AddReview />} />
               <Route path='wishlist' element={<Wishlist />} />
               <Route path='recently-viewed' element={<RecentlyViewed />} />
+              
               {(userRole == 'admin' || userRole == 'superadmin') && (
                 <>
                   <Route path='categories' element={<Categories />} />
+                  <Route path='category/create' element={<CreateCategory />} />
+                  <Route path='category/edit/:id' element={<CreateCategory />} />
+                  
                   <Route path='offers' element={<Offers />} />
+                  <Route path='offer/create' element={<CreateOffer />} />
+                  <Route path='offer/edit/:id' element={<CreateOffer />} />
+                  <Route path='offer/delete/:id' element={<DeleteOffer />} />
+                  <Route path='books/add-offer/:id' element={<AddOfferToBook />} />
+
                   <Route path='books/create' element={<CreateBook />} /> 
+                  <Route path='books/edit/:id' element={<EditBook />} />
+                  <Route path='books/delete/:id' element={<DeleteBook />} />
 
                 </>
               )}
 
               {(userRole == 'superadmin') && (
-                <Route path='superadmin-panel' element={<SuperAdminPanel />} />
+                <>
+                  <Route path='superadmin-panel' element={<SuperAdminPanel />} />
+                  <Route path='superadmin/register-admin' element={<RegisterAdmin />} />
+                </>
               )}
               
             </Route>
-            <Route path='/review/:id' element={<AddReview />} />
             
             <Route path='*' element={<PageNotFound />} />
           </Routes>

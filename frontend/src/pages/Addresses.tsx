@@ -75,10 +75,10 @@ const Addresses = () => {
                                     <td className='text-center'>{address.is_default ? 'yes' : 'no'}</td>
                                     <td className='text-center'>
                                         <div className='flex justify-center gap-x-4'>
-                                            <Link to={`/address/update/${address.id}`}>
+                                            <Link to={`/dashboard/address/update/${address.id}`}>
                                                 <AiOutlineEdit className='text-2x1 text-yellow-600' />
                                             </Link>
-                                            <Link to={`/address/delete/${address.id}`}>
+                                            <Link to={`/dashboard/address/delete/${address.id}`}>
                                                 <MdOutlineDelete className='text-2x1 text-red-600' />
                                             </Link>
                                         </div>

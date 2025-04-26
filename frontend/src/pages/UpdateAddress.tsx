@@ -73,7 +73,7 @@ const UpdateAddress = () => {
     
     return (
         <div className='p-4'>
-            <BackButton destination='/addresses' />
+            <BackButton />
             <h1 className='text-3x1 my-4'>Edit Address</h1>
             {loading ? <Spinner />:''}
 

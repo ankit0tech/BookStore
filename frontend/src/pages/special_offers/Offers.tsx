@@ -37,7 +37,7 @@ const Offers = () => {
     return (
         <div>
             <div className='p-4'>Special offers</div>
-            <div className='p-4'><Link to='/offer/create'>Create new offer</Link></div>
+            <div className='p-4'><Link to='/dashboard/offer/create'>Create new offer</Link></div>
             {offers ? 
             <table className='w-full mx-auto max-w-[1000px] rounded-lg'>
                 <thead>
@@ -62,10 +62,10 @@ const Offers = () => {
                             <td className='text-center'>{new Date(offer.offer_valid_until).toLocaleString('en-US', dateFormat)}</td>
                             <td>
                                 <div className='flex justify-center gap-x-4'>
-                                    <Link to ={`/offer/edit/${offer.id}`}>
+                                    <Link to ={`/dashboard/offer/edit/${offer.id}`}>
                                         <AiOutlineEdit className='text-2x1 text-yellow-600' />
                                     </Link>
-                                    <Link to={`/offer/delete/${offer.id}`}>
+                                    <Link to={`/dashboard/offer/delete/${offer.id}`}>
                                         <MdOutlineDelete className='text-2x1 text-red-600' />
                                     </Link>
 

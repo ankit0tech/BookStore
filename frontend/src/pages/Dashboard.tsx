@@ -39,7 +39,7 @@ const Dashboard = () => {
                 <nav>
                     <ul className="">
                         {menuItems.map((item) => (
-                            <li>
+                            <li key={item.label}>
                                 <button 
                                     className={`w-full text-left m-2 px-4 py-3 border-none rounded-[8px] ${isActive(item.path) ? 'bg-[#e0e7ff]' : 'bg-[#f8f9fa]'} cursor-pointer transition duration-200 hover:bg-[#e0e7ff]`} 
                                     onClick={() => handleNavigate(item.path)}>

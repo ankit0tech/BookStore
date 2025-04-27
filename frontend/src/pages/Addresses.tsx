@@ -15,7 +15,7 @@ const Addresses = () => {
     const [loading, setLoading] = useState(false);
     const [addresses, setAddresses] = useState<Address[]>([]);
     
-    useEffect(()=>{
+    const fetchAddresses = () => {
         try {
             setLoading(true);
             
@@ -33,13 +33,36 @@ const Addresses = () => {
         } catch(error: any) {
             enqueueSnackbar("Issue while retrieving addresses", { variant: 'error' });
         }
+    }
 
+    useEffect(()=>{
+        fetchAddresses();
     },[]);
+
+    const handleMakeAddressDefault = (address_id: number) => {
+
+        setAddresses(preAddresses => 
+            preAddresses.map(address => ({
+                ...address, 
+                is_default: address.id === address_id
+            }))
+        );
+        
+        api.put(`http://localhost:5555/address/${address_id}`, {is_default: true})
+            .then((address) => {
+                enqueueSnackbar("Address set to default successfully", {variant: 'success'});
+            })
+            .catch((error) => {
+                enqueueSnackbar(error.response?.data?.message || "Error updating default address", {variant: 'error'});
+                fetchAddresses();
+            });
+
+    }
 
     return (
         <div className="p-4">
             <div className="text-2xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto my-2">
-                    <Link to='/address/create'>
+                    <Link to='/dashboard/address/create'>
                         Add new address
                     </Link>
                 </div>
@@ -48,45 +71,31 @@ const Addresses = () => {
             addresses.length == 0  ? 
             <div className="p-4">No Addresses added</div> :
                 <div>
-                    <table className='w-full mx-auto max-w-[1000px] rounded-lg'>
-                        <thead>
-                            <tr className='rounded-full text-white bg-purple-500 h-8'>
-                                <th className='rounded-full rounded-r-lg my-4 px-4 py-2'>No</th>
-                                <th className=''>House Number</th>
-                                <th className=''>Street</th>
-                                <th className=''>City</th>
-                                <th className=''>State</th>
-                                <th className='max-md:hidden'>Zip code</th>
-                                <th className='max-md:hidden'>Country</th>
-                                <th className=''>Default</th>
-                                <th className='rounded-full rounded-l-lg'>Opreations</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {addresses && addresses.map((address, index) => (
-                                <tr key={address.id}>
-                                    <td className='text-center'>{index + 1}</td>
-                                    <td className='text-center'>{address.house_number}</td>
-                                    <td className='text-center'>{address.street_address}</td>
-                                    <td className='text-center'>{address.city}</td>
-                                    <td className='text-center'>{address.state}</td>
-                                    <td className='text-center max-md:hidden'>{address.zip_code}</td>
-                                    <td className='text-center max-md:hidden'>{address.country}</td>
-                                    <td className='text-center'>{address.is_default ? 'yes' : 'no'}</td>
-                                    <td className='text-center'>
-                                        <div className='flex justify-center gap-x-4'>
-                                            <Link to={`/dashboard/address/update/${address.id}`}>
-                                                <AiOutlineEdit className='text-2x1 text-yellow-600' />
-                                            </Link>
-                                            <Link to={`/dashboard/address/delete/${address.id}`}>
-                                                <MdOutlineDelete className='text-2x1 text-red-600' />
-                                            </Link>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 transition-all duration-500 ">
+                        {addresses && addresses.map((address, index) => (
+                            <div key={index} className="m-4 p-4 border rounded-lg">
+                                <div>{address.house_number}</div>
+                                <div>{address.street_address}</div>
+                                <div className="w-full">{address.city}, {address.state} {address.zip_code}</div>
+                                {!address.is_default && 
+                                    <button 
+                                        className="mt-2 border rounded-md px-2 hover:bg-gray-200 text-gray-800"
+                                        onClick={() => handleMakeAddressDefault(address.id)}
+                                    >
+                                        Make default
+                                    </button>}
+                                {address.is_default && <div className="mt-2 text-gray-800">Default Address</div>}
+                                <div className="flex py-4">
+                                    <Link to={`/dashboard/address/update/${address.id}`}>
+                                        <AiOutlineEdit className="m-1 text-xl text-yellow-600" />
+                                    </Link>
+                                    <Link to={`/dashboard/address/delete/${address.id}`}>
+                                        <MdOutlineDelete className="m-1 text-xl text-red-600" />
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
                 </div>
             }

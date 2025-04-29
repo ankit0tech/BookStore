@@ -27,7 +27,13 @@ const Dashboard = () => {
         <div className="h-full flex">
             <aside className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'} overflow-y-auto`}>
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl px-4 m-2 text-gray-800">Dashboard</h2>
+                    <button 
+                        className="text-2xl px-4 m-2 text-gray-800" 
+                        onClick={() => navigate('/dashboard')}
+                    >
+                        Dashboard
+                    </button>
+                    
                     <button
                         className="p-2 rounded-lg hover:bg-gray-100"
                         onClick={() => setIsSidebarOpen(false)}

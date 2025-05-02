@@ -3,6 +3,7 @@ import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 const CreateAddress = () => {
     
@@ -14,6 +15,8 @@ const CreateAddress = () => {
     const [country, setCountry] = useState('');
     const [isDefault, setIsDefault] = useState(false);
     const [houseNumber, setHouseNumber] = useState('');
+
+    const navigate = useNavigate();
 
     const handleSaveAddress = (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,6 +39,7 @@ const CreateAddress = () => {
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar('Address added Successfully', {variant: 'success'});
+                navigate('/dashboard/addresses');
             })
             .catch((error) => {
                 setLoading(false);
@@ -50,92 +54,112 @@ const CreateAddress = () => {
     }
 
     return (
-    <div className="p-4">
-        <BackButton />
-        <h1 className="text-3x1 my-4">Add Address</h1>
+    <div className="p-6 max-w-2xl mx-auto">
         {loading ? <Spinner /> : ''}
+        <h1 className="text-2xl font-semibold text-gray-800 mb-6">Add New Address</h1>
         
-        <form onSubmit={handleSaveAddress} >
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>House Number / Apartment / Company name</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={houseNumber}
-                    onChange={(e) => setHouseNumber(e.target.value)}
+        <form 
+            onSubmit={handleSaveAddress} 
+            className="space-y-6"
+        >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> 
+
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">House Number / Apartment </label>
+                    <input
+                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        type="text"
+                        value={houseNumber}
+                        onChange={(e) => setHouseNumber(e.target.value)}
+                        required
+                        >
+                    </input>
+                </div>
+
+                <div className='space-y-2'>
+                    <label className="block text-sm font-medium text-gray-700">Street</label>
+                    <input
+                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        type="text"
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
+                        >
+                    </input>
+                </div>
+
+                <div className='space-y-2'>
+                    <label className="block text-sm font-medium text-gray-700">City</label>
+                    <input
+                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
                     >
-                </input>
-            </div>
+                    </input>
+                </div>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Street</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={street}
-                    onChange={(e) => setStreet(e.target.value)}
+                <div className='space-y-2'>
+                    <label className="block text-sm font-medium text-gray-700">State</label>
+                    <input
+                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        type="text"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        >
+                    </input>
+                </div>
+
+                <div className='space-y-2'>
+                    <label className="block text-sm font-medium text-gray-700">Zip code </label>
+                    <input
+                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        type="text"
+                        value={zipCode}
+                        onChange={(e) => setZipcode(e.target.value)}
                     >
-                </input>
-            </div>
+                    </input>
+                </div>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>City</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                >
-                </input>
-            </div>
-
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>State</label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
+                <div className='space-y-2'>
+                    <label className="block text-sm font-medium text-gray-700">Country </label>
+                    <input
+                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        type="text"
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
                     >
-                </input>
+                    </input>
+                </div>
             </div>
 
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Zip code </label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={zipCode}
-                    onChange={(e) => setZipcode(e.target.value)}
-                >
-                </input>
-            </div>
-
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>Country </label>
-                <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                    type="text"
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                >
-                </input>
-            </div>
-
-            <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                <label>
-                    <input type="checkbox" onClick={() => setIsDefault(!isDefault)}/>
-                    &nbsp;&nbsp;Make address default
+            <div className="flex items-center space-x-2">
+                <input 
+                    type="checkbox"
+                    id="defaultAddress"
+                    checked={isDefault}
+                    onChange={() => setIsDefault(!isDefault)}
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                />
+                <label htmlFor="defaultAddress" className="text-sm text-gray-700">
+                    Make address default
                 </label>
             </div>
 
-            <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
+            <div className="flex justify-end space-x-4"> 
+                <button
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                    onClick={() => navigate('/dashboard/addresses')}
+                    type="button"
+                >
+                    Cancel
+                </button>
+
                 <button 
-                    className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 "
+                    className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 disabled:opacity-50"
                     type="submit"
-                    
+                    disabled={loading}
                     > 
-                    Save 
+                        {loading ? <Spinner /> : 'Save Address'} 
                 </button>
             </div>
 

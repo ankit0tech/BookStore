@@ -66,7 +66,7 @@ const Dashboard = () => {
                         <FaBars className="text-gray-600" />
                     </button>
                 )}
-                <Outlet/>
+                <Outlet context={{ isSidebarOpen }}/>
             </main>
         </div>
     );

@@ -178,7 +178,7 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
             if(!updatedAddress) {
                 return res.status(404).json({message: `Address with id: ${id} could not be updated`});
             }
-            res.status(200).json({message: "Address updated successfully"});
+            res.status(200).json({message: "Address updated successfully", address: updatedAddress});
         } 
         else {
             return res.status(400).json({message: "Please send valid data with all required fields."});

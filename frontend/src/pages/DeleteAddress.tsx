@@ -22,7 +22,7 @@ const DeleteAddress = () => {
             .then(()=>{
                 setLoading(false);
                 enqueueSnackbar('Address deleted Successfully', {variant: 'success'})
-                navigate('/addresses');
+                navigate('/dashboard/addresses');
             })
             .catch((error)=>{
                 setLoading(false);

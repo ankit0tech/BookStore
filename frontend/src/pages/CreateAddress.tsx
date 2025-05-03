@@ -1,22 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreateAddress = () => {
     
-    const [loading, setLoading] = useState(false);
-    const [street, setStreet] = useState('');
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
-    const [zipCode, setZipcode] = useState('');
-    const [country, setCountry] = useState('');
-    const [isDefault, setIsDefault] = useState(false);
-    const [houseNumber, setHouseNumber] = useState('');
+    const { id } = useParams();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [houseNumber, setHouseNumber] = useState<string>('');
+    const [street, setStreet] = useState<string>('');
+    const [city, setCity] = useState<string>('');
+    const [state, setState] = useState<string>('');
+    const [zipCode, setZipcode] = useState<string>('');
+    const [country, setCountry] = useState<string>('');
+    const [isDefault, setIsDefault] = useState<boolean>(false);
+    const [updateAddress, setUpdateAddress] = useState<boolean>(false);
 
     const navigate = useNavigate();
+
+    const fetchAddress = () => {
+        
+        api.get(`http://localhost:5555/address/${id}`)
+        .then((response) => {
+            setHouseNumber(response.data.house_number || '');
+            setStreet(response.data.street_address || '');
+            setCity(response.data.city || '');
+            setState(response.data.state || '');
+            setZipcode(response.data.zip_code || '');
+            setCountry(response.data.country || '');
+            setIsDefault(response.data.is_default || false);
+            setUpdateAddress(true);
+            setLoading(false);
+        })
+        .catch((error: any) => {
+            enqueueSnackbar('Error while fetching address');
+            console.log(error.message);
+            setLoading(false);
+        });
+
+    }
 
     const handleSaveAddress = (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,11 +58,16 @@ const CreateAddress = () => {
             };
     
             setLoading(true);
+
+            const apiCall = updateAddress ? 
+                api.put(`http://localhost:5555/address/${id}`, data) 
+                : 
+                api.post('http://localhost:5555/address', data);
             
-            api.post('http://localhost:5555/address', data)
+            apiCall
             .then(() => {
                 setLoading(false);
-                enqueueSnackbar('Address added Successfully', {variant: 'success'});
+                enqueueSnackbar('Success', {variant: 'success'});
                 navigate('/dashboard/addresses');
             })
             .catch((error) => {
@@ -52,6 +81,13 @@ const CreateAddress = () => {
         }
 
     }
+
+    useEffect(()=> {
+        if(id) {
+            fetchAddress();
+        }
+
+    }, []);
 
     return (
     <div className="p-6 max-w-2xl mx-auto">

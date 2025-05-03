@@ -12,7 +12,6 @@ import Checkout from './pages/Checkout';
 import React, { useState } from 'react';
 import { Book } from './types';
 import CreateAddress from './pages/CreateAddress';
-import UpdateAddress from './pages/UpdateAddress';
 import Addresses from './pages/Addresses';
 import DeleteAddress from './pages/DeleteAddress';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -87,7 +86,7 @@ const App = () => {
               <Route index element={<DashboardHome />} />
               <Route path='addresses' element={<Addresses />} />
               <Route path='address/create' element={<CreateAddress />} />
-              <Route path='address/update/:id' element={<UpdateAddress />} />
+              <Route path='address/update/:id' element={<CreateAddress />} />
               <Route path='address/delete/:id' element={<DeleteAddress />} />
 
               <Route path='cart' element={<Cart />} />

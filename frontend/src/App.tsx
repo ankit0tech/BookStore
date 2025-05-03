@@ -87,7 +87,7 @@ const App = () => {
               <Route index element={<DashboardHome />} />
               <Route path='addresses' element={<Addresses />} />
               <Route path='address/create' element={<CreateAddress />} />
-              <Route path='address/update/:id' element={<UpdateAddress />} />
+              <Route path='address/update/:id' element={<CreateAddress />} />
               <Route path='address/delete/:id' element={<DeleteAddress />} />
 
               <Route path='cart' element={<Cart />} />

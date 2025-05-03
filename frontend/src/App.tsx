@@ -12,7 +12,6 @@ import Checkout from './pages/Checkout';
 import React, { useState } from 'react';
 import { Book } from './types';
 import CreateAddress from './pages/CreateAddress';
-import UpdateAddress from './pages/UpdateAddress';
 import Addresses from './pages/Addresses';
 import DeleteAddress from './pages/DeleteAddress';
 import { GoogleOAuthProvider } from '@react-oauth/google';

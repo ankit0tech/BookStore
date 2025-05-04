@@ -2,12 +2,13 @@ import { useState, useEffect} from "react";
 import Spinner from '../components/Spinner';
 import api from '../utils/api';
 import { Address } from "../types";
-import { Link, useOutletContext } from "react-router-dom";
-import { AiOutlineEdit } from "react-icons/ai";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
 import BackButton from "../components/BackButton";
 import { enqueueSnackbar } from "notistack";
 import { FaPlus } from "react-icons/fa";
+import DeleteOverlay from "../components/DeleteOverlay";
 
 
 
@@ -16,6 +17,12 @@ const Addresses = () => {
     const [loading, setLoading] = useState(false);
     const [addresses, setAddresses] = useState<Address[]>([]);
     const { isSidebarOpen } = useOutletContext<{ isSidebarOpen: boolean}>();
+    const [showAddressToDelete, setShowAddressToDelete] = useState<number|null>(null);
+    const navigate = useNavigate();
+
+    const onClose = () => {
+        setShowAddressToDelete(null);
+    }
     
     const fetchAddresses = () => {
         try {
@@ -106,18 +113,27 @@ const Addresses = () => {
                                 )}
                                 
                                 <div className="flex mt-4 gap-4">
-                                    <Link 
-                                        className="tex-xl text-yellow-600 hover:text-yellow-700" 
-                                        to={`/dashboard/address/update/${address.id}`}
+                                    <button 
+                                        className="p-2 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors" 
+                                        onClick={() => navigate(`/dashboard/address/update/${address.id}`)}
                                     >
                                         <AiOutlineEdit className="text-xl" />
-                                    </Link>
-                                    <Link 
-                                        className="tex-xl text-red-600 hover:text-red-700" 
-                                        to={`/dashboard/address/delete/${address.id}`}
+                                    </button>
+
+                                    <button
+                                        className="p-2 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                                        onClick={() => setShowAddressToDelete(address.id)}
                                     >
-                                        <MdOutlineDelete className="text-xl" />
-                                    </Link>
+                                        <MdOutlineDelete className="text-xl"/>
+                                    </button>
+                                    
+                                    <DeleteOverlay
+                                        itemName='address'
+                                        deleteUrl={`http://localhost:5555/address/${address.id}`}
+                                        isOpen={showAddressToDelete === address.id}
+                                        onClose={onClose}
+                                        onDeleteSuccess={fetchAddresses}
+                                    />
                                 </div>
                             </div>
                         ))}

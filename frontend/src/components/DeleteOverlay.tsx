@@ -8,9 +8,10 @@ interface OverlayProps {
     itemName?: string;
     isOpen: boolean;
     onClose: () => void;
+    onDeleteSuccess?: () => void
 }
 
-const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, onClose }) => {
+const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, onClose, onDeleteSuccess }) => {
     
     const navigate = useNavigate();
 
@@ -27,7 +28,8 @@ const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, on
         .then((response) => {
             
             enqueueSnackbar(`Deleted ${itemName || 'item'} successfully`, { variant: 'success'});
-            navigate(-1);
+            onClose();
+            onDeleteSuccess?.();
         })
         .catch((error: any) =>{
             enqueueSnackbar(`Error while deleting ${itemName || 'item'}`, {variant: 'error'});

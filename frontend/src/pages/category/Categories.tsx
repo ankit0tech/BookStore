@@ -82,7 +82,7 @@ const Categories = () => {
                                         deleteUrl={`http://localhost:5555/category/${item.id}`}
                                         isOpen = { showCategoryToDelete === item.id}
                                         onClose = {onClose}
-
+                                        onDeleteSuccess={fetchCategories}
                                     />
                                     
                                     {item.sub_category.length > 0 && (
@@ -112,6 +112,7 @@ const Categories = () => {
                                                         deleteUrl={`http://localhost:5555/category/${sub.id}`}
                                                         isOpen = {showCategoryToDelete === sub.id}
                                                         onClose = {onClose}
+                                                        onDeleteSuccess = {fetchCategories}
                                                     />
                                                 </li>
                                             ))}

@@ -23,7 +23,9 @@ const Cart = () => {
     const { handleCartUpdate } = useHandleCartUpdate();
 
     const findSubTotal = (cartItems: CartInterface) => {
-        const subTotal = cartItems.data.reduce((accumulator, current) => accumulator + (current.quantity * current.book.price), 0);
+        const subTotal = cartItems.data.reduce((accumulator, current) => (
+            accumulator + (current.quantity * current.book.price) * (100 - current.special_offers?.discount_percentage || 0) / 100
+        ), 0);
         return subTotal;
     }
     
@@ -51,13 +53,23 @@ const Cart = () => {
                                         <div className="ml-4 flex-grow">
                                             <p className="font-medium text-lg">{ item.book.title }</p>
                                             <p className="text-gray-600">{ item.book.author }</p>
-                                            <p className="font-semibold mt-2"> &#8377;{ item.book.price * item.quantity }</p>
+                                            <p className="font-semibold mt-2"> 
+                                                {item.special_offers ? 
+                                                                <p> &#8377;{ (item.book.price * (100 - item.special_offers.discount_percentage) / 100).toFixed(2)} 
+                                                                    <span className="m-1 p-1 pr-2 font-normal rounded text-white bg-red-500"> {item.special_offers?.discount_percentage}% </span>
+                                                                    <p className="font-normal text-sm text-gray-500 line-through"> M.R.P. &#8377;{ item.book.price.toFixed(2)} </p>
+                                                                </p> 
+                                                                    : 
+                                                                <p> &#8377;{ item.book.price.toFixed(2)} </p>
+                                                            
+                                                }
+                                            </p>
                                         </div>
 
                                         <div className="inline-flex items-center rounded-full border-2 border-purple-500 w-fit h-fit">
                                             <button 
                                                 className="p-1 px-4"
-                                                onClick={() => {handleCartUpdate(item.book.id, -1)}}    
+                                                onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offers?.id)}}    
                                             >
                                                 {item.quantity === 1 ? <MdOutlineDelete className="text-xl" /> : <BiMinus className="text-xl" /> }
                                             </button>
@@ -68,7 +80,7 @@ const Cart = () => {
 
                                             <button 
                                                 className="p-1 px-4" 
-                                                onClick={() => {handleCartUpdate(item.book.id, 1)}}
+                                                onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offers?.id)}}
                                             >
                                                 <BiPlus className="text-xl" />
                                             </button>

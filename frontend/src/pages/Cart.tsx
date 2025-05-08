@@ -21,11 +21,15 @@ const Cart = () => {
     // const dispatch = useDispatch();
     // const authToken = userinfo.token;
     const { handleCartUpdate } = useHandleCartUpdate();
+    // console.log(cartItems);
 
     const findSubTotal = (cartItems: CartInterface) => {
-        const subTotal = cartItems.data.reduce((accumulator, current) => (
-            accumulator + (current.quantity * current.book.price) * (100 - current.special_offers?.discount_percentage || 0) / 100
-        ), 0);
+        const subTotal = cartItems.data.reduce((accumulator, current) => {
+            const { book, quantity, special_offers } = current;
+            const discount = special_offers?.discount_percentage || 0;
+            const discountedPrice = book.price * (100 - discount) / 100;
+            return accumulator + (quantity * discountedPrice);
+        }, 0);
         return subTotal;
     }
     
@@ -41,7 +45,7 @@ const Cart = () => {
                             <h2 className="text-2xl font-semibold mb-6">Cart</h2>
                             <div className="bg-white rounded-lg shadow-sm">
                                 {cartItems.data.map((item) => (
-                                    <div className="flex items-center p-4 border-b last:border-b-0" key={item.book.id}>
+                                    <div className="flex items-center p-4 border-b last:border-b-0" key={item.id}>
                                         <div className="w-28 h-36 rounded-lg overflow-hidden flex-shrink-0">
                                             <img
                                                 src={item.book.cover_image}
@@ -53,17 +57,21 @@ const Cart = () => {
                                         <div className="ml-4 flex-grow">
                                             <p className="font-medium text-lg">{ item.book.title }</p>
                                             <p className="text-gray-600">{ item.book.author }</p>
-                                            <p className="font-semibold mt-2"> 
+                                            <div className="font-semibold mt-2"> 
                                                 {item.special_offers ? 
-                                                                <p> &#8377;{ (item.book.price * (100 - item.special_offers.discount_percentage) / 100).toFixed(2)} 
-                                                                    <span className="m-1 p-1 pr-2 font-normal rounded text-white bg-red-500"> {item.special_offers?.discount_percentage}% </span>
-                                                                    <p className="font-normal text-sm text-gray-500 line-through"> M.R.P. &#8377;{ item.book.price.toFixed(2)} </p>
-                                                                </p> 
-                                                                    : 
-                                                                <p> &#8377;{ item.book.price.toFixed(2)} </p>
-                                                            
+                                                    <p> 
+                                                        &#8377;{ (item.book.price * (100 - item.special_offers.discount_percentage) / 100).toFixed(2)} 
+                                                        <span className="m-1 p-1 font-normal rounded text-white bg-red-500"> 
+                                                            {item.special_offers.discount_percentage}% 
+                                                        </span>
+                                                        <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
+                                                            M.R.P. &#8377;{ item.book.price.toFixed(2)} 
+                                                        </span>
+                                                    </p> 
+                                                    : 
+                                                    <p> &#8377;{ item.book.price.toFixed(2)} </p>
                                                 }
-                                            </p>
+                                            </div>
                                         </div>
 
                                         <div className="inline-flex items-center rounded-full border-2 border-purple-500 w-fit h-fit">

@@ -48,9 +48,9 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                                     {cartItems.data.map((item) => (
                                         <li key={item.id}>
                                             <div className="flex justify-start items-center gap-x-4">
-                                                { item.quantity } • { item.book.title } <div className="text-red-500"> {item.special_offers && `${item.special_offers.discount_percentage} %` } </div>
-                                                <BiMinus onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offers ? item.special_offers.id : null)}} />
-                                                <BiPlus onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offers ? item.special_offers.id : null)}} />
+                                                { item.quantity } • { item.book.title } <div className="text-red-500"> {item.special_offer && `${item.special_offer.discount_percentage} %` } </div>
+                                                <BiMinus onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offer ? item.special_offer.id : null)}} />
+                                                <BiPlus onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offer ? item.special_offer.id : null)}} />
                                             </div>
                                         </li>
                                     ))}

@@ -6,7 +6,7 @@ import BackButton from "../components/BackButton";
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
 import { RootState } from '../types/index';
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const initialState: PurchaseInterface = {

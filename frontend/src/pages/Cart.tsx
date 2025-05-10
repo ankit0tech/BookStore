@@ -25,8 +25,8 @@ const Cart = () => {
 
     const findSubTotal = (cartItems: CartInterface) => {
         const subTotal = cartItems.data.reduce((accumulator, current) => {
-            const { book, quantity, special_offers } = current;
-            const discount = special_offers?.discount_percentage || 0;
+            const { book, quantity, special_offer } = current;
+            const discount = special_offer?.discount_percentage || 0;
             const discountedPrice = book.price * (100 - discount) / 100;
             return accumulator + (quantity * discountedPrice);
         }, 0);
@@ -58,11 +58,11 @@ const Cart = () => {
                                             <p className="font-medium text-lg">{ item.book.title }</p>
                                             <p className="text-gray-600">{ item.book.author }</p>
                                             <div className="font-semibold mt-2"> 
-                                                {item.special_offers ? 
+                                                {item.special_offer ? 
                                                     <p> 
-                                                        &#8377;{ (item.book.price * (100 - item.special_offers.discount_percentage) / 100).toFixed(2)} 
+                                                        &#8377;{ (item.book.price * (100 - item.special_offer.discount_percentage) / 100).toFixed(2)} 
                                                         <span className="m-1 p-1 font-normal rounded text-white bg-red-500"> 
-                                                            {item.special_offers.discount_percentage}% 
+                                                            {item.special_offer.discount_percentage}% 
                                                         </span>
                                                         <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
                                                             M.R.P. &#8377;{ item.book.price.toFixed(2)} 
@@ -77,7 +77,7 @@ const Cart = () => {
                                         <div className="inline-flex items-center rounded-full border-2 border-purple-500 w-fit h-fit">
                                             <button 
                                                 className="p-1 px-4"
-                                                onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offers?.id)}}    
+                                                onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offer?.id)}}    
                                             >
                                                 {item.quantity === 1 ? <MdOutlineDelete className="text-xl" /> : <BiMinus className="text-xl" /> }
                                             </button>
@@ -88,7 +88,7 @@ const Cart = () => {
 
                                             <button 
                                                 className="p-1 px-4" 
-                                                onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offers?.id)}}
+                                                onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offer?.id)}}
                                             >
                                                 <BiPlus className="text-xl" />
                                             </button>

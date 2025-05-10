@@ -38,6 +38,7 @@ model userinfo {
   review review[]
   wishlist wishlist[]
   recently_viewed recently_viewed[]
+  purchase purchase[]
 
   category_created category[] @relation("creator")
   category_updated category[] @relation("updator")
@@ -62,6 +63,7 @@ model book {
   wishlist wishlist[]
   recently_viewed recently_viewed[]
   special_offers special_offers[] @relation("BookOnOffer")
+  purchase purchase[]
 }
 
 model special_offers {
@@ -73,6 +75,7 @@ model special_offers {
   offer_valid_until DateTime
 
   cart cart[]
+  purchase purchase[]
   books book[] @relation("BookOnOffer")
 }
 
@@ -101,17 +104,33 @@ model cart {
   book book @relation(fields: [book_id], references: [id], onDelete: Cascade)
 
   quantity Int @default(1)
-  purchased Boolean @default(false)
-  purchase_date DateTime?
-
   offer_id Int?
-  special_offers special_offers? @relation(fields: [offer_id], references: [id], onDelete: Cascade)
-
-  address_id Int?
-  address address? @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  special_offer special_offers? @relation(fields: [offer_id], references: [id], onDelete: SetNull)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model purchase {
+  id Int @id @default(autoincrement())
+
+  user_id Int
+  user userinfo @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  book_id Int
+  book book @relation(fields: [book_id], references: [id], onDelete: SetNull)
+
+  quantity Int @default(0)
+  purchase_price Int
+  offer_id Int?
+  special_offer special_offers? @relation(fields: [offer_id], references: [id], onDelete: SetNull)
+
+  address_id Int
+  address address @relation(fields: [address_id], references: [id], onDelete: SetNull)
+
+  purchase_date DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
 }
 
 model address {
@@ -130,7 +149,7 @@ model address {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  cart cart[]
+  purchase purchase[]
 
   @@index([user_id])  // Optional for querying purposes
 }

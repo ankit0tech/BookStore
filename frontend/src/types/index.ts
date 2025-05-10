@@ -11,7 +11,7 @@ export interface CartInterface {
         id: number,
         quantity: number,
         book: Book,
-        special_offers: Offer,
+        special_offer: Offer,
     } []
 }
 

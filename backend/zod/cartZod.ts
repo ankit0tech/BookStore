@@ -6,6 +6,11 @@ const cartZod = z.object({
     selectedOfferId: z.number().optional()
 });
 
+const checkoutZod = z.object({
+    delivery_address_id: z.number().int(),
+});
+
 export {
-    cartZod
+    cartZod,
+    checkoutZod
 }

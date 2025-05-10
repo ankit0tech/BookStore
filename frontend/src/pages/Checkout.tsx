@@ -33,14 +33,13 @@ const Checkout = () => {
         setLoading(true);
 
         const total = cartItems.data.reduce((acc, item) => 
-            acc + (item.quantity * (item.book.price * (item.special_offers ? (100 - item.special_offers.discount_percentage) : 100) / 100)), 0);
+            acc + (item.quantity * (item.book.price * (item.special_offer ? (100 - item.special_offer.discount_percentage) : 100) / 100)), 0);
         
         setTotalAmount(total);
         
 
         api.get('http://localhost:5555/address/default-address')
         .then((response) => {
-            console.log(response);
             setDefaultAddress(response.data);
             setSelectedAddress(response.data.id);
         })
@@ -93,7 +92,6 @@ const Checkout = () => {
 
         api.get('http://localhost:5555/address/')
         .then((response) => {
-            console.log(response.data);
             setAllUserAddresses(response.data);
             if (defaultAddress && response.data.some((addr: Address) => addr.id === defaultAddress.id)) {
                 setSelectedAddress(defaultAddress.id);
@@ -119,7 +117,7 @@ const Checkout = () => {
                                     <li className='flex gap-x-4' key={item.book.id}>
                                         {item.book.title} - price: {item.book.price} - qty: {item.quantity}  
                                         <div className="text-red-500"> 
-                                            {item.special_offers && `${item.special_offers.discount_percentage} %` } 
+                                            {item.special_offer && `${item.special_offer.discount_percentage} %` } 
                                         </div>
                                     </li>
                                 )) }

@@ -17,8 +17,16 @@ export interface CartInterface {
 
 export interface PurchaseInterface {
     data: {
+        id: number,
+        user_id: number,
+        book_id: number,
         book: Book,
+        address_id: number,
+        address: Address,
+        offer_id: number,
+        special_offer: Offer,
         purchase_date: Date,
+        purchase_price: number,
         quantity: number,
     } []
 }

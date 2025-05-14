@@ -148,28 +148,20 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
         const user = await prisma.userinfo.findUnique({
             where: { email: userEmail }
         });
+        
         if(user) {
-            const cartData = await prisma.purchase.findMany({
-                where: { user_id: user.id }
-            });
-            
-            let PurchasedItems: PurchaseInterface[] = [];
-
-            const promises = cartData.map(async (item) => {
-                const book = await prisma.book.findUnique({
-                    where: {
-                        id: item.book_id
-                    }
-                });
-                if(book) {
-                    return { book, quantity: item.quantity, purchase_date: item.purchase_date };
+            const purchasedItems = await prisma.purchase.findMany({
+                where: { 
+                    user_id: user.id
+                }, 
+                include: {
+                    book: true,
+                    address: true,
+                    special_offer: true
                 }
-                return null;
             });
 
-            const resolvedPurchasedItems = await Promise.all(promises);
-            PurchasedItems = resolvedPurchasedItems.filter((item) => item != null) as PurchaseInterface [];
-            return res.status(200).send({ data: PurchasedItems });
+            return res.status(200).send({ data: purchasedItems });
         }
         else {
             return res.status(400).send({message: "Issue with your login"});
@@ -204,7 +196,8 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                             user_id: user.id
                         },
                         include: {
-                            book: true
+                            book: true,
+                            special_offer: true
                         }
                     });
                     
@@ -216,19 +209,20 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                         });
                     }
                     
-                    const addPurchasePromise = cartItems.map(item => 
+                    const addPurchasePromise = cartItems.map(item => {
+                        const purchase_price = item.special_offer ? item.book.price * (100 - item.special_offer.discount_percentage) / 100 : item.book.price;
                         prisma.purchase.create({
                             data: {
                                 user_id: user.id,
                                 book_id: item.book_id,
                                 quantity: item.quantity,
-                                purchase_price: item.book.price,
+                                purchase_price: purchase_price,
                                 offer_id: item.offer_id,
                                 address_id: req.body.delivery_address_id,
                                 purchase_date: new Date(),
                             }
                         })
-                    );
+                    });
                     
                     const updateBookPromises = cartItems.map(item => 
                         prisma.book.update({

@@ -3,15 +3,17 @@ import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
 import {  useNavigate, useParams } from "react-router-dom";
 import DeleteOverlay from "../components/DeleteOverlay";
+import { FaRegStar, FaStar } from "react-icons/fa";
 
 
 const AddReview = () => {
 
     const { id } = useParams();
-    const [rating, setRating] = useState(0);
-    const [review, setReview] = useState('');
-    const [updateReview, setUpdateReview] = useState(false);
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+    const [rating, setRating] = useState<number>(0);
+    const [hover, setHover] = useState<number|null>(null);
+    const [review, setReview] = useState<string>('');
+    const [updateReview, setUpdateReview] = useState<boolean>(false);
+    const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
     const navigate = useNavigate();
 
     useEffect( ()=> {
@@ -48,7 +50,7 @@ const AddReview = () => {
                 // console.log(response);
                 // setRating(response.data.rating);
                 // setReview(response.data.review_text);
-                enqueueSnackbar('Updated revew successfully', {variant: 'success'});
+                enqueueSnackbar('Updated review successfully', {variant: 'success'});
                 navigate(-1);
             })
             .catch((error: any) => {
@@ -65,54 +67,79 @@ const AddReview = () => {
 
     return (
         <div
-            className="p-4 flex flex-col min-w-1/4 max-w-[300px] mx-auto"  
+            className="p-4 flex flex-col min-w-1/3 md:max-w-[80%] mx-auto"  
         >
             <form 
                 className="flex flex-col"
-                onSubmit={handleSubmit}>
-            
-                    <label htmlFor="rating">Overall Rating:</label>
-                    <input 
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                        id='rating'
-                        type='number'
-                        name='number'
-                        min='1'
-                        max='5'
-                        value={rating.toString()} 
-                        onChange={(e) => {setRating(Number(e.target.value))}}>
+                onSubmit={handleSubmit}
+            >
+                
+                <div className="flex mb-2">
+                    {[1,2,3,4,5].map((i) => 
+                        i <= (hover ?? rating) ? (
+                            <FaStar 
+                                key={i} 
+                                className="mr-1 text-2xl inline text-yellow-500 transition" 
+                                onMouseEnter={() => setHover(i)}
+                                onMouseLeave={() => setHover(null)}
+                                onClick={() => setRating(i)}
+                            />
+                        ) : (
+                            <FaRegStar 
+                                key={i} 
+                                className="mr-1 text-2xl inline text-gray-800 scale-90 transition" 
+                                onMouseEnter={() => setHover(i)}
+                                onMouseLeave={() => setHover(null)}
+                                onClick={() => setRating(i)}
+                            />
+                        )
+                    )}
+                        
+                    {(rating && rating >=1) ? (
+                        <button 
+                            onClick={() => setRating(0)}
+                            className="mx-3 text-blue-500"
+                        >
+                            clear
+                        </button>
+                    ) : null}
+                </div>
 
-                    </input>
-                    
-                    <label htmlFor="review_text">Review:</label>
-                    <textarea 
-                        className="h-40 appearance-none rounded-lg my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                        id='review_text'
-                        name='review_text'
-                        value={review}
-                        onChange={(e) => {setReview(e.target.value)}}>
+                <label htmlFor="review_text">Write a review:</label>
+                <textarea 
+                    className="h-40 appearance-none rounded-lg my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    id='review_text'
+                    name='review_text'
+                    value={review}
+                    onChange={(e) => {setReview(e.target.value)}}>
 
-                    </textarea>
-                    
+                </textarea>
+                
+                <div className="flex gap-2">
                     <button 
-                        className="rounded-full mt-2 text-white bg-purple-500 px-4 py-2 border border-gray-300"
+                        className="mt-2 px-4 py-2 text-blue-500 bg-blue-100 hover:bg-blue-200 rounded-lg self-start transition-colors duration-200"
                         type='submit'>
                             Save
                     </button>
+                    {updateReview &&
+                        <button 
+                            onClick={() => {setShowConfirmDelete(true)}}
+                            type="button"
+                            className="mt-2 px-4 py-2 text-red-500 bg-red-100 hover:bg-red-200 rounded-lg self-start transition-colors duration-200"
+                        >
+                            Delete
+                        </button>
+                    }
+                </div>
             </form>
             {updateReview && 
-                <>
-                    <button 
-                        onClick={() => {setShowConfirmDelete(true)}}
-                        className="rounded-full mt-2 text-white bg-red-500 px-4 py-2 border border-gray-300"
-                    >Delete</button>
-                    <DeleteOverlay 
-                        deleteUrl={`http://localhost:5555/review/${id}`} 
-                        itemName="review" 
-                        isOpen={showConfirmDelete} 
-                        onClose={onClose} 
-                    />
-                </>
+                <DeleteOverlay 
+                    deleteUrl={`http://localhost:5555/review/${id}`} 
+                    itemName="review" 
+                    isOpen={showConfirmDelete} 
+                    onClose={onClose} 
+                    onDeleteSuccess={() => navigate(-1)}
+                />
             }
         </div>
     );

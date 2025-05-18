@@ -23,8 +23,8 @@ const AddReview = () => {
             if (response.data) {
                 setUpdateReview(true);
             }
-            setRating(response.data.rating || 0);
-            setReview(response.data.review_text || '');
+            setRating(response.data?.rating || 0);
+            setReview(response.data?.review_text || '');
         })
         .catch((error) =>{
             console.log(error);
@@ -66,20 +66,22 @@ const AddReview = () => {
     }
 
     return (
-        <div
-            className="p-4 flex flex-col min-w-1/3 md:max-w-[80%] mx-auto"  
-        >
-            <form 
-                className="flex flex-col"
-                onSubmit={handleSubmit}
-            >
-                
-                <div className="flex mb-2">
+        <div className="p-4 flex flex-col min-w-1/3 md:max-w-[50%] mx-auto">
+            <h2 className="mb-6 text-gray-900 text-2xl font-semibold">
+                {updateReview ? 'Edit Review' : 'Write A Review' }
+            </h2>
+
+            <form className="flex flex-col" onSubmit={handleSubmit} >
+                <label className="my-2 block font-medium text-sm text-gray-700" htmlFor="ratings">Rating</label>
+                <div 
+                    className="flex items-center mb-4"
+                    id="ratings"
+                >
                     {[1,2,3,4,5].map((i) => 
                         i <= (hover ?? rating) ? (
                             <FaStar 
                                 key={i} 
-                                className="mr-1 text-2xl inline text-yellow-500 transition" 
+                                className="mr-1 text-3xl inline text-yellow-500 transition cursor-pointer" 
                                 onMouseEnter={() => setHover(i)}
                                 onMouseLeave={() => setHover(null)}
                                 onClick={() => setRating(i)}
@@ -87,7 +89,7 @@ const AddReview = () => {
                         ) : (
                             <FaRegStar 
                                 key={i} 
-                                className="mr-1 text-2xl inline text-gray-800 scale-90 transition" 
+                                className="mr-1 text-3xl inline text-gray-500 scale-90 transition cursor-pointer" 
                                 onMouseEnter={() => setHover(i)}
                                 onMouseLeave={() => setHover(null)}
                                 onClick={() => setRating(i)}
@@ -98,19 +100,21 @@ const AddReview = () => {
                     {(rating && rating >=1) ? (
                         <button 
                             onClick={() => setRating(0)}
-                            className="mx-3 text-blue-500"
+                            className="mx-3 text-blue-500 hover:text-blue-600 transition-colors duration-200"
                         >
                             clear
                         </button>
                     ) : null}
                 </div>
 
-                <label htmlFor="review_text">Write a review:</label>
+                <label className="my-1 font-medium text-sm text-gray-700" htmlFor="review_text">Your review</label>
                 <textarea 
-                    className="h-40 appearance-none rounded-lg my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    // className="w-full resize-none h-40 appearance-none rounded-lg my-2 px-4 py-3 "
+                    className="w-full h-40 appearance-none my-2 px-4 py-3 border border-gray-300 focus:border-gray-500 focus:outline-none rounded-lg"
                     id='review_text'
                     name='review_text'
                     value={review}
+                    placeholder="Share your thoughts about this book..."
                     onChange={(e) => {setReview(e.target.value)}}>
 
                 </textarea>
@@ -118,21 +122,23 @@ const AddReview = () => {
                 <div className="flex gap-2">
                     <button 
                         className="mt-2 px-4 py-2 text-blue-500 bg-blue-100 hover:bg-blue-200 rounded-lg self-start transition-colors duration-200"
-                        type='submit'>
-                            Save
+                        type='submit'
+                    >
+                        {updateReview ? 'Update Review' : 'Submit Review'}
                     </button>
-                    {updateReview &&
+                    {updateReview && (
                         <button 
                             onClick={() => {setShowConfirmDelete(true)}}
                             type="button"
                             className="mt-2 px-4 py-2 text-red-500 bg-red-100 hover:bg-red-200 rounded-lg self-start transition-colors duration-200"
                         >
-                            Delete
+                            Delete Review
                         </button>
-                    }
+                    )}
                 </div>
             </form>
-            {updateReview && 
+
+            {updateReview && (
                 <DeleteOverlay 
                     deleteUrl={`http://localhost:5555/review/${id}`} 
                     itemName="review" 
@@ -140,7 +146,7 @@ const AddReview = () => {
                     onClose={onClose} 
                     onDeleteSuccess={() => navigate(-1)}
                 />
-            }
+            )}
         </div>
     );
 }

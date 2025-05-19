@@ -211,7 +211,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                     
                     const addPurchasePromise = cartItems.map(item => {
                         const purchase_price = item.special_offer ? item.book.price * (100 - item.special_offer.discount_percentage) / 100 : item.book.price;
-                        prisma.purchase.create({
+                        return prisma.purchase.create({
                             data: {
                                 user_id: user.id,
                                 book_id: item.book_id,

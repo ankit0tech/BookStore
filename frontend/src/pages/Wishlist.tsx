@@ -83,16 +83,16 @@ const Wishlist = () => {
                                             ></img>
                                         </Link>
                                         
-                                        <div className="p-4 flex flex-col gap-2">
+                                        <div className="p-4 flex flex-col">
                                             <Link 
                                                 to={`/books/details/${item.book.id}`}
-                                                className="block mb-2 font-semibold hover:text-blue-500 truncate"
+                                                className="block font-semibold hover:text-blue-500 truncate"
                                             >
                                                 {item.book.title} 
                                             </Link>
                                             <div className="text-sm text-gray-600 truncate">by {item.book.author} </div>
-                                            <div className="font-semibold">&#8377;{item.book.price} </div>
-                                            <div className="text-sm text-gray-600"> 
+                                            <div className="font-semibold pt-2">&#8377;{item.book.price} </div>
+                                            <div className="text-sm text-gray-600 py-2"> 
                                                 Added on: {new Date(item.updated_at).toLocaleDateString('en-US', {
                                                     year: 'numeric',
                                                     month: 'long',

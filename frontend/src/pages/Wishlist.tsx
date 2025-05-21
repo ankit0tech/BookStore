@@ -78,7 +78,7 @@ const Wishlist = () => {
                                         >
                                             <img 
                                                 src={item.book.cover_image}
-                                                alt="Cover Image"
+                                                alt={item.book.title}
                                                 className="w-full h-full object-contain p-4"    
                                             ></img>
                                         </Link>

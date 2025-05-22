@@ -56,12 +56,14 @@ const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, on
                     <div className="flex gap-4 justify-end">
                         <button
                             className="py-2 px-6 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                            type="button"
                             onClick={() => onClose()}
                         >
                             Cancel
                         </button>
                         <button
                             className="py-2 px-6 text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200"
+                            type="button"
                             onClick={handleDeleteReview}
                         >
                             Delete

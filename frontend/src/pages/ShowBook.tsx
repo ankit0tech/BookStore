@@ -26,7 +26,7 @@ const ShowBook = () => {
 
         api.post(`http://localhost:5555/wishlist/add/${id}`)
         .then((response) => {
-            enqueueSnackbar('Added item to wishlist', { variant: 'success' });
+            enqueueSnackbar(response.data.message, { variant: 'success' });
         })
         .catch((error) => {
             console.log(error);
@@ -80,60 +80,69 @@ const ShowBook = () => {
     return (
         <div className='p-4'>
             <BackButton />
-            <h1 className='text-3xl my-4'>Show Book</h1>
+            <h1 className='text-2xl my-4 font-medium'>Show Book</h1>
             {loading || !book ? (
                 <Spinner />
             ) : (
-                <div className="p-4 flex flex-row justify-between">
-                    <div className='flex flex flex-col border-t-2 border-purple-500 rounded-x1 w-fit min-w-[200px] p-4 md:ml-20'>
-                        <div className='my-4'>
-                            <span className='text-xl mr-4 text-grey-500'>Title:</span>
-                            <span>{book.title}</span>
-                        </div>
-                        <div className='my-4'>
-                            <span className='text-xl mr-4 text-grey-500'>Author:</span>
-                            <span>{book.author}</span>
-                        </div>
-                        <div className='my-4'>
-                            <span className='text-xl mr-4 text-grey-500'>Publish Year:</span>
-                            <span>{book.publish_year}</span>
-                        </div>
-                        <div className='my-4'>
-                            <span className='text-xl mr-4 text-grey-500'>Price:</span>
-                            <span>{book.price}</span>
-                        </div>
-                        <div className='my-4'>
-                            <span className='text-xl mr-4 text-grey-500'>Category:</span>
-                            <span>{book.category.title}</span>
+                <div className="p-4 flex flex-row justify-around">
+                    <div className='flex flex-col rounded-x1 w-fit min-w-[200px] p-4 flex-shrink-0 flex-grow md:ml-20'>
+                        <div className='flex flex-row gap-4 p-4 justify-between shadow rounded-lg hover:shadow-md transition-all duration-200'>
+                            <div className='h-72 w-56 bg-gray-100 flex items-center justify-center rounded-lg flex-shrink-0'>
+                                <img
+                                    src={book.cover_image}
+                                    alt={book.title}
+                                    className='object-contain max-w-full max-h-full'
+                                >
+                                </img>
+                            </div>
+
+                            <div className='flex flex-col flex-grow'>
+                                <h2 className='text-2xl font-medium'>
+                                    {book.title}
+                                </h2>
+                                <p className='text-gray-700'>
+                                    by {book.author}
+                                </p>
+                                <p className='mt-4 text-gray-600 text-sm'>
+                                    Published: {book.publish_year}
+                                </p>
+                                <p className='mb-4 text-gray-600 text-sm'>
+                                    Category: {book.category.title}
+                                </p>
+                                <p className='font-semibold py-2 text-lg'>
+                                    &#8377;{book.price}
+                                </p>
+                            </div>
                         </div>
 
-                        <div>
-
+                        { book.special_offers?.length !=0 && (
+                        <div className='mt-6 shadow p-4 rounded-lg hover:shadow-md transition-all duration-200'>
                             { book.special_offers?.length ? 
-                                <div className='font-bold py-2'>Select one offer: </div> 
+                                <div className='font-medium py-2'>Select one offer: </div> 
                                     : 
                                 null
                             }
 
-                            <ul className=''>
+                            <ul className='text-gray-700 text-sm'>
                                 { book.special_offers?.map((offer) => (
-                                    <li key={offer.id} className='flex flex-row items-center gap-x-4'> 
-                                        
-                                        <input 
-                                            type='radio' 
-                                            id={offer.id.toString()} 
-                                            value={offer.id}
-                                            checked={selectedOffer?.toString() === offer.id.toString()}
-                                            onChange={(e) => setSelectedOffer(Number(e.target.value))} 
-                                        ></input>
-                                        <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
+                                    <li key={offer.id} className='flex flex-row items-center justify-between gap-x-4'> 
+                                        <div className='flex flex-row justify-center gap-2'>
+                                            <input 
+                                                type='radio' 
+                                                id={offer.id.toString()} 
+                                                value={offer.id}
+                                                checked={selectedOffer?.toString() === offer.id.toString()}
+                                                onChange={(e) => setSelectedOffer(Number(e.target.value))} 
+                                                ></input>
+                                            <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
+                                        </div>
 
                                         {(userinfo.userRole == 'admin' || userinfo.userRole == 'superadmin')
                                             && 
                                             <button
                                                 onClick={() => handleRemoveOffer(offer.id)}
                                             >
-                                                <MdOutlineDelete  className='text-2x1 text-red-600' /> 
+                                                <MdOutlineDelete  className='text-xl text-red-500 hover:text-red-600 transition-colors duration-200' /> 
                                             </button>
                                         }
                                     
@@ -141,30 +150,30 @@ const ShowBook = () => {
                                 )) }
                                 
                                 { (book.special_offers && selectedOffer) && 
-                                    <button onClick={() => setSelectedOffer(null)}>Clear offer</button> 
+                                    <button className='mt-2 hover:text-blue-500' onClick={() => setSelectedOffer(null)}>Clear offer</button> 
                                 }
                             </ul>
                         </div>
+                    )}
 
-                        <div className='my-4'>
+                        <div className='flex my-6 gap-2'>
+                            <Link 
+                               className="inline-block px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
+                               to={`/books/add-offer/${book.id}`}
+                            >Add new offer</Link>
                             <button
-                                className="mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700"
+                                className="px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
                                 onClick={() => handleCartUpdate(Number(book.id), 1, selectedOffer)}
                             >Add to cart</button>
                             <button
-                                className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700"
+                                className="px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
                                 onClick={() => handleAddToWishList(Number(book.id))}
                             >Add to wishlist</button>
-                            <Link 
-                                className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" 
-                                to={`/books/add-offer/${book.id}`}
-                            >Add Offer</Link>
                         </div>
                     </div>
 
-                    <div className='m-4 md:mr-20'>
+                    <div className='m-4 p-4 flex md:mr-20 shadow rounded-lg hover:shadow-md transition-all duration-200'>
                         <Reviews averageRating={book.average_rating} id={Number(book.id)} />
-
                     </div>
                 </ div>
             )}

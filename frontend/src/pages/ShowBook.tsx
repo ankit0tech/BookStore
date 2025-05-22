@@ -26,7 +26,7 @@ const ShowBook = () => {
 
         api.post(`http://localhost:5555/wishlist/add/${id}`)
         .then((response) => {
-            enqueueSnackbar('Added item to wishlist', { variant: 'success' });
+            enqueueSnackbar(response.data.message, { variant: 'success' });
         })
         .catch((error) => {
             console.log(error);

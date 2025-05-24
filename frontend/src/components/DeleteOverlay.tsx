@@ -22,7 +22,7 @@ const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, on
     }
     
 
-    const handleDeleteReview = () => {
+    const handleDelete = () => {
 
         api.delete(deleteUrl)
         .then((response) => {
@@ -49,7 +49,7 @@ const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, on
                 <div className="relative flex flex-col bg-white p-8 rounded-xl shadow-2xl max-w-md w-full mx-4 transition-all duration-300 ease-in-out">
                     <div className="text-center mb-6">
                         <h3 className="text-xl font-medium text-gray-800 mb-2">Confirm Deletion</h3>
-                        <p className="text-gray-600">
+                        <p className="text-gray-600 whitespace-normal">
                             {`Are you sure you want to delete ${itemName || "item"}? This action can't be undone.`}
                         </p>
                     </div>
@@ -64,7 +64,7 @@ const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, on
                         <button
                             className="py-2 px-6 text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200"
                             type="button"
-                            onClick={handleDeleteReview}
+                            onClick={handleDelete}
                         >
                             Delete
                         </button>

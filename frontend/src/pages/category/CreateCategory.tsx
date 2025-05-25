@@ -45,6 +45,7 @@ const CreateCategory = () => {
         apiCall
         .then((response) => {
             enqueueSnackbar('Success', { variant: 'success' });
+            navigate(-1);
         })
         .catch((error) => {
             console.log(error);
@@ -95,7 +96,7 @@ const CreateCategory = () => {
                         name='category'
                         value={categoryTitle}
                         onChange={(e) => setCategoryTitle(e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 outline-none focus:border-blue-500"
+                        className="text-gray-800 w-full px-4 py-2 rounded-lg border border-gray-300 outline-none focus:border-blue-500"
                         placeholder="Enter category title" 
                         required   
                     >
@@ -109,7 +110,7 @@ const CreateCategory = () => {
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="parentSelection">Parent Category</label>
                     <select
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-400 outline-none"
+                        className="text-gray-800 w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-400 outline-none"
                         id="parentSelection"
                         name="parentSelection"
                         value={selectedParent || ""}

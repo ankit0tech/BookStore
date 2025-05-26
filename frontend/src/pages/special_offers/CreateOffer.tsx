@@ -1,4 +1,3 @@
-import { RecordWithTtl } from "dns";
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
@@ -86,13 +85,14 @@ const CreateOffer = () => {
     
     return (
     <div className="p-4">
-        <form onSubmit={handleFormSubmit}>
+        <form className="" onSubmit={handleFormSubmit}>
         <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
 
             <label htmlFor="discountPercentage">Discount Percentage</label>
             <input 
                 className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                id="discountPercentage" type="number"
+                id="discountPercentage" 
+                type="number"
                 onChange={(e) => setDiscountPercentage(Number(e.target.value))}
                 value={discountPercentage?.toString() || ""}
             ></input>
@@ -103,7 +103,8 @@ const CreateOffer = () => {
             <label htmlFor="offerType">Offer Type</label>
             <input 
                 className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                id="offerType" type="text"
+                id="offerType" 
+                type="text"
                 onChange={(e) => setOfferType(e.target.value)}    
                 value={offerType}
             ></input>
@@ -113,7 +114,8 @@ const CreateOffer = () => {
             <label htmlFor="description">Description</label>
             <input 
                 className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                id="description" type="text"
+                id="description" 
+                type="text"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
             ></input>
@@ -123,15 +125,16 @@ const CreateOffer = () => {
             <label htmlFor="offerValidFrom">Offer valid from</label>
             
             <div className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500">
-                <input 
-                    
-                    id="offerValidFrom" type="date"
+                <input
+                    id="offerValidFrom" 
+                    type="date"
                     onChange={(e) => setOfferValidFromDate(e.target.value)}
                     value={offerValidFromDate}
                 ></input>
                 
                 <input 
-                    id="offerValidFrom" type="time"
+                    id="offerValidFrom" 
+                    type="time"
                     onChange={(e) => setOfferValidFromTime(e.target.value)}
                     value={offerValidFromTime}
                 ></input>
@@ -143,12 +146,14 @@ const CreateOffer = () => {
             <div className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"> 
             
                 <input 
-                    id="offerValidUntil" type="date"
+                    id="offerValidUntil" 
+                    type="date"
                     onChange={(e) => setOfferValidUntilDate(e.target.value)}
                     value={offerValidUntilDate}
                 ></input>
                 <input 
-                    id="offerValidUntil" type="time"
+                    id="offerValidUntil" 
+                    type="time"
                     onChange={(e) => setOfferValidUntilTime(e.target.value)}
                     value={offerValidUntilTime}
                 ></input>

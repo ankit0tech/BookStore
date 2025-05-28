@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Offer } from '../../types';
 import api from '../../utils/api';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdOutlineDelete } from 'react-icons/md';
+import { FaPlus } from 'react-icons/fa';
+import DeleteOverlay from '../../components/DeleteOverlay';
 
 const Offers = () => {
 
 
     const [offers, setOffers] = useState<Offer[]|null>(null);
+    const [offerToDelete, setOfferToDelete] = useState<number|null>(null);
+    const { isSidebarOpen } = useOutletContext<{ isSidebarOpen: boolean }>();
     const dateFormat : Intl.DateTimeFormatOptions = {
         year: 'numeric',
         month: 'short', // "Feb"
@@ -18,8 +22,11 @@ const Offers = () => {
         hour12: true // AM/PM format
     }
 
+    const onClose = ()=> {
+        setOfferToDelete(null);
+    }
 
-    const loadOffers = () => {
+    const fetchOffers = () => {
 
         api.get('http://localhost:5555/offer')
         .then((response) => {
@@ -31,52 +38,59 @@ const Offers = () => {
     }
 
     useEffect(()=>{
-        loadOffers();
+        fetchOffers();
     }, []);
 
     return (
-        <div>
-            <div className='p-4'>Special offers</div>
-            <div className='p-4'><Link to='/dashboard/offer/create'>Create new offer</Link></div>
+        <div className='p-4'>
+            <div className='flex flex-row justify-between items-center py-6 mb-6'>
+                <h2 className='font-semibold text-2xl'>Special offers</h2>
+                <Link 
+                    className='flex flex-row items-center py-2 px-4 gap-2 text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200 rounded-lg'
+                    to='/dashboard/offer/create'
+                >
+                    <FaPlus className='inline'/> Create new offer
+                </Link>
+            </div>
+                
             {offers ? 
-            <table className='w-full mx-auto max-w-[1000px] rounded-lg'>
-                <thead>
-                    <tr className='rounded-full text-white bg-purple-500 h-8'>
-                        <th className='rounded-full rounded-r-lg my-4 px-4 py-2'>No</th>
-                        <th className=''>Discount</th>
-                        <th className=''>Offer Type</th>
-                        <th className='max-md:hidden'>Description</th>
-                        <th className=''>Valid From</th>
-                        <th className=''>Valid Until</th>
-                        <th className='rounded-full rounded-l-lg'>Operations</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div className={`grid grid-cols-1 ${ isSidebarOpen ? 'md:grid-cols-1 lg:grid-cols-2': 'md:grid-cols-2 lg:grid-cols-3'} gap-6`}>
                     {offers.map((offer, index) => (
-                        <tr key={offer.id}>
-                            <td className='text-center'>{index+1}</td>
-                            <td className='text-center'>{offer.discount_percentage}</td>
-                            <td className='text-center'>{offer.offer_type}</td>
-                            <td className='text-center max-md:hidden'>{offer.description}</td>
-                            <td className='text-center'>{new Date(offer.offer_valid_from).toLocaleString('en-US', dateFormat)}</td>
-                            <td className='text-center'>{new Date(offer.offer_valid_until).toLocaleString('en-US', dateFormat)}</td>
-                            <td>
-                                <div className='flex justify-center gap-x-4'>
-                                    <Link to ={`/dashboard/offer/edit/${offer.id}`}>
-                                        <AiOutlineEdit className='text-2x1 text-yellow-600' />
-                                    </Link>
-                                    <Link to={`/dashboard/offer/delete/${offer.id}`}>
-                                        <MdOutlineDelete className='text-2x1 text-red-600' />
-                                    </Link>
-
+                        <div key={offer.id} className='p-6 flex flex-col border rounded-lg hover:shadow-md transition-shadow duration-100'>
+                            <div className='space-y-2'>
+                                <div className='flex flex-row justify-between items-center'>
+                                    <div className='text-lg font-medium text-gray-800'>{offer.offer_type}</div>
+                                    <div className='px-2 py-1 text-white font-medium bg-red-600 rounded-md'>{offer.discount_percentage}%</div>
                                 </div>
-                            </td>
-                        </tr>
+                                <div className='text-gray-600'>{offer.description}</div>
+                                <div className='text-gray-500 text-sm'>Offer Valid from: {new Date(offer.offer_valid_from).toLocaleString('en-US', dateFormat)}</div>
+                                <div className='text-gray-500 text-sm'>Offer Valid until: {new Date(offer.offer_valid_until).toLocaleString('en-US', dateFormat)}</div>
+                            </div>
+                            
+                            <div className='flex flex-row gap-2 mt-4'>
+                                <Link className='rounded-lg hover:bg-yellow-50 p-2' to ={`/dashboard/offer/edit/${offer.id}`}>
+                                    <AiOutlineEdit className='text-xl text-yellow-600' />
+                                </Link>
+                                <button 
+                                        className='rounded-lg hover:bg-red-50 p-2'
+                                        onClick={() => setOfferToDelete(offer.id)}>
+                                    <MdOutlineDelete className='text-xl text-red-600' />
+                                </button>
+
+                                <DeleteOverlay
+                                    itemName='offer'
+                                    deleteUrl={`http://localhost:5555/offer/${offer.id}`}
+                                    isOpen={offerToDelete === offer.id}
+                                    onClose={onClose}
+                                    onDeleteSuccess={fetchOffers}
+                                />
+
+                            </div>
+                        </div>
                     ))}
-                </tbody>
-            </table>
+            </div>
             :
-            <div> No Offers </div>}
+            <div className='p-4 text-xl font-semibold'> No Offers </div>}
         </div>
     );
 }

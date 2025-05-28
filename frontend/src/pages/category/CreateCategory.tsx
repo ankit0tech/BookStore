@@ -59,8 +59,6 @@ const CreateCategory = () => {
         api.get(`http://localhost:5555/category/${id}`)
         .then((response) => {
 
-            console.log(response.data);
-            
             const {title, parent_id} = response.data.data;
             setCategoryTitle(title ?? '');
             setSelectedParent(parent_id ?? null);

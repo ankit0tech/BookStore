@@ -1,12 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
-// import axios from 'axios';
 import api from '../utils/api';
 import{ useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { Category } from '../types';
-
 
 const CreateBook = () => {
     const [title, setTitle] = useState('');
@@ -90,91 +88,101 @@ const CreateBook = () => {
     }, []);
 
     return (
-        <div className='p-4'>
-            <BackButton />
-            <h1 className='text-3x1 my-4'>Create Book</h1>
+        <div className='p-4 max-w-2xl mx-auto'>
+            <h1 className='my-4 text-2xl font-semibold'>Create Book</h1>
             {loading ? <Spinner />:''}
 
-            <form onSubmit={handleSaveBook}>
-                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                    <label>Title</label>
-                    <input
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+            <form className='space-y-6' onSubmit={handleSaveBook}>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    
+                    <div className='space-y-2'>
+                        <label className='text-sm font-semibold text-gray-600'>Title</label>
+                        <input
+                            className="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-400"
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            >
+                        </input>
+                    </div>
+
+                    <div className='space-y-2'>
+                        <label className='text-sm font-semibold text-gray-600'>Author</label>
+                        <input
+                            className="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-400"
+                            type="text"
+                            value={author}
+                            onChange={(e) => setAuthor(e.target.value)}
                         >
-                    </input>
-                </div>
+                        </input>
+                    </div>
 
-                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                    <label>Author</label>
-                    <input
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                        type="text"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                    >
-                    </input>
-                </div>
-
-                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                    <label>Price</label>
-                    <input
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                        type="text"
-                        value={price.toString()}
-                        onChange={handlePriceInputChange}
-                    >
-                    </input>
-                </div>
-
-                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                    <label>Select Category</label>
-                    <select
-                        value={selectedCategory || ""}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        disabled={!categories?.length}
-                    >
-                        { categories?.map((category) => (
-                            <optgroup key={category.id} label={category.title}>
-                                {category.sub_category.map((sub)=> (
-                                    <option key={sub.id} value={sub.id}>{sub.title}</option>
-                                ))}
-                            </optgroup>
-                        ))}
-                    </select>
-
-                </div>
-
-                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                    <label>Publish Year</label>
-                    <input
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                        type="text"
-                        value={publishYear}
-                        onChange={(e) => setPublishYear(e.target.value)}
+                    <div className='space-y-2'>
+                        <label className='text-sm font-semibold text-gray-600'>Price</label>
+                        <input
+                            className="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-400"
+                            type="text"
+                            value={price.toString()}
+                            onChange={handlePriceInputChange}
                         >
-                    </input>
+                        </input>
+                    </div>
+
+                    <div className='space-y-2'>
+                        <label className='text-sm font-semibold text-gray-600'>Select Category</label>
+                        <select
+                            className='w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-400'
+                            value={selectedCategory || ""}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            disabled={!categories?.length}
+                        >
+                            { categories?.map((category) => (
+                                <optgroup key={category.id} label={category.title}>
+                                    {category.sub_category.map((sub)=> (
+                                        <option key={sub.id} value={sub.id}>{sub.title}</option>
+                                    ))}
+                                </optgroup>
+                            ))}
+                        </select>
+
+                    </div>
+
+                    <div className='space-y-2'>
+                        <label className='text-sm font-semibold text-gray-600'>Publish Year</label>
+                        <input
+                            className="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-400"
+                            type="text"
+                            value={publishYear}
+                            onChange={(e) => setPublishYear(e.target.value)}
+                            >
+                        </input>
+                    </div>
+
+                    <div className='space-y-2'>
+                        <label className='text-sm font-semibold text-gray-600'>Cover image url</label>
+                        <input
+                            className="w-full rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-400"
+                            type= "url"
+                            value={imgUrl}
+                            onChange={(e) => setImgUrl(e.target.value)}
+                        >
+                        </input>
+                    </div>
                 </div>
 
-                <div className='flex flex-col min-w-1/4 max-w-[300px] mx-auto'>
-                    <label>Cover image url</label>
-                    <input
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
-                        type= "url"
-                        value={imgUrl}
-                        onChange={(e) => setImgUrl(e.target.value)}
+                <div className="flex flex-row justify-end gap-2">
+                    <button
+                        className='rounded-lg px-4 py-2 my-2 border border-gray-300 hover:bg-gray-50'
+                        type='button'
+                        onClick={() => navigate(-1)}
                     >
-                    </input>
-                </div>
-
-                <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
+                        Cancel
+                    </button>
                     <button 
-                        className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 "
+                        className="rounded-lg px-4 py-2 my-2 text-white bg-purple-500 border border-gray-300 hover:bg-purple-600"
                         type='submit'
                     > 
-                    Save 
+                        Save 
                     </button>
                 </div>
             </form>

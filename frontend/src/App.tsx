@@ -107,7 +107,7 @@ const App = () => {
                   <Route path='books/add-offer/:id' element={<AddOfferToBook />} />
 
                   <Route path='books/create' element={<CreateBook />} /> 
-                  <Route path='books/edit/:id' element={<EditBook />} />
+                  <Route path='books/edit/:id' element={<CreateBook />} />
                   <Route path='books/delete/:id' element={<DeleteBook />} />
 
                 </>

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Address, RootState } from '../types/index';
+import { Address, CartInterface, RootState } from '../types/index';
 import { useSelector } from 'react-redux';
-import { Book } from '../types/index';
-// import axios from 'axios';
 import api from '../utils/api';
 import Spinner from '../components/Spinner';
-import { getCartItems } from '../utils/cartUtils';
+import { getCartItems, useHandleCartUpdate } from '../utils/cartUtils';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 import { enqueueSnackbar } from 'notistack';
+import { BiMinus, BiPlus } from 'react-icons/bi';
+import { MdOutlineDelete } from 'react-icons/md';
 
 
 const Checkout = () => {
@@ -17,35 +17,42 @@ const Checkout = () => {
     // Expect that checkout option will be availble only when cart is not empty
     const cartItems = useSelector((state: RootState) => state.cartinfo);
     const [loading, setLoading] = useState<boolean>(true);
-    const [totalAmount, setTotalAmount] = useState<number>(0);
+    // const [totalAmount, setTotalAmount] = useState<number>(0);
     const [defaultAddress, setDefaultAddress] = useState<Address|null>(null);
     const [allUserAddresses, setAllUserAddresses] = useState<Address[]>([]);
     const [showAllUserAddresses, setShowAllUserAddresses] = useState<boolean>(false);
-    const [selectedAddress, setSelectedAddress] = useState<number|null>(null);
+    const [selectedAddress, setSelectedAddress] = useState<Address|null>(null);
+    const { handleCartUpdate } = useHandleCartUpdate();
 
     const userData = useSelector((state: RootState) => state.userinfo);
     const authToken = userData.token;
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const findSubTotal = (cartItems: CartInterface) => {
+        const subTotal = cartItems.data.reduce((accumulator, current) => {
+            const { book, quantity, special_offer } = current;
+            const discount = special_offer?.discount_percentage || 0;
+            const discountedPrice = book.price * (100 - discount) / 100;
+            return accumulator + (quantity * discountedPrice);
+        }, 0);
+        return subTotal;
+    }
+
 
     useEffect(() => {
         setLoading(true);
 
-        const total = cartItems.data.reduce((acc, item) => 
-            acc + (item.quantity * (item.book.price * (item.special_offer ? (100 - item.special_offer.discount_percentage) : 100) / 100)), 0);
-        
-        setTotalAmount(total);
-        
-
-        api.get('http://localhost:5555/address/default-address')
-        .then((response) => {
-            setDefaultAddress(response.data);
-            setSelectedAddress(response.data.id);
-        })
-        .catch((error: any) => {
-            console.log(error);
-        }) 
+        if(!defaultAddress) {
+            api.get('http://localhost:5555/address/default-address')
+            .then((response) => {
+                setDefaultAddress(response.data);
+                setSelectedAddress(response.data);
+            })
+            .catch((error: any) => {
+                console.log(error);
+            })
+        }
 
 
         setLoading(false);
@@ -60,7 +67,7 @@ const Checkout = () => {
 
                 const config = { headers: { Authorization: authToken }};
                 const data = {
-                    delivery_address_id: selectedAddress
+                    delivery_address_id: selectedAddress?.id
                 }
                 
                 api.post('http://localhost:5555/cart/checkout', data, config)
@@ -88,19 +95,27 @@ const Checkout = () => {
     }
 
     const loadAllUserAddresses = () => {
-        setShowAllUserAddresses(true); 
-
         api.get('http://localhost:5555/address/')
         .then((response) => {
             setAllUserAddresses(response.data);
-            if (defaultAddress && response.data.some((addr: Address) => addr.id === defaultAddress.id)) {
-                setSelectedAddress(defaultAddress.id);
-            }
+            // if (defaultAddress && response.data.some((addr: Address) => addr.id === defaultAddress.id)) {
+            //     setSelectedAddress(defaultAddress);
+            // }
         })
         .catch((error:any) => {
             console.log(error);
         })
     }
+    
+    const handleChangeAddressClick = () => {
+        if(showAllUserAddresses) {
+            setShowAllUserAddresses(false);
+        } else {
+            loadAllUserAddresses();
+            setShowAllUserAddresses(true); 
+        }
+    }
+    
 
     return (
         <div className='p-4'>
@@ -111,63 +126,121 @@ const Checkout = () => {
                         {cartItems.data.length === 0 ? (
                             <p>Cart is empty...</p>
                         ) : (
-                        <div className='flex flex-col items-start'>
-                            <ul>
-                                { cartItems.data.map((item) => (
-                                    <li className='flex gap-x-4' key={item.book.id}>
-                                        {item.book.title} - price: {item.book.price} - qty: {item.quantity}  
-                                        <div className="text-red-500"> 
-                                            {item.special_offer && `${item.special_offer.discount_percentage} %` } 
-                                        </div>
-                                    </li>
-                                )) }
-                            </ul>
-                   
-                            <p>Total Amount: {totalAmount}</p>
-                            { defaultAddress && <div className='py-2'>
-                                Delivery Address:
-                                <div> {defaultAddress.house_number}, {defaultAddress.zip_code}, {defaultAddress.street_address} </div>
+                        
+                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+                            <div className='lg:col-span-2'>
+                                <ul className='flex flex-col gap-4'>
+                                    {cartItems.data.map((item) => (
+                                        <li className='flex gap-4' key={item.book.id}>
+                                            <Link to={`/books/details/${item.book.id}`}>
+                                                <div className='w-24 h-32 bg-gray-100 shadow-sm rounded overflow-hidden flex justify-center items-center'>
+                                                    <img 
+                                                        src={item.book.cover_image} 
+                                                        alt={item.book.title} 
+                                                        className='w-full h-full object-contain'
+                                                    />
+                                                </div>
+                                            </Link>
+                                            <div className="ml-4 flex-grow">
+                                                <p className="font-medium text-lg">{ item.book.title }</p>
+                                                <p className="text-gray-600">{ item.book.author }</p>
+                                                <div className="font-semibold mt-2"> 
+                                                    {item.special_offer ? 
+                                                        <p> 
+                                                            &#8377;{ (item.book.price * (100 - item.special_offer.discount_percentage) / 100).toFixed(2)} 
+                                                            <span className="m-1 p-1 font-normal rounded text-white bg-red-500"> 
+                                                                {item.special_offer.discount_percentage}% 
+                                                            </span>
+                                                            <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
+                                                                M.R.P. &#8377;{ item.book.price.toFixed(2)} 
+                                                            </span>
+                                                        </p> 
+                                                        : 
+                                                        <p> &#8377;{ item.book.price.toFixed(2)} </p>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div className="inline-flex items-center rounded-full border-2 border-purple-500 w-fit h-fit">
+                                                <button 
+                                                    className="p-1 px-4"
+                                                    onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offer?.id)}}    
+                                                >
+                                                    {item.quantity === 1 ? <MdOutlineDelete className="text-xl" /> : <BiMinus className="text-xl" /> }
+                                                </button>
+
+                                                <p className="p-1">
+                                                    { item.quantity }
+                                                </p>
+
+                                                <button 
+                                                    className="p-1 px-4" 
+                                                    onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offer?.id)}}
+                                                >
+                                                    <BiPlus className="text-xl" />
+                                                </button>
+                                            </div>
+
+                                        </li>
+                                    ))}
+                                </ul>
+                                <p className='text-lg my-4 font-semibold text-gray-800'>Total Amount: &#8377;{findSubTotal(cartItems).toFixed(2)}</p>
+                            </div>
+                            <div className='flex flex-col gap-4'>
+                                { selectedAddress && 
+                                (<div className='flex flex-col gap-4'>
+                                    <div className='text-lg font-medium tet-gray-700'> Delivery Address: </div>
+                                    <div className='flex flex-col py-2 px-4 border rounded-lg text-sm bg-gray-100'> 
+                                        <div className='font-semibold'> {selectedAddress.house_number} </div>
+                                        <div className='text-gray-700 '> {selectedAddress.zip_code} </div>
+                                        <div className='text-gray-700'> {selectedAddress.street_address} </div>
+                                    </div>
+                                    
+                                    <div className='flex flex-row gap-4'>
+                                        <button 
+                                            onClick={handleChangeAddressClick}
+                                            className='text-left w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100'
+                                            >
+                                            {showAllUserAddresses ? 'Hide Addresses' : 'Change Address' }
+                                        </button>
+                                        { showAllUserAddresses && 
+                                            <Link className='block text-left w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100' to='/dashboard/address/create' >Add new address</Link>
+                                        }
+                                    </div>
                                 
+                                </div>)}
+                            
+                                {(showAllUserAddresses && (allUserAddresses.length > 0)) && 
+                                    <ul className='flex flex-col gap-1 text-sm font-medium'>
+                                        {allUserAddresses.map((address) => (
+                                            <li 
+                                                key={address.id}
+                                                className='text-gray-800 w-full'
+                                            > 
+                                                <label className='flex flex-row gap-2 p-2 border rounded-lg'>
+                                                    <input
+                                                        type="radio"
+                                                        value={address.id}
+                                                        checked={selectedAddress?.id.toString() === address.id.toString()}
+                                                        onChange={() => setSelectedAddress(address)}
+                                                    />
+                                                     <div className='flex flex-col gap-1 p-1 text-sm w-full'> 
+                                                        <div className='font-semibold'> {address.house_number} </div>
+                                                        <div className='text-gray-700 '> {address.zip_code}, {address.street_address} </div>
+                                                    </div>
+                                                </label>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                }
+
                                 <button 
-                                    onClick={() => {
-                                        loadAllUserAddresses()
-                                    }}
-                                >
-                                    change address
+                                    type='button' 
+                                    onClick={handleBuyBooks} 
+                                    className="bg-blue-500 text-white px-3 py-2 rounded-lg font-bold hover:bg-blue-600" 
+                                    >
+                                        Buy now
                                 </button>
-                            
-                            </div>}
-                            
-                            <ul>
-                            {(showAllUserAddresses && (allUserAddresses.length > 0)) && 
-                            allUserAddresses.map((address) => (
-                                <li 
-                                    key={address.id}
-                                > 
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            value={address.id}
-                                            checked={selectedAddress?.toString() === address.id.toString()}
-                                            onChange={(e) => setSelectedAddress(Number(e.target.value))}
-                                        />
-                                    {address.house_number}, {address.zip_code}, {address.street_address} 
-                                    </label>
-                                </li>
-                            ))}
-                            </ul>
-
-                            { showAllUserAddresses && 
-                                <Link className='py-2' to='/address/create' >Add new address</Link>
-                            }
-
-                            <button 
-                                type='button' 
-                                onClick={handleBuyBooks} 
-                                className="mx-2 mt-4 bg-purple-500 text-white px-3 py-2 rounded-full font-bold hover:bg-purple-700" 
-                                >
-                                    Buy now
-                            </button>
+                            </div>
                         </div>
                         )}
                 </div>

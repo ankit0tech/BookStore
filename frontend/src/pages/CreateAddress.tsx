@@ -184,7 +184,7 @@ const CreateAddress = () => {
             <div className="flex justify-end space-x-4"> 
                 <button
                     className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                    onClick={() => navigate('/dashboard/addresses')}
+                    onClick={() => navigate(-1)}
                     type="button"
                 >
                     Cancel

@@ -28,7 +28,7 @@ const Dashboard = () => {
             <aside className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'} overflow-y-auto`}>
                 <div className="flex items-center justify-between mb-6">
                     <button 
-                        className="text-2xl px-4 m-2 text-gray-800" 
+                        className="text-2xl font-semibold px-4 m-2 text-gray-800" 
                         onClick={() => navigate('/dashboard')}
                     >
                         Dashboard

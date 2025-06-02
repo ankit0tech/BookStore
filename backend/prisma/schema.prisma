@@ -74,6 +74,9 @@ model special_offers {
   offer_valid_from DateTime
   offer_valid_until DateTime
 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt @default(now())
+
   cart cart[]
   purchase purchase[]
   books book[] @relation("BookOnOffer")
@@ -85,6 +88,9 @@ model category {
   parent_id Int?
   created_by Int @default(-1)
   updated_by Int?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt @default(now())
 
   parent category? @relation("CategoryParent", fields: [parent_id], references: [id], onDelete: Cascade)
   sub_category category[] @relation("CategoryParent")

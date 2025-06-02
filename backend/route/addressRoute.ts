@@ -125,6 +125,9 @@ router.get('/', authMiddleware, async (req, res) => {
         const addresses: Array<IAddress> = await prisma.address.findMany({
             where: {
                 user_id: user.id
+            },
+            orderBy: {
+                created_at: 'asc'
             }
         });
         return res.status(200).send(addresses);

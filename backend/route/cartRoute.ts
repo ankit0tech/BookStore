@@ -125,6 +125,8 @@ router.get('/get-cart-items', authMiddleware, async (req, res) => {
                     quantity: true,
                     special_offer: true,
                     book: true
+                }, orderBy: {
+                    created_at: 'asc'
                 }
             });
             
@@ -158,6 +160,9 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
                     book: true,
                     address: true,
                     special_offer: true
+                },
+                orderBy: {
+                    created_at: 'asc'
                 }
             });
 

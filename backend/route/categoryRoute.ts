@@ -19,6 +19,9 @@ router.get('/', authMiddleware, async (req, res) => {
             },
             include: {
                 sub_category: true
+            },
+            orderBy: {
+                created_at: 'asc'
             }
         });
 

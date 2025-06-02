@@ -86,6 +86,9 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
             },
             include: {
                 book: true
+            },
+            orderBy: {
+                created_at: 'asc'
             }
         });
 

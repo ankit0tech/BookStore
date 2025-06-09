@@ -15,20 +15,59 @@ export interface CartInterface {
     } []
 }
 
-export interface PurchaseInterface {
-    data: {
+// export interface PurchaseInterface {
+//     data: {
+//         id: number,
+//         user_id: number,
+//         book_id: number,
+//         book: Book,
+//         address_id: number,
+//         address: Address,
+//         offer_id: number,
+//         special_offer: Offer,
+//         purchase_date: Date,
+//         purchase_price: number,
+//         quantity: number,
+//     } []
+// }
+export interface OrderInterface {
+    // data: {
         id: number,
         user_id: number,
-        book_id: number,
-        book: Book,
+        order_items: OrderItemInterface [],
         address_id: number,
         address: Address,
-        offer_id: number,
-        special_offer: Offer,
-        purchase_date: Date,
-        purchase_price: number,
-        quantity: number,
-    } []
+        order_number: string,
+        order_status: string,
+        payment_status: string,
+        delivery_charges: number,
+        subtotal: number,
+        tax_percentange: number,
+        total_amount: number,
+        shipping_carrier: string | null,
+        tracking_number: string | null,
+        shipping_label_url: string | null,
+        delivery_method: string,
+        expected_delivery_date: Date,
+        actual_delivery_date: Date | null,
+    // } []
+}
+
+export interface OrdersInterface {
+    data: OrderInterface []
+}
+
+export interface OrderItemInterface {
+    id: number,
+    book_id: number,
+    book: Book,
+    order_id: number,
+    order: OrderInterface,
+    quantity: number,
+    unit_price: number,
+    offer_id: number | null,
+    special_offer: Offer | null,
+    purchase_date: Date,
 }
 
 export interface Book {

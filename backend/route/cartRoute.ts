@@ -3,6 +3,7 @@ import { cartZod, checkoutZod } from '../zod/cartZod';
 import { authMiddleware } from './middleware';
 import { book, PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
+import { generateOrderNumber } from '../utils/orderUtils';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -25,7 +26,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
         if(result.success) {
             // 1. check if entry exists
             // 2. update the existing entry. if we go below 1 then remove the entry from table
-            // 3. create new entry if entry doesn't exists and make sure quantity is >=1
+            // 3. create new entry if entry doesn't exist and make sure quantity is >=1
             const userEmail = req.authEmail;
             const user = await prisma.userinfo.findUnique({
                 where: { email: userEmail }
@@ -152,14 +153,18 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
         });
         
         if(user) {
-            const purchasedItems = await prisma.purchase.findMany({
+            const purchasedItems = await prisma.orders.findMany({
                 where: { 
-                    user_id: user.id
+                    user_id: user.id,
                 }, 
                 include: {
-                    book: true,
-                    address: true,
-                    special_offer: true
+                    order_items: {
+                        include: {
+                            book: true,
+                            special_offer: true
+                        }
+                    },
+                    address: true
                 },
                 orderBy: {
                     created_at: 'asc'
@@ -178,13 +183,14 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
     }
 });
 
-
 // checkout
 router.post('/checkout', authMiddleware, async (req, res) =>{
     // take the user
     // take all the un-purchased items for the user and move them to purchased state
+
     try {
         logger.info("chekcout...");
+        console.log("BODY: ", req.body);
         const result = checkoutZod.safeParse(req.body);
         
         if (result.success) {
@@ -192,10 +198,10 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
             const user = await prisma.userinfo.findUnique({
                 where: {email: userEmail}
             });
-            
+            // check if req.body.delivery_address_id is valid
+
             if (user) {
                 await prisma.$transaction(async (prisma) => {
-                    
                     const cartItems = await prisma.cart.findMany({
                         where: {
                             user_id: user.id
@@ -213,32 +219,56 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                             }
                         });
                     }
-                    
-                    const addPurchasePromise = cartItems.map(item => {
-                        const purchase_price = item.special_offer ? item.book.price * (100 - item.special_offer.discount_percentage) / 100 : item.book.price;
-                        return prisma.purchase.create({
+
+                    // const purchase_price = item.special_offer ? item.book.price * (100 - item.special_offer.discount_percentage) / 100 : item.book.price;
+                    const subtotal = cartItems.reduce((acc, current) => {
+                        const {book, quantity, special_offer} = current;
+                        const discount = special_offer ? special_offer.discount_percentage : 0;
+                        const discountedPrice = book.price * (100-discount) / 100;
+                        return acc + (quantity * discountedPrice);
+                    }, 0);
+
+                    const tax_percentage = req.body.tax_percentage || 18;
+                    const delivery_charges = req.body.delivery_charges || 0;
+
+                    // how to validate correct delivery charges are given from the frontend
+                    const order = await prisma.orders.create({
+                        data: {
+                            user_id: user.id,
+                            address_id: req.body.delivery_address_id,
+                            order_number: generateOrderNumber(),
+                            delivery_charges: delivery_charges,
+                            subtotal: subtotal,
+                            tax_percentage: tax_percentage,
+                            total_amount: subtotal + delivery_charges + ((subtotal * tax_percentage) / 100),
+                            delivery_method: req.body.delivery_method || 'STANDARD',
+                            expected_delivery_date: new Date(Date.now() + (7*24*60*60*1000))
+                        }
+                    });
+
+                    const orderItemsPromises = cartItems.map(item => {
+                        const unit_price = item.special_offer ? item.book.price * (100 - item.special_offer.discount_percentage) / 100 : item.book.price;
+                        return prisma.order_items.create({
                             data: {
-                                user_id: user.id,
-                                book_id: item.book_id,
+                                book_id: item.book.id,
+                                order_id: order.id,
                                 quantity: item.quantity,
-                                purchase_price: purchase_price,
-                                offer_id: item.offer_id,
-                                address_id: req.body.delivery_address_id,
-                                purchase_date: new Date(),
+                                unit_price: unit_price,
+                                offer_id: item.special_offer && item.special_offer.id
                             }
-                        })
+                        });
                     });
                     
-                    const updateBookPromises = cartItems.map(item => 
+                    const updateBookPromises = cartItems.map((item) => (
                         prisma.book.update({
                             where: { id: item.book_id },
                             data: {
                                 purchase_count: { increment: item.quantity }
                             }
-                        })
+                        }))
                     );
                     
-                    await Promise.all(addPurchasePromise);
+                    await Promise.all(orderItemsPromises);
                     await Promise.all(updateBookPromises);  // run all promises in parallel
                 
                 });

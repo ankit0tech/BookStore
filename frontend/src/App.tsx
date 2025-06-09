@@ -34,6 +34,7 @@ import Offers from './pages/special_offers/Offers';
 import CreateOffer from './pages/special_offers/CreateOffer';
 import AddOfferToBook from './pages/AddOfferToBook';
 import DashboardHome from './pages/DashboardHome';
+import OrderDetails from './pages/OrderDetails';
 
 export interface ChildProps {
   books: Book[];
@@ -89,6 +90,7 @@ const App = () => {
 
               <Route path='cart' element={<Cart />} />
               <Route path='orders' element={<Orders />} />
+              <Route path='order/:id' element={<OrderDetails />} />
               <Route path='checkout' element={<Checkout />} />
               <Route path='review/:id' element={<AddReview />} />
               <Route path='wishlist' element={<Wishlist />} />

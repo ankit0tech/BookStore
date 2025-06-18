@@ -50,6 +50,7 @@ export interface OrderInterface {
         delivery_method: string,
         expected_delivery_date: Date,
         actual_delivery_date: Date | null,
+        purchase_date: Date,
     // } []
 }
 
@@ -67,7 +68,6 @@ export interface OrderItemInterface {
     unit_price: number,
     offer_id: number | null,
     special_offer: Offer | null,
-    purchase_date: Date,
 }
 
 export interface Book {

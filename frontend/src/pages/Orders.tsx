@@ -15,14 +15,6 @@ const Orders = () => {
     const [orders, setOrders] = useState<OrdersInterface>(initialState);
     const navigate = useNavigate();
 
-    const formatDate = (date: Date) => {
-        const d = new Date(date);
-        return new Intl.DateTimeFormat('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        }).format(d);          
-    }
 
     useEffect(() => {
         setLoading(true);
@@ -76,9 +68,6 @@ const Orders = () => {
                                             </p>
                                             <p className="text-gray-600 text-sm">
                                                 Order number: {item.order_number}
-                                            </p>
-                                            <p className="text-gray-600 text-sm">
-                                                Order placed: {formatDate(order.purchase_date)}
                                             </p>
                                             <p className="text-gray-600 text-sm">
                                                 Order status: {item.order_status.toLocaleLowerCase()}

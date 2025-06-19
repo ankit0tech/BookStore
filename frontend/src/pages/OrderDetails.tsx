@@ -63,6 +63,29 @@ const OrderDetails = () => {
                                         <span className="text-gray-700">Payment: </span>
                                         <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{orderDetails.payment_status.toLocaleLowerCase()}</span>
                                     </p>
+                                    {orderDetails.order_status.toLowerCase() === 'pending' && (
+                                        <>
+                                            <p className="flex flex-row justify-between text-sm items-center">
+                                                <span className="text-gray-700">Shipping Carrier: </span>
+                                                <span className="font-medium">{orderDetails.shipping_carrier}</span>
+                                            </p>
+                                            <p className="flex flex-row justify-between text-sm items-center">
+                                                <span className="text-gray-700">Tracking Number: </span>
+                                                <span className="font-medium">{orderDetails.tracking_number}</span>
+                                            </p>
+                                            {orderDetails.expected_delivery_date && (
+                                            <p className="flex flex-row justify-between text-sm items-center">
+                                                <span className="text-gray-700">Expected Delivery: </span>
+                                                <span className="font-medium">{formatDate(orderDetails.expected_delivery_date)}</span>
+                                            </p>)}
+                                        </>
+                                    )}
+                                    {(orderDetails.order_status.toLowerCase() === 'delivered' && orderDetails.actual_delivery_date) && (
+                                        <p className="flex flex-row justify-between text-sm items-center">
+                                            <span className="text-gray-700">Delivery Date: </span>
+                                            <span className="font-medium">{formatDate(orderDetails.actual_delivery_date)}</span>
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 

@@ -31,27 +31,25 @@ export interface CartInterface {
 //     } []
 // }
 export interface OrderInterface {
-    // data: {
-        id: number,
-        user_id: number,
-        order_items: OrderItemInterface [],
-        address_id: number,
-        address: Address,
-        order_number: string,
-        order_status: string,
-        payment_status: string,
-        delivery_charges: number,
-        subtotal: number,
-        tax_percentange: number,
-        total_amount: number,
-        shipping_carrier: string | null,
-        tracking_number: string | null,
-        shipping_label_url: string | null,
-        delivery_method: string,
-        expected_delivery_date: Date,
-        actual_delivery_date: Date | null,
-        purchase_date: Date,
-    // } []
+    id: number,
+    user_id: number,
+    order_items: OrderItemInterface [],
+    address_id: number,
+    address: Address,
+    order_number: string,
+    order_status: string,
+    payment_status: string,
+    delivery_charges: number,
+    subtotal: number,
+    tax_percentange: number,
+    total_amount: number,
+    shipping_carrier: string | null,
+    tracking_number: string | null,
+    shipping_label_url: string | null,
+    delivery_method: string,
+    expected_delivery_date: Date,
+    actual_delivery_date: Date | null,
+    purchase_date: Date,
 }
 
 export interface OrdersInterface {

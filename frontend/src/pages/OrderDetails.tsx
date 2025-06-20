@@ -1,12 +1,13 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { OrderInterface } from "../types";
 import { useEffect, useState } from 'react';
+import api from "../utils/api";
+import { enqueueSnackbar } from "notistack";
 
 const OrderDetails = () => {
     
     const { id } = useParams();
     const { state } = useLocation();
-    const [subTotal, setSubTotal] = useState<number>(0);
     const [orderDetails, setOrderDetails] = useState<OrderInterface|null>(state?.orderDetails || null);
     const navigate = useNavigate();
 
@@ -16,24 +17,22 @@ const OrderDetails = () => {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
-        }).format(d);          
+        }).format(d);
     }
 
     useEffect(()=> {
-       
-        orderDetails && setSubTotal(orderDetails.order_items.reduce((accumulator: number, curr) => {
-            return accumulator + (curr.unit_price * curr.quantity);
-        }, 0));
+        if(!orderDetails) {
+            api.get(`http://localhost:5555/cart/order-details/${id}`)
+            .then((response)=> {
+                setOrderDetails(response.data.data);
+            })
+            .catch((error) => {
+                enqueueSnackbar('Error while fetching order details', {variant: 'error'});
+                console.log(error);
+            });
+        }
+    },[orderDetails]);
 
-    }, [orderDetails]);
-
-    // console.log(id);
-    // console.log('state: ', state);
-    // console.log('order details: ', state?.orderDetails);
-
-    // setOrderDetails(state.orderDetails);
-
-    // console.log('Order details state: ', orderDetails);
 
     return (
         <div className="p-4 max-w-4xl">
@@ -141,14 +140,14 @@ const OrderDetails = () => {
                                 <p className="font-semibold text-gray-900 mb-2">Price Summary:</p>
                                 <p className="flex flex-row justify-between w-full text-gray-700 text-sm">
                                     <span>Subtotal: </span>
-                                    <span className="font-medium">&#8377;{subTotal.toFixed(2)}</span>
+                                    <span className="font-medium">&#8377;{orderDetails.subtotal.toFixed(2)}</span>
                                 </p>
                                 <p className="flex flex-row justify-between w-full text-gray-700 text-sm">
                                     <span>Delivery charges:</span>
                                     <span className="font-medium">&#8377;{(orderDetails.delivery_charges || 0).toFixed(2)}</span>
                                 </p>
                                 <p className="flex flex-row justify-between w-full text-gray-900 font-semibold border-t pt-2 mt-2">
-                                    <span>Total cost:</span>&#8377;{(subTotal + (orderDetails.delivery_charges || 0)).toFixed(2)}
+                                    <span>Total cost:</span>&#8377;{(orderDetails.subtotal + (orderDetails.delivery_charges || 0)).toFixed(2)}
                                 </p>
                             </div>
                         </div>

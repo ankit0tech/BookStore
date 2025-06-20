@@ -172,12 +172,46 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
             });
 
             return res.status(200).send({ data: purchasedItems });
-        }
-        else {
+        } else {
             return res.status(400).send({message: "Issue with your login"});
         }
     }
     catch (error: any) {
+        logger.error(error.message);
+        return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+router.get('/order-details/:id(\\d+)', authMiddleware, async (req, res) =>{
+    try {
+        const { id } = req.params;
+        const userEmail = req.authEmail;
+        const user = await prisma.userinfo.findUnique({
+            where: { email: userEmail }
+        });
+        
+        if(user) {
+            const orderDetails = await prisma.orders.findUnique({
+                where: { 
+                    user_id: user.id,
+                    id: Number(id)
+                }, 
+                include: {
+                    order_items: {
+                        include: {
+                            book: true,
+                            special_offer: true
+                        }
+                    },
+                    address: true
+                }
+            });
+
+            return res.status(200).send({ data: orderDetails });
+        } else {
+            return res.status(400).send({message: "Issue with your login"});
+        } 
+    } catch(error: any) {
         logger.error(error.message);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }

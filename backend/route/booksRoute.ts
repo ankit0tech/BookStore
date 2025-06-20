@@ -14,6 +14,8 @@ router.get('/search', async (req, res) => {
     try {
         const queryString = req.query.query as string | undefined;
         const query = queryString || '';
+        const sortBy: string = req.query.sortBy ? req.query.sortBy as string : 'id';
+        const sortOrder: string = req.query.sortOrder as string === 'desc' ? 'desc' : 'asc';
 
         const books = await prisma.book.findMany({
             where: {
@@ -34,7 +36,10 @@ router.get('/search', async (req, res) => {
             },
             include: {
                 category: true,
-            }
+            }, orderBy: [
+                { [sortBy]: sortOrder },
+                { id: 'asc'}
+            ]
         });
     
         return res.status(200).send(books);

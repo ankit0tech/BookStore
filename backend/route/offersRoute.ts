@@ -16,6 +16,9 @@ router.get('/active-offers', roleMiddleware(['admin', 'superadmin']), async (req
                 offer_valid_until: {
                     gte: new Date()
                 }
+            },
+            orderBy: {
+                created_at: 'asc'
             }
         });
         if(!offers) {
@@ -58,7 +61,10 @@ router.get('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async(req: Req
 router.get('/', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
     try {
         const offers = await prisma.special_offers.findMany({
-            where:{}
+            where:{},
+            orderBy: {
+                created_at: 'asc'
+            }
         });
 
         return res.status(200).json(offers);

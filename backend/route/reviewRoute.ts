@@ -23,6 +23,9 @@ router.get('/book/:id(\\d+)', async (req: Request, res: Response) => {
                     },
                 },
             },
+            orderBy: {
+                created_at: 'asc'
+            }
         });
 
         return res.status(200).json(reviews);
@@ -78,6 +81,9 @@ router.get('/user', authMiddleware, async (req: Request, res: Response) => {
                         title: true
                     }
                 }
+            },
+            orderBy: {
+                created_at: 'asc'
             }
         });
 

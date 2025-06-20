@@ -20,6 +20,28 @@ enum Role {
   superadmin
 }
 
+enum orderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  OUT_FOR_DELIVERY
+  DELIVERED
+}
+
+enum paymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum deliveryMethod {
+  STANDARD
+  EXPRESS
+  NEXT_DAY
+}
+
+
 model userinfo {
   id Int @id @default(autoincrement())
   email String @unique @db.VarChar(255)
@@ -38,7 +60,7 @@ model userinfo {
   review review[]
   wishlist wishlist[]
   recently_viewed recently_viewed[]
-  purchase purchase[]
+  orders orders[]
 
   category_created category[] @relation("creator")
   category_updated category[] @relation("updator")
@@ -63,7 +85,7 @@ model book {
   wishlist wishlist[]
   recently_viewed recently_viewed[]
   special_offers special_offers[] @relation("BookOnOffer")
-  purchase purchase[]
+  order_items order_items[]
 }
 
 model special_offers {
@@ -74,8 +96,11 @@ model special_offers {
   offer_valid_from DateTime
   offer_valid_until DateTime
 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt @default(now())
+
   cart cart[]
-  purchase purchase[]
+  order_items order_items[]
   books book[] @relation("BookOnOffer")
 }
 
@@ -85,6 +110,9 @@ model category {
   parent_id Int?
   created_by Int @default(-1)
   updated_by Int?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt @default(now())
 
   parent category? @relation("CategoryParent", fields: [parent_id], references: [id], onDelete: Cascade)
   sub_category category[] @relation("CategoryParent")
@@ -111,26 +139,55 @@ model cart {
   updated_at DateTime @updatedAt
 }
 
-model purchase {
+model order_items {
+  id Int @id @default(autoincrement())
+
+  book_id Int
+  book book @relation(fields: [book_id], references: [id], onDelete: SetNull)
+
+  order_id Int
+  order orders @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  quantity Int @default(0)
+  unit_price Int
+  offer_id Int?
+  special_offer special_offers? @relation(fields: [offer_id], references: [id], onDelete: SetNull)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model orders {
   id Int @id @default(autoincrement())
 
   user_id Int
   user userinfo @relation(fields: [user_id], references: [id], onDelete: SetNull)
-  book_id Int
-  book book @relation(fields: [book_id], references: [id], onDelete: SetNull)
-
-  quantity Int @default(0)
-  purchase_price Int
-  offer_id Int?
-  special_offer special_offers? @relation(fields: [offer_id], references: [id], onDelete: SetNull)
 
   address_id Int
   address address @relation(fields: [address_id], references: [id], onDelete: SetNull)
+
+  order_number String @unique
+  order_status orderStatus @default(PENDING)
+  
+  payment_status paymentStatus @default(PENDING)
+  delivery_charges Int
+  subtotal Int
+  tax_percentage Int @default(18)
+  total_amount Int
+
+  shipping_carrier String?
+  tracking_number String?
+  shipping_label_url String?
+
+  delivery_method deliveryMethod @default(STANDARD)
+  expected_delivery_date DateTime
+  actual_delivery_date DateTime?
 
   purchase_date DateTime @default(now())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  order_items order_items[]
 }
 
 model address {
@@ -149,7 +206,7 @@ model address {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  purchase purchase[]
+  orders orders[]
 
   @@index([user_id])  // Optional for querying purposes
 }

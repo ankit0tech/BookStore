@@ -41,7 +41,7 @@ const Orders = () => {
     }, []);
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen max-w-5xl px-2 md:px-8">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Order History</h1>
                 <p className="mt-2 text-sm text-gray-600">View and manage your past orders</p>
@@ -61,9 +61,9 @@ const Orders = () => {
                     </div>
                 ) : (
                     <div className="space-y-6">
-                        <ul className="list-none p-0 m-0 bg-white divide-y divide-gray-100 roundd-lg shaow-sm max-w-5xl min-w-max">
+                        <ul className="list-none p-0 m-0 bg-white divide-y divide-gray-100 roundd-lg shaow-sm min-w-max">
                             {orders.data.map((item) => (
-                                <li className="flex flex-col gap-4 p-8 justify-between" key={item.id}>
+                                <li className="flex flex-col gap-4 py-8 justify-between" key={item.id}>
                                     <div className="space-y-1">
                                         <div className="flex flex-row justify-between">
                                             <p className="mr-2 text-gray-900 text-lg font-semibold">Order #{item.order_number}</p>

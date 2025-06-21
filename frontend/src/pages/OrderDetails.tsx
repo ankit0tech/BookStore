@@ -41,7 +41,7 @@ const OrderDetails = () => {
                     <div className="space-y-1 mb-4">
                         <h2 className="text-2xl font-semibold text-gray-900">Order Details</h2>
                         <p className="text-gray-700 font-medium">
-                            {orderDetails.order_number}
+                            #{orderDetails.order_number}
                         </p>
                     </div>
 
@@ -64,14 +64,15 @@ const OrderDetails = () => {
                                     </p>
                                     {orderDetails.order_status.toLowerCase() === 'pending' && (
                                         <>
-                                            <p className="flex flex-row justify-between text-sm items-center">
+                                            {orderDetails.shipping_carrier && (<p className="flex flex-row justify-between text-sm items-center">
                                                 <span className="text-gray-700">Shipping Carrier: </span>
                                                 <span className="font-medium">{orderDetails.shipping_carrier}</span>
-                                            </p>
+                                            </p>)}
+                                            {orderDetails.tracking_number &&(
                                             <p className="flex flex-row justify-between text-sm items-center">
                                                 <span className="text-gray-700">Tracking Number: </span>
                                                 <span className="font-medium">{orderDetails.tracking_number}</span>
-                                            </p>
+                                            </p>)}
                                             {orderDetails.expected_delivery_date && (
                                             <p className="flex flex-row justify-between text-sm items-center">
                                                 <span className="text-gray-700">Expected Delivery: </span>
@@ -89,7 +90,7 @@ const OrderDetails = () => {
                             </div>
 
                             <div className="mt-4">
-                                <div className="font-medium text-xl pb-2 border-b border-gray-200">
+                                <div className="font-medium text-xl pb-2 border-b border-gray-100">
                                     Items ({orderDetails.order_items.length})
                                 </div>
                                 <ul className="w-full space-y-6 mt-4">
@@ -146,7 +147,7 @@ const OrderDetails = () => {
                                     <span>Delivery charges:</span>
                                     <span className="font-medium">&#8377;{(orderDetails.delivery_charges || 0).toFixed(2)}</span>
                                 </p>
-                                <p className="flex flex-row justify-between w-full text-gray-900 font-semibold border-t pt-2 mt-2">
+                                <p className="flex flex-row justify-between w-full text-gray-900 font-semibold border-t border-gray-100 pt-2 mt-2">
                                     <span>Total cost:</span>&#8377;{(orderDetails.subtotal + (orderDetails.delivery_charges || 0)).toFixed(2)}
                                 </p>
                             </div>

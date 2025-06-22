@@ -235,21 +235,25 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
                 return res.status(401).json({ message: 'Authentication failed, Invalid token' });
             }
 
-            const { email } = decoded as JwtPayload;
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const user = await prisma.userinfo.update({
-                where: {
-                    email: email
-                },
-                data: {
-                    password: hashedPassword
+            const { email, type } = decoded as JwtPayload;
+            if(type === 'reset-password') {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                const user = await prisma.userinfo.update({
+                    where: {
+                        email: email
+                    },
+                    data: {
+                        password: hashedPassword
+                    }
+                });
+                if (user) {
+                    logger.info(`Password reset done for user: ${user.email}`);
+                    return res.status(200).json({message: 'password updated'});
+                } else {
+                    return res.status(400).json({message: 'Failed to updated password, please try again'});
                 }
-            });
-            if (user) {
-                logger.info(`Password reset done for user: ${user.email}`);
-                return res.status(200).json({message: 'password updated'});
             } else {
-                return res.status(400).json({message: 'Failed to updated password, please try again'});
+                return res.status(401).json({ message: 'Authentication failed, Invalid token' });
             }
         });
     } catch(error: any) {

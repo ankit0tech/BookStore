@@ -96,7 +96,7 @@ const Orders = () => {
                                     </div>
                                     <div className="">
                                         <button 
-                                            className="px-6 py-2 rounded-md font-semibold text-white text-sm bg-blue-600 hover:pointer hover:bg-blue-700"
+                                            className="px-6 py-2 rounded-md font-medium text-blue-600 text-sm bg-blue-50 hover:pointer hover:bg-blue-100"
                                             onClick={() => navigate(`/dashboard/order/${item.id}`, { 
                                                 state: { orderDetails: item }
                                             })}

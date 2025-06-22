@@ -26,6 +26,8 @@ enum orderStatus {
   SHIPPED
   OUT_FOR_DELIVERY
   DELIVERED
+  CANCELLED
+  RETURNED
 }
 
 enum paymentStatus {
@@ -41,6 +43,19 @@ enum deliveryMethod {
   NEXT_DAY
 }
 
+enum cancellationStatus {
+  NONE
+  REQUESTED
+  APPROVED
+  REJECTED
+}
+
+enum returnStatus {
+  NONE
+  REQUESTED
+  APPROVED
+  REJECTED
+}
 
 model userinfo {
   id Int @id @default(autoincrement())
@@ -60,7 +75,9 @@ model userinfo {
   review review[]
   wishlist wishlist[]
   recently_viewed recently_viewed[]
-  orders orders[]
+  orders orders[] @relation("OrderPlacedBy")
+  cancellation_processed_by orders[] @relation("OrderCancellationProcessedBy")
+  return_processed_by orders[] @relation("OrderReturnProcessedBy")
 
   category_created category[] @relation("creator")
   category_updated category[] @relation("updator")
@@ -79,6 +96,14 @@ model book {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   cover_image String @db.VarChar(2083) @default("")
+
+  is_cancellable Boolean @default(true)
+  cancellation_hours Int @default(24)
+  cancellation_policy String?
+
+  is_returnable Boolean @default(true)
+  return_days Int @default(7)
+  return_policy String?
 
   cart cart[]
   review review[]
@@ -161,7 +186,7 @@ model orders {
   id Int @id @default(autoincrement())
 
   user_id Int
-  user userinfo @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  user userinfo @relation("OrderPlacedBy", fields: [user_id], references: [id], onDelete: SetNull)
 
   address_id Int
   address address @relation(fields: [address_id], references: [id], onDelete: SetNull)
@@ -182,6 +207,23 @@ model orders {
   delivery_method deliveryMethod @default(STANDARD)
   expected_delivery_date DateTime
   actual_delivery_date DateTime?
+
+  cancellation_status cancellationStatus @default(NONE)
+  cancellation_reason String?
+  cancellation_requested_at DateTime?
+  cancellation_resolved_at DateTime?
+  cancellation_processed_by Int?
+  cancellation_processed_by_user userinfo? @relation("OrderCancellationProcessedBy", fields: [cancellation_processed_by], references: [id], onDelete: SetNull)
+
+  return_status returnStatus @default(NONE)
+  return_reason String?
+  return_requested_at DateTime?
+  return_resolved_at DateTime?
+  return_completed_at DateTime?
+  return_tracking_number String?
+  return_shipping_label_url String?
+  return_processed_by Int?
+  return_processed_by_user userinfo? @relation("OrderReturnProcessedBy", fields: [return_processed_by], references: [id], onDelete: SetNull)
 
   purchase_date DateTime @default(now())
   created_at DateTime @default(now())

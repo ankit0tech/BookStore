@@ -8,13 +8,15 @@ const prisma = new PrismaClient();
 
 interface JwtPayload {
     email: string,
-    userId: string
+    userId: string,
+    type: string
 }
 
 declare global {
     namespace Express {
         interface Request {
             authEmail?: string; // Define your custom property here
+            userId?: number;
         }
     }
 }
@@ -31,8 +33,14 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         if(err || !decoded) {
             return res.status(401).send({ message: 'Authentication failed, Invalid token' });
         }
-        const { email } = decoded as JwtPayload;
-        req.authEmail = email;
+
+        const { email, userId, type } = decoded as JwtPayload;
+        if(type === 'login') {
+            req.authEmail = email;
+            req.userId = Number(userId);
+        } else {
+            return res.status(401).send({message: 'Authentication failed, Invalid token'});
+        }
         // const mail = req.authEmail || 'Guest';
         // logger.info(mail);
         next();

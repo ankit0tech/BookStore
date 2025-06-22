@@ -65,7 +65,7 @@ router.post('/signup', (req: Request, res: Response) => {
             }
             const payload = decoded as JwtPayload;
             if (payload.type != 'admin_signup') {
-                return res.status(401).json({message: "Email mismatch. Please try again with correct email"});
+                return res.status(401).json({message: "Authentication failed, Invalid token"});
             }
 
             const existingUser = await prisma.userinfo.findUnique({

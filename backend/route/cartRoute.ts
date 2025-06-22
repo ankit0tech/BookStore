@@ -1,6 +1,6 @@
 import express from 'express';
 import { cartZod, checkoutZod } from '../zod/cartZod';
-import { authMiddleware } from './middleware';
+import { authMiddleware, roleMiddleware } from './middleware';
 import { book, PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
 import { generateOrderNumber } from '../utils/orderUtils';
@@ -17,6 +17,17 @@ interface PurchaseInterface {
     purchase_date: Date,
     quantity : number,
 }
+
+const isCancellable = (purchaseDate: Date, hours: number): boolean => {
+    purchaseDate.setHours(purchaseDate.getHours() + hours);
+    return purchaseDate > new Date();
+}
+
+const isReturnable = (purchaseDate: Date, days: number): boolean => {
+    purchaseDate.setDate(purchaseDate.getDate() + days);
+    return purchaseDate > new Date();
+}
+
 
 // Update cart
 router.post('/update-cart', authMiddleware, async (req, res) =>{
@@ -321,6 +332,166 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
     catch (error: any) {
         logger.error(error.message);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+router.post('/requeset-cancellation/:id(\\d+)', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const order = await prisma.orders.findUnique({
+            where: {
+                id: Number(id)
+            }, 
+            include: {
+                order_items: {
+                    include: {
+                        book: true
+                    }
+                }
+            }
+        });
+
+        if(order) {
+            const canCancel = order.order_items.every((item) => item.book.is_cancellable && isCancellable(order.purchase_date, item.book.cancellation_hours));
+            if(canCancel) {
+                await prisma.orders.update({
+                    where: {
+                        id: Number(id),
+                    },
+                    data: {
+                        cancellation_status: 'REQUESTED',
+                        cancellation_reason: req.body.reason || 'User requested cancellation',
+                        cancellation_requested_at: new Date()
+                    }
+                });
+
+                logger.info(`Cancellation requested for order ${id} by user ${req.userId}`);
+                return res.status(200).json({message: "Cancellation requested successfully"});
+            } else {
+                return res.status(400).json({message: "Order cannot be cancelled"});
+            }
+        } else {
+            return res.status(404).json({ message: "Order not found"});
+        }
+    } catch (error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+router.post('/process-cancellation/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { approval } = req.body.approval.toUpperCase();
+
+        const order = await prisma.orders.findUnique({
+            where: {
+                id: Number(id)
+            }
+        })
+        if(!order) {
+            return res.status(404).json({message: 'Order not found'});
+        }
+
+        if(approval === 'APPROVED' || approval === 'REJECTED') {
+            await prisma.orders.update({
+                where: {
+                    id: Number(id)
+                },
+                data: {
+                    cancellation_status: approval,
+                    cancellation_resolved_at: new Date(),
+                    cancellation_processed_by: req.userId
+                }
+            });
+            logger.info(`${id} order approval = ${approval}, by user ${req.userId}`);
+            return res.status(200).json({message: `Return request ${approval.toLowerCase()}`});
+        } else {
+            return res.status(400).json({message: 'Invalid approval for order cancellation'});
+        }
+    } catch(error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."})
+    }
+});
+
+router.post('/request-return/:id(\\d+)', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const order = await prisma.orders.findUnique({
+            where: {
+                id: Number(id)
+            }, 
+            include: {
+                order_items: {
+                    include: {
+                        book: true
+                    }
+                }
+            }
+        });
+
+        if(order) {
+            const canReturn = order.order_items.every((item) => item.book.is_returnable && isReturnable(order.purchase_date, item.book.return_days));
+            if(canReturn) {
+                await prisma.orders.update({
+                    where: {
+                        id: Number(id)
+                    },
+                    data: {
+                        return_status: 'REQUESTED',
+                        return_requested_at: new Date(),
+                        return_reason: req.body.reason
+                    }
+                });
+
+                logger.info(`Return requested for order ${id} by user ${req.userId}`);
+                return res.status(200).json({message: 'Cancellation requested'});
+            } else {
+                return res.status(400).json({message: 'Order cannot be returned'});
+            }
+        } else {
+            return res.status(404).json({ message: 'Order not found'});
+        }
+    } catch(error: any) {
+        logger.error(error.massage);
+        return res.status(400).json({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+router.post('/process-return/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const approval = req.body.approval.toUpperCase();
+
+        const order = await prisma.orders.findUnique({
+            where: {
+                id: Number(id)
+            }
+        })
+        if(!order) {
+            return res.status(404).json({message: 'Order not found'});
+        }
+        
+        if(approval === 'APPROVED' || approval === 'REJECTED') {
+            await prisma.orders.update({
+                where: {
+                    id: Number(id)
+                }, 
+                data: {
+                    return_status: approval,
+                    return_processed_by: req.userId
+                }
+            });
+
+            logger.info(`Return request processed with approval ${approval} by ${req.userId} for order ${id}`);
+            return res.status(200).json({message: `Return request ${approval.toLowerCase()}`});
+        } else {
+            return res.status(400).json({message: 'Invalid approval for order return'});
+        }
+    } catch(error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: 'An unexpected error occurred. Please try again later.'})
     }
 });
 

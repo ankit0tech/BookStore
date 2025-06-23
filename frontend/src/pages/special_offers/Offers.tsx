@@ -28,7 +28,7 @@ const Offers = () => {
 
     const fetchOffers = () => {
 
-        api.get('http://localhost:5555/offer')
+        api.get('http://localhost:5555/offers')
         .then((response) => {
             setOffers(response.data);
         })
@@ -79,7 +79,7 @@ const Offers = () => {
 
                                 <DeleteOverlay
                                     itemName='offer'
-                                    deleteUrl={`http://localhost:5555/offer/${offer.id}`}
+                                    deleteUrl={`http://localhost:5555/offers/${offer.id}`}
                                     isOpen={offerToDelete === offer.id}
                                     onClose={onClose}
                                     onDeleteSuccess={fetchOffers}

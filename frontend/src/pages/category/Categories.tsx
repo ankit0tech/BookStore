@@ -25,7 +25,7 @@ const Categories = () => {
         
         setLoading(true);
         
-        api.get('http://localhost:5555/category')
+        api.get('http://localhost:5555/categories')
         .then((response) => {
             setCategories(response.data.data);
             setLoading(false);
@@ -155,7 +155,7 @@ const Categories = () => {
 
                                 <DeleteOverlay
                                     itemName = 'category'
-                                    deleteUrl={`http://localhost:5555/category/${item.id}`}
+                                    deleteUrl={`http://localhost:5555/categories/${item.id}`}
                                     isOpen = { showCategoryToDelete === item.id}
                                     onClose = {onClose}
                                     onDeleteSuccess={fetchCategories}
@@ -186,7 +186,7 @@ const Categories = () => {
 
                                                 <DeleteOverlay
                                                     itemName = 'category'
-                                                    deleteUrl={`http://localhost:5555/category/${sub.id}`}
+                                                    deleteUrl={`http://localhost:5555/categories/${sub.id}`}
                                                     isOpen = {showCategoryToDelete === sub.id}
                                                     onClose = {onClose}
                                                     onDeleteSuccess = {fetchCategories}

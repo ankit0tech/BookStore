@@ -44,7 +44,7 @@ const Checkout = () => {
         setLoading(true);
 
         if(!defaultAddress) {
-            api.get('http://localhost:5555/address/default-address')
+            api.get('http://localhost:5555/addresses/default-address')
             .then((response) => {
                 setDefaultAddress(response.data);
                 setSelectedAddress(response.data);
@@ -70,7 +70,7 @@ const Checkout = () => {
                     delivery_address_id: selectedAddress?.id
                 }
                 
-                api.post('http://localhost:5555/cart/checkout', data, config)
+                api.post('http://localhost:5555/orders/checkout', data, config)
                 .then((response) => {
                     getCartItems(authToken)
                     .then((response) => {
@@ -95,7 +95,7 @@ const Checkout = () => {
     }
 
     const loadAllUserAddresses = () => {
-        api.get('http://localhost:5555/address/')
+        api.get('http://localhost:5555/addresses/')
         .then((response) => {
             setAllUserAddresses(response.data);
             // if (defaultAddress && response.data.some((addr: Address) => addr.id === defaultAddress.id)) {

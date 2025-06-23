@@ -29,7 +29,7 @@ const Orders = () => {
         setLoading(true);
         
         api
-        .get('http://localhost:5555/cart/get-purchased-items')
+        .get('http://localhost:5555/orders/get-purchased-items')
         .then((response) => {
             setOrders(response.data);
             setLoading(false);

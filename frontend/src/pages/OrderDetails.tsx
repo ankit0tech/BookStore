@@ -22,7 +22,7 @@ const OrderDetails = () => {
 
     useEffect(()=> {
         if(!orderDetails) {
-            api.get(`http://localhost:5555/cart/order-details/${id}`)
+            api.get(`http://localhost:5555/orders/order-details/${id}`)
             .then((response)=> {
                 setOrderDetails(response.data.data);
             })

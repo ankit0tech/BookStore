@@ -29,7 +29,7 @@ const Addresses = () => {
             setLoading(true);
             
             api
-            .get('http://localhost:5555/address')
+            .get('http://localhost:5555/addresses')
             .then((response) => {
                 setAddresses(response.data);
                 setLoading(false);
@@ -57,7 +57,7 @@ const Addresses = () => {
             }))
         );
         
-        api.put(`http://localhost:5555/address/${address_id}`, {is_default: true})
+        api.put(`http://localhost:5555/addresses/${address_id}`, {is_default: true})
             .then((address) => {
                 enqueueSnackbar("Address set to default successfully", {variant: 'success'});
             })
@@ -115,7 +115,7 @@ const Addresses = () => {
                                 <div className="flex mt-4 gap-4">
                                     <button 
                                         className="p-2 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors" 
-                                        onClick={() => navigate(`/dashboard/address/update/${address.id}`)}
+                                        onClick={() => navigate(`/dashboard/addresses/update/${address.id}`)}
                                     >
                                         <AiOutlineEdit className="text-xl" />
                                     </button>
@@ -129,7 +129,7 @@ const Addresses = () => {
                                     
                                     <DeleteOverlay
                                         itemName='address'
-                                        deleteUrl={`http://localhost:5555/address/${address.id}`}
+                                        deleteUrl={`http://localhost:5555/addresses/${address.id}`}
                                         isOpen={showAddressToDelete === address.id}
                                         onClose={onClose}
                                         onDeleteSuccess={fetchAddresses}

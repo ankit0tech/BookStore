@@ -116,8 +116,8 @@ router.get('/', async (req, res) => {
         });
 
         if(books.length > 10) {
-            books.pop();
             nextCursor = books[books.length-1].id;
+            books.pop();
         }
 
         return res.status(200).json({ count: books.length, data: books, nextCursor: nextCursor });

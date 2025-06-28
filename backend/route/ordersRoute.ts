@@ -199,7 +199,7 @@ router.get('/order-details/:id(\\d+)', authMiddleware, async (req, res) =>{
     }
 });
 
-router.post('/requeset-cancellation/:id(\\d+)', authMiddleware, async (req, res) => {
+router.post('/request-cancellation/:id(\\d+)', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const order = await prisma.orders.findUnique({
@@ -261,20 +261,20 @@ router.post('/request-return/:id(\\d+)', authMiddleware, async (req, res) => {
 
         if(order) {
             const canReturn = order.order_items.every((item) => item.book.is_returnable && isReturnable(order.purchase_date, item.book.return_days));
-            if(canReturn) {
+            if(canReturn && order.cancellation_status != 'APPROVED' && order.cancellation_status != 'REQUESTED') {
                 await prisma.orders.update({
                     where: {
                         id: Number(id)
                     },
                     data: {
                         return_status: 'REQUESTED',
+                        return_reason: req.body.reason || 'User requested return',
                         return_requested_at: new Date(),
-                        return_reason: req.body.reason
                     }
                 });
 
                 logger.info(`Return requested for order ${id} by user ${req.userId}`);
-                return res.status(200).json({message: 'Cancellation requested'});
+                return res.status(200).json({message: 'Return requested'});
             } else {
                 return res.status(400).json({message: 'Order cannot be returned'});
             }

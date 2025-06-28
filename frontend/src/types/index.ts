@@ -30,9 +30,30 @@ export interface CartInterface {
 //         quantity: number,
 //     } []
 // }
+
+export interface UserInterface {
+    id: number,
+    email: string,
+    first_name: string | null
+    last_name: string | null
+    password: string | null
+    googleId: string | null
+    provider: string
+    role: string
+    verified: boolean
+    created_at: Date
+    updated_at: Date
+  
+    cart: CartInterface | null
+    address: Address | null
+    review: Review[] | null
+    wishlist: Wishlist[] | null
+    recently_viewed: RecentlyViewed[] | null
+}
 export interface OrderInterface {
     id: number,
     user_id: number,
+    user: UserInterface | null
     order_items: OrderItemInterface [],
     address_id: number,
     address: Address,
@@ -49,6 +70,22 @@ export interface OrderInterface {
     delivery_method: string,
     expected_delivery_date: Date,
     actual_delivery_date: Date | null,
+
+    cancellation_status: string,
+    cancellation_reason: string | null,
+    cancellation_requested_at: Date | null,
+    cancellation_resolved_at: Date | null,
+    cancellation_processed_by: number | null,
+  
+    return_status: string,
+    return_reason: string | null,
+    return_requested_at: Date | null,
+    return_resolved_at: Date | null,
+    return_completed_at: Date | null,
+    return_tracking_number: string | null,
+    return_shipping_label_url: string | null,
+    return_processed_by: number | null,
+  
     purchase_date: Date,
 }
 

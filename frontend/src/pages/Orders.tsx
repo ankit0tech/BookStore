@@ -61,7 +61,7 @@ const Orders = () => {
                     </div>
                 ) : (
                     <div className="space-y-6">
-                        <ul className="list-none p-0 m-0 bg-white divide-y divide-gray-100 roundd-lg shaow-sm min-w-max">
+                        <ul className="list-none p-0 m-0 bg-white divide-y divide-gray-100 min-w-max">
                             {orders.data.map((item) => (
                                 <li className="flex flex-col gap-4 py-8 justify-between" key={item.id}>
                                     <div className="space-y-1">

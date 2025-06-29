@@ -57,8 +57,8 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
         .get(url)
         .then((response) => {
             setBooks(() => {
-                const newBookIds = new Set(prevBooks.map((b) => b.id));
-                const newBooks = response.data.data.filter((book: any) => !newBookIds.has(book.id));
+                const prevBookIds = new Set(prevBooks.map((b) => b.id));
+                const newBooks = response.data.data.filter((book: any) => !prevBookIds.has(book.id));
                 return [...prevBooks, ...newBooks];
             });
             setNextCursor(response.data.nextCursor);

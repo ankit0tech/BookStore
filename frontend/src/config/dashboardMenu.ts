@@ -9,7 +9,8 @@ export const getDashboardMenuItems = (userRole: string): {label: string, path: s
         ...(userRole === 'admin' || userRole === 'superadmin' ? [
             { label: 'Categories', path: '/categories'},
             { label: 'Offers', path: '/offers'},
-            { label: 'Add new book', path: '/books/create'}
+            { label: 'Add new book', path: '/books/create'},
+            { label: 'Order management', path: '/order-management'},
         ] : []),
         ...(userRole === 'superadmin' ? [
             { label: 'Superadmin Panel', path: '/superadmin-panel'}

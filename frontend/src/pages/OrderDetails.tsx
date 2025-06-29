@@ -10,7 +10,7 @@ const OrderDetails = () => {
     const { state } = useLocation();
     const [orderDetails, setOrderDetails] = useState<OrderInterface|null>(state?.orderDetails || null);
     const navigate = useNavigate();
-
+    
     const formatDate = (date: Date) => {
         const d = new Date(date);
         return new Intl.DateTimeFormat('en-GB', {
@@ -19,19 +19,42 @@ const OrderDetails = () => {
             year: 'numeric',
         }).format(d);
     }
+    
+    const fetchOrderDetails = () => {
+        api.get(`http://localhost:5555/orders/order-details/${id}`)
+        .then((response)=> {
+            setOrderDetails(response.data.data);
+        })
+        .catch((error) => {
+            enqueueSnackbar('Error while fetching order details', {variant: 'error'});
+            console.log(error);
+        });
+    }
 
     useEffect(()=> {
-        if(!orderDetails) {
-            api.get(`http://localhost:5555/cart/order-details/${id}`)
-            .then((response)=> {
-                setOrderDetails(response.data.data);
-            })
-            .catch((error) => {
-                enqueueSnackbar('Error while fetching order details', {variant: 'error'});
-                console.log(error);
-            });
+        fetchOrderDetails();
+    }, [id]);
+
+
+    const handleRequestCancelOrReturn = (requestName: string) => {
+        if(requestName.toLowerCase() != 'cancel' && requestName.toLocaleLowerCase() != 'return') {
+            return;
         }
-    },[orderDetails]);
+
+        const endpointString = requestName === 'cancel' ? 'request-cancellation' : 'request-return';
+
+        api.post(`http://localhost:5555/orders/${endpointString}/${id}`)
+        .then((response)=> {
+            enqueueSnackbar(`Request to ${requestName} added`, {variant: 'success'});
+            fetchOrderDetails();
+        })
+        .catch((error: any)=> {
+            console.log(`${requestName} failed`);
+            console.log(error);
+            enqueueSnackbar(`Request to ${requestName} failed`, {variant: 'error'})
+        });
+    }
+
 
 
     return (
@@ -62,7 +85,7 @@ const OrderDetails = () => {
                                         <span className="text-gray-700">Payment: </span>
                                         <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{orderDetails.payment_status.toLocaleLowerCase()}</span>
                                     </p>
-                                    {orderDetails.order_status.toLowerCase() === 'pending' && (
+                                    {orderDetails.order_status.toLowerCase() != 'delivered' && (
                                         <>
                                             {orderDetails.shipping_carrier && (<p className="flex flex-row justify-between text-sm items-center">
                                                 <span className="text-gray-700">Shipping Carrier: </span>
@@ -78,13 +101,50 @@ const OrderDetails = () => {
                                                 <span className="text-gray-700">Expected Delivery: </span>
                                                 <span className="font-medium">{formatDate(orderDetails.expected_delivery_date)}</span>
                                             </p>)}
+                                            
+                                            {orderDetails.cancellation_status.toLowerCase() === 'none' ? (
+                                            <form>
+                                                <button 
+                                                    className="text-sm font-medium text-red-600 bg-red-100 px-4 py-2 rounded-md boder border-red-300 hover:bg-red-200 tansition-colors duration-200"
+                                                    type='button' 
+                                                    onClick={() => handleRequestCancelOrReturn('cancel')}
+                                                >
+                                                    Request cancellation
+                                                </button>
+                                            </form>
+                                            ) : (
+                                                <p className="flex flex-row justify-between text-sm items-center">
+                                                    <span className="text-gray-700">Cancellation Status:</span>
+                                                    <span className="font-medium">{orderDetails.cancellation_status.toLowerCase()}</span>
+                                                </p>
+                                            )}
                                         </>
                                     )}
+
                                     {(orderDetails.order_status.toLowerCase() === 'delivered' && orderDetails.actual_delivery_date) && (
-                                        <p className="flex flex-row justify-between text-sm items-center">
-                                            <span className="text-gray-700">Delivery Date: </span>
-                                            <span className="font-medium">{formatDate(orderDetails.actual_delivery_date)}</span>
-                                        </p>
+                                        <>
+                                            <p className="flex flex-row justify-between text-sm items-center">
+                                                <span className="text-gray-700">Delivery Date: </span>
+                                                <span className="font-medium">{formatDate(orderDetails.actual_delivery_date)}</span>
+                                            </p>
+
+                                            {orderDetails.return_status.toLowerCase() === 'none' ? (
+                                                <form>
+                                                    <button 
+                                                        className="text-sm font-medium text-red-600 bg-red-100 px-4 py-2 rounded-md boder border-red-300 hover:bg-red-200 tansition-colors duration-200"
+                                                        type='button' 
+                                                        onClick={() => handleRequestCancelOrReturn('return')}
+                                                        >
+                                                        Request return
+                                                    </button>
+                                                </form> 
+                                            ) : (
+                                                <p className="flex flex-row justify-between text-sm items-center">
+                                                    <span className="text-gray-700">Return Status:</span>
+                                                    <span className="font-medium">{orderDetails.return_status.toLowerCase()}</span>
+                                                </p>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </div>
@@ -114,7 +174,7 @@ const OrderDetails = () => {
                                                 
                                                     <button 
                                                         onClick={() => navigate(`/dashboard/review/${item.book.id}`)}
-                                                        className="w-max mt-4 px-4 py-2 text-sm text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 transition-colors duration-200 rounded-md">
+                                                        className="w-max mt-4 px-4 py-2 text-sm text-blue-600 font-medium bg-blue-100 hover:bg-blue-200 transition-colors duration-200 rounded-md">
                                                         Write a review
                                                     </button>
                                                 </div>

@@ -71,9 +71,9 @@ const CreateOffer = () => {
         }
 
         const apiCall = updateOffer ? 
-            api.put(`http://localhost:5555/offer/${id}`, data)
+            api.put(`http://localhost:5555/offers/${id}`, data)
             :
-            api.post('http://localhost:5555/offer', data);
+            api.post('http://localhost:5555/offers', data);
 
         apiCall
         .then((response) => {
@@ -90,7 +90,7 @@ const CreateOffer = () => {
 
     const fetchOffer = (id: string) => {
         setIsloading(true);
-        api.get(`http://localhost:5555/offer/${id}`)
+        api.get(`http://localhost:5555/offers/${id}`)
         .then((response) => {
             setUpdateOffer(true);
             

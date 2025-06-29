@@ -17,7 +17,7 @@ const AddOfferToBook = () => {
         
         setLoading(true);
         
-        api.get('http://localhost:5555/offer/active-offers')
+        api.get('http://localhost:5555/offers/active-offers')
         .then((response) => {
             setLoading(false);
             setActiveOffers(response.data);            

@@ -119,7 +119,7 @@ const CreateBook = () => {
     }
 
     const fetchCategories = () => {
-        api.get('http://localhost:5555/category')
+        api.get('http://localhost:5555/categories')
         .then((response) => {
             const categories = response.data.data;
             setCategories(categories);

@@ -60,7 +60,7 @@ const Dashboard = () => {
             <main className='flex-1 p-6 overflow-y-auto'>
                 {!isSidebarOpen && (
                     <button
-                        className="p-2 rounded-lg hover:bg-gray-50"
+                        className="p-2 mx-2 rounded-lg hover:bg-gray-50"
                         onClick={() => setIsSidebarOpen(true)}
                     >
                         <FaBars className="text-gray-600" />

@@ -4,14 +4,16 @@ import { config } from "./config";
 import booksRoute from './route/booksRoute';
 import usersRoute from './route/usersRoute';
 import cartRoute from './route/cartRoute';
+import ordersRoute from './route/ordersRoute';
+import orderManagementRoute from './route/orderManagementRoute';
 import authRoute from './route/auth';
-import addressRoute from "./route/addressRoute";
+import addressesRoute from "./route/addressesRoute";
 import adminRoute from './route/adminRoute';
-import reviewRoute from './route/reviewRoute';
+import reviewsRoute from './route/reviewsRoute';
 import wishlistRoute from './route/wishlistRoute';
 import recentlyviewedRoute from './route/recentlyviewedRoute';
-import categoryRoute from './route/categoryRoute';
-import offerRoute from './route/offersRoute';
+import categoriesRoute from './route/categoriesRoute';
+import offersRoute from './route/offersRoute';
 import { logger } from './utils/logger';
 
 
@@ -73,14 +75,16 @@ app.get('/', (request, response)=> {
 app.use('/books', booksRoute);
 app.use('/users', usersRoute);
 app.use('/cart', cartRoute);
-app.use('/address', addressRoute);
+app.use('/orders', ordersRoute);
+app.use('/order-management', orderManagementRoute);
+app.use('/addresses', addressesRoute);
 app.use('/auth', authRoute);
 app.use('/admin', adminRoute);
-app.use('/review', reviewRoute);
+app.use('/reviews', reviewsRoute);
 app.use('/wishlist', wishlistRoute);
 app.use('/recently-viewed', recentlyviewedRoute);
-app.use('/category', categoryRoute);
-app.use('/offer', offerRoute);
+app.use('/categories', categoriesRoute);
+app.use('/offers', offersRoute);
 
 
 app.listen(config.server.port, () => {

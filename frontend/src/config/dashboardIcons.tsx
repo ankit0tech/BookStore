@@ -1,4 +1,4 @@
-import { FaAddressCard, FaBook, FaGift, FaHeart, FaHistory, FaList, FaShoppingCart, FaTags, FaUserShield } from "react-icons/fa";
+import { FaAddressCard, FaBook, FaClipboard, FaGift, FaHeart, FaHistory, FaList, FaShoppingCart, FaTags, FaTasks, FaUserShield } from "react-icons/fa";
 
 export const iconMap = {
     'addresses': <FaAddressCard className="text-4xl text-purple-600" />,
@@ -9,5 +9,6 @@ export const iconMap = {
     'categories': <FaTags className="text-4xl text-indigo-600" />,
     'offers': <FaGift className="text-4xl text-pink-600" />,
     'books/create': <FaBook className="text-4xl text-teal-600" />,
+    'order-management': <FaTasks className="text-4xl text-sky-700"/>,
     'superadmin-panel': <FaUserShield className="text-4xl text-gray-600" />
 } as const;

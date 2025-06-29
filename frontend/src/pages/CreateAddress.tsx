@@ -22,7 +22,7 @@ const CreateAddress = () => {
 
     const fetchAddress = () => {
         
-        api.get(`http://localhost:5555/address/${id}`)
+        api.get(`http://localhost:5555/addresses/${id}`)
         .then((response) => {
             setHouseNumber(response.data.house_number || '');
             setStreet(response.data.street_address || '');
@@ -60,9 +60,9 @@ const CreateAddress = () => {
             setLoading(true);
 
             const apiCall = updateAddress ? 
-                api.put(`http://localhost:5555/address/${id}`, data) 
+                api.put(`http://localhost:5555/addresses/${id}`, data) 
                 : 
-                api.post('http://localhost:5555/address', data);
+                api.post('http://localhost:5555/addresses', data);
             
             apiCall
             .then(() => {

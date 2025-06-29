@@ -17,7 +17,7 @@ const CreateCategory = () => {
 
     const fetchExistingCategories = () => {
         
-        api.get('http://localhost:5555/category')
+        api.get('http://localhost:5555/categories')
         .then((response) => {
             setExistingCategories(response.data.data);
         })
@@ -38,9 +38,9 @@ const CreateCategory = () => {
         }
 
         const apiCall = updateCategory ? 
-        api.put(`http://localhost:5555/category/${id}`, data)
+        api.put(`http://localhost:5555/categories/${id}`, data)
         :
-        api.post('http://localhost:5555/category', data);
+        api.post('http://localhost:5555/categories', data);
 
         apiCall
         .then((response) => {
@@ -56,7 +56,7 @@ const CreateCategory = () => {
 
     const fetchCategory = (id: string) => {
         
-        api.get(`http://localhost:5555/category/${id}`)
+        api.get(`http://localhost:5555/categories/${id}`)
         .then((response) => {
 
             const {title, parent_id} = response.data.data;

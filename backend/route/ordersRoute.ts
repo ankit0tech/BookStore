@@ -185,7 +185,8 @@ router.get('/order-details/:id(\\d+)', authMiddleware, async (req, res) =>{
                             special_offer: true
                         }
                     },
-                    address: true
+                    address: true,
+                    user: true
                 }
             });
 

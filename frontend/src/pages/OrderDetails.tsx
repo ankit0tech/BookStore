@@ -45,8 +45,6 @@ const OrderDetails = () => {
 
         api.post(`http://localhost:5555/orders/${endpointString}/${id}`)
         .then((response)=> {
-            console.log(`${requestName} done`);
-            console.log(response);
             enqueueSnackbar(`Request to ${requestName} added`, {variant: 'success'});
             fetchOrderDetails();
         })

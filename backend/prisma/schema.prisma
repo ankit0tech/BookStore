@@ -57,6 +57,12 @@ enum returnStatus {
   REJECTED
 }
 
+enum addressType {
+  HOME
+  WORK
+  OTHER
+}
+
 model userinfo {
   id Int @id @default(autoincrement())
   email String @unique @db.VarChar(255)
@@ -189,7 +195,7 @@ model orders {
   user userinfo @relation("OrderPlacedBy", fields: [user_id], references: [id], onDelete: SetNull)
 
   address_id Int
-  address address @relation(fields: [address_id], references: [id], onDelete: SetNull)
+  address address @relation(fields: [address_id], references: [id], onDelete: Restrict)
 
   order_number String @unique
   order_status orderStatus @default(PENDING)
@@ -238,6 +244,9 @@ model address {
   user_id Int
   user userinfo @relation(fields: [user_id], references: [id], onDelete: Cascade)
   
+  name String @db.VarChar(100)
+  address_type addressType @default(HOME)
+  phone_number String? @db.VarChar(20)
   house_number String @db.VarChar(255)
   street_address String @db.VarChar(255)
   city String @db.VarChar(255)
@@ -245,6 +254,7 @@ model address {
   zip_code String
   country String
   is_default Boolean @default(false)
+  is_deleted Boolean @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

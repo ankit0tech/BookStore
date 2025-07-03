@@ -93,7 +93,8 @@ const Addresses = () => {
                         {addresses && addresses.map((address, index) => (
                             <div key={index} className="p-6 flex flex-col border rounded-lg hover:shadow ">
                                 <div className="space-y-2">
-                                    <div className="font-medium">{address.house_number}</div>
+                                    <div className="font-medium">{address.name}</div>
+                                    <div className="text-gray-600">{address.house_number}</div>
                                     <div className="text-gray-600">{address.street_address}</div>
                                     <div className="text-gray-600 w-full">{address.city}, {address.state} {address.zip_code}</div>
                                     <div className="text-gray-600">{address.country}</div>
@@ -115,7 +116,7 @@ const Addresses = () => {
                                 <div className="flex mt-4 gap-4">
                                     <button 
                                         className="p-2 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors" 
-                                        onClick={() => navigate(`/dashboard/addresses/update/${address.id}`)}
+                                        onClick={() => navigate(`/dashboard/address/update/${address.id}`)}
                                     >
                                         <AiOutlineEdit className="text-xl" />
                                     </button>

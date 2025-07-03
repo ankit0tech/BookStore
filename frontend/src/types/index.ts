@@ -123,6 +123,7 @@ export interface Book {
 
 export interface Address {
     id: number;
+    name: string;
     house_number: string;
     user_id: number;
     street_address: string;

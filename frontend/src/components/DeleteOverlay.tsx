@@ -32,6 +32,7 @@ const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, on
             onDeleteSuccess?.();
         })
         .catch((error: any) =>{
+            console.error(error);
             enqueueSnackbar(`Error while deleting ${itemName || 'item'}`, {variant: 'error'});
         });
     }

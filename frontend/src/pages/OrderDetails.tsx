@@ -3,12 +3,15 @@ import { OrderInterface } from "../types";
 import { useEffect, useState } from 'react';
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
+import { prettifyStatus } from "../utils/formatUtils";
+import { CancelOrReturnOverlay } from "../components/orders/CancelOrReturnOverlay";
 
 const OrderDetails = () => {
     
     const { id } = useParams();
     const { state } = useLocation();
     const [orderDetails, setOrderDetails] = useState<OrderInterface|null>(state?.orderDetails || null);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     
     const formatDate = (date: Date) => {
@@ -20,7 +23,7 @@ const OrderDetails = () => {
         }).format(d);
     }
     
-    const fetchOrderDetails = () => {
+    const fetchOrderDetails = (id:number) => {
         api.get(`http://localhost:5555/orders/order-details/${id}`)
         .then((response)=> {
             setOrderDetails(response.data.data);
@@ -32,21 +35,25 @@ const OrderDetails = () => {
     }
 
     useEffect(()=> {
-        fetchOrderDetails();
+        fetchOrderDetails(Number(id));
     }, [id]);
 
 
-    const handleRequestCancelOrReturn = (requestName: string) => {
+    const handleRequestCancelOrReturn = (requestName: string, reason: string) => {
         if(requestName.toLowerCase() != 'cancel' && requestName.toLocaleLowerCase() != 'return') {
             return;
         }
 
+        const data = {
+            reason: reason
+        };
+
         const endpointString = requestName === 'cancel' ? 'request-cancellation' : 'request-return';
 
-        api.post(`http://localhost:5555/orders/${endpointString}/${id}`)
+        api.post(`http://localhost:5555/orders/${endpointString}/${id}`, data)
         .then((response)=> {
             enqueueSnackbar(`Request to ${requestName} added`, {variant: 'success'});
-            fetchOrderDetails();
+            fetchOrderDetails(Number(id));
         })
         .catch((error: any)=> {
             console.log(`${requestName} failed`);
@@ -55,6 +62,9 @@ const OrderDetails = () => {
         });
     }
 
+    const onClose = () => {
+        setIsOpen(false);
+    }
 
 
     return (
@@ -79,11 +89,11 @@ const OrderDetails = () => {
                                     </p>
                                     <p className="flex flex-row justify-between text-sm items-center">
                                         <span className="text-gray-700">Order Status: </span>
-                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-700">{orderDetails.order_status.toLocaleLowerCase()}</span>
+                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-700">{prettifyStatus(orderDetails.order_status.toLowerCase())}</span>
                                     </p>
                                     <p className="flex flex-row justify-between text-sm items-center">
                                         <span className="text-gray-700">Payment: </span>
-                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{orderDetails.payment_status.toLocaleLowerCase()}</span>
+                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{prettifyStatus(orderDetails.payment_status.toLowerCase())}</span>
                                     </p>
                                     {orderDetails.order_status.toLowerCase() != 'delivered' && (
                                         <>
@@ -103,19 +113,23 @@ const OrderDetails = () => {
                                             </p>)}
                                             
                                             {orderDetails.cancellation_status.toLowerCase() === 'none' ? (
-                                            <form>
+                                            <div className="">
+                                                {
+                                                    isOpen && <CancelOrReturnOverlay onClose={onClose} type='cancel' handleRequestCancelOrReturn={handleRequestCancelOrReturn}/>
+                                                }
                                                 <button 
                                                     className="text-sm font-medium text-red-600 bg-red-100 px-4 py-2 rounded-md boder border-red-300 hover:bg-red-200 tansition-colors duration-200"
                                                     type='button' 
-                                                    onClick={() => handleRequestCancelOrReturn('cancel')}
+                                                    // onClick={() => handleRequestCancelOrReturn('cancel')}
+                                                    onClick={() => setIsOpen(true)}
                                                 >
                                                     Request cancellation
                                                 </button>
-                                            </form>
+                                            </div>
                                             ) : (
                                                 <p className="flex flex-row justify-between text-sm items-center">
                                                     <span className="text-gray-700">Cancellation Status:</span>
-                                                    <span className="font-medium">{orderDetails.cancellation_status.toLowerCase()}</span>
+                                                    <span className="font-medium">{prettifyStatus(orderDetails.cancellation_status.toLowerCase())}</span>
                                                 </p>
                                             )}
                                         </>
@@ -129,19 +143,24 @@ const OrderDetails = () => {
                                             </p>
 
                                             {orderDetails.return_status.toLowerCase() === 'none' ? (
-                                                <form>
+                                                <div>
+                                                    {
+                                                        isOpen && <CancelOrReturnOverlay onClose={onClose} type='return' handleRequestCancelOrReturn={handleRequestCancelOrReturn}/>
+                                                    }
                                                     <button 
                                                         className="text-sm font-medium text-red-600 bg-red-100 px-4 py-2 rounded-md boder border-red-300 hover:bg-red-200 tansition-colors duration-200"
                                                         type='button' 
-                                                        onClick={() => handleRequestCancelOrReturn('return')}
-                                                        >
+                                                        // onClick={() => handleRequestCancelOrReturn('return')}
+                                                        onClick = {() => setIsOpen(true)}
+                                                    >
                                                         Request return
                                                     </button>
-                                                </form> 
+                                                    
+                                                </div> 
                                             ) : (
                                                 <p className="flex flex-row justify-between text-sm items-center">
                                                     <span className="text-gray-700">Return Status:</span>
-                                                    <span className="font-medium">{orderDetails.return_status.toLowerCase()}</span>
+                                                    <span className="font-medium">{prettifyStatus(orderDetails.return_status.toLowerCase())}</span>
                                                 </p>
                                             )}
                                         </>

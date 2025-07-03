@@ -3,6 +3,7 @@ import { OrderInterface } from "../../types";
 import { useEffect, useState } from 'react';
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
+import { prettifyStatus } from "../../utils/formatUtils";
 
 const ManageOrder = () => {
     
@@ -128,11 +129,11 @@ const ManageOrder = () => {
                                     </p>
                                     <p className="flex flex-row justify-between text-sm items-center">
                                         <span className="text-gray-700">Order Status: </span>
-                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-700">{orderDetails.order_status.toLocaleLowerCase()}</span>
+                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-700">{prettifyStatus(orderDetails.order_status.toLowerCase())}</span>
                                     </p>
                                     <p className="flex flex-row justify-between text-sm items-center">
                                         <span className="text-gray-700">Payment: </span>
-                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{orderDetails.payment_status.toLocaleLowerCase()}</span>
+                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{prettifyStatus(orderDetails.payment_status.toLowerCase())}</span>
                                     </p>
                                     {orderDetails.shipping_carrier && (<p className="flex flex-row justify-between text-sm items-center">
                                         <span className="text-gray-700">Shipping Carrier: </span>
@@ -190,7 +191,7 @@ const ManageOrder = () => {
                                             onChange={(e) => setDeliveryStatus(e.target.value)}
                                             >
                                             {deliveryOptions.map((item, index) => (
-                                                <option key={index} value={item}>{item}</option>
+                                                <option key={index} value={item}>{prettifyStatus(item)}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -219,7 +220,7 @@ const ManageOrder = () => {
                                             id='payment-status'
                                         >
                                             {paymentOptions.map((item, index) => (
-                                                <option key={index} value={item}>{item}</option>
+                                                <option key={index} value={item}>{prettifyStatus(item)}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -249,7 +250,7 @@ const ManageOrder = () => {
                                                 id='cancellation-status'
                                             >
                                                 {cancellationOptions.map((item, index) => (
-                                                    <option key={index} value={item}>{item}</option>
+                                                    <option key={index} value={item}>{prettifyStatus(item)}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -280,7 +281,7 @@ const ManageOrder = () => {
                                                 id='return-status'
                                             >
                                                 {returnOptions.map((item, index) => (
-                                                    <option key={index} value={item}>{item}</option>
+                                                    <option key={index} value={item}>{prettifyStatus(item)}</option>
                                                 ))}
                                             </select>
                                         </div>

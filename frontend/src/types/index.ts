@@ -123,6 +123,7 @@ export interface Book {
 
 export interface Address {
     id: number;
+    name: string;
     house_number: string;
     user_id: number;
     street_address: string;
@@ -189,3 +190,11 @@ export interface Offer {
     offer_valid_from: Date;
     offer_valid_until: Date;
 }
+
+declare global {
+    interface Window {
+        Razorpay: any
+    }
+}
+
+export {};

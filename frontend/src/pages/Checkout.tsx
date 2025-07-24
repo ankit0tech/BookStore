@@ -12,12 +12,28 @@ import { BiMinus, BiPlus } from 'react-icons/bi';
 import { MdOutlineDelete } from 'react-icons/md';
 
 
+const loadScript = (src: string) => {
+    return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => {
+            resolve(true);
+        }
+        script.onerror = () => {
+            resolve(false);
+        }
+
+        document.body.appendChild(script);
+    });
+}
+
+
 const Checkout = () => {
 
     // Expect that checkout option will be availble only when cart is not empty
     const cartItems = useSelector((state: RootState) => state.cartinfo);
     const [loading, setLoading] = useState<boolean>(true);
-    // const [totalAmount, setTotalAmount] = useState<number>(0);
+    const [totalAmount, setTotalAmount] = useState<number>(0);
     const [defaultAddress, setDefaultAddress] = useState<Address|null>(null);
     const [allUserAddresses, setAllUserAddresses] = useState<Address[]>([]);
     const [showAllUserAddresses, setShowAllUserAddresses] = useState<boolean>(false);
@@ -29,6 +45,18 @@ const Checkout = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const displayRazorpay = async () => {
+
+        const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
+        
+        if(!res) {
+            alert('razorpay failed to load!!');
+            return;
+        }
+        
+        await handleBuyBooks();
+    }
+
     const findSubTotal = (cartItems: CartInterface) => {
         const subTotal = cartItems.data.reduce((accumulator, current) => {
             const { book, quantity, special_offer } = current;
@@ -39,9 +67,10 @@ const Checkout = () => {
         return subTotal;
     }
 
-
     useEffect(() => {
         setLoading(true);
+
+        setTotalAmount(findSubTotal(cartItems));
 
         if(!defaultAddress) {
             api.get('http://localhost:5555/addresses/default-address')
@@ -63,31 +92,70 @@ const Checkout = () => {
         try {
             if (!authToken) {
                 navigate('/login');
-            } else {
+                return;
+            }
 
-                const config = { headers: { Authorization: authToken }};
-                const data = {
-                    delivery_address_id: selectedAddress?.id
-                }
+            const config = { headers: { Authorization: authToken }};
+            const data = {
+                delivery_address_id: selectedAddress?.id
+            }
+            
+            api.post('http://localhost:5555/orders/checkout', data, config)
+            .then((response) => {
+                console.log("checkout response", response);
                 
-                api.post('http://localhost:5555/orders/checkout', data, config)
+                const razorpayOrder = response.data.razorpayOrder;
+
+                getCartItems(authToken)
                 .then((response) => {
-                    getCartItems(authToken)
-                    .then((response) => {
-                        // Update the cart items
-                        dispatch(setCartItemsSlice(response));
-                    })
-                    .catch((error) => {
-                        console.error('Error while fetching cart:', error);
-                        enqueueSnackbar('Error while fetching cart:', {variant: 'error'});
-                    })
+                    // Update the cart items
+                    dispatch(setCartItemsSlice(response));
                 })
                 .catch((error) => {
-                    console.log(error);
-                    enqueueSnackbar('Error while checkout', {variant: 'error'});
+                    console.error('Error while fetching cart:', error);
+                    enqueueSnackbar('Error while fetching cart:', {variant: 'error'});
                 });
 
-            }
+                const options = {
+                    "key": import.meta.env.VITE_RAZORPAY_KEY_ID,
+                    "amount": razorpayOrder.amount,
+                    "currency": razorpayOrder.currency,
+                    "name": "BookStore Corp",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": razorpayOrder.id,
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    },
+                    handler: function (response: any) {
+
+                        api.post('http://localhost:5555/orders/verify-payment', {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        }, config)
+                        .then((response) =>{
+                            console.log("verify payment: ", response);
+        
+                        })
+                        .catch((error) => {
+                            console.log("verify payment error: ", error);
+                        })
+                    }
+                };
+                
+                const paymentObject = new window.Razorpay(options);
+                paymentObject.open();
+
+            })
+            .catch((error) => {
+                console.log(error);
+                enqueueSnackbar('Error while checkout', {variant: 'error'});
+            });
+
         } catch (error) {
             console.log('Error while checkout', error);
         }
@@ -183,7 +251,7 @@ const Checkout = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <p className='text-lg my-4 font-semibold text-gray-800'>Total Amount: &#8377;{findSubTotal(cartItems).toFixed(2)}</p>
+                                <p className='text-lg my-4 font-semibold text-gray-800'>Total Amount: &#8377;{totalAmount.toFixed(2)}</p>
                             </div>
                             <div className='flex flex-col gap-4'>
                                 { selectedAddress && 
@@ -235,10 +303,10 @@ const Checkout = () => {
 
                                 <button 
                                     type='button' 
-                                    onClick={handleBuyBooks} 
+                                    onClick={displayRazorpay} 
                                     className="bg-blue-500 text-white px-3 py-2 rounded-lg font-bold hover:bg-blue-600" 
                                     >
-                                        Buy now
+                                        Buy Now
                                 </button>
                             </div>
                         </div>

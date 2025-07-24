@@ -1,6 +1,5 @@
 import express from 'express';
 import { addressZod } from '../zod/addressZod';
-import { IAddress } from '../models/addressModel';
 import { authMiddleware } from './middleware';
 import { PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
@@ -64,9 +63,10 @@ router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
             return res.status(401).json({message: "Authentication failed"});
         }
 
-        const address: IAddress | null = await prisma.address.findUnique({
+        const address = await prisma.address.findUnique({
             where: {
-                id: Number(id)
+                id: Number(id),
+                is_deleted: false
             }
         });
         
@@ -93,10 +93,11 @@ router.get('/default-address', authMiddleware, async(req, res) => {
             return res.status(401).json({message: "Authentication failed"});
         }
 
-        const address: IAddress | null = await prisma.address.findFirst({
+        const address = await prisma.address.findFirst({
             where: {
                     user_id: user.id,
-                    is_default: true
+                    is_default: true,
+                    is_deleted: false
             }
         });
 
@@ -122,9 +123,10 @@ router.get('/', authMiddleware, async (req, res) => {
             return res.status(401).json({message: "Authentication failed"});
         }
 
-        const addresses: Array<IAddress> = await prisma.address.findMany({
+        const addresses = await prisma.address.findMany({
             where: {
-                user_id: user.id
+                user_id: user.id,
+                is_default: false
             },
             orderBy: {
                 created_at: 'asc'
@@ -151,7 +153,10 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
         }
 
         const existingAddress = await prisma.address.findUnique({
-            where: { id: Number(id) }
+            where: { 
+                id: Number(id),
+                is_default: false
+            }
         });
 
         if (!existingAddress) {
@@ -202,18 +207,47 @@ router.delete('/:id(\\d+)', authMiddleware, async (req, res) => {
         if(!user) {
             return res.status(401).json({message: "Authentication failed"});
         }
+
         const { id } = req.params;
-        const deletedAddress = await prisma.address.delete({
-            where: {user_id: user.id, id: Number(id)}
+
+        const address = await prisma.address.findUnique({
+            where: {
+                id: Number(id),
+                user_id: user.id
+            }
         });
-        if (deletedAddress) {
-            return res.status(200).json({message: "Address deleted successfully"}) ;   
-        } else {
-            return res.status(400).json({message: "Error occurred while deleting Address"});
+
+        if(!address) {
+            return res.status(404).json({message: "Address not found"});
         }
-    }
-    catch(error: any) {
-        logger.info("Internal server error: ", error.message);
+
+        const activeOrdersCount = await prisma.orders.count({
+            where: {
+                address_id: Number(id),
+                order_status: {
+                    in: ['PENDING', 'PROCESSING', 'OUT_FOR_DELIVERY', 'SHIPPED']
+                }
+            }
+        });
+
+        if(activeOrdersCount == 0) {
+            const deletedAddress = await prisma.address.update({
+                where: {id: Number(id)},
+                data: {
+                    is_deleted: true
+                }
+            });
+            
+            if (deletedAddress) {
+                return res.status(200).json({message: "Address deleted successfully"}) ;   
+            } else {
+                return res.status(400).json({message: "Error occurred while deleting Address"});
+            }
+        } else {
+            return res.status(400).json({message: "Address cannot be deleted. It is being used by active orders."});
+        }
+    } catch(error: any) {
+        logger.info("Internal server error: ", error);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later." });
     }
 })

@@ -9,6 +9,7 @@ const CreateAddress = () => {
     
     const { id } = useParams();
     const [loading, setLoading] = useState<boolean>(false);
+    const [name, setName] = useState<string>('');
     const [houseNumber, setHouseNumber] = useState<string>('');
     const [street, setStreet] = useState<string>('');
     const [city, setCity] = useState<string>('');
@@ -24,6 +25,7 @@ const CreateAddress = () => {
         
         api.get(`http://localhost:5555/addresses/${id}`)
         .then((response) => {
+            setName(response.data.name || '');
             setHouseNumber(response.data.house_number || '');
             setStreet(response.data.street_address || '');
             setCity(response.data.city || '');
@@ -48,6 +50,7 @@ const CreateAddress = () => {
         try {
 
             const data = {
+                name: name,
                 house_number: houseNumber,
                 street_address: street,
                 city: city,
@@ -99,7 +102,18 @@ const CreateAddress = () => {
             className="space-y-6"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> 
-
+                
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">Name </label>
+                    <input
+                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        >
+                    </input>
+                </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">House Number / Apartment </label>
                     <input

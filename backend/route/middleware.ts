@@ -35,9 +35,10 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         }
 
         const { email, userId, type } = decoded as JwtPayload;
-        if(type === 'login') {
+        const parsedUserId = Number(userId);
+        if(type === 'login' && userId && email && !isNaN(parsedUserId)) {
             req.authEmail = email;
-            req.userId = Number(userId);
+            req.userId = parsedUserId;
         } else {
             return res.status(401).send({message: 'Authentication failed, Invalid token'});
         }

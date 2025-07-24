@@ -206,6 +206,10 @@ model orders {
   tax_percentage Int @default(18)
   total_amount Int
 
+  razorpay_order_id String? @unique
+  razorpay_payment_id String?
+  razorpay_signature String?
+
   shipping_carrier String?
   tracking_number String?
   shipping_label_url String?

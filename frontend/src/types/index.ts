@@ -190,3 +190,11 @@ export interface Offer {
     offer_valid_from: Date;
     offer_valid_until: Date;
 }
+
+declare global {
+    interface Window {
+        Razorpay: any
+    }
+}
+
+export {};

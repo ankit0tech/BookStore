@@ -4,6 +4,9 @@ import { authMiddleware } from './middleware';
 import { logger } from '../utils/logger';
 import { checkoutZod } from '../zod/cartZod';
 import { generateOrderNumber } from '../utils/orderUtils';
+import { config } from '../config';
+import Razorpay from 'razorpay';
+import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -20,63 +23,81 @@ const isReturnable = (purchaseDate: Date, days: number): boolean => {
 }
 
 // checkout
-router.post('/checkout', authMiddleware, async (req, res) =>{
+router.post('/checkout', authMiddleware, async (req, res) => {
     // take the user
     // take all the un-purchased items for the user and move them to purchased state
 
     try {
         logger.info("chekcout...");
-        console.log("BODY: ", req.body);
         const result = checkoutZod.safeParse(req.body);
+
+        const razorpay = new Razorpay({ 
+            key_id: config.razorpay.key_id, 
+            key_secret: config.razorpay.key_secret
+        });
+        const userId = req.userId;
         
         if (result.success) {
-            const userEmail = req.authEmail;
-            const user = await prisma.userinfo.findUnique({
-                where: {email: userEmail}
-            });
-            // check if req.body.delivery_address_id is valid
-
-            if (user) {
-                await prisma.$transaction(async (prisma) => {
-                    const cartItems = await prisma.cart.findMany({
-                        where: {
-                            user_id: user.id
-                        },
-                        include: {
-                            book: true,
-                            special_offer: true
-                        }
-                    });
-                    
-                    if (cartItems.length > 0) {
-                        await prisma.cart.deleteMany({
-                            where: {
-                                user_id: user.id
-                            }
-                        });
+            if(userId) {
+                // check if req.body.delivery_address_id is valid
+                const cartItems = await prisma.cart.findMany({
+                    where: {
+                        user_id: userId
+                    },
+                    include: {
+                        book: true,
+                        special_offer: true
                     }
+                });
+                
+                if (cartItems.length === 0) {
+                    return res.status(400).json({message: "Cart is empty"});
+                }
+                
+                // const purchase_price = item.special_offer ? item.book.price * (100 - item.special_offer.discount_percentage) / 100 : item.book.price;
+                const subtotal = cartItems.reduce((acc, current) => {
+                    const {book, quantity, special_offer} = current;
+                    const discount = special_offer ? special_offer.discount_percentage : 0;
+                    const discountedPrice = book.price * (100-discount) / 100;
+                    return acc + (quantity * discountedPrice);
+                }, 0);
+                
+                const tax_percentage = req.body.tax_percentage || 18;
+                const delivery_charges = req.body.delivery_charges || 0;
+                const total_amount =  subtotal + delivery_charges + ((subtotal * tax_percentage) / 100);
+                const orderNumber = generateOrderNumber();
+                
+                let razorpayOrder;
+                try {
 
-                    // const purchase_price = item.special_offer ? item.book.price * (100 - item.special_offer.discount_percentage) / 100 : item.book.price;
-                    const subtotal = cartItems.reduce((acc, current) => {
-                        const {book, quantity, special_offer} = current;
-                        const discount = special_offer ? special_offer.discount_percentage : 0;
-                        const discountedPrice = book.price * (100-discount) / 100;
-                        return acc + (quantity * discountedPrice);
-                    }, 0);
+                    const options = {
+                        amount: Math.round(total_amount * 100),
+                        currency: "INR",
+                        receipt: orderNumber
+                    };
+    
+                    razorpayOrder = await razorpay.orders.create(options);
 
-                    const tax_percentage = req.body.tax_percentage || 18;
-                    const delivery_charges = req.body.delivery_charges || 0;
+                } catch (error: any) {
+                    logger.error("Razorpay order creation failed: " + error);
+                    return res.status(400).json({ message: "Payment gateway error" });
+                }
+
+                await prisma.$transaction(async (prisma) => {
+                    
+                    await prisma.cart.deleteMany({ where: { user_id: userId } });
 
                     // how to validate correct delivery charges are given from the frontend
                     const order = await prisma.orders.create({
                         data: {
-                            user_id: user.id,
+                            user_id: userId,
                             address_id: req.body.delivery_address_id,
-                            order_number: generateOrderNumber(),
+                            order_number: orderNumber,
+                            razorpay_order_id: razorpayOrder.id,
                             delivery_charges: delivery_charges,
                             subtotal: subtotal,
                             tax_percentage: tax_percentage,
-                            total_amount: subtotal + delivery_charges + ((subtotal * tax_percentage) / 100),
+                            total_amount: total_amount,
                             delivery_method: req.body.delivery_method || 'STANDARD',
                             expected_delivery_date: new Date(Date.now() + (7*24*60*60*1000))
                         }
@@ -94,6 +115,7 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                             }
                         });
                     });
+                    await Promise.all(orderItemsPromises);
                     
                     const updateBookPromises = cartItems.map((item) => (
                         prisma.book.update({
@@ -103,25 +125,53 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
                             }
                         }))
                     );
-                    
-                    await Promise.all(orderItemsPromises);
                     await Promise.all(updateBookPromises);  // run all promises in parallel
-                
                 });
-
-                console.log("Purchased...");
                         
-                return res.status(200).send({message: "Checked out. All cart Items are purchased"});
-            
+                return res.status(200).send({
+                    message: "Checked out. All cart Items are purchased",
+                    razorpayOrder: razorpayOrder
+                });
             } else {
                     return res.status(400).send({message: "Issue with your login"});
             }
-        }  else {
-        return res.status(400).send({message: "Issue with your login"});
+        } else {
+            return res.status(400).send({message: "Invalid inputs", errors: result.error.format()});
         }
     }
     catch (error: any) {
-        logger.error(error.message);
+        logger.error(error);
+        return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+router.post('/verify-payment', async (req, res) => {
+    try {
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        const razorpay_secret = config.razorpay.key_secret || "";
+        const isValidSignature = validateWebhookSignature(razorpay_order_id + '|' + razorpay_payment_id, razorpay_signature, razorpay_secret);
+
+        if(isValidSignature) {
+            await prisma.orders.update({
+                where: {
+                    razorpay_order_id: razorpay_order_id
+                },
+                data: {
+                    payment_status: "COMPLETED",
+                    razorpay_payment_id: razorpay_payment_id,
+                    razorpay_signature: razorpay_signature
+                }
+            });
+
+            logger.info("Payment verified");
+            return res.status(200).json({message: "Payment verified"});
+
+        } else {
+            logger.error("Payment verification failed");
+            return res.status(400).json({message: "Payment verification failed"});
+        }
+    } catch (error: any) {
+        logger.error(error);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }
 });
@@ -129,15 +179,12 @@ router.post('/checkout', authMiddleware, async (req, res) =>{
 // retrieve current user purchased items 
 router.get('/get-purchased-items', authMiddleware, async (req, res) => {
     try {
-        const userEmail = req.authEmail;
-        const user = await prisma.userinfo.findUnique({
-            where: { email: userEmail }
-        });
+        const userId = req.userId;
         
-        if(user) {
+        if(userId) {
             const purchasedItems = await prisma.orders.findMany({
                 where: { 
-                    user_id: user.id,
+                    user_id: userId,
                 }, 
                 include: {
                     order_items: {
@@ -167,15 +214,12 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
 router.get('/order-details/:id(\\d+)', authMiddleware, async (req, res) =>{
     try {
         const { id } = req.params;
-        const userEmail = req.authEmail;
-        const user = await prisma.userinfo.findUnique({
-            where: { email: userEmail }
-        });
+        const userId = req.userId; 
         
-        if(user) {
+        if(userId) {
             const orderDetails = await prisma.orders.findUnique({
                 where: { 
-                    user_id: user.id,
+                    user_id: userId,
                     id: Number(id)
                 }, 
                 include: {

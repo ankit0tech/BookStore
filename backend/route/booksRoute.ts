@@ -1,6 +1,6 @@
 import express, {Request, Response } from "express";
 import { IBook } from "../models/bookModel";
-import { bookZod } from "../zod/bookZod";
+import { createBookZod, updateBookZod } from "../zod/bookZod";
 import { authMiddleware, roleMiddleware } from "./middleware";
 import { IUser, User } from "../models/userModel";
 import { PrismaClient, review } from "@prisma/client";
@@ -54,21 +54,39 @@ router.get('/search', async (req, res) => {
 router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
     try {
 
-        const result = bookZod.safeParse(req.body);
+        const result = createBookZod.safeParse(req.body);
+
         if(result.success) {
             const book = await prisma.book.create({
-                data: req.body
+                data: result.data
             });
-            return res.status(201).send(book);
+            return res.status(201).send({
+                message: "book created successfully", 
+                data: book
+            });
+        } else {
+            return res.status(400).json({
+                message: 'Invalid inputs',
+                errors: result.error.format()
+            });
         }
-        return res.status(400).json({
-            message: 'Invalid inputs',
-            errors: result.error.format()
-        });
-    }
-    catch(error: any) {
-        logger.error(error.message);
-        res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+    } catch (error: any) {
+        logger.error("error while creating book", error.message);
+
+        if (error.code === 'P2002') {
+            const target = error.meta?.target;
+            if (target && Array.isArray(target)) {
+                if(target.includes('isbn')) {
+                    return res.status(400).json({ message: "A book with this ISBN already exists"});
+                } else if (target.includes('sku')) {
+                    return res.status(400).json({ message: "A book the this SKU already exists"});
+                }
+            }
+
+            return res.status(400).json({message: "Book with matching unique identifier already exists"});
+        }
+
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
 
@@ -153,28 +171,42 @@ router.get('/:id(\\d+)', async (req, res) => {
 router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
     try {
 
-        const result = bookZod.safeParse(req.body);
-        logger.info(req.body);
+        const result = updateBookZod.safeParse(req.body);
 
         if(result.success) {
             const { id } = req.params;
             const updatedBook = await prisma.book.update({
                 where: { id: Number(id)}, 
-                data: req.body
+                data: result.data
             });
             
             if(!updatedBook) {
                 return res.status(400).json({message: `Book with id: ${id} could not be found`});
             }
+
             return res.status(200).json({message: 'Book updated successfully'});
-        }
-        else {
+
+        } else {
             return res.status(400).json({message: "Please send valid data with all required fields."});
         }
     }
     catch (error: any) {
-        logger.error(error.message);
-        res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+        logger.error("Error while updating book", error.message);
+        
+        if (error.code === 'P2002') {
+            const target = error.meta?.target;
+            if (target && Array.isArray(target)) {
+                if(target.includes('isbn')) {
+                    return res.status(400).json({ message: "A book with this ISBN already exists"});
+                } else if (target.includes('sku')) {
+                    return res.status(400).json({ message: "A book the this SKU already exists"});
+                }
+            }
+            
+            return res.status(400).json({message: "Book with matching unique identifier already exists"});
+        }
+
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
 });
 

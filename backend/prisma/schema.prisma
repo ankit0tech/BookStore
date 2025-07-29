@@ -95,6 +95,12 @@ model book {
   author String
   publish_year Int
   price Int
+  description String? 
+  isbn String? @unique
+  publisher String?
+  language String @default("English")
+  pages Int?
+  format String?                          // Hardcover, Paperback, E-book, etc.
   category_id Int?
   purchase_count Int @default(0)
   category category? @relation(fields: [category_id], references: [id], onDelete: SetNull)
@@ -102,6 +108,12 @@ model book {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   cover_image String @db.VarChar(2083) @default("")
+
+  quantity Int @default(0)
+  is_active Boolean @default(true)        // Is book active for purchase
+
+  shelf_location String?                  // warehouse/store location
+  sku String? @unique                     // Stock Keeping Unit (unique identifier)
 
   is_cancellable Boolean @default(true)
   cancellation_hours Int @default(24)

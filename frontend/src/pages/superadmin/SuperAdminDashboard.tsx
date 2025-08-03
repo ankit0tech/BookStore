@@ -1,30 +1,27 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../types";
-import { getDashboardMenuItems } from "../config/dashboardMenu";
+import { getSuperAdminMenuItems } from "../../config/dashboardMenu";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useState } from "react";
 
 
-const Dashboard = () => {
-
+const SuperAdminDashboard = () => {
+    
     const navigate = useNavigate();
-    const userRole = useSelector((state: RootState) => state.userinfo.userRole);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
     
     const handleNavigate = (url: string) => {
         if(url[0] != '/') {
-            navigate(`/dashboard/${url}`);
+            navigate(`/superadmin-dashboard/${url}`);
         } else {
             navigate(url);
         }
     }
 
     const isActive = (path: string) => {
-        return location.pathname.startsWith(`/dashboard/${path}`)
+        return location.pathname.startsWith(`/superadmin-dashboard/${path}`)
     }
 
-    const menuItems = getDashboardMenuItems(userRole ?? '');
+    const menuItems = getSuperAdminMenuItems();
 
 
     return (
@@ -32,10 +29,10 @@ const Dashboard = () => {
             <aside className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'} overflow-y-auto`}>
                 <div className="flex items-center justify-between mb-6">
                     <button 
-                        className="text-2xl font-semibold px-4 m-2 text-gray-800" 
-                        onClick={() => navigate('/dashboard')}
+                        className="text-xl font-semibold m-2 text-gray-800" 
+                        onClick={() => navigate('/superadmin-dashboard')}
                     >
-                        Dashboard
+                        Super Admin Dashboard
                     </button>
                     
                     <button
@@ -76,4 +73,4 @@ const Dashboard = () => {
     );
 }
 
-export default Dashboard;
+export default SuperAdminDashboard;

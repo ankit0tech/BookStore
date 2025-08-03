@@ -3,6 +3,7 @@ import Spinner from "../components/Spinner";
 import api from "../utils/api";
 import { OrdersInterface } from "../types";
 import { useNavigate } from "react-router-dom";
+import { prettifyStatus } from "../utils/formatUtils";
 
 
 const initialState: OrdersInterface = {
@@ -69,14 +70,14 @@ const Orders = () => {
                                             <p className="mr-2 text-gray-900 text-lg font-semibold">Order #{item.order_number}</p>
                                             <p className="ml-2 flex flex-row items-center justify-between text-sm">
                                                 <span className="text-gray-700">Order status: </span>
-                                                <span className="text-blue-700 font-medium text-xs mx-2 py-1 px-2 bg-blue-50 rounded-lg">{item.order_status.toLocaleLowerCase()}</span>
+                                                <span className="text-blue-700 font-medium text-xs mx-2 py-1 px-2 bg-blue-50 rounded-lg">{prettifyStatus(item.order_status.toLowerCase())}</span>
                                             </p>
                                         </div>
                                         <div className="flex flex-row justify-between">
                                             <p className="text-gray-600 text-sm">Placed on: {formatDate(item.purchase_date)}</p>
                                             <p className="flex flex-row items-center justify-between text-sm">
                                                 <span className="text-gray-700">Payment status:</span>
-                                                <span className="text-green-700 font-medium text-xs mx-2 py-1 px-2 bg-green-50 rounded-lg">{item.payment_status.toLocaleLowerCase()}</span>
+                                                <span className="text-green-700 font-medium text-xs mx-2 py-1 px-2 bg-green-50 rounded-lg">{prettifyStatus(item.payment_status.toLowerCase())}</span>
                                             </p>
                                         </div>
                                     </div>

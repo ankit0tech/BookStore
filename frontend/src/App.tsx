@@ -17,7 +17,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Orders from './pages/Orders';
-import SuperAdminPanel from './pages/SuperAdminPanel';
+import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
 import RegisterAdmin from './pages/RegisterAdmin';
 import AdminSignup from './pages/AdminSignup';
 import AdminLogin from './pages/AdminLogin';
@@ -37,6 +37,9 @@ import DashboardHome from './pages/DashboardHome';
 import OrderDetails from './pages/OrderDetails';
 import OrderManagement from './pages/order_management/OrderManagement';
 import ManageOrder from './pages/order_management/ManageOrder';
+import SuperAdminHome from './pages/superadmin/SuperAdminHome';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminHome from './pages/admin/AdminHome';
 
 export interface ChildProps {
   books: Book[];
@@ -98,8 +101,11 @@ const App = () => {
               <Route path='wishlist' element={<Wishlist />} />
               <Route path='recently-viewed' element={<RecentlyViewed />} />
               
-              {(userRole == 'admin' || userRole == 'superadmin') && (
-                <>
+            </Route>
+              
+            {(userRole === 'admin' || userRole === 'superadmin') && (
+                <Route path='/admin-dashboard' element={<AdminDashboard />} >
+                  <Route index element={<AdminHome />} />
                   <Route path='categories' element={<Categories />} />
                   <Route path='category/create' element={<CreateCategory />} />
                   <Route path='category/edit/:id' element={<CreateCategory />} />
@@ -115,18 +121,16 @@ const App = () => {
                   
                   <Route path='order-management' element={<OrderManagement />} />
                   <Route path='manage-order/:id' element={<ManageOrder />} />
-
-                </>
-              )}
-
-              {(userRole == 'superadmin') && (
-                <>
-                  <Route path='superadmin-panel' element={<SuperAdminPanel />} />
-                  <Route path='superadmin/register-admin' element={<RegisterAdmin />} />
-                </>
-              )}
+                </Route>
+            )}
               
-            </Route>
+            {(userRole === 'superadmin') && (
+              <Route path='/superadmin-dashboard' element={<SuperAdminDashboard />}>
+                <Route index element={<SuperAdminHome />} />
+                <Route path='register-admin' element={<RegisterAdmin />} />
+              </Route>
+            )}
+              
             
             <Route path='*' element={<PageNotFound />} />
           </Routes>

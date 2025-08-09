@@ -83,10 +83,6 @@ const CreateBook = () => {
             newErrors.quantity = 'Quantity is invlaid';
         }
 
-
-
-        
-
         if(!imgUrl.trim()) {
             newErrors.imgUrl = 'Cover image URL is required';
         } else {
@@ -115,16 +111,16 @@ const CreateBook = () => {
             price: Number(price),
             category_id: Number(selectedCategory),
             cover_image: imgUrl,
-            description: description,
-            isbn: isbn,
-            publisher: publisher,
-            language: language,
-            pages: Number(pages),
-            format: format,
+            description: description.trim() || undefined,
+            isbn: isbn.trim() || undefined,
+            publisher: publisher.trim() || undefined,
+            language: language.trim() || undefined,
+            pages: pages.trim() ? Number(pages): undefined,
+            format: format.trim() || undefined,
             quantity: Number(quantity),
             is_active: isActive,
-            shelf_location: shelfLocation,
-            sku: sku
+            shelf_location: shelfLocation.trim() || undefined,
+            sku: sku.trim() || undefined
         };
         
         console.log(data);
@@ -182,16 +178,16 @@ const CreateBook = () => {
             setPrice(response.data.price.toString());
             setSelectedCategory(response.data.category_id?.toString() || null);
             setImgUrl(response.data.cover_image);
-            setDescription(response.data.description);
-            setIsbn(response.data.isbn);
-            setPublisher(response.data.publisher);
-            setLanguage(response.data.language);
-            setPages(response.data.pages);
-            setFormat(response.data.format);
-            setQuantity(response.data.quantity);
+            setDescription(response.data.description || '');
+            setIsbn(response.data.isbn || '');
+            setPublisher(response.data.publisher || '');
+            setLanguage(response.data.language || '');
+            setPages(response.data.pages?.toString() || '');
+            setFormat(response.data.format || '');
+            setQuantity(response.data.quantity.toString() || '0');
             setIsActive(response.data.is_active);
-            setShelfLocation(response.data.shelf_location);
-            setSku(response.data.sku);
+            setShelfLocation(response.data.shelf_location || '');
+            setSku(response.data.sku || '');
 
             setLoading(false);
         })

@@ -9,6 +9,27 @@ import { logger } from "../utils/logger";
 const prisma = new PrismaClient();
 const router = express.Router();
 
+// helper function to parse data for books
+const parseBookData = (data: any) => {
+    const parsedData = { ...data };
+    const optionalStringFields = ['description', 'isbn', 'publisher', 'languange', 'pages', 'format', 'quantity', 'shelf_location', 'sku'];
+
+    optionalStringFields.forEach(element => {
+        if(parsedData[element] === '' || parsedData[element] === null) {
+            parsedData[element] = undefined;
+        }
+    });
+
+    const optionalNumberFields = ['pages'];
+    optionalNumberFields.forEach(element => {
+        if(parsedData[element] === '' || parsedData[element] === null || isNaN(Number(parsedData[element])) ) {
+            parsedData[element] = undefined;
+        }
+    });
+
+    return parsedData;
+}
+
 router.get('/search', async (req, res) => {
 
     try {
@@ -54,7 +75,8 @@ router.get('/search', async (req, res) => {
 router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
     try {
 
-        const result = createBookZod.safeParse(req.body);
+        const bookData = parseBookData(req.body);
+        const result = createBookZod.safeParse(bookData);
 
         if(result.success) {
             const book = await prisma.book.create({
@@ -66,7 +88,7 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
             });
         } else {
             return res.status(400).json({
-                message: 'Invalid inputs',
+                message: 'Please send valid data with all required fields.',
                 errors: result.error.format()
             });
         }
@@ -171,7 +193,8 @@ router.get('/:id(\\d+)', async (req, res) => {
 router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
     try {
 
-        const result = updateBookZod.safeParse(req.body);
+        const parsedBookData = parseBookData(req.body);
+        const result = updateBookZod.safeParse(parsedBookData);
 
         if(result.success) {
             const { id } = req.params;
@@ -187,7 +210,10 @@ router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, re
             return res.status(200).json({message: 'Book updated successfully'});
 
         } else {
-            return res.status(400).json({message: "Please send valid data with all required fields."});
+            return res.status(400).json({
+                message: "Please send valid data with all required fields.", 
+                errors: result.error.format()
+            });
         }
     }
     catch (error: any) {

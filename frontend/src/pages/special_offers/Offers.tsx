@@ -47,7 +47,7 @@ const Offers = () => {
                 <h2 className='font-semibold text-2xl'>Special offers</h2>
                 <Link 
                     className='flex flex-row items-center py-2 px-4 gap-2 text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200 rounded-lg'
-                    to='/dashboard/offer/create'
+                    to='/admin-dashboard/offer/create'
                 >
                     <FaPlus className='inline'/> Create new offer
                 </Link>
@@ -68,7 +68,7 @@ const Offers = () => {
                             </div>
                             
                             <div className='flex flex-row gap-2 mt-4'>
-                                <Link className='rounded-lg hover:bg-yellow-50 p-2' to ={`/dashboard/offer/edit/${offer.id}`}>
+                                <Link className='rounded-lg hover:bg-yellow-50 p-2' to ={`/admin-dashboard/offer/edit/${offer.id}`}>
                                     <AiOutlineEdit className='text-xl text-yellow-600' />
                                 </Link>
                                 <button 

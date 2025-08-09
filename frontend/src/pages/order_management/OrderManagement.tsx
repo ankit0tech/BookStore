@@ -96,7 +96,7 @@ const OrderManagement = () => {
                                     <div className="">
                                         <button 
                                             className="px-6 py-2 rounded-md font-medium text-blue-600 text-sm bg-blue-50 hover:pointer hover:bg-blue-100"
-                                            onClick={() => navigate(`/dashboard/manage-order/${item.id}`, { 
+                                            onClick={() => navigate(`/admin-dashboard/manage-order/${item.id}`, { 
                                                 state: { orderDetails: item }
                                             })}
                                             >

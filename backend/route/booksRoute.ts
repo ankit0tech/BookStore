@@ -1,7 +1,7 @@
 import express, {Request, Response } from "express";
 import { IBook } from "../models/bookModel";
 import { createBookZod, updateBookZod } from "../zod/bookZod";
-import { authMiddleware, roleMiddleware } from "./middleware";
+import { authMiddleware, roleMiddleware, optionalAuthMiddleware} from "./middleware";
 import { IUser, User } from "../models/userModel";
 import { PrismaClient, review } from "@prisma/client";
 import { logger } from "../utils/logger";
@@ -113,7 +113,7 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
 });
 
 // return all the books
-router.get('/', async (req, res) => {
+router.get('/', optionalAuthMiddleware, async (req, res) => {
     try {
         const cursor  = Number(req.query.cursor) || 0;
         const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
@@ -123,6 +123,20 @@ router.get('/', async (req, res) => {
         const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
         const sortByAverageRating = req.query.sortByAverageRating !== undefined;
         const selectWithSpecialOffer = req.query.selectWithSpecialOffer !== undefined;
+
+        let adminRole = false;
+
+        if(req.authEmail) {
+            const userInfo = await prisma.userinfo.findUnique({
+                where: {
+                    email: req.authEmail
+                }
+            });
+
+            if(userInfo) {
+                adminRole = userInfo.role === 'admin' || userInfo.role === 'superadmin'
+            }
+        }
 
         let books;
         let nextCursor;
@@ -160,7 +174,27 @@ router.get('/', async (req, res) => {
             books.pop();
         }
 
-        return res.status(200).json({ count: books.length, data: books, nextCursor: nextCursor });
+        const transformedBooks = books.map((book) => {
+            if(adminRole) {
+                return {
+                    ...book,
+                    is_available: book.is_active && book.quantity > 0
+                }
+            } else {
+                const { 
+                    quantity, shelf_location, sku, is_active, purchase_count, 
+                    updated_at, created_at, 
+                    ...updatedBook 
+                } = book;
+                return {
+                    ...updatedBook,
+                    is_available: book.is_active && book.quantity > 0
+                }
+            }
+        });
+
+        return res.status(200).json({ count: transformedBooks.length, data: transformedBooks, nextCursor: nextCursor });
+
     }
     catch (error: any) {
         logger.error(error.message);

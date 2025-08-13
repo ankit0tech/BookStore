@@ -7,10 +7,11 @@ import BooksTable from '../components/home/BooksTable';
 import BooksCard from '../components/home/BooksCard';
 // import { checkTokenExpiry } from '../redux/authMiddleware';
 // import { RootState } from '@reduxjs/toolkit/query';
-import { Book, RootState } from '../types/index';
+import { UserBook, RootState } from '../types/index';
 import { ChildProps } from '../App';
 import { enqueueSnackbar } from 'notistack';
 import SideBar from '../components/home/SideBar';
+import api from '../utils/api';
 
 
 const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
@@ -33,7 +34,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
 
     // taking cursor manually as useState was updating it asynchronously
-    const handleFetchBooks = (prevBooks: Book[], cursor: number|null) => {
+    const handleFetchBooks = (prevBooks: UserBook[], cursor: number|null) => {
         
         setLoading(true);
 
@@ -53,7 +54,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
         const url = `http://localhost:5555/books?${params.toString()}`;
 
-        axios
+        api
         .get(url)
         .then((response) => {
             setBooks(() => {

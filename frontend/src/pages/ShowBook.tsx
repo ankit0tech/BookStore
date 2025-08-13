@@ -9,14 +9,14 @@ import { useHandleCartUpdate } from '../utils/cartUtils';
 import api from '../utils/api';
 import { RootState } from '../types';
 import { useSelector } from 'react-redux';
-import { Book } from '../types';
+import { UserBook } from '../types';
 import { MdOutlineDelete } from 'react-icons/md';
 import { AiOutlineEdit } from 'react-icons/ai';
 import DeleteOverlay from '../components/DeleteOverlay';
 
 
 const ShowBook = () => {
-    const [book, setBook] = useState<Book|null>(null);
+    const [book, setBook] = useState<UserBook|null>(null);
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const { handleCartUpdate } =useHandleCartUpdate();
@@ -111,7 +111,7 @@ const ShowBook = () => {
                                     Published: {book.publish_year}
                                 </p>
                                 <p className='mb-4 text-gray-600 text-sm'>
-                                    Category: {book.category.title}
+                                    Category: {book.category?.title || 'Uncategorized'}
                                 </p>
                                 <p className='font-semibold py-2 text-lg'>
                                     &#8377;{book.price}

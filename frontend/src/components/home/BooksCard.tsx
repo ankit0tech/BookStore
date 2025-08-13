@@ -1,7 +1,7 @@
 import BookSingleCard from "./BookSingleCard";
-import { Book } from "../../types";
+import { UserBook } from "../../types";
 
-const BooksCard = ({ books }: { books: Book[] }) => {
+const BooksCard = ({ books }: { books: UserBook[] }) => {
     return (
         <div className="grid items-stretch gap-4 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             {books.map((item) => (

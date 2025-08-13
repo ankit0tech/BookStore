@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Book, Category } from "../../types";
+import { UserBook, Category } from "../../types";
 import { enqueueSnackbar } from "notistack";
 import api from "../../utils/api";
 import { ChildProps } from "../../App";
 import { MdOutlineSportsRugby } from "react-icons/md";
 
 interface Extended extends ChildProps {
-    handleFetchBooks: (prevBooks: Book[], cursor:number|null) => void
+    handleFetchBooks: (prevBooks: UserBook[], cursor:number|null) => void
     categoryId: number | null;
     setCategoryId: React.Dispatch<React.SetStateAction<number|null>>;
     minPrice: number | null;

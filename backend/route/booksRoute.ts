@@ -30,6 +30,45 @@ const parseBookData = (data: any) => {
     return parsedData;
 }
 
+const transformBookForUser = (isAdmin: boolean, book: any) => {
+    if(isAdmin) {
+        return {
+            ...book,
+            is_available: book.is_active && book.quantity > 0
+        }
+    }
+
+    const {
+        quantity, shelf_location, sku, is_active, purchase_count, 
+        updated_at, created_at,
+        ...userBook
+    } = book;
+
+    return {
+        ...userBook,
+        is_available: book.is_active && book.quantity > 0
+    }
+}
+
+
+const isUserAdmin = async (req: Request) => {
+    if(req.authEmail) {
+        const userInfo = await prisma.userinfo.findUnique({
+            where: {
+                email: req.authEmail
+            }
+        });
+
+        if(userInfo) {
+            return (userInfo.role === 'admin' || userInfo.role === 'superadmin');
+        }
+    }
+
+    return false;
+}
+
+
+
 router.get('/search', optionalAuthMiddleware, async (req, res) => {
 
     try {
@@ -37,19 +76,8 @@ router.get('/search', optionalAuthMiddleware, async (req, res) => {
         const query = queryString || '';
         const sortBy: string = req.query.sortBy ? req.query.sortBy as string : 'id';
         const sortOrder: string = req.query.sortOrder as string === 'desc' ? 'desc' : 'asc';
-        let adminRole = false;
-
-        if(req.authEmail) {
-            const userInfo = await prisma.userinfo.findUnique({
-                where: {
-                    email: req.authEmail
-                }
-            });
-
-            if(userInfo) {
-                adminRole = userInfo.role === 'admin' || userInfo.role === 'superadmin'
-            }
-        }
+        
+        const adminRole = await isUserAdmin(req);
 
         const books = await prisma.book.findMany({
             where: {
@@ -76,24 +104,7 @@ router.get('/search', optionalAuthMiddleware, async (req, res) => {
             ]
         });
 
-        const transformedBooks = books.map((book) => {
-            if(adminRole) {
-                return {
-                    ...book,
-                    is_available: book.is_active && book.quantity > 0
-                }
-            } else {
-                const { 
-                    quantity, shelf_location, sku, is_active, purchase_count, 
-                    updated_at, created_at, 
-                    ...updatedBook 
-                } = book;
-                return {
-                    ...updatedBook,
-                    is_available: book.is_active && book.quantity > 0
-                }
-            }
-        });
+        const transformedBooks = books.map((book) => transformBookForUser(adminRole, book));
     
         return res.status(200).json({
             count: transformedBooks.length, 
@@ -160,19 +171,7 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
         const sortByAverageRating = req.query.sortByAverageRating !== undefined;
         const selectWithSpecialOffer = req.query.selectWithSpecialOffer !== undefined;
 
-        let adminRole = false;
-
-        if(req.authEmail) {
-            const userInfo = await prisma.userinfo.findUnique({
-                where: {
-                    email: req.authEmail
-                }
-            });
-
-            if(userInfo) {
-                adminRole = userInfo.role === 'admin' || userInfo.role === 'superadmin'
-            }
-        }
+        const adminRole = await isUserAdmin(req);
 
         let books;
         let nextCursor;
@@ -210,24 +209,7 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
             books.pop();
         }
 
-        const transformedBooks = books.map((book) => {
-            if(adminRole) {
-                return {
-                    ...book,
-                    is_available: book.is_active && book.quantity > 0
-                }
-            } else {
-                const { 
-                    quantity, shelf_location, sku, is_active, purchase_count, 
-                    updated_at, created_at, 
-                    ...updatedBook 
-                } = book;
-                return {
-                    ...updatedBook,
-                    is_available: book.is_active && book.quantity > 0
-                }
-            }
-        });
+        const transformedBooks = books.map((book) => transformBookForUser(adminRole, book));
 
         return res.status(200).json({ 
             count: transformedBooks.length, 
@@ -243,9 +225,11 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
 });
 
 // get one book by ID
-router.get('/:id(\\d+)', async (req, res) => {
+router.get('/:id(\\d+)', optionalAuthMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
+        const adminRole = await isUserAdmin(req);
+
         const book = await prisma.book.findUnique({
             where : {
                 id : Number(id)
@@ -255,7 +239,14 @@ router.get('/:id(\\d+)', async (req, res) => {
                 special_offers: true,
             }
         });
-        res.status(200).send(book);
+
+        if(!book) {
+            return res.status(404).json({message: "Requested book not found"});
+        }
+
+        const transformedBook = transformBookForUser(adminRole, book);
+        return res.status(200).json(transformedBook);
+
     }
     catch (error: any) {
         logger.error(error.message);

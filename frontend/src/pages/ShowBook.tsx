@@ -57,7 +57,7 @@ const ShowBook = () => {
     useEffect(() => {
         setLoading(true);
 
-        axios(`http://localhost:5555/books/${id}`)
+        api(`http://localhost:5555/books/${id}`)
         .then((response) => {
             setBook(response.data);
             setLoading(false);
@@ -110,8 +110,11 @@ const ShowBook = () => {
                                 <p className='mt-4 text-gray-600 text-sm'>
                                     Published: {book.publish_year}
                                 </p>
-                                <p className='mb-4 text-gray-600 text-sm'>
+                                <p className='text-gray-600 text-sm'>
                                     Category: {book.category?.title || 'Uncategorized'}
+                                </p>
+                                <p className='mt-2 mb-4 text-gray-900 text-sm'>
+                                    {book.is_available ? "Available" : "Not Available"}
                                 </p>
                                 <p className='font-semibold py-2 text-lg'>
                                     &#8377;{book.price}

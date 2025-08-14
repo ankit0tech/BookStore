@@ -127,7 +127,7 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
             <div className="p-2">
                 <div className="font-bold">Filter By</div>
                 <div>
-                    <label htmlFor="PriceFilter" className="font-bold block">Price</label>
+                    <h3 className="font-bold block">Price</h3>
                     <ul id="PriceFilter">
                         <li 
                         className={`ml-4 cursor-pointer hover:text-purple-600 
@@ -161,7 +161,7 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
                         </li>
                     </ul>
                 </div>
-                <label htmlFor="categoryList" className="my-1 font-bold block">Category</label>
+                <h3 className="my-1 font-bold block">Category</h3>
                 <ul id="categoryList">
                     {categories?.map((category) => (
                         <li key={category.id} className="font-bold">

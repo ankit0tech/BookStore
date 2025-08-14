@@ -30,13 +30,26 @@ const parseBookData = (data: any) => {
     return parsedData;
 }
 
-router.get('/search', async (req, res) => {
+router.get('/search', optionalAuthMiddleware, async (req, res) => {
 
     try {
         const queryString = req.query.query as string | undefined;
         const query = queryString || '';
         const sortBy: string = req.query.sortBy ? req.query.sortBy as string : 'id';
         const sortOrder: string = req.query.sortOrder as string === 'desc' ? 'desc' : 'asc';
+        let adminRole = false;
+
+        if(req.authEmail) {
+            const userInfo = await prisma.userinfo.findUnique({
+                where: {
+                    email: req.authEmail
+                }
+            });
+
+            if(userInfo) {
+                adminRole = userInfo.role === 'admin' || userInfo.role === 'superadmin'
+            }
+        }
 
         const books = await prisma.book.findMany({
             where: {
@@ -62,8 +75,31 @@ router.get('/search', async (req, res) => {
                 { id: 'asc'}
             ]
         });
+
+        const transformedBooks = books.map((book) => {
+            if(adminRole) {
+                return {
+                    ...book,
+                    is_available: book.is_active && book.quantity > 0
+                }
+            } else {
+                const { 
+                    quantity, shelf_location, sku, is_active, purchase_count, 
+                    updated_at, created_at, 
+                    ...updatedBook 
+                } = book;
+                return {
+                    ...updatedBook,
+                    is_available: book.is_active && book.quantity > 0
+                }
+            }
+        });
     
-        return res.status(200).send(books);
+        return res.status(200).json({
+            count: transformedBooks.length, 
+            data: transformedBooks, 
+            nextCursor: null
+        });
     
     } catch(error: any) {
         logger.error(error.message);
@@ -193,7 +229,11 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
             }
         });
 
-        return res.status(200).json({ count: transformedBooks.length, data: transformedBooks, nextCursor: nextCursor });
+        return res.status(200).json({ 
+            count: transformedBooks.length, 
+            data: transformedBooks, 
+            nextCursor: nextCursor 
+        });
 
     }
     catch (error: any) {

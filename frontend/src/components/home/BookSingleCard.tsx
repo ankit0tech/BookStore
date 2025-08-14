@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { Book } from "../../types/index";
+import { UserBook } from "../../types/index";
 
-const BookSingleCard: React.FC<{ book: Book }> = ({ book }) => {
+const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
 
     return (
         <div

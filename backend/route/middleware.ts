@@ -79,3 +79,36 @@ export const roleMiddleware = (allowedRoles: string[]) => {
         }
     } 
 }
+
+export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const bearerToken = req.headers.authorization;
+    
+    if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
+        req.authEmail = undefined;
+        req.userId = undefined;
+        return next();
+    }
+
+    const authToken = bearerToken.split(' ')[1];
+    
+    jwt.verify(authToken, config.auth.jwtSecret, (err, decoded)=> {
+        if(err || !decoded) {
+            req.authEmail = undefined;
+            req.userId = undefined;
+            return next();
+        }
+
+        const { email, userId, type } = decoded as JwtPayload;
+        const parsedUserId = Number(userId);
+
+        if(type === 'login' && userId && email && !isNaN(parsedUserId)) {
+            req.authEmail = email;
+            req.userId = parsedUserId;
+        } else {
+            req.authEmail = undefined;
+            req.userId = undefined;
+        }
+
+        next();
+    });
+}

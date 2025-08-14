@@ -9,7 +9,7 @@ import { NavBar } from './components/NavBar';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import React, { useState } from 'react';
-import { Book } from './types';
+import { UserBook } from './types';
 import CreateAddress from './pages/CreateAddress';
 import Addresses from './pages/Addresses';
 import DeleteAddress from './pages/DeleteAddress';
@@ -40,10 +40,10 @@ import ManageOrder from './pages/order_management/ManageOrder';
 import SuperAdminHome from './pages/superadmin/SuperAdminHome';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHome from './pages/admin/AdminHome';
-
+import BookManagement from './pages/admin/BookManagement';
 export interface ChildProps {
-  books: Book[];
-  setBooks: React.Dispatch<React.SetStateAction<Book[]>>;
+  books: UserBook[];
+  setBooks: React.Dispatch<React.SetStateAction<UserBook[]>>;
   nextCursor: number | null;
   setNextCursor: React.Dispatch<React.SetStateAction<number|null>>;
 
@@ -51,7 +51,7 @@ export interface ChildProps {
 
 const App = () => {
   
-  const [books, setBooks] = useState<Book[]>([]);
+  const [books, setBooks] = useState<UserBook[]>([]);
   const [nextCursor, setNextCursor] = useState<number|null>(null);
 
   const userinfo = useSelector((state: RootState) => state.userinfo);
@@ -118,6 +118,7 @@ const App = () => {
                   <Route path='books/create' element={<CreateBook />} /> 
                   <Route path='books/edit/:id' element={<CreateBook />} />
                   <Route path='books/delete/:id' element={<DeleteBook />} />
+                  <Route path='book-management' element={<BookManagement />} />
                   
                   <Route path='order-management' element={<OrderManagement />} />
                   <Route path='manage-order/:id' element={<ManageOrder />} />

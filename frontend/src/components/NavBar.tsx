@@ -62,17 +62,16 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     const handleSearch = () => {
         if (query) {
-            axios.get(`http://localhost:5555/books/search?query=${query}`)
+            api.get(`http://localhost:5555/books/search?query=${query}`)
             .then((response) => {
-                console.log('Search result: ', response);
-                setBooks(response.data);
-                setNextCursor(null);
+                setBooks(response.data.data);
+                setNextCursor(response.data.nextCursor);
             }
             ).catch((error)=>{
                 enqueueSnackbar("Error while loading books", {variant: 'error'});
             });
         } else {
-            axios
+            api
             .get('http://localhost:5555/books')
             .then((response) => {
                 setBooks(response.data.data);

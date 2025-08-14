@@ -9,14 +9,14 @@ import { useHandleCartUpdate } from '../utils/cartUtils';
 import api from '../utils/api';
 import { RootState } from '../types';
 import { useSelector } from 'react-redux';
-import { Book } from '../types';
+import { UserBook } from '../types';
 import { MdOutlineDelete } from 'react-icons/md';
 import { AiOutlineEdit } from 'react-icons/ai';
 import DeleteOverlay from '../components/DeleteOverlay';
 
 
 const ShowBook = () => {
-    const [book, setBook] = useState<Book|null>(null);
+    const [book, setBook] = useState<UserBook|null>(null);
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const { handleCartUpdate } =useHandleCartUpdate();
@@ -57,7 +57,7 @@ const ShowBook = () => {
     useEffect(() => {
         setLoading(true);
 
-        axios(`http://localhost:5555/books/${id}`)
+        api(`http://localhost:5555/books/${id}`)
         .then((response) => {
             setBook(response.data);
             setLoading(false);
@@ -110,8 +110,11 @@ const ShowBook = () => {
                                 <p className='mt-4 text-gray-600 text-sm'>
                                     Published: {book.publish_year}
                                 </p>
-                                <p className='mb-4 text-gray-600 text-sm'>
-                                    Category: {book.category.title}
+                                <p className='text-gray-600 text-sm'>
+                                    Category: {book.category?.title || 'Uncategorized'}
+                                </p>
+                                <p className='mt-2 mb-4 text-gray-900 text-sm'>
+                                    {book.is_available ? "Available" : "Not Available"}
                                 </p>
                                 <p className='font-semibold py-2 text-lg'>
                                     &#8377;{book.price}
@@ -162,7 +165,7 @@ const ShowBook = () => {
                         <div className='flex my-6 gap-2'>
                             <Link 
                                className="inline-block px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
-                               to={`/books/add-offer/${book.id}`}
+                               to={`/admin-dashboard/books/add-offer/${book.id}`}
                             >Add new offer</Link>
                             <button
                                 className="px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
@@ -181,7 +184,7 @@ const ShowBook = () => {
                                 <div className='flex flex-col gap-3'>
                                     <button 
                                         className='flex items-center gap-2 py-2 px-4 rounded-lg text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-all duration-200' 
-                                        onClick={() => navigate(`/dashboard/books/edit/${book.id}`)}
+                                        onClick={() => navigate(`/admin-dashboard/books/edit/${book.id}`)}
                                     >
                                         <AiOutlineEdit className='inline text-xl' /> Edit Book
                                     </button>

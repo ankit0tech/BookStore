@@ -10,7 +10,7 @@ export interface CartInterface {
     data: {
         id: number,
         quantity: number,
-        book: Book,
+        book: UserBook,
         special_offer: Offer,
     } []
 }
@@ -96,7 +96,7 @@ export interface OrdersInterface {
 export interface OrderItemInterface {
     id: number,
     book_id: number,
-    book: Book,
+    book: UserBook,
     order_id: number,
     order: OrderInterface,
     quantity: number,
@@ -105,20 +105,42 @@ export interface OrderItemInterface {
     special_offer: Offer | null,
 }
 
-export interface Book {
+export interface BaseBook {
     id: number;
     title: string;
     author: string;
     publish_year: number;
     price: number;
-    category_id: number;
+    category_id: number | null;
     average_rating: number;
     created_at: Date;
     updated_at: Date;
     cover_image: string;
-    category: SubCategory;
-
+    category: SubCategory | null;
+    purchase_count: number;
+    description: string | null;
+    isbn: string | null;
+    publisher: string | null;
+    language: string;
+    pages: number | null;
+    format: string | null;
+    is_cancellable: boolean;
+    cancellation_hours: number;
+    cancellation_policy: string | null;
+    is_returnable: boolean;
+    return_days: number;
+    return_policy: string | null;
     special_offers: Offer[] | null;
+    is_available: boolean; // quantity > 0 && is_active
+}
+
+export interface UserBook extends BaseBook {}
+
+export interface AdminBook extends BaseBook {
+    quantity: number;
+    is_active: boolean;
+    shelf_location: string | null;
+    sku: string | null;
 }
 
 export interface Address {
@@ -148,7 +170,7 @@ export interface Review {
 
 export interface Wishlist {
     id: number;
-    book: Book;
+    book: UserBook;
     book_id: number;
     user_id: number;
     created_at: Date;
@@ -157,7 +179,7 @@ export interface Wishlist {
 
 export interface RecentlyViewed {
     id: number;
-    book: Book;
+    book: UserBook;
     book_id: number;
     user_id: number;
     created_at: Date;

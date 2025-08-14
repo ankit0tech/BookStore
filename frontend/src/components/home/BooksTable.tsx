@@ -7,7 +7,7 @@ import { FcPlus } from "react-icons/fc";
 import { useHandleCartUpdate } from '../../utils/cartUtils';
 // import { useSelector } from 'react-redux';
 // import { RootState } from '../../types';
-import { Book } from '../../types';
+import { UserBook } from '../../types';
 import { useState } from 'react';
 import Popup from '../../components/Popup';
 // import { useDispatch } from "react-redux";
@@ -16,7 +16,7 @@ import Popup from '../../components/Popup';
 // import { enqueueSnackbar } from 'notistack';
 
 
-const BooksTable = ({ books }: { books: Book[] }) => {
+const BooksTable = ({ books }: { books: UserBook[] }) => {
 
     // const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const { handleCartUpdate } = useHandleCartUpdate();
@@ -47,7 +47,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
                             <td className='text-center'>{book.title}</td>
                             <td className='text-center max-md:hidden'>{book.author}</td>
                             <td className='text-center max-md:hidden'>{book.publish_year}</td>
-                            <td className='text-center max-md:hidden'>{book.category.title}</td>
+                            <td className='text-center max-md:hidden'>{book.category?.title || 'Uncategorized'}</td>
                             <td className='text-center'>{book.price}</td>
                             <td className='text-center'>
                                 <div className='flex justify-center gap-x-4'>

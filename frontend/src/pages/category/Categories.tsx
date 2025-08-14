@@ -96,7 +96,7 @@ const Categories = () => {
                 <h2 className="text-2xl font-semibold text-gray-800">Book categories</h2>
                 <button
                     className="py-2 px-3 flex items-center gap-2 text-white bg-purple-500 border rounded-lg hover:bg-purple-600 transition-all duration-200" 
-                    onClick={() => navigate('/dashboard/category/create')}
+                    onClick={() => navigate('/admin-dashboard/category/create')}
                     >
                         <AiOutlinePlus className="inline"/> 
                         Create new category
@@ -140,7 +140,7 @@ const Categories = () => {
                                         <div className="m-2 p-2">
                                             <AiOutlineEdit 
                                                 className='text-xl text-yellow-600 hover:text-yellow-500 transition-colors duration-200'
-                                                onClick={() => navigate(`/dashboard/category/edit/${item.id}`)}>
+                                                onClick={() => navigate(`/admin-dashboard/category/edit/${item.id}`)}>
                                             </AiOutlineEdit>
                                         </div>
                                         
@@ -172,7 +172,7 @@ const Categories = () => {
                                                     <div className="m-2 p-2 ">
                                                         <AiOutlineEdit 
                                                             className='text-xl text-yellow-600 hover:text-yellow-500 transition-colors duration-200'
-                                                            onClick={() => navigate(`/dashboard/category/edit/${sub.id}`)}>
+                                                            onClick={() => navigate(`/admin-dashboard/category/edit/${sub.id}`)}>
                                                         </AiOutlineEdit>
                                                     </div>
                                                     

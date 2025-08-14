@@ -1,5 +1,5 @@
 import { FaAddressCard, FaBook, FaGift, FaHeart, FaHistory, FaList, FaShoppingCart, FaTags, FaTasks, FaUserEdit, FaUserShield } from "react-icons/fa";
-import { MdOutlineAdminPanelSettings, MdOutlineAnalytics, MdOutlinePersonAdd, MdOutlineSettings } from "react-icons/md";
+import { MdInventory, MdOutlineAdminPanelSettings, MdOutlineAnalytics, MdOutlinePersonAdd, MdOutlineSettings } from "react-icons/md";
 
 export const iconMap = {
     'addresses': <FaAddressCard className="text-4xl text-purple-600" />,
@@ -16,5 +16,6 @@ export const iconMap = {
     'register-admin': <MdOutlinePersonAdd className="text-2xl" />,
     'manage-admins': <MdOutlineAdminPanelSettings className="text-2xl" />,
     'settings': <MdOutlineSettings className="text-2xl" />,
-    'analytics': <MdOutlineAnalytics className="text-2xl" />
+    'analytics': <MdOutlineAnalytics className="text-2xl" />,
+    'book-management': <MdInventory className="text-4xl text-violet-800"/>
 } as const;

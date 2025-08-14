@@ -1,7 +1,7 @@
 import express, {Request, Response } from "express";
 import { IBook } from "../models/bookModel";
 import { createBookZod, updateBookZod } from "../zod/bookZod";
-import { authMiddleware, roleMiddleware } from "./middleware";
+import { authMiddleware, roleMiddleware, optionalAuthMiddleware} from "./middleware";
 import { IUser, User } from "../models/userModel";
 import { PrismaClient, review } from "@prisma/client";
 import { logger } from "../utils/logger";
@@ -9,13 +9,75 @@ import { logger } from "../utils/logger";
 const prisma = new PrismaClient();
 const router = express.Router();
 
-router.get('/search', async (req, res) => {
+// helper function to parse data for books
+const parseBookData = (data: any) => {
+    const parsedData = { ...data };
+    const optionalStringFields = ['description', 'isbn', 'publisher', 'languange', 'pages', 'format', 'quantity', 'shelf_location', 'sku'];
+
+    optionalStringFields.forEach(element => {
+        if(parsedData[element] === '' || parsedData[element] === null) {
+            parsedData[element] = undefined;
+        }
+    });
+
+    const optionalNumberFields = ['pages'];
+    optionalNumberFields.forEach(element => {
+        if(parsedData[element] === '' || parsedData[element] === null || isNaN(Number(parsedData[element])) ) {
+            parsedData[element] = undefined;
+        }
+    });
+
+    return parsedData;
+}
+
+const transformBookForUser = (isAdmin: boolean, book: any) => {
+    if(isAdmin) {
+        return {
+            ...book,
+            is_available: book.is_active && book.quantity > 0
+        }
+    }
+
+    const {
+        quantity, shelf_location, sku, is_active, purchase_count, 
+        updated_at, created_at,
+        ...userBook
+    } = book;
+
+    return {
+        ...userBook,
+        is_available: book.is_active && book.quantity > 0
+    }
+}
+
+
+const isUserAdmin = async (req: Request) => {
+    if(req.authEmail) {
+        const userInfo = await prisma.userinfo.findUnique({
+            where: {
+                email: req.authEmail
+            }
+        });
+
+        if(userInfo) {
+            return (userInfo.role === 'admin' || userInfo.role === 'superadmin');
+        }
+    }
+
+    return false;
+}
+
+
+
+router.get('/search', optionalAuthMiddleware, async (req, res) => {
 
     try {
         const queryString = req.query.query as string | undefined;
         const query = queryString || '';
         const sortBy: string = req.query.sortBy ? req.query.sortBy as string : 'id';
         const sortOrder: string = req.query.sortOrder as string === 'desc' ? 'desc' : 'asc';
+        
+        const adminRole = await isUserAdmin(req);
 
         const books = await prisma.book.findMany({
             where: {
@@ -41,8 +103,14 @@ router.get('/search', async (req, res) => {
                 { id: 'asc'}
             ]
         });
+
+        const transformedBooks = books.map((book) => transformBookForUser(adminRole, book));
     
-        return res.status(200).send(books);
+        return res.status(200).json({
+            count: transformedBooks.length, 
+            data: transformedBooks, 
+            nextCursor: null
+        });
     
     } catch(error: any) {
         logger.error(error.message);
@@ -54,7 +122,8 @@ router.get('/search', async (req, res) => {
 router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
     try {
 
-        const result = createBookZod.safeParse(req.body);
+        const bookData = parseBookData(req.body);
+        const result = createBookZod.safeParse(bookData);
 
         if(result.success) {
             const book = await prisma.book.create({
@@ -66,7 +135,7 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
             });
         } else {
             return res.status(400).json({
-                message: 'Invalid inputs',
+                message: 'Please send valid data with all required fields.',
                 errors: result.error.format()
             });
         }
@@ -91,7 +160,7 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
 });
 
 // return all the books
-router.get('/', async (req, res) => {
+router.get('/', optionalAuthMiddleware, async (req, res) => {
     try {
         const cursor  = Number(req.query.cursor) || 0;
         const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
@@ -101,6 +170,8 @@ router.get('/', async (req, res) => {
         const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
         const sortByAverageRating = req.query.sortByAverageRating !== undefined;
         const selectWithSpecialOffer = req.query.selectWithSpecialOffer !== undefined;
+
+        const adminRole = await isUserAdmin(req);
 
         let books;
         let nextCursor;
@@ -138,7 +209,14 @@ router.get('/', async (req, res) => {
             books.pop();
         }
 
-        return res.status(200).json({ count: books.length, data: books, nextCursor: nextCursor });
+        const transformedBooks = books.map((book) => transformBookForUser(adminRole, book));
+
+        return res.status(200).json({ 
+            count: transformedBooks.length, 
+            data: transformedBooks, 
+            nextCursor: nextCursor 
+        });
+
     }
     catch (error: any) {
         logger.error(error.message);
@@ -147,9 +225,11 @@ router.get('/', async (req, res) => {
 });
 
 // get one book by ID
-router.get('/:id(\\d+)', async (req, res) => {
+router.get('/:id(\\d+)', optionalAuthMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
+        const adminRole = await isUserAdmin(req);
+
         const book = await prisma.book.findUnique({
             where : {
                 id : Number(id)
@@ -159,7 +239,14 @@ router.get('/:id(\\d+)', async (req, res) => {
                 special_offers: true,
             }
         });
-        res.status(200).send(book);
+
+        if(!book) {
+            return res.status(404).json({message: "Requested book not found"});
+        }
+
+        const transformedBook = transformBookForUser(adminRole, book);
+        return res.status(200).json(transformedBook);
+
     }
     catch (error: any) {
         logger.error(error.message);
@@ -171,7 +258,8 @@ router.get('/:id(\\d+)', async (req, res) => {
 router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
     try {
 
-        const result = updateBookZod.safeParse(req.body);
+        const parsedBookData = parseBookData(req.body);
+        const result = updateBookZod.safeParse(parsedBookData);
 
         if(result.success) {
             const { id } = req.params;
@@ -187,7 +275,10 @@ router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, re
             return res.status(200).json({message: 'Book updated successfully'});
 
         } else {
-            return res.status(400).json({message: "Please send valid data with all required fields."});
+            return res.status(400).json({
+                message: "Please send valid data with all required fields.", 
+                errors: result.error.format()
+            });
         }
     }
     catch (error: any) {

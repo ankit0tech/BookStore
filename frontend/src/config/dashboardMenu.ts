@@ -109,6 +109,12 @@ export const getAdminMenuItems = (): {label: string, path: string, style: string
             path: 'order-management',
             style:'',
             description: ''
+        },
+        {
+            label: 'Book management',
+            path: 'book-management',
+            style: '',
+            description: ''
         }
     ];
 }

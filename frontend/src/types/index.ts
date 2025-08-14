@@ -131,11 +131,10 @@ export interface BaseBook {
     return_days: number;
     return_policy: string | null;
     special_offers: Offer[] | null;
+    is_available: boolean; // quantity > 0 && is_active
 }
 
-export interface UserBook extends BaseBook {
-    is_available: boolean;  // quantity > 0 && is_active
-}
+export interface UserBook extends BaseBook {}
 
 export interface AdminBook extends BaseBook {
     quantity: number;

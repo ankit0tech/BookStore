@@ -1,16 +1,29 @@
 import { useState, useEffect } from "react";
 import api from "../../utils/api";
 import { AxiosResponse } from "axios";
-import { AdminBook } from "../../types";
-import { AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
-import { MdDeleteOutline } from "react-icons/md";
+import { AdminBook, Category } from "../../types";
+import { AiOutlineEdit, AiOutlineEye, AiOutlinePlus, AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
+import { MdDeleteOutline, MdInventory } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { BiSearch } from "react-icons/bi";
 
 
 const BookManagement = () => {
 
     const [books, setBooks] = useState<AdminBook[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [sortOrder, setSortOrder] = useState<string>('asc');
+    const navigate = useNavigate();
 
     useEffect(() => {
+        api.get('http://localhost:5555/categories')
+        .then((response: AxiosResponse) => {
+            setCategories(response.data.data);
+        })
+        .catch((error: any) => {
+            console.log(error);
+        });
+
         api.get('http://localhost:5555/books/')
         .then((response: AxiosResponse) => {
             setBooks(response.data.data);
@@ -22,6 +35,59 @@ const BookManagement = () => {
 
     return (
         <div>
+            <div className="flex flex-col gap-4 mb-8">
+                <div className="flex justify-between mt-4">
+                    <div className="flex items-center gap-2 text-2xl font-semibold"><MdInventory className="inline text-2xl text-violet-700"/> Book Inventory Management</div>
+                    <button
+                        className="py-2 px-3 flex items-center gap-2 text-white bg-purple-500 border rounded-lg hover:bg-purple-600 transition-colors duration-200" 
+                        onClick={() => navigate('/admin-dashboard/books/create')}
+                        >
+                            <AiOutlinePlus className="inline"/> 
+                            Add new book
+                    </button>
+                </div>
+
+                <div className="my-2 flex items-center gap-2">
+                    <div className="relative flex items-center w-full">
+                        <BiSearch className="mx-3 absolute text-md text-gray-400"/>
+                        <input 
+                            className="w-full pl-9 py-2 rounded-md border outline-none"
+                            placeholder="Search books..."
+                        ></input>
+                    </div>
+                    <div className="p-2 outline-none border focus:border-blue-300 rounded-md">
+                        <select className="" name="" id="">
+                            <option value="">All Categories</option>
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>{category.title}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="p-2 outline-none border focus:border-blue-300 rounded-md">
+                        <select name="" id="">
+                            <option value="All">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div className="p-2 outline-none border focus:border-blue-300 rounded-md">
+                        <select  name="" id="">
+                            <option value="All">All Stock</option>
+                            <option value="Low">Low Stock</option>
+                            <option value="Empty">Out Of Stock</option>
+                        </select>
+                    </div>
+                    <div
+                        className="p-2 outline-none border focus:border-blue-300 rounded-md"
+                    >
+                        <button 
+                            onClick={() => {sortOrder === 'asc' ? setSortOrder('desc') : setSortOrder('asc')}}
+                        >
+                            {sortOrder === 'asc' ? <AiOutlineSortAscending/> : <AiOutlineSortDescending/>}
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <table className="border border-gray-200 w-full">
                 <thead className="">

@@ -34,9 +34,9 @@ const BookManagement = () => {
     }, []);
 
     return (
-        <div>
-            <div className="flex flex-col gap-4 mb-8">
-                <div className="flex justify-between mt-4">
+        <div className="w-full min-w-[600px]">
+            <div className="flex flex-col gap-4 mb-8 ">
+                <div className="flex justify-between gap-2 mt-4">
                     <div className="flex items-center gap-2 text-2xl font-semibold"><MdInventory className="inline text-2xl text-violet-700"/> Book Inventory Management</div>
                     <button
                         className="py-2 px-3 flex items-center gap-2 text-white bg-purple-500 border rounded-lg hover:bg-purple-600 transition-colors duration-200" 
@@ -51,11 +51,11 @@ const BookManagement = () => {
                     <div className="relative flex items-center w-full">
                         <BiSearch className="mx-3 absolute text-md text-gray-400"/>
                         <input 
-                            className="w-full pl-9 py-2 rounded-md border outline-none"
+                            className="w-full min-w-[200px] pl-9 py-2 rounded-md border outline-none"
                             placeholder="Search books..."
                         ></input>
                     </div>
-                    <div className="p-2 outline-none border focus:border-blue-300 rounded-md">
+                    <div className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md">
                         <select className="" name="" id="">
                             <option value="">All Categories</option>
                             {categories.map((category) => (
@@ -63,28 +63,52 @@ const BookManagement = () => {
                             ))}
                         </select>
                     </div>
-                    <div className="p-2 outline-none border focus:border-blue-300 rounded-md">
+                    <div className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md">
                         <select name="" id="">
                             <option value="All">All Status</option>
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                         </select>
                     </div>
-                    <div className="p-2 outline-none border focus:border-blue-300 rounded-md">
+                    <div className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md">
                         <select  name="" id="">
                             <option value="All">All Stock</option>
                             <option value="Low">Low Stock</option>
                             <option value="Empty">Out Of Stock</option>
                         </select>
                     </div>
+                    <div className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md">
+                        <select  name="" id="">
+                            <option value="All">Title</option>
+                        </select>
+                    </div>
                     <div
-                        className="p-2 outline-none border focus:border-blue-300 rounded-md"
+                        className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md"
                     >
                         <button 
                             onClick={() => {sortOrder === 'asc' ? setSortOrder('desc') : setSortOrder('asc')}}
                         >
                             {sortOrder === 'asc' ? <AiOutlineSortAscending/> : <AiOutlineSortDescending/>}
                         </button>
+                    </div>
+                </div>
+
+                <div className="my-2 flex flex-row gap-2">
+                    <div className="flex flex-col bg-blue-50 gap-2 py-4 px-6 w-full rounded-lg">
+                        <div className="text-sm text-blue-600">Total Books</div>
+                        <div className="font-bold text-xl text-blue-800">100</div>
+                    </div>
+                    <div className="flex flex-col bg-green-50 gap-2 py-4 px-6 w-full rounded-lg">
+                        <div className="text-sm text-green-600">Active Books</div>
+                        <div className="font-bold text-xl text-green-800">90</div>
+                    </div>
+                    <div className="flex flex-col bg-yellow-50 gap-2 py-4 px-6 w-full rounded-lg">
+                        <div className="text-sm text-yellow-600">Low Stock</div>
+                        <div className="font-bold text-xl text-yellow-800">15</div>
+                    </div>
+                    <div className="flex flex-col bg-red-50 gap-2 py-4 px-6 w-full rounded-lg">
+                        <div className="text-sm text-red-600">Out of Stock</div>
+                        <div className="font-bold text-xl text-red-800">10</div>
                     </div>
                 </div>
             </div>
@@ -102,7 +126,7 @@ const BookManagement = () => {
                 </thead>
                 <tbody>
                     {books && books.map((book) => (
-                        <tr className="text-sm" key={book.id}>
+                        <tr className="text-sm border" key={book.id}>
                             <td className="px-8 py-4">
                                 <div className="font-medium">{book.title}</div>
                                 <div className="text-gray-500">by {book.author}</div>

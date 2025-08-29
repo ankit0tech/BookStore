@@ -286,6 +286,28 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
     }
 });
 
+router.get('/inventory-overview', roleMiddleware(['admin', 'superadmin']), async(req, res) => {
+
+    try {
+
+        const[totalBookCount, activeBookCount, lowStockCount, outOfStockCount] = await Promise.all([
+            prisma.book.count({ where:{} }),
+            prisma.book.count({ where: {is_active: true} }),
+            prisma.book.count({ 
+                where: { quantity: {lte: 10, gt: 0} } 
+            }),
+            prisma.book.count({ where: {quantity: 0} })
+
+        ]);
+
+        return res.status(200).json({totalBookCount, activeBookCount, lowStockCount, outOfStockCount});
+    }
+    catch(error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
 // get one book by ID
 router.get('/:id(\\d+)', optionalAuthMiddleware, async (req, res) => {
     try {

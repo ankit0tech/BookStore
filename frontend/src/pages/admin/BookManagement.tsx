@@ -20,6 +20,11 @@ const BookManagement = () => {
     const [filterCategoryId, setFilterCategoryId] = useState<string>('');
     const [filterStatus, setFilterStatus] = useState<string>('');
     const [filterStock, setFilterStock] = useState<string>('');
+
+    const [totalBookCount, setTotalBookCount] = useState<number>(0);
+    const [activeBookCount, setActiveBookCount] = useState<number>(0);
+    const [lowStockCount, setLowStockCount] = useState<number>(0);
+    const [outOfStock, setOutOfStock] = useState<number>(0);
     
     const observeRef = useRef(null);
     const navigate = useNavigate();
@@ -75,8 +80,21 @@ const BookManagement = () => {
         });
     }
 
+    const handleFetchStockData = () => {
+        api.get('http://localhost:5555/books/inventory-overview')
+        .then((response: AxiosResponse) => {
+            setTotalBookCount(response.data.totalBookCount);
+            setActiveBookCount(response.data.activeBookCount);
+            setLowStockCount(response.data.lowStockCount);
+            setOutOfStock(response.data.outOfStockCount);
+        })
+        .catch((error: any) => {
+            console.log(error);
+        })
+    }
 
     useEffect(() => {
+        handleFetchStockData();
         handleFetchBooks([], null);
     }, [filterCategoryId, filterStatus, filterStock, sortOrder]);
 
@@ -190,19 +208,19 @@ const BookManagement = () => {
                 <div className="my-2 flex flex-row gap-2">
                     <div className="flex flex-col bg-blue-50 p-4 w-full rounded-lg">
                         <div className="text-sm text-blue-600">Total Books</div>
-                        <div className="font-bold text-xl text-blue-800">100</div>
+                        <div className="font-bold text-xl text-blue-800">{totalBookCount}</div>
                     </div>
                     <div className="flex flex-col bg-green-50 p-4 w-full rounded-lg">
                         <div className="text-sm text-green-600">Active Books</div>
-                        <div className="font-bold text-xl text-green-800">90</div>
+                        <div className="font-bold text-xl text-green-800">{activeBookCount}</div>
                     </div>
                     <div className="flex flex-col bg-yellow-50 p-4 w-full rounded-lg">
                         <div className="text-sm text-yellow-600">Low Stock</div>
-                        <div className="font-bold text-xl text-yellow-800">15</div>
+                        <div className="font-bold text-xl text-yellow-800">{lowStockCount}</div>
                     </div>
                     <div className="flex flex-col bg-red-50 p-4 w-full rounded-lg">
                         <div className="text-sm text-red-600">Out of Stock</div>
-                        <div className="font-bold text-xl text-red-800">10</div>
+                        <div className="font-bold text-xl text-red-800">{outOfStock}</div>
                     </div>
                 </div>
             </div>

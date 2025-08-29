@@ -67,19 +67,47 @@ const isUserAdmin = async (req: Request) => {
     return false;
 }
 
+const setQuantityFilter = (filterStock: boolean, filterStockCount: number): any => {
+    if(!filterStock) {
+        return undefined;
+    }
+
+    if(filterStockCount === 0) {
+        return 0;
+    }
+    return {gt: 0, lte: filterStockCount};
+}
 
 
 router.get('/search', optionalAuthMiddleware, async (req, res) => {
 
     try {
+        const cursor = Number(req.query.cursor) || 0;
+        const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
+        const minPrice = req.query.minPrice ? Number(req.query.minPrice) : undefined;
+        const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
         const queryString = req.query.query as string | undefined;
         const query = queryString || '';
         const sortBy: string = req.query.sortBy ? req.query.sortBy as string : 'id';
-        const sortOrder: string = req.query.sortOrder as string === 'desc' ? 'desc' : 'asc';
-        
-        const adminRole = await isUserAdmin(req);
+        const sortOrder: 'asc'|'desc' = req.query.sortOrder === 'desc' ? 'desc' : 'asc';
+        const sortByAverageRating = req.query.sortByAverageRating !== undefined;
+        const selectWithSpecialOffer = req.query.selectWithSpecialOffer !== undefined;
 
-        const books = await prisma.book.findMany({
+        const filterIsActive: boolean = (req.query.filterStatus === undefined 
+            || req.query.filterStatus === '') ? false : true;
+        const activeStatus: boolean = req.query.filterStatus === "inactive" ? false : true;
+
+        const filterStock: boolean = (req.query.filterStock === undefined 
+                    || req.query.filterStock === '' 
+                    || isNaN(Number(req.query.filterStock))) ? false : true;
+        const filterStockCount: number = Number(req.query.filterStock);
+
+        const adminRole = await isUserAdmin(req);
+        let books;
+        let nextCursor;
+
+
+        books = await prisma.book.findMany({
             where: {
                 OR: [
                     {
@@ -95,21 +123,44 @@ router.get('/search', optionalAuthMiddleware, async (req, res) => {
                         }
                     }
                 ],
+                category_id: categoryId || undefined,
+                price: { gte: minPrice , lte: maxPrice },
+                average_rating: sortByAverageRating ? { gte: 4 } : undefined,
+                special_offers: selectWithSpecialOffer ? 
+                    {
+                        some: {
+                            offer_valid_until: {
+                                gte: new Date()
+                            }
+                        }
+                    }: undefined,
+
+                is_active: filterIsActive ? activeStatus : undefined,
+                quantity: setQuantityFilter(filterStock, filterStockCount)
             },
             include: {
                 category: true,
-            }, orderBy: [
+            },
+            take: 11, 
+            orderBy: [
                 { [sortBy]: sortOrder },
                 { id: 'asc'}
-            ]
+            ],
+            cursor: cursor ? { id: cursor} : undefined
+
         });
+
+        if(books.length > 10) {
+            nextCursor = books[books.length-1].id;
+            books.pop();
+        }
 
         const transformedBooks = books.map((book) => transformBookForUser(adminRole, book));
     
         return res.status(200).json({
             count: transformedBooks.length, 
             data: transformedBooks, 
-            nextCursor: null
+            nextCursor: nextCursor
         });
     
     } catch(error: any) {
@@ -162,16 +213,25 @@ router.post('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
 // return all the books
 router.get('/', optionalAuthMiddleware, async (req, res) => {
     try {
-        const cursor  = Number(req.query.cursor) || 0;
+        const cursor = Number(req.query.cursor) || 0;
         const categoryId = req.query.cid ? Number(req.query.cid) : undefined;
         const minPrice = req.query.minPrice ? Number(req.query.minPrice) : undefined;
         const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
         const sortBy: string = req.query.sortBy ? String(req.query.sortBy) : 'id';
-        const sortOrder: string = String(req.query.sortOrder) === 'desc' ? 'desc' : 'asc';
+        const sortOrder: 'asc'|'desc' = req.query.sortOrder === 'desc' ? 'desc' : 'asc';
         const sortByAverageRating = req.query.sortByAverageRating !== undefined;
         const selectWithSpecialOffer = req.query.selectWithSpecialOffer !== undefined;
+        const filterIsActive: boolean = (req.query.filterStatus === undefined 
+                                        || req.query.filterStatus === '') ? false : true;
+        const activeStatus: boolean = req.query.filterStatus === "inactive" ? false : true;
+
+        const filterStock: boolean = (req.query.filterStock === undefined 
+                                        || req.query.filterStock === '' 
+                                        || isNaN(Number(req.query.filterStock))) ? false : true;
+        const filterStockCount: number = Number(req.query.filterStock);
 
         const adminRole = await isUserAdmin(req);
+
 
         let books;
         let nextCursor;
@@ -188,7 +248,9 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
                                 gte: new Date()
                             }
                         }
-                    }: undefined
+                    }: undefined,
+                is_active: filterIsActive ? activeStatus : undefined,
+                quantity: setQuantityFilter(filterStock, filterStockCount)
             },
             include: {
                 category: true,

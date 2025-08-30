@@ -7,6 +7,7 @@ import { MdDeleteOutline, MdInventory } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiSearch } from "react-icons/bi";
 import { enqueueSnackbar } from "notistack";
+import DeleteOverlay from "../../components/DeleteOverlay";
 
 
 const BookManagement = () => {
@@ -25,6 +26,9 @@ const BookManagement = () => {
     const [activeBookCount, setActiveBookCount] = useState<number>(0);
     const [lowStockCount, setLowStockCount] = useState<number>(0);
     const [outOfStock, setOutOfStock] = useState<number>(0);
+
+    const [showDeleteOption, setShowDeleteOption] = useState<boolean>(false);
+    const [bookToBeDeleted, setBookToBeDeleted] = useState<number|null>(null);
     
     const observeRef = useRef(null);
     const navigate = useNavigate();
@@ -257,13 +261,22 @@ const BookManagement = () => {
                             </td>
                             <td>
                                 <div className="flex items-center gap-2">
-                                    <button className="text-blue-700 text-lg">
+                                    <button 
+                                        className="text-blue-700 text-lg"
+                                        onClick={() => navigate(`/books/details/${book.id}`)}
+                                    >
                                         <AiOutlineEye/>
                                     </button>
-                                    <button className="text-yellow-600 text-lg">
+                                    <button 
+                                        className="text-yellow-600 text-lg"
+                                        onClick={() => navigate(`/admin-dashboard/books/edit/${book.id}`)}
+                                    >
                                         <AiOutlineEdit/>
                                     </button>
-                                    <button className="text-red-600 text-lg">
+                                    <button 
+                                        className="text-red-600 text-lg"
+                                        onClick={() => {setBookToBeDeleted(book.id); setShowDeleteOption(true)}}
+                                    >
                                         <MdDeleteOutline/>
                                     </button>
                                 </div>
@@ -273,6 +286,13 @@ const BookManagement = () => {
                 </tbody>
             </table>
 
+            <DeleteOverlay
+                deleteUrl={`http://localhost:5555/books/${bookToBeDeleted}`}
+                itemName='book'
+                isOpen={showDeleteOption}
+                onClose={()=>setShowDeleteOption(false)}
+                onDeleteSuccess={() => navigate(-1)}
+            />
             {nextCursor && <div id='loadNextPage' ref={observeRef} className="h-10 w-full"></div>}
             
         </div>

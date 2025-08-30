@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react'
-import axios from 'axios';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import { enqueueSnackbar } from 'notistack';
@@ -11,8 +10,6 @@ import { RootState } from '../types';
 import { useSelector } from 'react-redux';
 import { UserBook } from '../types';
 import { MdOutlineDelete } from 'react-icons/md';
-import { AiOutlineEdit } from 'react-icons/ai';
-import DeleteOverlay from '../components/DeleteOverlay';
 
 
 const ShowBook = () => {
@@ -22,8 +19,10 @@ const ShowBook = () => {
     const { handleCartUpdate } =useHandleCartUpdate();
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const [selectedOffer, setSelectedOffer] = useState<number|null>(null);
-    const [showDeleteOption, setShowDeleteOption] = useState<boolean>(false);
-    const navigate = useNavigate();
+
+    const location = useLocation();
+    const isAdminRoute: boolean = location.pathname.includes('/admin-dashboard');
+    const showAdminFeatures: boolean = isAdminRoute && (userinfo.userRole == 'admin' || userinfo.userRole == 'superadmin');
 
 
     const handleAddToWishList = (id: number) => {
@@ -144,8 +143,7 @@ const ShowBook = () => {
                                             <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
                                         </div>
 
-                                        {(userinfo.userRole == 'admin' || userinfo.userRole == 'superadmin')
-                                            && 
+                                        { showAdminFeatures && 
                                             <button
                                                 onClick={() => handleRemoveOffer(offer.id)}
                                             >
@@ -163,10 +161,14 @@ const ShowBook = () => {
                         </div>)}
 
                         <div className='flex my-6 gap-2'>
-                            <Link 
-                               className="inline-block px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
-                               to={`/admin-dashboard/books/add-offer/${book.id}`}
-                            >Add new offer</Link>
+                            { showAdminFeatures &&
+                                <Link 
+                                    className="inline-block px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
+                                    to={`/admin-dashboard/books/add-offer/${book.id}`}
+                                >
+                                    Add new offer
+                                </Link>
+                            }
                             <button
                                 className="px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
                                 onClick={() => handleCartUpdate(Number(book.id), 1, selectedOffer)}
@@ -176,36 +178,6 @@ const ShowBook = () => {
                                 onClick={() => handleAddToWishList(Number(book.id))}
                             >Add to wishlist</button>
                         </div>
-
-                        {(userinfo.userRole === 'admin' || userinfo.userRole === 'superadmin') && (
-                            <div className='flex flex-col p-4 gap-3 shadow hover:shadow-md rounded-lg transition-all duration-200'>
-                                <h2 className='text-lg font-semibold mb-4 text-gray-700'>Admin Options:</h2>
-
-                                <div className='flex flex-col gap-3'>
-                                    <button 
-                                        className='flex items-center gap-2 py-2 px-4 rounded-lg text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-all duration-200' 
-                                        onClick={() => navigate(`/admin-dashboard/books/edit/${book.id}`)}
-                                    >
-                                        <AiOutlineEdit className='inline text-xl' /> Edit Book
-                                    </button>
-
-                                    <button 
-                                        className='flex items-center gap-2 py-2 px-4 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-all duration-200' 
-                                        onClick={() => setShowDeleteOption(true)}
-                                    >
-                                        <MdOutlineDelete className='inline text-xl' /> Delete Book
-                                    </button>
-                                </div>
-
-                                <DeleteOverlay
-                                    deleteUrl={`http://localhost:5555/books/${book.id}`}
-                                    itemName='book'
-                                    isOpen={showDeleteOption}
-                                    onClose={()=>setShowDeleteOption(false)}
-                                    onDeleteSuccess={() => navigate(-1)}
-                                />
-                           </div>
-                        )}
                     </div>
 
                     <div className='m-4 p-4 flex md:mr-20 shadow rounded-lg hover:shadow-md transition-all duration-200'>

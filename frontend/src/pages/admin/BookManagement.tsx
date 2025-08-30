@@ -263,7 +263,7 @@ const BookManagement = () => {
                                 <div className="flex items-center gap-2">
                                     <button 
                                         className="text-blue-700 text-lg"
-                                        onClick={() => navigate(`/books/details/${book.id}`)}
+                                        onClick={() => navigate(`/admin-dashboard/books/details/${book.id}`)}
                                     >
                                         <AiOutlineEye/>
                                     </button>

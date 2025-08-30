@@ -115,6 +115,7 @@ const App = () => {
                   <Route path='offer/edit/:id' element={<CreateOffer />} />
                   <Route path='books/add-offer/:id' element={<AddOfferToBook />} />
 
+                  <Route path='books/details/:id' element={<ShowBook />} />
                   <Route path='books/create' element={<CreateBook />} /> 
                   <Route path='books/edit/:id' element={<CreateBook />} />
                   <Route path='books/delete/:id' element={<DeleteBook />} />

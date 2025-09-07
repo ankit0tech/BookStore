@@ -134,7 +134,7 @@ const BookManagement = () => {
 
 
     return (
-        <div className="w-full min-w-[600px]">
+        <div className="w-full min-w-[850px]">
             <div className="flex flex-col gap-4 mb-8 ">
                 <div className="flex justify-between gap-2 mt-4">
                     <div className="flex items-center gap-2 text-2xl font-semibold"><MdInventory className="inline text-2xl text-violet-700"/> Book Inventory Management</div>
@@ -233,8 +233,8 @@ const BookManagement = () => {
                 <thead className="">
                     <tr className="text-gray-700 bg-gray-100 text-xs text-left">
                         <th className="px-8 py-4 font-normal">BOOK</th>
-                        <th className="px-2 py-4 font-normal max-md:hidden">CATEGORY</th>
-                        <th className="px-2 py-4 font-normal max-md:hidden">PRICE</th>
+                        <th className="px-2 py-4 font-normal">CATEGORY</th>
+                        <th className="px-2 py-4 font-normal">PRICE</th>
                         <th className="px-2 py-4 font-normal">STOCK</th>
                         <th className="px-2 py-4 font-normal">STATUS</th>
                         <th className="px-2 py-4 font-normal">ACTION</th>
@@ -247,8 +247,8 @@ const BookManagement = () => {
                                 <div className="font-medium">{book.title}</div>
                                 <div className="text-gray-500">by {book.author}</div>
                             </td>
-                            <td className="px-2 py-4 max-md:hidden">{book.category?.title || "Uncategorized"}</td>
-                            <td className="px-2 py-4 max-md:hidden">&#8377;{book.price}</td>
+                            <td className="px-2 py-4">{book.category?.title || "Uncategorized"}</td>
+                            <td className="px-2 py-4">&#8377;{book.price}</td>
                             <td className="px-2 py-4"> 
                                 <div className={`px-2 py-0.5 rounded-full size-fit text-xs font-medium ${book.quantity == 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
                                     {book.quantity == 0 ? `${book.quantity} - Out of Stock` : `${book.quantity} - In Stock`}

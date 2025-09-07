@@ -110,7 +110,7 @@ const AddReview = () => {
                 <label className="my-1 font-medium text-sm text-gray-700" htmlFor="review_text">Your review</label>
                 <textarea 
                     // className="w-full resize-none h-40 appearance-none rounded-lg my-2 px-4 py-3 "
-                    className="w-full h-40 appearance-none my-2 px-4 py-3 border border-gray-300 focus:border-gray-500 focus:outline-none rounded-lg"
+                    className="w-full h-40 appearance-none my-2 px-4 py-3 border border-gray-300 focus:border-gray-500 focus:outline-hidden rounded-lg"
                     id='review_text'
                     name='review_text'
                     value={review}

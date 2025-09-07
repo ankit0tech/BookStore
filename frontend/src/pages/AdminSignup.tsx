@@ -50,7 +50,7 @@ const AdminSignup = () => {
                     id='password'
                     value={password}
                     onChange={ (e) => setPassword(e.target.value) }
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-hidden focus:border-gray-500"
                 ></input>
                 <button
                     type="submit"

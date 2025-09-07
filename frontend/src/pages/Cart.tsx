@@ -43,10 +43,10 @@ const Cart = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2">
                             <h2 className="text-2xl font-semibold mb-6">Cart</h2>
-                            <div className="bg-white rounded-lg shadow-sm">
+                            <div className="bg-white rounded-lg shadow-xs">
                                 {cartItems.data.map((item) => (
                                     <div className="flex items-center p-4 border-b last:border-b-0" key={item.id}>
-                                        <div className="w-28 h-36 rounded-lg overflow-hidden flex-shrink-0">
+                                        <div className="w-28 h-36 rounded-lg overflow-hidden shrink-0">
                                             <img
                                                 src={item.book.cover_image}
                                                 alt={item.book.title}
@@ -54,14 +54,14 @@ const Cart = () => {
                                             ></img>
                                         </div>
 
-                                        <div className="ml-4 flex-grow">
+                                        <div className="ml-4 grow">
                                             <p className="font-medium text-lg">{ item.book.title }</p>
                                             <p className="text-gray-600">{ item.book.author }</p>
                                             <div className="font-semibold mt-2"> 
                                                 {item.special_offer ? 
                                                     <p> 
                                                         &#8377;{ (item.book.price * (100 - item.special_offer.discount_percentage) / 100).toFixed(2)} 
-                                                        <span className="m-1 p-1 font-normal rounded text-white bg-red-500"> 
+                                                        <span className="m-1 p-1 font-normal rounded-sm text-white bg-red-500"> 
                                                             {item.special_offer.discount_percentage}% 
                                                         </span>
                                                         <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
@@ -100,7 +100,7 @@ const Cart = () => {
                         </div>
                         
                         <div className="lg:col-span-1">
-                            <div className="sticky top-4 p-6 bg-white h-min rounded-lg shadow-sm border-b">
+                            <div className="sticky top-4 p-6 bg-white h-min rounded-lg shadow-xs border-b">
                                 <p className="text-xl font-semibold mb-4">Order Summary</p>
                                 <div className="space-y-3">
                                     <div className="flex justify-between">

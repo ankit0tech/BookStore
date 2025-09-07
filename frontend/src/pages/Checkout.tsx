@@ -201,7 +201,7 @@ const Checkout = () => {
                                     {cartItems.data.map((item) => (
                                         <li className='flex gap-4' key={item.book.id}>
                                             <Link to={`/books/details/${item.book.id}`}>
-                                                <div className='w-24 h-32 bg-gray-100 shadow-sm rounded overflow-hidden flex justify-center items-center'>
+                                                <div className='w-24 h-32 bg-gray-100 shadow-xs rounded-sm overflow-hidden flex justify-center items-center'>
                                                     <img 
                                                         src={item.book.cover_image} 
                                                         alt={item.book.title} 
@@ -209,14 +209,14 @@ const Checkout = () => {
                                                     />
                                                 </div>
                                             </Link>
-                                            <div className="ml-4 flex-grow">
+                                            <div className="ml-4 grow">
                                                 <p className="font-medium text-lg">{ item.book.title }</p>
                                                 <p className="text-gray-600">{ item.book.author }</p>
                                                 <div className="font-semibold mt-2"> 
                                                     {item.special_offer ? 
                                                         <p> 
                                                             &#8377;{ (item.book.price * (100 - item.special_offer.discount_percentage) / 100).toFixed(2)} 
-                                                            <span className="m-1 p-1 font-normal rounded text-white bg-red-500"> 
+                                                            <span className="m-1 p-1 font-normal rounded-sm text-white bg-red-500"> 
                                                                 {item.special_offer.discount_percentage}% 
                                                             </span>
                                                             <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 

@@ -58,7 +58,7 @@ const ResetPasswordOverlay: React.FC<PasswordOverLayProps> = ({ isOpen, setIsOpe
                 onSubmit={(e) => handleFormSubmit(e)}>
                     <label htmlFor='email'>Enter email to reset password</label> 
                     <input 
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500" 
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-hidden focus:border-gray-500" 
                         type='email' 
                         id='email' 
                         value={email} onChange={(e) => setEmail(e.target.value)}

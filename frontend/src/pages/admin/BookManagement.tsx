@@ -151,7 +151,7 @@ const BookManagement = () => {
                     <div className="relative flex items-center w-full">
                         <BiSearch className="mx-3 absolute text-md text-gray-400"/>
                         <input 
-                            className="w-full min-w-48 pl-9 py-2 rounded-md border outline-none"
+                            className="w-full min-w-48 pl-9 py-2 rounded-md border outline-hidden"
                             placeholder="Search books..."
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyDown={(e) => {
@@ -159,7 +159,7 @@ const BookManagement = () => {
                             }}
                         ></input>
                     </div>
-                    <div className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md">
+                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
                         <select 
                             className=""
                             value={filterCategoryId}
@@ -176,7 +176,7 @@ const BookManagement = () => {
                             ))}
                         </select>
                     </div>
-                    <div className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md">
+                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
                         <select 
                             className=""
                             value={filterStatus}
@@ -187,7 +187,7 @@ const BookManagement = () => {
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
-                    <div className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md">
+                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
                         <select
                             className=""
                             value={filterStock}
@@ -199,7 +199,7 @@ const BookManagement = () => {
                         </select>
                     </div>
                     <div
-                        className="px-4 py-2 outline-none border focus:border-blue-300 rounded-md"
+                        className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md"
                     >
                         <button 
                             onClick={handleSortingChange}

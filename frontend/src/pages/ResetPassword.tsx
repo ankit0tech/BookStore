@@ -54,7 +54,7 @@ const ResetPassword = () => {
                     className=""
                 >Enter new password</label>
                 <input 
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500" 
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-hidden focus:border-gray-500" 
                     type="password" 
                     id="password1" 
                     value={password1}
@@ -66,7 +66,7 @@ const ResetPassword = () => {
                     className=""
                 >Re-enter new password</label>
                 <input
-                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500" 
+                    className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-hidden focus:border-gray-500" 
                     type="password" 
                     id="password2" 
                     value={password2}

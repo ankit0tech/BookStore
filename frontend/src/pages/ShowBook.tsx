@@ -90,9 +90,9 @@ const ShowBook = () => {
                 <Spinner />
             ) : (
                 <div className="flex flex-col">
-                    <div className='flex flex min-w-[200px] p-4 flex-shrink-0 gap-4 justify-between max-w-6xl'>
+                    <div className='flex flex min-w-[200px] p-4 shrink-0 gap-4 justify-between max-w-6xl'>
                         <div className='flex flex-row gap-6'>
-                            <div className='relative h-72 w-56 bg-gray-100 flex items-center justify-center flex-shrink-0 rounded-lg'>
+                            <div className='relative h-72 w-56 bg-gray-100 flex items-center justify-center shrink-0 rounded-lg'>
                                 <img
                                     src={book.cover_image}
                                     alt={book.title}
@@ -141,7 +141,7 @@ const ShowBook = () => {
                             </div>
                         </div>
 
-                        <div className="min-w-3xs">
+                        <div className="min-w-[300px]">
                             { book.special_offers?.length !=0 && (
                             <div className=''>
                                 { showAdminFeatures ? 

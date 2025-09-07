@@ -105,7 +105,7 @@ const Categories = () => {
             <div className="flex gap-2">
                 <div className="flex-1 relative">
                     <input 
-                        className="w-full pl-10 pr-4 border appearance-none focus:outline-none focus:shadow-sm rounded-lg py-2 px-3" 
+                        className="w-full pl-10 pr-4 border appearance-none focus:outline-hidden focus:shadow-xs rounded-lg py-2 px-3" 
                         type="text" 
                         placeholder='Search categories...'
                         value = {searchQuery}
@@ -129,7 +129,7 @@ const Categories = () => {
                 <div className="flex flex-col justify-between">
                     {
                         sortedCategories?.map((item) => (
-                            <div className="my-2 hover:shadow transition-shadow duration-100 border rounded-lg truncate" key={item.id}>
+                            <div className="my-2 hover:shadow-sm transition-shadow duration-100 border rounded-lg truncate" key={item.id}>
                                 <div className="p-4 flex flex-row items-center justify-between w-full">
                                     <div>
                                         <div className="font-semibold text-xl">{item.title}</div>

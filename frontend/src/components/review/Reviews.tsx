@@ -5,7 +5,7 @@ import axios from "axios";
 import { FaRegStar, FaStar } from "react-icons/fa";
 
 
-const Reviews: React.FC<{averageRating: number, id: number}> = ({averageRating, id }) => {
+const Reviews: React.FC<{id: number}> = ({id }) => {
 
     const [reviews, setReviews] = useState<Review[]>([]);
 
@@ -41,23 +41,18 @@ const Reviews: React.FC<{averageRating: number, id: number}> = ({averageRating, 
     return (
         <div className="">
             {reviews.length == 0 ?
-                <div className="text-gray-900"> No reviews for this book till now !!!</div> 
+                <div className="text-xl text-gray-900"> No reviews for this book till now !!!</div> 
                     :
                 <div>
-                    {averageRating != 0 ?
-                        <div className="text-gray-900">Average Rating: {averageRating}</div>
-                    : 
-                        null
-                    }
-                    <div className="my-2 font-bold text-gray-900"> Reviews:</div>
+                    <div className="text-xl font-semibold text-gray-900"> Reviews:</div>
                     <ul>
                         {reviews.map((review) => (
                             <li 
                                 key={review.id}
-                                className="border-b-2 roundd-lg py-2 my-2 t4ext-gray-700">
-                                    <div className="text-sm"> By User: {review.user?.email} </div>
+                                className="border-b-2 roundd-lg py-2 my-2 text-gray-800">
+                                    <div className="text-md"> By: {review.user?.email} </div>
                                     {showStars(review.rating)}
-                                    {review.review_text.length > 0 && <div className="mt-1 text-sm"> Review:  {review.review_text} </div>}
+                                    {review.review_text.length > 0 && <div className="mt-1 text-md"> Review:  {review.review_text} </div>}
                             </li>    
                         ))}
                     </ul>

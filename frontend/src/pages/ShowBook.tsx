@@ -214,68 +214,83 @@ const ShowBook = () => {
                     </div>
                     
                     <div className='m-4 p-4'>
-                        <h2 className='font-semibold'>Additional Details:</h2>
-                        { showAdminFeatures && isAdminBook(book) && (
-                            <>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    {book.is_active ? 'Active': 'Not Active'}
+                        <h2 className='pb-4 text-xl font-semibold text-gray-900'>Book Details:</h2>
+                        <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 min-w-64'>
+                            <div className='max-w-100'>
+                                <p className='text-gray-800 text-lg font-medium'>Basic Information:</p>
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Published:</span><span className='font-semibold'>{book.publish_year}</span>
                                 </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    Quantity: {book.quantity}
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>ISBN:</span><span className='font-semibold'>{book.isbn}</span>
                                 </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    Purchase Count: {book.purchase_count}
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Pages:</span><span className='font-semibold'>{book.pages}</span>
                                 </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    {book.is_cancellable ? 'Cancellable' : 'Not Cancellable'}
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Format:</span><span className='font-semibold'>{book.format}</span>
                                 </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    Calcellation Hours: {book.cancellation_hours}
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Language:</span><span className='font-semibold'>{book.language}</span>
                                 </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    Calcellation Policy: {book.cancellation_policy}
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Publisher:</span><span className='font-semibold'>{book.publisher}</span>
                                 </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    {book.is_returnable ? 'Returnable' : 'Not Returnable'}
-                                </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    Return Days: {book.return_days}
-                                </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    Return Policy: {book.return_policy}
-                                </p>
-                                 <p className='my-1 text-gray-800 text-sm'>
-                                    Shelf Location: {book.shelf_location}
-                                </p>
-                                <p className='my-1 text-gray-800 text-sm'>
-                                    SKU: {book.sku}
-                                </p>
-                            
-                            </>
-                        )}
-                        <p className='my-1 text-gray-800 text-sm'>
-                            Published: {book.publish_year}
-                        </p>
-                        <p className='my-1 text-gray-800 text-sm'>
-                            ISBN: {book.isbn}
-                        </p>
-                        <p className='my-1 text-gray-800 text-sm'>
-                            Pages: {book.pages}
-                        </p>
-                        <p className='my-1 text-gray-800 text-sm'>
-                            Format: {book.format}
-                        </p>
-                        <p className='my-1 text-gray-800 text-sm'>
-                            Language: {book.language}
-                        </p>
-                        <p className='my-1 text-gray-800 text-sm'>
-                            Publisher: {book.publisher}
-                        </p>
+                            </div>
+                        
+                            { showAdminFeatures && isAdminBook(book) && (
+                                <div className='max-w-100'>
+                                    <p className='text-gray-800 text-lg font-medium'>Inventory Information:</p>
+                                    <p className='flex justify-between my-1 text-sm'>
+                                        <span className='text-gray-600'>Status:</span>
+                                        <span className={`px-2 py-0.5 text-xs rounded-full ${book.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}`}>{book.is_active ? 'Active' : 'Inactive'}</span>
+                                    </p>
+                                    <p className='flex justify-between my-1 text-sm'>
+                                        <span className='text-gray-600'>Quantity:</span><span className='font-semibold'>{book.quantity}</span>
+                                    </p>
+                                    <p className='flex justify-between my-1 text-sm'>
+                                        <span className='text-gray-600'>Purchase Count:</span><span className='font-semibold'>{book.purchase_count}</span>
+                                    </p>
+                                    <p className='flex justify-between my-1 text-sm'>
+                                        <span className='text-gray-600'>Shelf Location:</span><span className='font-semibold'>{book.shelf_location}</span>
+                                    </p>
+                                    <p className='flex justify-between my-1 text-sm'>
+                                        <span className='text-gray-600'>SKU:</span><span className='font-semibold'>{book.sku}</span>
+                                    </p>
+                                </div>
+                            )}
 
+                            <div className='max-w-100'>
+                                <p className='text-gray-800 text-lg font-medium'>Policies:</p>
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Cancellable:</span>
+                                    <span className={`px-2 py-0.5 text-xs rounded-full ${book.is_cancellable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}`}>{book.is_cancellable ? 'Yes' : 'No'}</span>
+                                </p>
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Cancellation Hours:</span><span className='font-semibold'>{book.cancellation_hours}</span>
+                                </p>
+                                {book.cancellation_policy && <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Cancellation Policy:</span><span className='font-semibold'>{book.cancellation_policy}</span>
+                                </p>}
+
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Returnable:</span>
+                                    <span className={`px-2 py-0.5 text-xs rounded-full ${book.is_returnable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}`}>{book.is_returnable ? 'Yes' : 'No'}</span>
+                                </p>
+                                <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Return days:</span><span className='font-semibold'>{book.return_days}</span>
+                                </p>
+                                {book.cancellation_policy && <p className='flex justify-between my-1 text-sm'>
+                                    <span className='text-gray-600'>Return Policy:</span><span className='font-semibold'>{book.return_policy}</span>
+                                </p>}
+                                
+    
+                            </div>
+                        </div>
                     </div>
 
                     <div className='m-4 p-4 flex'>
-                        <Reviews averageRating={book.average_rating} id={Number(book.id)} />
+                        <Reviews id={Number(book.id)} />
                     </div>
                 </div>
             )}

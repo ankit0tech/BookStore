@@ -18,7 +18,7 @@ const Orders = () => {
 
     const formatDate = (date: Date) => {
         const d = new Date(date);
-        return new Intl.DateTimeFormat('en-GB', {
+        return new Intl.DateTimeFormat('en-US', {
             day: 'numeric',
             month: 'long',
             year: 'numeric',

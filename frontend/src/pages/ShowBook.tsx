@@ -112,7 +112,7 @@ const ShowBook = () => {
                                 <h2 className='text-3xl font-semibold'>
                                     {book.title}
                                 </h2>
-                                <p className='pb-4 text-gray-700 text-sm'>
+                                <p className='pb-2 text-gray-700 text-sm'>
                                     by {book.author}
                                 </p>
                                 <p className='py-1 text-gray-800 text-md'>
@@ -151,6 +151,12 @@ const ShowBook = () => {
                                             { book.special_offers?.map((offer) => (
                                                 <li key={offer.id} className='flex flex-row items-center justify-between gap-x-4'>
                                                     <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
+                                                    
+                                                    <button
+                                                        onClick={() => handleRemoveOffer(offer.id)}
+                                                    >
+                                                        <MdOutlineDelete className='text-xl text-red-500 hover:text-red-600 transition-colors duration-200' /> 
+                                                    </button>
                                                 </li>
                                             ))}
                                         </ul>
@@ -172,11 +178,7 @@ const ShowBook = () => {
                                                         <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
                                                     </div>
 
-                                                    <button
-                                                        onClick={() => handleRemoveOffer(offer.id)}
-                                                    >
-                                                        <MdOutlineDelete className='text-xl text-red-500 hover:text-red-600 transition-colors duration-200' /> 
-                                                    </button>
+                                                    
                                                 </li>
                                             ))}
 

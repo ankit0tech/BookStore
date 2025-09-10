@@ -14,8 +14,8 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
             <div className="my-1 flex gap-1">
                 {[...Array(5)].map((_, index) => (
                     index < stars ?
-                    <FaStar key={index} className="text-yellow-400" /> :
-                    <FaRegStar key={index} className="text-gray-300" />
+                    <FaStar key={index} className="text-yellow-400 text-md" /> :
+                    <FaRegStar key={index} className="text-gray-300 text-sm" />
                 ))}
             </div>
         );
@@ -37,22 +37,51 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
         
     }, [id]);
 
+    const formatDate = (date: Date): string => {
+        const d = new Date(date);
+        
+        return new Intl.DateTimeFormat('en-US', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }).format(d);
+    }
 
     return (
-        <div className="">
+        <div className="w-full">
             {reviews.length == 0 ?
                 <div className="text-xl text-gray-900"> No reviews for this book till now !!!</div> 
                     :
-                <div>
-                    <div className="text-xl font-semibold text-gray-900"> Reviews:</div>
-                    <ul>
+                <div className="w-full">
+                    <div className="pb-2 text-xl font-semibold text-gray-900">Customer Reviews</div>
+                    <p className="py-2 text-sm text-gray-600">{reviews.length} reviews</p>
+                    <ul className="divide-y divide-gray-200">
                         {reviews.map((review) => (
                             <li 
-                                key={review.id}
-                                className="border-b-2 roundd-lg py-2 my-2 text-gray-800">
-                                    <div className="text-md"> By: {review.user?.email} </div>
-                                    {showStars(review.rating)}
-                                    {review.review_text.length > 0 && <div className="mt-1 text-md"> Review:  {review.review_text} </div>}
+                            key={review.id}
+                            className="flex gap-2 py-4 my-4 w-full _rounded-lg _border _shadow _hover:shadow-md text-gray-800 transition-shadow duration-200">
+                                
+                                <div className="rounded-full p-2 text-sm font-semibold text-blue-700 bg-blue-100 w-fit h-fit">{review.user?.email.substring(0,2).toUpperCase()}</div>
+                                <div className="w-full">
+                                    <div className="py-2">
+                                        
+                                        <div className="w-full flex justify-between items-center">
+                                            <div className="flex gap-3 items-center">
+                                                <div className="text-sm font-medium">{review.user?.email.split('@')[0]} </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="inline-block">{showStars(review.rating)}</span> <span className="inline-block text-sm text-gray-700">{review.rating}/5</span>
+                                                </div>
+                                            </div>
+                                            <div className="text-xs text-gray-600">{formatDate(review.created_at)}</div>
+                                        </div>
+
+                                    </div>
+
+                                    {review.review_text.length > 0 && 
+                                        <div className="mt-1 text-md text-gray-800"> {review.review_text} </div>
+                                    }
+                                    
+                                </div>
                             </li>    
                         ))}
                     </ul>

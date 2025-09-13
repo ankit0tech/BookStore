@@ -11,11 +11,11 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
 
     const showStars = (stars: number) => {
         return (
-            <div className="my-1 flex gap-1">
+            <div className="my-1 flex items-center gap-1">
                 {[...Array(5)].map((_, index) => (
                     index < stars ?
                     <FaStar key={index} className="text-yellow-400 text-md" /> :
-                    <FaRegStar key={index} className="text-gray-300 text-sm" />
+                    <FaRegStar key={index} className="text-gray-300 text-md" />
                 ))}
             </div>
         );

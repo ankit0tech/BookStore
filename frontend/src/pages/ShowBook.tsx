@@ -49,6 +49,7 @@ const ShowBook = () => {
         .then((response) => {
             console.log(response);
             enqueueSnackbar('Offer removed successfully', { variant: "success" });
+            fetchBook();
         })
         .catch((error: any) => {
             console.log(error);
@@ -56,9 +57,7 @@ const ShowBook = () => {
         });
     }
 
-    useEffect(() => {
-        setLoading(true);
-
+    const fetchBook = () => {
         api(`http://localhost:5555/books/${id}`)
         .then((response) => {
             console.log(response.data);
@@ -68,7 +67,13 @@ const ShowBook = () => {
         .catch((error) => {
             enqueueSnackbar("Error while loading book data");
             setLoading(false);
-        })
+        });
+    }
+
+    useEffect(() => {
+        setLoading(true);
+
+        fetchBook();
 
         // If user is logged in then add book to recently viewed
         if (userinfo.isAuthenticated) {
@@ -141,21 +146,22 @@ const ShowBook = () => {
                             </div>
                         </div>
 
-                        <div className="min-w-[300px]">
+                        <div className="min-w-[200px]">
                             { book.special_offers?.length !=0 && (
                             <div className=''>
                                 { showAdminFeatures ? 
                                     (<>
                                         <div className='font-medium py-2'>Offers:</div>
-                                        <ul className='text-gray-700 text-sm space-y-0.5'>
+                                        <ul className='text-gray-700 text-sm'>
                                             { book.special_offers?.map((offer) => (
                                                 <li key={offer.id} className='flex flex-row items-center justify-between gap-x-4'>
                                                     <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
                                                     
                                                     <button
+                                                        className='p-1 rounded-full text-red-500 hover:text-red-600 hover:scale-105 active:scale-98 transition-all duration-200'
                                                         onClick={() => handleRemoveOffer(offer.id)}
                                                     >
-                                                        <MdOutlineDelete className='text-xl text-red-500 hover:text-red-600 transition-colors duration-200' /> 
+                                                        <MdOutlineDelete className='text-xl _hover:scale-105 ease-in-out transition-all duration-200' /> 
                                                     </button>
                                                 </li>
                                             ))}
@@ -183,7 +189,7 @@ const ShowBook = () => {
                                             ))}
 
                                             {(book.special_offers && selectedOffer) && 
-                                                <button className='mt-2 hover:text-blue-500' onClick={() => setSelectedOffer(null)}>Clear offer</button> 
+                                                <button className='mt-1 text-gray-400 hover:text-gray-500' onClick={() => setSelectedOffer(null)}>Clear offer</button> 
                                             }
                                         </ul>
                                     </>)
@@ -191,22 +197,22 @@ const ShowBook = () => {
                             </div>)
                             }
 
-                            <div className='flex flex-col my-6 gap-2'>
+                            <div className='flex flex-col my-4 gap-2'>
                                 { showAdminFeatures ?
                                     <button 
-                                        className="px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
-                                        onClick={() => navigate(`/admin-dashboard/books/add-offer/${book.id}`)}
+                                        className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
+                                        onClick={() => navigate(`/admin-dashboard/books/add-offer/${book.id}`, {state: {book: book}})}
                                     >
                                         Add new offer
                                     </button>
                                     :
                                     <>
                                         <button
-                                            className="px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
+                                            className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
                                             onClick={() => handleCartUpdate(Number(book.id), 1, selectedOffer)}
                                         >Add to cart</button>
                                         <button
-                                            className="px-4 py-2 rounded-md text-blue-600 bg-blue-50 hover:bg-blue-200 transition-all duration-200"
+                                            className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
                                             onClick={() => handleAddToWishList(Number(book.id))}
                                         >Add to wishlist</button>
                                     </>

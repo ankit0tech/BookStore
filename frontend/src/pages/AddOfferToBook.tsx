@@ -91,8 +91,11 @@ const AddOfferToBook = () => {
                         <div className="h-40 w-32 p-2 bg-gray-100 border-2 border-gray-100 rounded-lg flex items-center justify-between">
                             <img 
                                 className="object-contain max-w-full max-h-full"
-                                src={book.cover_image} 
+                                src={book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'} 
                                 alt={book.title}
+                                onError={(e) => {
+                                    e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                }}
                             />
                         </div>
                         <div>

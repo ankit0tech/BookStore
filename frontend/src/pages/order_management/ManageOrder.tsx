@@ -318,8 +318,11 @@ const ManageOrder = () => {
                                             <div className="flex flex-row gap-6">
                                                 <img
                                                     className="w-32 h-44 object-scale-down rounded-md"
-                                                    src={item.book.cover_image}
+                                                    src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                                     alt={item.book.title}
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                                    }}
                                                 />
 
                                                 <div className="flex flex-col">

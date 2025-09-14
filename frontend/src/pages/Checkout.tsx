@@ -203,9 +203,12 @@ const Checkout = () => {
                                             <Link to={`/books/details/${item.book.id}`}>
                                                 <div className='w-24 h-32 bg-gray-100 shadow-xs rounded-sm overflow-hidden flex justify-center items-center'>
                                                     <img 
-                                                        src={item.book.cover_image} 
+                                                        src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'} 
                                                         alt={item.book.title} 
                                                         className='w-full h-full object-contain'
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                                        }}
                                                     />
                                                 </div>
                                             </Link>

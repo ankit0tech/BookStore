@@ -11,9 +11,12 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
             <Link to={`/books/details/${book.id}`}>
                 <div className="w-36 h-56 bg-gray-100 shadow-md overflow-hidden flex justify-center items-center">
                     <img 
-                        src={book.cover_image}
+                        src={book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                         alt="Book Cover"
                         className="w-full h-full object-cover object-scale-down"
+                        onError={(e) => {
+                            e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                        }}
                     />
                 </div>
             </Link>

@@ -99,9 +99,12 @@ const ShowBook = () => {
                         <div className='flex flex-row gap-6'>
                             <div className='relative h-72 w-56 bg-gray-100 flex items-center justify-center shrink-0 rounded-lg'>
                                 <img
-                                    src={book.cover_image}
+                                    src={book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                     alt={book.title}
                                     className='object-contain max-w-full max-h-full'
+                                    onError={(e) => {
+                                        e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                    }}
                                 >
                                 </img>
                                 <div>

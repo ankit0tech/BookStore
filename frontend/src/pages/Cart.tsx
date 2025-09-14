@@ -48,9 +48,12 @@ const Cart = () => {
                                     <div className="flex items-center p-4 border-b last:border-b-0" key={item.id}>
                                         <div className="w-28 h-36 rounded-lg overflow-hidden shrink-0">
                                             <img
-                                                src={item.book.cover_image}
+                                                src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                                 alt={item.book.title}
                                                 className="w-full h-full object-cover object-scale-down" 
+                                                onError={(e) => {
+                                                    e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                                }}
                                             ></img>
                                         </div>
 

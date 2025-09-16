@@ -50,7 +50,7 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
     return (
         <div className="w-full">
             {reviews.length == 0 ?
-                <div className="text-xl text-gray-900"> No reviews for this book till now !!!</div> 
+                <div className="text-lg text-gray-800"> No reviews for this book till now.</div> 
                     :
                 <div className="w-full">
                     <div className="pb-2 text-xl font-semibold text-gray-900">Customer Reviews</div>

@@ -108,7 +108,7 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
             <div className="flex">
                 <div className="relative flex flex-col px-4 text-black font-normal">                    
                     <input 
-                        className="transition-all duration-300 ease-in-out h-7 w-48 px-2 focus:w-64 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 border border-gray-300" 
+                        className="transition-all duration-300 ease-in-out h-7 w-48 px-2 focus:w-64 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-purple-600 border border-gray-300 bg-white" 
                         type="search" 
                         name="q" 
                         ref={searchBarRef}
@@ -135,7 +135,7 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
                                             <div>{item.book.title}</div> 
                                         </Link>
                                         <AiOutlineClose 
-                                            className="m-1 cursor-pointer border rounded"
+                                            className="m-1 cursor-pointer border rounded-sm"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 heandleRemoveRecentlyViewed(item.book.id)

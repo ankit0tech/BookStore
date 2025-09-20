@@ -36,7 +36,7 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
 
     return (
         <div
-            className='fixed inset-0 z-50 isolate flex justify-center bg-black bg-opacity-50 backdrop-blur-sm'
+            className='fixed inset-0 z-50 isolate flex justify-center bg-black bg-opacity-50 backdrop-blur-xs'
             onClick={handleOverlayClick}
         >
             <form 
@@ -65,7 +65,7 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
                         >Reason <span className='text-red-500'>*</span>
                     </label> 
                     <textarea 
-                        className='text-gray-700 px-2 py-1 min-h-48 border rounded-md focus:outline-none focus:border-blue-400'
+                        className='text-gray-700 px-2 py-1 min-h-48 border rounded-md focus:outline-hidden focus:border-blue-400'
                         placeholder='Please enter your reason...'
                         id="reason-text"
                         maxLength={500}

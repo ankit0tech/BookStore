@@ -19,9 +19,12 @@ const BookModal: React.FC<{ book: UserBook; onClose: () => void;}> = ({ book, on
                 />
                 <div className="w-48 h-64 bg-gray-100 rounded-lg shadow-md overflow-hidden flex justify-center items-center">
                     <img 
-                        src={book.cover_image}
+                        src={book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                         alt="Book Cover"
                         className="w-full h-full object-cover object-scale-down"
+                        onError={(e) => {
+                            e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                        }}
                     >
                     </img>
                 </div>

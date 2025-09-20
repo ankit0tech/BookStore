@@ -185,7 +185,7 @@ const ManageOrder = () => {
                                                 Delivery status:
                                         </label>
                                         <select
-                                            className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:border-blue-400"
+                                            className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-hidden focus:border-blue-400"
                                             value={deliveryStatus || ''}
                                             id='order-status'
                                             onChange={(e) => setDeliveryStatus(e.target.value)}
@@ -214,7 +214,7 @@ const ManageOrder = () => {
                                                 payment status:
                                         </label>
                                         <select
-                                            className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:border-blue-400"
+                                            className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-hidden focus:border-blue-400"
                                             value={paymentStatus || ''}
                                             onChange={(e) => setPaymentStatus(e.target.value)}
                                             id='payment-status'
@@ -244,7 +244,7 @@ const ManageOrder = () => {
                                                     Cancellation status:
                                             </label>
                                             <select
-                                                className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:border-blue-400"
+                                                className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-hidden focus:border-blue-400"
                                                 value={cancellationStatus || ''}
                                                 onChange={(e) => setCancellationStatus(e.target.value)}
                                                 id='cancellation-status'
@@ -275,7 +275,7 @@ const ManageOrder = () => {
                                                     Return status:
                                             </label>
                                             <select
-                                                className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-none focus:border-blue-400"
+                                                className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-hidden focus:border-blue-400"
                                                 value={returnStatus || ''}
                                                 onChange={(e) => setReturnStatus(e.target.value)}
                                                 id='return-status'
@@ -318,8 +318,11 @@ const ManageOrder = () => {
                                             <div className="flex flex-row gap-6">
                                                 <img
                                                     className="w-32 h-44 object-scale-down rounded-md"
-                                                    src={item.book.cover_image}
+                                                    src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                                     alt={item.book.title}
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                                    }}
                                                 />
 
                                                 <div className="flex flex-col">

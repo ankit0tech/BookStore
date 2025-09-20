@@ -18,7 +18,7 @@ const Orders = () => {
 
     const formatDate = (date: Date) => {
         const d = new Date(date);
-        return new Intl.DateTimeFormat('en-GB', {
+        return new Intl.DateTimeFormat('en-US', {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
@@ -56,7 +56,7 @@ const Orders = () => {
             : 
             <div className="space-y-6">
                 {orders.data.length === 0 ? (
-                    <div className="text-center py-12 rounded-lg shadow">
+                    <div className="text-center py-12 rounded-lg shadow-sm">
                         <h3 className="text-lg font-medium text-gray-900">No Orders Found</h3>
                         <p className="mt-2 text-sm text-gray-500">You haven't placed any orders yet.</p>
                     </div>

@@ -77,9 +77,12 @@ const RecentlyViewed = () => {
                                             className="block h-48 bg-gray-100"
                                         >
                                             <img 
-                                                src={item.book.cover_image}
+                                                src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                                 alt={item.book.title}
-                                                className="w-full h-full object-contain p-4"    
+                                                className="w-full h-full object-contain p-4"
+                                                onError={(e) => {
+                                                    e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                                }}
                                             ></img>
                                         </Link>
                                         

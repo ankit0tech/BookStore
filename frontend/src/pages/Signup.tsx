@@ -44,7 +44,7 @@ const Signup = () => {
                 <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
                     <label className="">Email</label>
                     <input
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-hidden focus:border-gray-500"
 
                         type="text"
                         value={email}
@@ -54,7 +54,7 @@ const Signup = () => {
                 <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
                     <label>Password</label>
                     <input
-                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-hidden focus:border-gray-500"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}

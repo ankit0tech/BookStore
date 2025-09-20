@@ -91,7 +91,7 @@ const Addresses = () => {
                 <div className="overflow-x-auto">
                     <div className={`grid grid-cols-1 ${isSidebarOpen ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-3 lg:grid-cols-4'} gap-6 min-w-max`}>
                         {addresses && addresses.map((address, index) => (
-                            <div key={index} className="p-6 flex flex-col border rounded-lg hover:shadow ">
+                            <div key={index} className="p-6 flex flex-col border rounded-lg hover:shadow-sm ">
                                 <div className="space-y-2">
                                     <div className="font-medium">{address.name}</div>
                                     <div className="text-gray-600">{address.house_number}</div>

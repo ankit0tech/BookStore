@@ -106,7 +106,7 @@ const CreateAddress = () => {
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">Name </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -117,7 +117,7 @@ const CreateAddress = () => {
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">House Number / Apartment </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
                         type="text"
                         value={houseNumber}
                         onChange={(e) => setHouseNumber(e.target.value)}
@@ -129,7 +129,7 @@ const CreateAddress = () => {
                 <div className='space-y-2'>
                     <label className="block text-sm font-medium text-gray-700">Street</label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
                         type="text"
                         value={street}
                         onChange={(e) => setStreet(e.target.value)}
@@ -140,7 +140,7 @@ const CreateAddress = () => {
                 <div className='space-y-2'>
                     <label className="block text-sm font-medium text-gray-700">City</label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
                         type="text"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
@@ -151,7 +151,7 @@ const CreateAddress = () => {
                 <div className='space-y-2'>
                     <label className="block text-sm font-medium text-gray-700">State</label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
                         type="text"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
@@ -162,7 +162,7 @@ const CreateAddress = () => {
                 <div className='space-y-2'>
                     <label className="block text-sm font-medium text-gray-700">Zip code </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
                         type="text"
                         value={zipCode}
                         onChange={(e) => setZipcode(e.target.value)}
@@ -173,7 +173,7 @@ const CreateAddress = () => {
                 <div className='space-y-2'>
                     <label className="block text-sm font-medium text-gray-700">Country </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg border border-1 border-gray-300 focus:border-blue-400 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
                         type="text"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
@@ -188,7 +188,7 @@ const CreateAddress = () => {
                     id="defaultAddress"
                     checked={isDefault}
                     onChange={() => setIsDefault(!isDefault)}
-                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded-sm"
                 />
                 <label htmlFor="defaultAddress" className="text-sm text-gray-700">
                     Make address default
@@ -205,7 +205,7 @@ const CreateAddress = () => {
                 </button>
 
                 <button 
-                    className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 disabled:opacity-50"
+                    className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 focus:outline-hidden focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 disabled:opacity-50"
                     type="submit"
                     disabled={loading}
                     > 

@@ -45,7 +45,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
         <>
         {isOpen ? (
             <div 
-                className="fixed inset-0 flex items-center justify-center bg-black backdrop-blur-sm bg-opacity-50 z-50 font-normal text-gray-800"
+                className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-50 font-normal text-gray-800"
                 onClick={handleOverlayClick}
             >
                <div className="bg-white p-6 rounded-xl border shadow-xl">
@@ -78,7 +78,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                                                 { item.book.title } 
                                                 { item.special_offer && <div className="text-red-500 text-sm"> {item.special_offer.discount_percentage}% OFF</div> }
                                             </div>
-                                            <div className="flex flex-row items-center bg-white gap-2 border border-gray-200 rounded-full px-3 py-1 hover:shadow-sm">
+                                            <div className="flex flex-row items-center bg-white gap-2 border border-gray-200 rounded-full px-3 py-1 hover:shadow-xs">
                                                 {item.quantity == 1 ?
                                                     <MdOutlineDelete
                                                         className="text-lg text-red-500 hover:text-red-600 cursor-pointer transition-colors"
@@ -122,7 +122,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                             disabled={!cartItems.data.length}
                             className={`px-6 py-2.5 border border-gray-300 rounded-lg transition-all duration-200 ${
                                 cartItems?.data.length
-                                ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-sm hover:shadow-md'
+                                ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-xs hover:shadow-md'
                                 : 'bg-gray-30 text-gray-500 cursor-not-allowed'
                             }`}
                         >

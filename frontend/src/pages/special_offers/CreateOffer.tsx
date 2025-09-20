@@ -134,7 +134,7 @@ const CreateOffer = () => {
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="discountPercentage">Discount Percentage</label>
                     <input 
-                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.discountPercentage ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.discountPercentage ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                         id="discountPercentage" 
                         type="number"
                         onChange={(e) => setDiscountPercentage(Number(e.target.value))}
@@ -148,7 +148,7 @@ const CreateOffer = () => {
 
                     <label className="block text-sm font-medium text-gray-700" htmlFor="offerType">Offer Type</label>
                     <input 
-                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.offerType ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.offerType ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                         id="offerType" 
                         type="text"
                         onChange={(e) => setOfferType(e.target.value)}    
@@ -160,7 +160,7 @@ const CreateOffer = () => {
                 <div className="space-y-2 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="description">Description</label>
                     <input 
-                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.description ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.description ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                         id="description"
                         type="text"
                         onChange={(e) => setDescription(e.target.value)}
@@ -172,7 +172,7 @@ const CreateOffer = () => {
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="offerValidFrom">Offer valid from</label>
                     
-                    <div className={`flex gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidFrom ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-gray-500`}>
+                    <div className={`flex gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidFrom ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-gray-500`}>
                         <input
                             className="pr-1"
                             id="offerValidFrom" 
@@ -194,7 +194,7 @@ const CreateOffer = () => {
 
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="offerValidUntil">Offer valid until</label>
-                    <div className={`flex gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidUntil ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-gray-500`}> 
+                    <div className={`flex gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidUntil ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-gray-500`}> 
                     
                         <input 
                             id="offerValidUntil" 

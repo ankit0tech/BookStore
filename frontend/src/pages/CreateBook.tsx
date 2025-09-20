@@ -218,7 +218,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Title</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.title ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.title ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
@@ -230,7 +230,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Author</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.author ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.author ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={author}
                             onChange={(e) => setAuthor(e.target.value)}
@@ -242,7 +242,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Price</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.price ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.price ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={price.toString()}
                             onChange={handlePriceInputChange}
@@ -254,7 +254,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Select Category</label>
                         <select
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.selectedCategory ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.selectedCategory ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             value={selectedCategory || ""}
                             onChange={(e) => setSelectedCategory(e.target.value)}
                             disabled={!categories?.length}
@@ -274,7 +274,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Publish Year</label>
                         <select 
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.publishYear ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.publishYear ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             value={publishYear || ''}
                             onChange={(e) => setPublishYear(e.target.value)}
                         >
@@ -290,7 +290,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Cover image url</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.imgUrl? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.imgUrl? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type= "url"
                             value={imgUrl}
                             onChange={(e) => setImgUrl(e.target.value)}
@@ -302,7 +302,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Description</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.description? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.description? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -313,7 +313,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>ISBN</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.isbn? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.isbn? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={isbn}
                             onChange={(e) => setIsbn(e.target.value)}
@@ -324,7 +324,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Publisher</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.publisher? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.publisher? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={publisher}
                             onChange={(e) => setPublisher(e.target.value)}
@@ -335,7 +335,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Language</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.language? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.language? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
@@ -346,7 +346,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Pages</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.pages? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.pages? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="number"
                             min={0}
                             value={pages}
@@ -358,7 +358,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Format</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.format? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.format? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="text"
                             value={format}
                             onChange={(e) => setFormat(e.target.value)}
@@ -369,7 +369,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Quantity</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.quantity? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.quantity? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type="number"
                             min={0}
                             value={quantity}
@@ -382,7 +382,7 @@ const CreateBook = () => {
                         <label className='text-sm font-semibold text-gray-600'>Book Status</label>
                         <div className='flex items-center mt-2 space-x-3'>
                             <button 
-                                className={`inline-flex items-center rounded-full transition-colors w-11 h-6 ${isActive ? 'bg-blue-600' : 'bg-gray-200'} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+                                className={`inline-flex items-center rounded-full transition-colors w-11 h-6 ${isActive ? 'bg-blue-600' : 'bg-gray-200'} focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
                                 type='button'  
                                 onClick={() => setIsActive(!isActive)}  
                             >
@@ -398,7 +398,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Shelf Location</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.shelfLocation? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.shelfLocation? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type='text'
                             value={shelfLocation}
                             onChange={(e) => setShelfLocation(e.target.value)}
@@ -409,7 +409,7 @@ const CreateBook = () => {
                     <div className=''>
                         <label className='text-sm font-semibold text-gray-600'>Stock Keeping Unit (SKU)</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.sku? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:border-blue-400`}
+                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.sku? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             type='text'
                             value={sku}
                             onChange={(e) => setSku(e.target.value)}

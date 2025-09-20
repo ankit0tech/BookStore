@@ -3,7 +3,9 @@ import { UserBook, Category } from "../../types";
 import { enqueueSnackbar } from "notistack";
 import api from "../../utils/api";
 import { ChildProps } from "../../App";
-import { MdOutlineSportsRugby } from "react-icons/md";
+import { HiOutlineSortDescending } from "react-icons/hi";
+import { MdFilterList } from "react-icons/md";
+import { IoFileTrayStackedOutline } from "react-icons/io5";
 
 interface Extended extends ChildProps {
     handleFetchBooks: (prevBooks: UserBook[], cursor:number|null) => void
@@ -86,95 +88,99 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
     }
 
     return (
-        <div className="py-2 px-4">
+        <div className="px-2 py-4">
+
+            <div className="">
+                <div className="flex items-center gap-1 my-2"><span className="inline-block text-xl"><HiOutlineSortDescending/></span> <span className="inline-block font-semibold">Sort By</span></div>
  
-            <div className="p-2">
-                <div className="font-bold">Sort By</div>
- 
-                 <div
-                    className={`cursor-pointer hover:text-purple-600  ${selectWithSpecialOffer && "text-purple-600"}`}
+                <div
+                    className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-950
+                          ${selectWithSpecialOffer && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                     onClick={() => setSelectWithSpecialOffer(!selectWithSpecialOffer)}
                 >Specail offers</div>
                 
                 <div
-                    className={`cursor-pointer hover:text-purple-600  ${sortBy === 'created_at' && sortOrder === 'desc' && "text-purple-600"}`}
+                    className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-950 ${sortBy === 'created_at' && sortOrder === 'desc' && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                     onClick={() => setSorting('created_at', 'desc')}
                 >New Arrivals</div>
 
                 <div
-                    className={`cursor-pointer hover:text-purple-600  ${sortByAverageRating && "text-purple-600"}`}
+                    className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-950 ${sortByAverageRating && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                     onClick={() => setSortByAverageRating(!sortByAverageRating)}
                 >4+ Rating</div>
                 
                 <div
-                    className={`cursor-pointer hover:text-purple-600  ${sortBy === 'purchase_count' && "text-purple-600"}`}
+                    className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-950 ${sortBy === 'purchase_count' && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                     onClick={() => setSorting('purchase_count', 'desc')}
                 >Bestsellers</div>
                 
-                <div>Price
+                <div>
+                    <div className="my-2 ml-4 font-medium">Price</div>
                     <div 
-                        className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'price' && sortOrder === 'desc' && "text-purple-600"}`}
+                        className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-950 ${sortBy === 'price' && sortOrder === 'desc' && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                         onClick={() => setSorting('price', 'desc')}
                     >Higest first</div>
                     <div 
-                        className={`pl-4 cursor-pointer hover:text-purple-600  ${sortBy === 'price' && sortOrder == 'asc' && "text-purple-600"}`}
+                        className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-950 ${sortBy === 'price' && sortOrder == 'asc' && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                         onClick={() => setSorting('price', 'asc')}
                     >Lowest first</div>
                 </div>
             </div>
             
 
-            <div className="p-2">
-                <div className="font-bold">Filter By</div>
+            <div className="my-4">
+                <div className="flex items-center gap-1 my-2"> <span className="inline-block text-xl"><MdFilterList></MdFilterList></span> <span className="inline-block font-semibold">Filter By</span></div>
                 <div>
-                    <h3 className="font-bold block">Price</h3>
+                    <h3 className="my-2 ml-4 font-medium">Price</h3>
                     <ul id="PriceFilter">
                         <li 
-                        className={`ml-4 cursor-pointer hover:text-purple-600 
-                            ${activePrice === 0 && "text-purple-600"}`}
+                        className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
+                            ${activePrice === 0 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                         onClick={() => {updateMinPrice(0); updateMaxPrice(100)}} >
                             Under &#8377;100
                         </li>
                         <li 
-                        className={`ml-4 cursor-pointer hover:text-purple-600
-                            ${activePrice === 100 && "text-purple-600"}`} 
+                        className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900
+                            ${activePrice === 100 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`} 
                         onClick={() => {updateMinPrice(100); updateMaxPrice(200)}} >
                             &#8377;100 - &#8377;200
                         </li>
                         <li 
-                        className={`ml-4 cursor-pointer hover:text-purple-600 
-                            ${activePrice === 200 && "text-purple-600"}`} 
+                        className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
+                            ${activePrice === 200 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`} 
                         onClick={() => {updateMinPrice(200); updateMaxPrice(500)}} >
                             &#8377;200 - &#8377;500
                         </li>
                         <li 
-                        className={`ml-4 cursor-pointer hover:text-purple-600 
-                            ${activePrice === 500 && "text-purple-600"}`}
+                        className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
+                            ${activePrice === 500 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                         onClick={() => {updateMinPrice(500); updateMaxPrice(1000)}} >
                             &#8377;500 - &#8377;1000
                         </li>
                         <li 
-                        className={`ml-4 cursor-pointer hover:text-purple-600 
-                            ${activePrice === 1000 && "text-purple-600"}`}
+                        className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
+                            ${activePrice === 1000 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
                         onClick={() => {updateMinPrice(1000); updateMaxPrice(null)}} >
                             Over &#8377;1000
                         </li>
                     </ul>
                 </div>
-                <h3 className="my-1 font-bold block">Category</h3>
-                <ul id="categoryList">
+                
+                {/* <p className="my-2 ml-4 font-semibold">Category</p> */}
+                <p className="flex items-center gap-1 my-4"><span className="inline-block"><IoFileTrayStackedOutline></IoFileTrayStackedOutline></span><span className="inline-block font-medium">Category</span></p>
+                <ul className="pl-4" id="categoryList">
                     {categories?.map((category) => (
-                        <li key={category.id} className="font-bold">
-                            {category.title}
+                        <li key={category.id} className="">
+                            <p className="font-medium my-2">{category.title}</p>
                             {category.sub_category.length > 0 && (
-                                <ul className="ml-4 font-normal">
+                                <ul className="_ml-2 font-normal">
                                     {category.sub_category.map((sub) => (
                                         <li 
                                             onClick={() => updateCategoryId(sub.id)} 
                                             key={sub.id} 
-                                            className={`cursor-pointer hover:text-purple-600 
-                                                ${activeCategory === sub.id && "text-purple-600"}`}>
-                                                    - {sub.title}
+                                            className={`py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-950/50 hover:text-gray-900 
+                                                ${activeCategory === sub.id && "text-gray-900 border-gray-950 hover:border-gray-900 font-semibold"}`}>
+                                                {sub.title}
                                         </li>
                                     ))}
                                 </ul>

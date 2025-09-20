@@ -43,7 +43,7 @@ const DeleteOverlay: React.FC<OverlayProps> = ({ deleteUrl, itemName, isOpen, on
             <div className="fixed inset-0 flex items-center justify-center z-50">
                 {/* backdrop with fade animation */}
                 <div
-                    className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-in-out"
+                    className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 ease-in-out"
                     onClick={handleOverlayClick}
                 />
                 {/* Dialog with scale and fade animation */}

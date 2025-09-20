@@ -103,10 +103,10 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
 
     return (
-        <div className='p-4 h-full'>
+        <div className='px-4 h-full'>
             
             <div className='flex gap-1 h-full'>
-                <div className='overflow-y-auto pe-3'>
+                <div className='overflow-y-auto pe-3 border-r mr-4 w-fit'>
                     <SideBar
                         selectWithSpecialOffer={selectWithSpecialOffer} 
                         setSelectWithSpecialOffer={setSelectWithSpecialOffer}

@@ -31,6 +31,20 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                 where: { email: userEmail }
             });
 
+            const book_data = await prisma.book.findUnique({
+                where: {
+                    id: req.body.book_id
+                },
+                select: {
+                    is_active: true,
+                    quantity: true
+                }
+            });
+
+            if(!book_data || !book_data.is_active || book_data.quantity < 1) {
+                return res.status(404).json({message: "Book unavailable"});
+            }
+
             if (user) {
                 const existingCartItem = await prisma.cart.findFirst({
                     where: {

@@ -16,13 +16,7 @@ const updateCart = async (book_id: number, quantity: number, authToken: string, 
         selected_offer_id: selectedOfferId
     };
 
-    try {
-        await api.post('http://localhost:5555/cart/update-cart', data, config);
-    }
-    catch (error) {
-        enqueueSnackbar("Error occurred while updating cart", {variant: 'error'});
-    }
-    
+    await api.post('http://localhost:5555/cart/update-cart', data, config);
 }
 
 const getCartItems = async (authToken: string): Promise<CartInterface> => {
@@ -59,7 +53,7 @@ const useHandleCartUpdate = () => {
             }
         } catch(error) {
             console.log(error);
-            enqueueSnackbar('Error while loading books', {variant: 'error'});
+            enqueueSnackbar('Error while updating cart', {variant: 'error'});
         }
     }
 

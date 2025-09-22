@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RecentlyViewed as RecentlyViewedInterface, RootState } from "../types/index";
@@ -8,14 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { getCartItems } from "../utils/cartUtils";
 import { useDispatch } from "react-redux";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
-import axios from "axios";
-import { ChildProps } from '../App';
-import { enqueueSnackbar } from "notistack";
 import api from "../utils/api";
 import { AiOutlineClose } from "react-icons/ai";
 
 
-const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
+const NavBar = () => {
 
     const [query, setQuery] = useState<string>('');
     const userinfo = useSelector((state: RootState) => state.userinfo);
@@ -44,13 +41,11 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     const heandleRemoveRecentlyViewed = async (id: number) => {
         
-        console.log('remove: ', id);
-
         const originalRecentlyViewed = [...recentlyViewed];
         setRecentlyViewed((prev) => prev.filter((item) => item.book.id != id));
 
         await api.delete(`http://localhost:5555/recently-viewed/remove/${id}`)
-        .then((response) =>{
+        .then(() =>{
         })
         .catch((error) => {
             console.log(error);
@@ -59,26 +54,14 @@ const NavBar = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
 
     }
 
-
     const handleSearch = () => {
+
         if (query) {
-            api.get(`http://localhost:5555/books/search?query=${query}`)
-            .then((response) => {
-                setBooks(response.data.data);
-                setNextCursor(response.data.nextCursor);
-            }
-            ).catch((error)=>{
-                enqueueSnackbar("Error while loading books", {variant: 'error'});
-            });
+            const params = new URLSearchParams();
+            params.append('searchQuery', query);
+            navigate(`/?${params.toString()}`);
         } else {
-            api
-            .get('http://localhost:5555/books')
-            .then((response) => {
-                setBooks(response.data.data);
-                setNextCursor(response.data.nextCursor);
-            }).catch((error)=>{
-                enqueueSnackbar("Error while loading books", {variant: 'error'});
-            });
+            navigate('/');
         }
     }
 

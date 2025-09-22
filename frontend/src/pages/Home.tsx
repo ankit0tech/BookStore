@@ -1,20 +1,22 @@
 import { useState , useEffect, useRef } from 'react'
 import axios from 'axios';
 import Spinner from '../components/Spinner';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch} from 'react-redux';
 import BooksTable from '../components/home/BooksTable';
 import BooksCard from '../components/home/BooksCard';
 // import { checkTokenExpiry } from '../redux/authMiddleware';
 // import { RootState } from '@reduxjs/toolkit/query';
 import { UserBook, RootState } from '../types/index';
-import { ChildProps } from '../App';
 import { enqueueSnackbar } from 'notistack';
 import SideBar from '../components/home/SideBar';
 import api from '../utils/api';
 
 
-const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
+const Home = () => {
+
+    const [books, setBooks] = useState<UserBook[]>([]);
+    const [nextCursor, setNextCursor] = useState<number|null>(null);
 
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
@@ -31,6 +33,8 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     const [sortOrder, setSortOrder] = useState<string|null>(null);
     const [sortByAverageRating, setSortByAverageRating] = useState<boolean>(false);
     const [selectWithSpecialOffer, setSelectWithSpecialOffer] = useState<boolean>(false);
+    const [searchParams] = useSearchParams();
+    const searchQuery = searchParams.get('searchQuery');
 
 
     // taking cursor manually as useState was updating it asynchronously
@@ -38,37 +42,51 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
         
         setLoading(true);
 
-        const params = new URLSearchParams();
-
-        if(params) params.append('cursor', String(cursor));
-        if(categoryId) params.append('cid', String(categoryId));
-        if(maxPrice) params.append('maxPrice', String(maxPrice));
-        if(minPrice) params.append('minPrice', String(minPrice));
-        if(sortBy) {
-            params.append('sortBy', sortBy);
-            if(sortOrder) params.append('sortOrder', sortOrder);
-        }
-        if(sortByAverageRating) params.append('sortByAverageRating', '');
-        if(selectWithSpecialOffer) params.append('selectWithSpecialOffer', '');
-        
-
-        const url = `http://localhost:5555/books?${params.toString()}`;
-
-        api
-        .get(url)
-        .then((response) => {
-            setBooks(() => {
-                const prevBookIds = new Set(prevBooks.map((b) => b.id));
-                const newBooks = response.data.data.filter((book: any) => !prevBookIds.has(book.id));
-                return [...prevBooks, ...newBooks];
+        if(searchQuery) {
+            api.get(`http://localhost:5555/books/search?query=${searchQuery}`)
+            .then((response) => {
+                setBooks(response.data.data);
+                setNextCursor(response.data.nextCursor);
+                setLoading(false);
+            }).catch((error)=>{
+                enqueueSnackbar("Error while loading books", {variant: 'error'});
+                setLoading(false);
             });
-            setNextCursor(response.data.nextCursor);
-            setLoading(false);
-        })
-        .catch((error)=>{
-            enqueueSnackbar("Error while loading books", {variant: 'error'});
-            setLoading(false);
-        });
+
+        } else {
+
+            const params = new URLSearchParams();
+
+            if(cursor) params.append('cursor', String(cursor));
+            if(categoryId) params.append('cid', String(categoryId));
+            if(maxPrice) params.append('maxPrice', String(maxPrice));
+            if(minPrice) params.append('minPrice', String(minPrice));
+            if(sortBy) {
+                params.append('sortBy', sortBy);
+                if(sortOrder) params.append('sortOrder', sortOrder);
+            }
+            if(sortByAverageRating) params.append('sortByAverageRating', '');
+            if(selectWithSpecialOffer) params.append('selectWithSpecialOffer', '');
+            
+
+            const url = `http://localhost:5555/books?${params.toString()}`;
+
+            api
+            .get(url)
+            .then((response) => {
+                setBooks(() => {
+                    const prevBookIds = new Set(prevBooks.map((b) => b.id));
+                    const newBooks = response.data.data.filter((book: any) => !prevBookIds.has(book.id));
+                    return [...prevBooks, ...newBooks];
+                });
+                setNextCursor(response.data.nextCursor);
+                setLoading(false);
+            })
+            .catch((error)=>{
+                enqueueSnackbar("Error while loading books", {variant: 'error'});
+                setLoading(false);
+            });
+        }
     }
 
     useEffect(() => {
@@ -78,7 +96,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
     useEffect(()=> {
         setNextCursor(null);
         handleFetchBooks([], null);
-    }, [categoryId, minPrice, maxPrice, sortBy, sortOrder, sortByAverageRating, selectWithSpecialOffer])
+    }, [categoryId, minPrice, maxPrice, sortBy, sortOrder, sortByAverageRating, selectWithSpecialOffer, searchQuery])
 
     useEffect(() => {
         if(!nextCursor || !observeRef.current) return;
@@ -116,10 +134,7 @@ const Home = ({ books, setBooks, nextCursor, setNextCursor}: ChildProps) => {
                         sortOrder={sortOrder} setSortOrder={setSortOrder}
                         minPrice={minPrice} setMinPrice={setMinPrice}
                         maxPrice={maxPrice} setMaxPrice={setMaxPrice}
-                        handleFetchBooks={handleFetchBooks}
                         categoryId={categoryId} setCategoryId={setCategoryId} 
-                        books={books} setBooks={setBooks}
-                        nextCursor={nextCursor} setNextCursor={setNextCursor}
                     />
                 </div>
                 <div className='flex-1 overflow-y-auto'>

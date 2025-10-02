@@ -37,7 +37,7 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
                 className="absolute -right-0 right-4 z-10 p-1"
                 onClick={() => handleAddToWishList(Number(book.id))}
             >
-                <VscHeart className="text-2xl text-gray-800 hover:text-red-500"></VscHeart>
+                <VscHeart className="text-2xl text-gray-800 cursor-pointer hover:text-red-500"></VscHeart>
             </div>
 
             <div className="w-56 h-56 _border _rounded-lg flex justify-center w-full">

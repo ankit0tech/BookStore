@@ -149,7 +149,7 @@ const BookManagement = () => {
 
                 <div className="my-2 flex items-center gap-2">
                     <div className="relative flex items-center w-full">
-                        <BiSearch className="mx-3 absolute text-md text-gray-400"/>
+                        <BiSearch className="mx-3 mt-0.5 absolute text-md text-gray-400"/>
                         <input 
                             className="w-full min-w-48 pl-9 py-2 rounded-md border outline-hidden"
                             placeholder="Search books..."

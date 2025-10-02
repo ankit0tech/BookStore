@@ -9,7 +9,12 @@ import { getCartItems } from "../utils/cartUtils";
 import { useDispatch } from "react-redux";
 import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 import api from "../utils/api";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineUser } from "react-icons/ai";
+import { IoCartOutline } from "react-icons/io5";
+import { MdOutlineDashboard } from "react-icons/md";
+import { BiSearch } from "react-icons/bi";
+import { LuLogOut } from "react-icons/lu";
+import { useClickOutside } from "../hooks/useClickOutside";
 
 
 const NavBar = () => {
@@ -23,6 +28,11 @@ const NavBar = () => {
     const dispatch = useDispatch();
     const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewedInterface[]>([]);
     const [showRecentlyViewedPalet, setShowRecentlyViewedPalet] = useState(false);
+    const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
+    const profileMenuRef = useRef(null);
+
+    useClickOutside(profileMenuRef, () => setShowProfileMenu(false));
+
 
     const handleSearchBarClick = () => {
         api.get('http://localhost:5555/recently-viewed')
@@ -35,7 +45,7 @@ const NavBar = () => {
             });
     }
 
-    const handleOnBlur = () => {
+    const handleOnSearchBarBlur = () => {
         setShowRecentlyViewedPalet(false);
     }
 
@@ -86,58 +96,85 @@ const NavBar = () => {
     }
 
     return (
-        <div className="flex justify-between px-4 bg-purple-500 h-12 text-white font-bold items-center">
-            <button className="flex" onClick={() =>navigate('/')}>BookStore</button>
-            <div className="flex">
-                <div className="relative flex flex-col px-4 text-black font-normal">                    
-                    <input 
-                        className="transition-all duration-300 ease-in-out h-7 w-48 px-2 focus:w-64 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-purple-600 border border-gray-300 bg-white" 
-                        type="search" 
-                        name="q" 
-                        ref={searchBarRef}
-                        onClick={handleSearchBarClick}
-                        onBlur={handleOnBlur}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                            if(e.key === 'Enter') handleSearch();
-                        }}
-                        placeholder="Search here..."
+        <div className="flex justify-between px-4 bg-white h-14 items-center border">
+            <button className="text-gray-950 text-lg text-semibold ml-6" onClick={() =>navigate('/')}>BookStore</button>
+            <div className="relative flex items-center px-4 text-black font-normal">                    
+                <BiSearch className="absolute mx-3 mt-0.5 text-gray-400 " ></BiSearch>
+                <input 
+                    className="transition-all duration-300 ease-in-out py-1.25 w-3xs lg:w-md px-2 focus:w-64 lg:focus:w-md rounded-full focus:outline-hidden focus:ring focus:ring-gray-200 border border-gray-300 bg-gray-100 focus:bg-white pl-9" 
+                    type="search" 
+                    name="q" 
+                    ref={searchBarRef}
+                    onClick={handleSearchBarClick}
+                    onBlur={handleOnSearchBarBlur}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if(e.key === 'Enter') handleSearch();
+                    }}
+                    placeholder="Search here..."
+                >
+                </input>
+                    
+                { showRecentlyViewedPalet && 
+                    <ul 
+                        className="flex flex-col z-50 absolute top-full mt-2 left-0 w-full text-gray-950 shadow-lg rounded-lg p-2 bg-purple-100/40 backdrop-blur-xs border-1 border-gray-300 outline-none"
+                        onMouseDown={(e) => e.preventDefault()}
                     >
-                    </input>
-                        { showRecentlyViewedPalet && 
-                            <ul 
-                                className="flex flex-col z-50 absolute top-full mt-2 left-0 w-full bg-white text-black shadow-lg rounded-md p-2"
-                                onMouseDown={(e) => e.preventDefault()}
+                        {recentlyViewed.map((item) => (
+                            <li
+                                key={item.id}
+                                className="flex justify-between items-center py-1.5 px-4 border rounded-md m-0.75 bg-white hover:scale-101 hover:shadow-sm transistion-all duration-100"
                             >
-                                {recentlyViewed.map((item) => (
-                                    <li
-                                        key={item.id}
-                                        className="flex flex-row p-2"
-                                    >
-                                        <Link to={`/books/details/${item.book.id}`}> 
-                                            <div>{item.book.title}</div> 
-                                        </Link>
-                                        <AiOutlineClose 
-                                            className="m-1 cursor-pointer border rounded-sm"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                heandleRemoveRecentlyViewed(item.book.id)
-                                            }}
-                                        />
-                                    </li>
-                                ))}
-                            </ul> 
-                        }
-                </div>
+                                <Link className="w-full font-medium hover:font-semibold" to={`/books/details/${item.book.id}`}> 
+                                    {item.book.title}
+                                </Link>
+                                <AiOutlineClose 
+                                    className="m-1 text-gray-500 text-2xl p-1 cursor-pointer hover:bg-red-100 rounded-full hover:text-red-500"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        heandleRemoveRecentlyViewed(item.book.id)
+                                    }}
+                                />
+                            </li>
+                        ))}
+                    </ul> 
+                }
+            </div>
+            <div className="flex">
                 { email ? 
                     (
-                        <div className="flex flex-auto items-center">
-                            <button className="px-4" onClick={() => navigate('/dashboard')}> Dashboard </button>
-                            <button onClick={() => {setIsOpen(!isOpen)}}> Cart </button>
+                        <div 
+                        className="relative flex items-center gap-4 mr-6 transition-all duration-200"
+                        ref={profileMenuRef}    
+                        >
+                            <IoCartOutline 
+                                className="text-xl text-gray-950 cursor-pointer"
+                                onClick={() => {setShowProfileMenu(false); setIsOpen(!isOpen)}}
+                            >
+                            </IoCartOutline>
+
                             <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
-                            <div className="px-4">{ email }</div>
-                            <div className=""><Signout/></div>
-                        </ div>
+
+                            <AiOutlineUser
+                                // tabIndex={0}
+                                className="text-lg text-gray-950 cursor-pointer outline-none"
+                                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                                // onMouseEnter={()=> setShowProfileMenu(true)}
+                                // onBlur={handleOnProfileBlur}
+                            >
+                            </AiOutlineUser>
+                            {showProfileMenu && 
+                                <div 
+                                    className="flex flex-col items-start bg-white text-sm text-gray-800 absolute z-50 right-0 top-7 border rounded-lg shadow-lg transition-all duration-200"
+                                    // onMouseLeave={() =>  setShowProfileMenu(false)}
+                                    // ref={profileMenuRef}
+                                >
+                                    <p className="px-3 pb-2.5 pt-3 text-gray-700 truncate">{email}</p>
+                                    <div className="flex flex-row gap-2 items-center px-3 py-2 border-b-1 border-gray-300 w-full hover:bg-gray-100 hover:text-gray-950 cursor-pointer transition-all duration-200"> <MdOutlineDashboard></MdOutlineDashboard> <button onClick={() => navigate(('/dashboard'))}>Dashboard</button></div>
+                                    <div className="flex flex-row gap-2 items-center px-3 pt-2 pb-2.5 cursor-pointer hover:bg-red-100 hover:text-red-700 transition-all duration-200 w-full rounded-b-lg"> <LuLogOut></LuLogOut> <Signout/></div>
+                                </div>  
+                            }
+                        </div>
                     )
                     :
                     (<Link to='/login'>

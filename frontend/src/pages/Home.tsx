@@ -137,7 +137,7 @@ const Home = () => {
                         categoryId={categoryId} setCategoryId={setCategoryId} 
                     />
                 </div>
-                <div className='flex-1 overflow-y-auto'>
+                <div className='flex-1 overflow-y-auto bg-gray-50'>
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
                     { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
                 </div>

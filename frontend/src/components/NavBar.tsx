@@ -146,32 +146,39 @@ const NavBar = () => {
                         <div 
                         className="relative flex items-center gap-4 mr-6 transition-all duration-200"
                         ref={profileMenuRef}    
-                        >
-                            <IoCartOutline 
-                                className="text-xl text-gray-950 cursor-pointer"
-                                onClick={() => {setShowProfileMenu(false); setIsOpen(!isOpen)}}
-                            >
-                            </IoCartOutline>
+                        >   
+                            <div className="hover:bg-cyan-100 p-2 rounded-md">
+                                <IoCartOutline 
+                                    className="text-2xl text-gray-950 cursor-pointer"
+                                    onClick={() => {setShowProfileMenu(false); setIsOpen(!isOpen)}}
+                                >
+                                </IoCartOutline>
+                            </div>
 
                             <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
+                        
+                            <div className="hover:bg-cyan-100 p-2 rounded-md">
+                                <AiOutlineUser
+                                    className="text-2xl text-gray-950 cursor-pointer outline-none"
+                                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                                >
+                                </AiOutlineUser>
+                            </div>
 
-                            <AiOutlineUser
-                                // tabIndex={0}
-                                className="text-lg text-gray-950 cursor-pointer outline-none"
-                                onClick={() => setShowProfileMenu(!showProfileMenu)}
-                                // onMouseEnter={()=> setShowProfileMenu(true)}
-                                // onBlur={handleOnProfileBlur}
-                            >
-                            </AiOutlineUser>
                             {showProfileMenu && 
                                 <div 
                                     className="flex flex-col items-start bg-white text-sm text-gray-800 absolute z-50 right-0 top-7 border rounded-lg shadow-lg transition-all duration-200"
-                                    // onMouseLeave={() =>  setShowProfileMenu(false)}
-                                    // ref={profileMenuRef}
                                 >
                                     <p className="px-3 pb-2.5 pt-3 text-gray-700 truncate">{email}</p>
-                                    <div className="flex flex-row gap-2 items-center px-3 py-2 border-b-1 border-gray-300 w-full hover:bg-gray-100 hover:text-gray-950 cursor-pointer transition-all duration-200"> <MdOutlineDashboard></MdOutlineDashboard> <button onClick={() => navigate(('/dashboard'))}>Dashboard</button></div>
-                                    <div className="flex flex-row gap-2 items-center px-3 pt-2 pb-2.5 cursor-pointer hover:bg-red-100 hover:text-red-700 transition-all duration-200 w-full rounded-b-lg"> <LuLogOut></LuLogOut> <Signout/></div>
+
+                                    <div className="flex flex-row gap-2 items-center px-3 py-2 border-b-1 border-gray-300 w-full hover:bg-gray-100 hover:text-gray-950 cursor-pointer transition-all duration-200"> 
+                                        <MdOutlineDashboard></MdOutlineDashboard> 
+                                        <button onClick={() => navigate(('/dashboard'))}>Dashboard</button></div>
+                                    
+                                    <div className="flex flex-row gap-2 items-center px-3 pt-2 pb-2.5 cursor-pointer hover:bg-red-100 hover:text-red-600 transition-all duration-200 w-full rounded-b-lg">    
+                                        <LuLogOut></LuLogOut> 
+                                        <Signout/>
+                                    </div>
                                 </div>  
                             }
                         </div>

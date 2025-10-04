@@ -31,7 +31,7 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
     return (
         <div
             key={book.id}
-            className="relative isolate flex flex-col px-2 py-4 rounded-lg border hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all duration-200"
+            className="relative isolate flex flex-col px-2 py-4 rounded-lg border hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all duration-200 bg-white"
         >   
             <div 
                 className="absolute -right-0 right-4 z-10 p-1"

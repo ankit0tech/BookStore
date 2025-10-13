@@ -45,7 +45,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
         <>
         {isOpen ? (
             <div 
-                className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-50 font-normal text-gray-800"
+                className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-50 font-normal text-gray-800 overflow-y-auto"
                 onClick={handleOverlayClick}
             >
                <div className="bg-white p-6 rounded-xl border shadow-xl">

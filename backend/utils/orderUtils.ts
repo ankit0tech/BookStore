@@ -13,5 +13,19 @@ const validateOrderNumber = (orderNumber: string): boolean => {
     return orderNumberRegex.test(orderNumber);
 }
 
+const calculateDeliveryCharges = (subTotal: number, deliveryMethod: string|null): number => {
 
-export { generateOrderNumber, validateOrderNumber };
+    if(deliveryMethod == 'NEXT_DAY') {
+        return 150;
+    } else if(deliveryMethod == 'EXPRESS') {
+        return 100;
+    } else if(subTotal >= 500) {
+        return 0;
+    }
+    // for standard delivery
+    return 50;
+
+}
+
+
+export { generateOrderNumber, validateOrderNumber, calculateDeliveryCharges };

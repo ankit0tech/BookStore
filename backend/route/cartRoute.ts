@@ -3,6 +3,7 @@ import { cartZod } from '../zod/cartZod';
 import { authMiddleware } from './middleware';
 import { book, PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
+import { calculateDeliveryCharges } from '../utils/orderUtils';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -16,6 +17,44 @@ interface PurchaseInterface {
     purchase_date: Date,
     quantity : number,
 }
+
+// cart subtotal and delivery charges
+router.get('/cart-summary', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const deliveryMethod = req.query.delivery_method as string || "STANDARD";
+
+        const cartItems = await prisma.cart.findMany({
+            where: { 
+                user_id: userId 
+            },
+            include: {
+                book: true,
+                special_offer: true
+            }
+        });
+        
+        const subtotal = cartItems.reduce((acc, current) => {
+            const {book, quantity, special_offer} = current;
+            const discount = special_offer ? special_offer.discount_percentage : 0;
+            const discountedPrice = book.price * (100-discount) / 100;
+            return acc + (quantity * discountedPrice);
+        }, 0);
+        
+        const deliveryCharges = calculateDeliveryCharges(subtotal, deliveryMethod);
+
+        return res.status(200).json({
+            subTotal: subtotal,
+            deliveryCharges: deliveryCharges,
+            totalAmount: subtotal + deliveryCharges
+        });
+
+    } catch(error: any) {
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+    }
+
+});
 
 // Update cart
 router.post('/update-cart', authMiddleware, async (req, res) =>{

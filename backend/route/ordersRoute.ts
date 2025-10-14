@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { logger } from '../utils/logger';
 import { checkoutZod } from '../zod/cartZod';
-import { generateOrderNumber } from '../utils/orderUtils';
+import { generateOrderNumber, calculateDeliveryCharges } from '../utils/orderUtils';
 import { config } from '../config';
 import Razorpay from 'razorpay';
 import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils';
@@ -21,6 +21,7 @@ const isReturnable = (purchaseDate: Date, days: number): boolean => {
     purchaseDate.setDate(purchaseDate.getDate() + days);
     return purchaseDate > new Date();
 }
+
 
 // checkout
 router.post('/checkout', authMiddleware, async (req, res) => {
@@ -62,7 +63,8 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                     return acc + (quantity * discountedPrice);
                 }, 0);
                 
-                const delivery_charges = req.body.delivery_charges || 0;
+                // const delivery_charges = req.body.delivery_charges || 0;
+                const delivery_charges = calculateDeliveryCharges(subtotal, req.body.deliveryMethod);
                 const total_amount =  subtotal + delivery_charges;
                 const orderNumber = generateOrderNumber();
                 

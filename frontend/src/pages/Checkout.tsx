@@ -33,11 +33,12 @@ const Checkout = () => {
     // Expect that checkout option will be availble only when cart is not empty
     const cartItems = useSelector((state: RootState) => state.cartinfo);
     const [loading, setLoading] = useState<boolean>(true);
-    const [totalAmount, setTotalAmount] = useState<number>(0);
     const [defaultAddress, setDefaultAddress] = useState<Address|null>(null);
     const [allUserAddresses, setAllUserAddresses] = useState<Address[]>([]);
     const [showAllUserAddresses, setShowAllUserAddresses] = useState<boolean>(false);
     const [selectedAddress, setSelectedAddress] = useState<Address|null>(null);
+    const [subTotal, setSubTotal] = useState<number>(0);
+    const [deliveryCharges, setDeliveryCharges] = useState<number>(0);
     const { handleCartUpdate } = useHandleCartUpdate();
 
     const userData = useSelector((state: RootState) => state.userinfo);
@@ -57,20 +58,8 @@ const Checkout = () => {
         await handleBuyBooks();
     }
 
-    const findSubTotal = (cartItems: CartInterface) => {
-        const subTotal = cartItems.data.reduce((accumulator, current) => {
-            const { book, quantity, special_offer } = current;
-            const discount = special_offer?.discount_percentage || 0;
-            const discountedPrice = book.price * (100 - discount) / 100;
-            return accumulator + (quantity * discountedPrice);
-        }, 0);
-        return subTotal;
-    }
-
     useEffect(() => {
         setLoading(true);
-
-        setTotalAmount(findSubTotal(cartItems));
 
         if(!defaultAddress) {
             api.get('http://localhost:5555/addresses/default-address')
@@ -82,7 +71,6 @@ const Checkout = () => {
                 console.log(error);
             })
         }
-
 
         setLoading(false);
 
@@ -184,6 +172,16 @@ const Checkout = () => {
         }
     }
     
+    useEffect(()=> {
+        api.get(`http://localhost:5555/cart/cart-summary`)
+        .then((response) => {
+            setSubTotal(response.data.subTotal);
+            setDeliveryCharges(response.data.deliveryCharges);
+        })
+        .catch(() => {
+            enqueueSnackbar('Error fetching cart details', {variant: 'error'});
+        });
+    }, []);
 
     return (
         <div className='p-4'>
@@ -254,7 +252,11 @@ const Checkout = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <p className='text-lg my-4 font-semibold text-gray-800'>Total Amount: &#8377;{totalAmount.toFixed(2)}</p>
+                                <div className='my-4 max-w-sm'>
+                                    <div className='flex justify-between text-md text-gray-800'> <span>Sub Total:</span> <span> &#8377;{subTotal.toFixed(2)}</span> </div>
+                                    <div className='flex justify-between text-md text-gray-800'> <span>Delivery Charges:</span> <span> &#8377;{deliveryCharges}</span> </div>
+                                    <div className='flex justify-between font-semibold my-2 text-gray-950'> <span>Total Amount:</span> <span> &#8377;{(subTotal+deliveryCharges).toFixed(2)}</span> </div>
+                                </div>
                             </div>
                             <div className='flex flex-col gap-4'>
                                 { selectedAddress && 

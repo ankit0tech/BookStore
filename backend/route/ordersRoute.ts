@@ -62,9 +62,8 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                     return acc + (quantity * discountedPrice);
                 }, 0);
                 
-                const tax_percentage = req.body.tax_percentage || 18;
                 const delivery_charges = req.body.delivery_charges || 0;
-                const total_amount =  subtotal + delivery_charges + ((subtotal * tax_percentage) / 100);
+                const total_amount =  subtotal + delivery_charges;
                 const orderNumber = generateOrderNumber();
                 
                 let razorpayOrder;
@@ -96,7 +95,6 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                             razorpay_order_id: razorpayOrder.id,
                             delivery_charges: delivery_charges,
                             subtotal: subtotal,
-                            tax_percentage: tax_percentage,
                             total_amount: total_amount,
                             delivery_method: req.body.delivery_method || 'STANDARD',
                             expected_delivery_date: new Date(Date.now() + (7*24*60*60*1000))

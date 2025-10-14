@@ -215,7 +215,6 @@ model orders {
   payment_status paymentStatus @default(PENDING)
   delivery_charges Int
   subtotal Int
-  tax_percentage Int @default(18)
   total_amount Int
 
   razorpay_order_id String? @unique

@@ -62,7 +62,6 @@ export interface OrderInterface {
     payment_status: string,
     delivery_charges: number,
     subtotal: number,
-    tax_percentange: number,
     total_amount: number,
     shipping_carrier: string | null,
     tracking_number: string | null,

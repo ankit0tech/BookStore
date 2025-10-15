@@ -64,7 +64,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                 }, 0);
                 
                 // const delivery_charges = req.body.delivery_charges || 0;
-                const delivery_charges = calculateDeliveryCharges(subtotal, req.body.deliveryMethod);
+                const delivery_charges = calculateDeliveryCharges(subtotal, req.body.delivery_method.toUpperCase());
                 const total_amount =  subtotal + delivery_charges;
                 const orderNumber = generateOrderNumber();
                 
@@ -98,7 +98,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                             delivery_charges: delivery_charges,
                             subtotal: subtotal,
                             total_amount: total_amount,
-                            delivery_method: req.body.delivery_method || 'STANDARD',
+                            delivery_method: req.body.delivery_method.toUpperCase() || 'STANDARD',
                             expected_delivery_date: new Date(Date.now() + (7*24*60*60*1000))
                         }
                     });

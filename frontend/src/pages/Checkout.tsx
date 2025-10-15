@@ -10,6 +10,7 @@ import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 import { enqueueSnackbar } from 'notistack';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { MdOutlineDelete } from 'react-icons/md';
+import { prettifyString } from '../utils/formatUtils';
 
 
 const loadScript = (src: string) => {
@@ -27,6 +28,8 @@ const loadScript = (src: string) => {
     });
 }
 
+const deliveryMethods = ['STANDARD', 'EXPRESS', 'NEXT_DAY'];
+
 
 const Checkout = () => {
 
@@ -39,6 +42,7 @@ const Checkout = () => {
     const [selectedAddress, setSelectedAddress] = useState<Address|null>(null);
     const [subTotal, setSubTotal] = useState<number>(0);
     const [deliveryCharges, setDeliveryCharges] = useState<number>(0);
+    const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<string>('STANDARD');
     const { handleCartUpdate } = useHandleCartUpdate();
 
     const userData = useSelector((state: RootState) => state.userinfo);
@@ -85,7 +89,8 @@ const Checkout = () => {
 
             const config = { headers: { Authorization: authToken }};
             const data = {
-                delivery_address_id: selectedAddress?.id
+                delivery_address_id: selectedAddress?.id,
+                delivery_method: selectedDeliveryMethod
             }
             
             api.post('http://localhost:5555/orders/checkout', data, config)
@@ -173,7 +178,7 @@ const Checkout = () => {
     }
     
     useEffect(()=> {
-        api.get(`http://localhost:5555/cart/cart-summary`)
+        api.get(`http://localhost:5555/cart/cart-summary?delivery_method=${selectedDeliveryMethod}`)
         .then((response) => {
             setSubTotal(response.data.subTotal);
             setDeliveryCharges(response.data.deliveryCharges);
@@ -181,7 +186,7 @@ const Checkout = () => {
         .catch(() => {
             enqueueSnackbar('Error fetching cart details', {variant: 'error'});
         });
-    }, []);
+    }, [selectedDeliveryMethod, cartItems.data]);
 
     return (
         <div className='p-4'>
@@ -261,7 +266,7 @@ const Checkout = () => {
                             <div className='flex flex-col gap-4'>
                                 { selectedAddress && 
                                 (<div className='flex flex-col gap-4'>
-                                    <div className='text-lg font-medium tet-gray-700'> Delivery Address: </div>
+                                    <div className='text-lg font-medium text-gray-950'> Delivery Address: </div>
                                     <div className='flex flex-col py-2 px-4 border rounded-lg text-sm bg-gray-100'> 
                                         <div className='font-semibold'> {selectedAddress.house_number} </div>
                                         <div className='text-gray-700 '> {selectedAddress.zip_code} </div>
@@ -305,6 +310,26 @@ const Checkout = () => {
                                         ))}
                                     </ul>
                                 }
+
+                                <div className='my-4'>
+                                    <div className='text-lg font-medium text-gray-950 my-2'>Select Delivery Method</div>
+                                    <select 
+                                        className='w-full p-2 rounded-md outline-none border'
+                                        name = "deliveryMethod"
+                                        value = {selectedDeliveryMethod}
+                                        onChange = {(e) => {setSelectedDeliveryMethod(e.target.value)}}
+                                    >
+                                        {deliveryMethods.map((method) => (
+                                            <option 
+                                                className='text-gray-700'
+                                                key={method} 
+                                                value={method}
+                                            >
+                                                {prettifyString(method.toLowerCase())}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
 
                                 <button 
                                     type='button' 

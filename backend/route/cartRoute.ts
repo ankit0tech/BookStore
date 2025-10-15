@@ -22,7 +22,7 @@ interface PurchaseInterface {
 router.get('/cart-summary', authMiddleware, async (req, res) => {
     try {
         const userId = req.userId;
-        const deliveryMethod = req.query.delivery_method as string || "STANDARD";
+        const delivery_method = req.query.delivery_method as string || "STANDARD";
 
         const cartItems = await prisma.cart.findMany({
             where: { 
@@ -41,7 +41,7 @@ router.get('/cart-summary', authMiddleware, async (req, res) => {
             return acc + (quantity * discountedPrice);
         }, 0);
         
-        const deliveryCharges = calculateDeliveryCharges(subtotal, deliveryMethod);
+        const deliveryCharges = calculateDeliveryCharges(subtotal, delivery_method.toUpperCase());
 
         return res.status(200).json({
             subTotal: subtotal,

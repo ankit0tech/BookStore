@@ -320,7 +320,13 @@ router.get('/:id(\\d+)', optionalAuthMiddleware, async (req, res) => {
             },
             include: {
                 category: true,
-                special_offers: true,
+                special_offers: {
+                    where: {
+                        offer_valid_until: {
+                            gte: new Date()
+                        }
+                    }
+                },
             }
         });
 

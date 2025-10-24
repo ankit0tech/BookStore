@@ -3,7 +3,7 @@ import Spinner from "../components/Spinner";
 import api from "../utils/api";
 import { OrdersInterface } from "../types";
 import { useNavigate } from "react-router-dom";
-import { prettifyString } from "../utils/formatUtils";
+import { formatPrice, prettifyString } from "../utils/formatUtils";
 
 
 const initialState: OrdersInterface = {
@@ -88,11 +88,11 @@ const Orders = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm text-gray-600">SubTotal</p>
-                                            <p className="text-lg font-semibold text-gray-900">&#8377;{item.subtotal.toFixed(2)}</p>
+                                            <p className="text-lg font-semibold text-gray-900">{formatPrice(item.subtotal, item.order_items[0].book.currency)}</p>
                                         </div>
                                         <div>
                                             <p className="text-sm text-gray-600">Total</p>
-                                            <p className="text-lg font-semibold text-gray-900">&#8377;{item.total_amount.toFixed(2)}</p>
+                                            <p className="text-lg font-semibold text-gray-900">{formatPrice(item.total_amount, item.order_items[0].book.currency)}</p>
                                         </div>
                                     </div>
                                     <div className="">

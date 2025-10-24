@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BiSearch } from "react-icons/bi";
 import { enqueueSnackbar } from "notistack";
 import DeleteOverlay from "../../components/DeleteOverlay";
+import { formatPrice } from "../../utils/formatUtils";
 
 
 const BookManagement = () => {
@@ -248,7 +249,7 @@ const BookManagement = () => {
                                 <div className="text-gray-500">by {book.author}</div>
                             </td>
                             <td className="px-2 py-4">{book.category?.title || "Uncategorized"}</td>
-                            <td className="px-2 py-4">&#8377;{book.price}</td>
+                            <td className="px-2 py-4">{formatPrice(book.price, book.currency)}</td>
                             <td className="px-2 py-4"> 
                                 <div className={`px-2 py-0.5 rounded-full size-fit text-xs font-medium ${book.quantity == 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
                                     {book.quantity == 0 ? `${book.quantity} - Out of Stock` : `${book.quantity} - In Stock`}

@@ -3,6 +3,7 @@ import { OrdersInterface } from "../../types";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../components/Spinner";
 import api from "../../utils/api";
+import { formatPrice } from "../../utils/formatUtils";
 
 const initailState: OrdersInterface = {
     data: []
@@ -86,11 +87,11 @@ const OrderManagement = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm text-gray-600">SubTotal</p>
-                                            <p className="text-lg font-semibold text-gray-900">&#8377;{item.subtotal.toFixed(2)}</p>
+                                            <p className="text-lg font-semibold text-gray-900">{formatPrice(item.subtotal, item.currency)}</p>
                                         </div>
                                         <div>
                                             <p className="text-sm text-gray-600">Total</p>
-                                            <p className="text-lg font-semibold text-gray-900">&#8377;{item.total_amount.toFixed(2)}</p>
+                                            <p className="text-lg font-semibold text-gray-900">{formatPrice(item.total_amount, item.currency)}</p>
                                         </div>
                                     </div>
                                     <div className="">

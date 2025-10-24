@@ -4,6 +4,7 @@ import { VscHeart } from "react-icons/vsc";
 import { FaStar } from "react-icons/fa";
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
+import { formatPrice } from "../../utils/formatUtils";
 
 const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
 
@@ -74,11 +75,11 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
 
                     <div className="space-x-2">
                         { book.special_offers?.length == 0 ?
-                            <span className="inline-block font-semibold text-gray-900">&#8377;{book.price}</span>
+                            <span className="inline-block font-semibold text-gray-900">{formatPrice(book.price, book.currency)}</span>
                         :
                             <>
-                                <span className="inline-block font-semibold text-gray-900">&#8377;{calculateDiscountedPrice(book)}</span>
-                                <span className="inline-block line-through text-sm font-light text-gray-700">&#8377;{book.price}</span>
+                                <span className="inline-block font-semibold text-gray-900">{formatPrice(calculateDiscountedPrice(book), book.currency)}</span>
+                                <span className="inline-block line-through text-sm font-light text-gray-700">{formatPrice(book.price, book.currency)}</span>
                                 <span className="inline-block font-medium text-sm text-cyan-500">({findMaxDiscountPercentage(book)}%OFF)</span>
                             </>
                     }

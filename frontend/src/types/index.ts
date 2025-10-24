@@ -8,10 +8,10 @@ export interface RootState {
 
 export interface CartInterface {
     data: {
-        id: number,
-        quantity: number,
-        book: UserBook,
-        special_offer: Offer,
+        id: number;
+        quantity: number;
+        book: UserBook;
+        special_offer: Offer;
     } []
 }
 
@@ -32,60 +32,61 @@ export interface CartInterface {
 // }
 
 export interface UserInterface {
-    id: number,
-    email: string,
-    first_name: string | null
-    last_name: string | null
-    password: string | null
-    googleId: string | null
-    provider: string
-    role: string
-    verified: boolean
-    created_at: Date
-    updated_at: Date
+    id: number;
+    email: string;
+    first_name: string | null;
+    last_name: string | null;
+    password: string | null;
+    googleId: string | null;
+    provider: string;
+    role: string;
+    verified: boolean;
+    created_at: Date;
+    updated_at: Date;
   
-    cart: CartInterface | null
-    address: Address | null
-    review: Review[] | null
-    wishlist: Wishlist[] | null
-    recently_viewed: RecentlyViewed[] | null
+    cart: CartInterface | null;
+    address: Address | null;
+    review: Review[] | null;
+    wishlist: Wishlist[] | null;
+    recently_viewed: RecentlyViewed[] | null;
 }
 export interface OrderInterface {
-    id: number,
-    user_id: number,
-    user: UserInterface | null
-    order_items: OrderItemInterface [],
-    address_id: number,
-    address: Address,
-    order_number: string,
-    order_status: string,
-    payment_status: string,
-    delivery_charges: number,
-    subtotal: number,
-    total_amount: number,
-    shipping_carrier: string | null,
-    tracking_number: string | null,
-    shipping_label_url: string | null,
-    delivery_method: string,
-    expected_delivery_date: Date,
-    actual_delivery_date: Date | null,
+    id: number;
+    user_id: number;
+    user: UserInterface | null;
+    order_items: OrderItemInterface [];
+    address_id: number;
+    address: Address;
+    order_number: string;
+    order_status: string;
+    payment_status: string;
+    delivery_charges: number;
+    subtotal: number;
+    total_amount: number;
+    currency: string;
+    shipping_carrier: string | null;
+    tracking_number: string | null;
+    shipping_label_url: string | null;
+    delivery_method: string;
+    expected_delivery_date: Date;
+    actual_delivery_date: Date | null;
 
-    cancellation_status: string,
-    cancellation_reason: string | null,
-    cancellation_requested_at: Date | null,
-    cancellation_resolved_at: Date | null,
-    cancellation_processed_by: number | null,
+    cancellation_status: string;
+    cancellation_reason: string | null;
+    cancellation_requested_at: Date | null;
+    cancellation_resolved_at: Date | null;
+    cancellation_processed_by: number | null;
   
-    return_status: string,
-    return_reason: string | null,
-    return_requested_at: Date | null,
-    return_resolved_at: Date | null,
-    return_completed_at: Date | null,
-    return_tracking_number: string | null,
-    return_shipping_label_url: string | null,
-    return_processed_by: number | null,
+    return_status: string;
+    return_reason: string | null;
+    return_requested_at: Date | null;
+    return_resolved_at: Date | null;
+    return_completed_at: Date | null;
+    return_tracking_number: string | null;
+    return_shipping_label_url: string | null;
+    return_processed_by: number | null;
   
-    purchase_date: Date,
+    purchase_date: Date;
 }
 
 export interface OrdersInterface {
@@ -93,15 +94,16 @@ export interface OrdersInterface {
 }
 
 export interface OrderItemInterface {
-    id: number,
-    book_id: number,
-    book: UserBook,
-    order_id: number,
-    order: OrderInterface,
-    quantity: number,
-    unit_price: number,
-    offer_id: number | null,
-    special_offer: Offer | null,
+    id: number;
+    book_id: number;
+    book: UserBook;
+    order_id: number;
+    order: OrderInterface;
+    quantity: number;
+    unit_price: number;
+    currency: string;
+    offer_id: number | null;
+    special_offer: Offer | null;
 }
 
 export interface BaseBook {
@@ -110,6 +112,7 @@ export interface BaseBook {
     author: string;
     publish_year: number;
     price: number;
+    currency: string;
     category_id: number | null;
     average_rating: number;
     created_at: Date;
@@ -204,7 +207,7 @@ export interface SubCategory {
 }
 
 export interface Offer {
-    id: number,
+    id: number;
     discount_percentage: number;
     offer_type: string;
     description: string;

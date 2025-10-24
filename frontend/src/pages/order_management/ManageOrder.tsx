@@ -3,7 +3,7 @@ import { OrderInterface } from "../../types";
 import { useEffect, useState } from 'react';
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
-import { prettifyString } from "../../utils/formatUtils";
+import { formatPrice, prettifyString } from "../../utils/formatUtils";
 
 const ManageOrder = () => {
     
@@ -330,7 +330,7 @@ const ManageOrder = () => {
                                                     <p className="text-sm text-gray-700">{item.book.author}</p>
                                                     <div className="mt-2 space-y-1">
                                                         <p className="text-sm text-gray-700">Qty: {item.quantity}</p>
-                                                        <p className="text-sm text-gray-700">Price: &#8377;{item.unit_price}</p>
+                                                        <p className="text-sm text-gray-700">Price: {formatPrice(item.unit_price, item.book.currency)}</p>
                                                     </div>
                                                 </div>
 
@@ -356,14 +356,14 @@ const ManageOrder = () => {
                                 <p className="font-semibold text-gray-900 mb-2">Price Summary:</p>
                                 <p className="flex flex-row justify-between w-full text-gray-700 text-sm">
                                     <span>Subtotal: </span>
-                                    <span className="font-medium">&#8377;{orderDetails.subtotal.toFixed(2)}</span>
+                                    <span className="font-medium">{formatPrice(orderDetails.subtotal, orderDetails.currency)}</span>
                                 </p>
                                 <p className="flex flex-row justify-between w-full text-gray-700 text-sm">
                                     <span>Delivery charges:</span>
-                                    <span className="font-medium">&#8377;{(orderDetails.delivery_charges || 0).toFixed(2)}</span>
+                                    <span className="font-medium">{formatPrice(orderDetails.delivery_charges || 0, orderDetails.currency)}</span>
                                 </p>
                                 <p className="flex flex-row justify-between w-full text-gray-900 font-semibold border-t border-gray-100 pt-2 mt-2">
-                                    <span>Total cost:</span>&#8377;{(orderDetails.subtotal + (orderDetails.delivery_charges || 0)).toFixed(2)}
+                                    <span>Total cost:</span>{formatPrice(orderDetails.subtotal + (orderDetails.delivery_charges || 0), orderDetails.currency)}
                                 </p>
                             </div>
                         </div>

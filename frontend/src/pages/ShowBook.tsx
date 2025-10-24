@@ -9,6 +9,7 @@ import { UserBook, AdminBook, RootState } from '../types';
 import { useSelector } from 'react-redux';
 import { MdOutlineDelete } from 'react-icons/md';
 import { FaRegStar, FaStar } from 'react-icons/fa';
+import { formatPrice } from '../utils/formatUtils';
 
 
 const ShowBook = () => {
@@ -144,7 +145,7 @@ const ShowBook = () => {
                                 </div>
                                 
                                 <p className='font-semibold py-2 text-3xl'>
-                                    &#8377;{book.price}
+                                    {formatPrice(book.price, book.currency)}
                                 </p>
                             </div>
                         </div>

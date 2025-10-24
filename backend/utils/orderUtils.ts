@@ -16,14 +16,14 @@ const validateOrderNumber = (orderNumber: string): boolean => {
 const calculateDeliveryCharges = (subTotal: number, deliveryMethod: string|null): number => {
 
     if(deliveryMethod == 'NEXT_DAY') {
-        return 150;
+        return 15000;
     } else if(deliveryMethod == 'EXPRESS') {
-        return 100;
-    } else if(subTotal >= 500) {
+        return 10000;
+    } else if(subTotal >= 50000) {
         return 0;
     }
     // for standard delivery
-    return 50;
+    return 5000;
 
 }
 

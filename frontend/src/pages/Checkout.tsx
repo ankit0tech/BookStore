@@ -10,7 +10,7 @@ import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 import { enqueueSnackbar } from 'notistack';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { MdOutlineDelete } from 'react-icons/md';
-import { prettifyString } from '../utils/formatUtils';
+import { formatPrice, prettifyString } from '../utils/formatUtils';
 
 
 const loadScript = (src: string) => {
@@ -221,16 +221,16 @@ const Checkout = () => {
                                                 <div className="font-semibold mt-2"> 
                                                     {item.special_offer ? 
                                                         <p> 
-                                                            &#8377;{ (item.book.price * (100 - item.special_offer.discount_percentage) / 100).toFixed(2)} 
+                                                            {formatPrice(item.book.price * (100 - item.special_offer.discount_percentage) / 100, item.book.currency)} 
                                                             <span className="m-1 p-1 font-normal rounded-sm text-white bg-red-500"> 
                                                                 {item.special_offer.discount_percentage}% 
                                                             </span>
                                                             <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
-                                                                M.R.P. &#8377;{ item.book.price.toFixed(2)} 
+                                                                M.R.P. {formatPrice(item.book.price, item.book.currency)} 
                                                             </span>
                                                         </p> 
                                                         : 
-                                                        <p> &#8377;{ item.book.price.toFixed(2)} </p>
+                                                        <p> {formatPrice(item.book.price, item.book.currency)} </p>
                                                     }
                                                 </div>
                                             </div>
@@ -258,9 +258,9 @@ const Checkout = () => {
                                     ))}
                                 </ul>
                                 <div className='my-4 max-w-sm'>
-                                    <div className='flex justify-between text-md text-gray-800'> <span>Sub Total:</span> <span> &#8377;{subTotal.toFixed(2)}</span> </div>
-                                    <div className='flex justify-between text-md text-gray-800'> <span>Delivery Charges:</span> <span> &#8377;{deliveryCharges}</span> </div>
-                                    <div className='flex justify-between font-semibold my-2 text-gray-950'> <span>Total Amount:</span> <span> &#8377;{(subTotal+deliveryCharges).toFixed(2)}</span> </div>
+                                    <div className='flex justify-between text-md text-gray-800'> <span>Sub Total:</span> <span> {formatPrice(subTotal, cartItems.data[0].book.currency)}</span> </div>
+                                    <div className='flex justify-between text-md text-gray-800'> <span>Delivery Charges:</span> <span> {formatPrice(deliveryCharges, cartItems.data[0].book.currency)}</span> </div>
+                                    <div className='flex justify-between font-semibold my-2 text-gray-950'> <span>Total Amount:</span> <span> {formatPrice(subTotal+deliveryCharges, cartItems.data[0].book.currency)}</span> </div>
                                 </div>
                             </div>
                             <div className='flex flex-col gap-4'>

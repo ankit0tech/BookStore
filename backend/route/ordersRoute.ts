@@ -72,7 +72,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                 try {
 
                     const options = {
-                        amount: Math.round(total_amount * 100),
+                        amount: total_amount,
                         currency: "INR",
                         receipt: orderNumber
                     };

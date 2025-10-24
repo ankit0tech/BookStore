@@ -7,6 +7,7 @@ import { useHandleCartUpdate } from "../utils/cartUtils";
 import { MdOutlineDelete } from "react-icons/md";
 import { FiShoppingBag } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
+import { formatPrice } from "../utils/formatUtils";
 
 
 interface CartOverlayProps {
@@ -105,7 +106,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
 
                     <div className="flex flex-row justify-between align-center py-4 text-lg font-semibold border-t">
                         <span>Subtotal:</span>
-                        <span className="text-blue-700">&#8377;{findSubTotal(cartItems).toFixed(2)}</span>
+                        <span className="text-blue-700">{formatPrice(findSubTotal(cartItems), cartItems.data[0].book.currency)}</span>
                     </div>
 
                     <div className="flex flex-row gap-4 mt-6 justify-end">

@@ -126,7 +126,7 @@ router.get('/', authMiddleware, async (req, res) => {
         const addresses = await prisma.address.findMany({
             where: {
                 user_id: user.id,
-                is_default: false
+                is_deleted: false
             },
             orderBy: {
                 created_at: 'asc'
@@ -239,11 +239,14 @@ router.delete('/:id(\\d+)', authMiddleware, async (req, res) => {
             });
             
             if (deletedAddress) {
-                return res.status(200).json({message: "Address deleted successfully"}) ;   
+                logger.info(`Address ${id} deleted successfully`);
+                return res.status(200).json({message: `Address ${id} deleted successfully`}) ;   
             } else {
+                logger.info(`Error occurred while deleting address ${id}`)
                 return res.status(400).json({message: "Error occurred while deleting Address"});
             }
         } else {
+            logger.info(`Address ${id} can't be deleted. It is being used by active orders.`);
             return res.status(400).json({message: "Address cannot be deleted. It is being used by active orders."});
         }
     } catch(error: any) {

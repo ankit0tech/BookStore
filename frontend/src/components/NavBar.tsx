@@ -190,9 +190,8 @@ const NavBar = () => {
 
                                 {showProfileMenu && 
                                     <div 
-                                    className="flex flex-col items-start _gap-2 absolute z-50 right-0 rounded-lg shadow-lg _transition-all _duration-200 bg-white"
+                                        className="flex flex-col items-start _gap-2 absolute z-50 right-0 rounded-lg shadow-lg _transition-all _duration-200 bg-white"
                                     >   
-
                                         <div className="p-3 mb-1.5 bg-linear-to-r rounded-t-lg from-blue-600 to-blue-500 space-y-2">
                                             <p className="text-xs font-medium text-blue-200 tracking-wider uppercase">Signed in as</p>
                                             <div className="flex flex-row justify-between items-center gap-2">
@@ -201,7 +200,7 @@ const NavBar = () => {
                                             </div>
                                         </div>
 
-                                        <div 
+                                        <button 
                                             className="relative flex flex-row gap-2 items-center justify-between group hover:bg-blue-50 px-3 py-3 w-full cursor-pointer _transition-all _duration-200"
                                             onClick={() => {setShowProfileMenu(false); navigate(('/dashboard'))}}
                                         > 
@@ -211,9 +210,9 @@ const NavBar = () => {
                                                 <p className="text-gray-800 text-sm font-medium">Dashboard</p>
                                             </div>
                                             <IoIosArrowForward className="text-xs group-hover:text-blue-500"/>
-                                        </div>
+                                        </button>
                                         
-                                        <div 
+                                        <button 
                                             className="relative flex flex-row gap-2 items-center justify-between group hover:bg-red-50 px-3 py-3 cursor-pointer _transition-all _duration-200 w-full rounded-b-lg"
                                             onClick={() => {setShowProfileMenu(false); handleSignout()}}
                                         >   
@@ -224,7 +223,7 @@ const NavBar = () => {
                                                 <p className="text-gray-800 text-sm font-medium">Signout</p>
                                             </div>
                                             <IoIosArrowForward className="text-xs group-hover:text-red-500"/>
-                                        </div>
+                                        </button>
                                     </div>
                                 }
                             </div>

@@ -180,11 +180,39 @@ router.post('/verify-payment', async (req, res) => {
 router.get('/get-purchased-items', authMiddleware, async (req, res) => {
     try {
         const userId = req.userId;
-        
+        const query = req.query.query as string | undefined;
+        const orderStatus = req.query.orderStatus as string | undefined;
+        const paymentStatus = req.query.paymentStatus as string | undefined;
+        const dateOrder : 'asc'|'desc' = req.query.dateOrder === 'asc' ? 'asc' : 'desc';
+
         if(userId) {
             const purchasedItems = await prisma.orders.findMany({
                 where: { 
                     user_id: userId,
+                    ...(orderStatus && {order_status: orderStatus as any}),
+                    ...(paymentStatus && {payment_status: paymentStatus as any}),
+                    ...(query && {
+                        order_items: {
+                            some: {
+                                book: {
+                                    OR: [
+                                        {
+                                            title: {
+                                                contains: query,
+                                                mode: 'insensitive'
+                                            }
+                                        },
+                                        {
+                                            author: {
+                                                contains: query,
+                                                mode: 'insensitive'
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    })
                 }, 
                 include: {
                     order_items: {
@@ -196,7 +224,7 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
                     address: true
                 },
                 orderBy: {
-                    created_at: 'asc'
+                    created_at: dateOrder
                 }
             });
 

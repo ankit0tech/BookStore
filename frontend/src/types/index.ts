@@ -1,6 +1,12 @@
 import { UserState } from "../redux/userSlice";
 // import { CartInterface } from "../redux/cartSlice";
 
+export const order_statuses = ['PENDING', 'PROCESSING', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED', 'RETURNED'] as const;
+export type OrderStatus = typeof order_statuses[number];
+
+export const payment_statuses = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED']
+export type PaymentStatus = typeof payment_statuses[number];
+
 export interface RootState { 
     userinfo: UserState;
     cartinfo: CartInterface;
@@ -58,8 +64,8 @@ export interface OrderInterface {
     address_id: number;
     address: Address;
     order_number: string;
-    order_status: string;
-    payment_status: string;
+    order_status: OrderStatus;
+    payment_status: PaymentStatus;
     delivery_charges: number;
     subtotal: number;
     total_amount: number;

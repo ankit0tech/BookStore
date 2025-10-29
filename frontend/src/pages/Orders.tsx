@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import Spinner from "../components/Spinner";
 import api from "../utils/api";
-import { OrdersInterface } from "../types";
+import { OrdersInterface, order_statuses, payment_statuses, OrderStatus, PaymentStatus } from "../types";
 import { useNavigate } from "react-router-dom";
 import { formatPrice, prettifyString } from "../utils/formatUtils";
 import { FiPackage } from "react-icons/fi";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowForward } from "react-icons/io";
+import { enqueueSnackbar } from "notistack";
 
 
 const initialState: OrdersInterface = {
@@ -17,6 +18,11 @@ const Orders = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [orders, setOrders] = useState<OrdersInterface>(initialState);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [searchOrderStatus, setSearchOrderStatus] = useState<OrderStatus|''>('');
+    const [searchPaymentStatus, setSearchPaymentStatus] = useState<PaymentStatus|''>('');
+    const [dateOrder, setDateOrder] = useState<'desc'|'asc'>('desc');
+
     const navigate = useNavigate();
 
     const formatDate = (date: Date) => {
@@ -30,10 +36,21 @@ const Orders = () => {
 
 
     useEffect(() => {
+        loadOrders();
+    }, [searchOrderStatus, searchPaymentStatus, dateOrder]);
+    
+    const loadOrders = () => {    
         setLoading(true);
+
+        const params = new URLSearchParams();
+
+        if(searchQuery) params.append('query', searchQuery);
+        if(searchOrderStatus) params.append('orderStatus', searchOrderStatus);
+        if(searchPaymentStatus) params.append('paymentStatus', searchPaymentStatus);
+        params.append('dateOrder', dateOrder);
         
         api
-        .get('http://localhost:5555/orders/get-purchased-items')
+        .get(`http://localhost:5555/orders/get-purchased-items?${params.toString()}`)
         .then((response) => {
             setOrders(response.data);
             setLoading(false);
@@ -41,8 +58,11 @@ const Orders = () => {
         .catch((error) => {
             console.log(error);
             setLoading(false);
-        })
-    }, []);
+            enqueueSnackbar("Error while loading orders", {variant: "error"});
+        });
+    }
+
+
 
     return (
         <div className="min-h-screen max-w-5xl px-2 md:px-8">
@@ -58,6 +78,55 @@ const Orders = () => {
             )
             : 
             <div className="space-y-6">
+                <div className="flex items-center">
+                    <input
+                        className="border rounded-sm w-full"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if(e.key === 'Enter') loadOrders();
+                        }}
+                    ></input>
+
+                    <select
+                        className=""
+                        value={searchOrderStatus}
+                        onChange={(e) => setSearchOrderStatus(e.target.value as OrderStatus || '')}
+                    >
+                        <option value="">All Orders</option>
+                        {order_statuses.map((order_status) => (
+                            <option key={order_status} value={order_status}>{prettifyString(order_status)}</option>
+                        ))}
+                    </select>
+
+                    <select
+                        className=""
+                        value={searchPaymentStatus}
+                        onChange={(e) => setSearchPaymentStatus(e.target.value as PaymentStatus || '')}
+                    >
+                        <option value="">All Orders</option>
+                        {payment_statuses.map((payment_status) => (
+                            <option key={payment_status} value={payment_status}>{prettifyString(payment_status)}</option>
+                        ))}
+                    </select>
+
+                    <select
+                        className=""
+                        value={dateOrder}
+                        onChange={(e) => setDateOrder(e.target.value as 'desc'|'asc')}
+                    >
+                        <option value='desc'>Newest First</option>
+                        <option value='asc'>Oldest First</option>
+                    </select>
+
+                    <button
+                        className=""
+                        onClick={() => loadOrders()}
+                    >
+                        Search
+                    </button>
+                </div>
+
                 {orders.data.length === 0 ? (
                     <div className="text-center py-12 rounded-lg shadow-sm">
                         <h3 className="text-lg font-medium text-gray-900">No Orders Found</h3>
@@ -123,7 +192,7 @@ const Orders = () => {
                                                         state: { orderDetails: item }
                                                     })}
                                                     >
-                                                    <p className="font-medium text-white text-md mr-4">View Details</p>
+                                                    <p className="text-white text-md mr-4">View Details</p>
                                                     <div className="absolute font-bold text-white top-3 right-4 group-hover:right-2.5 transition-all duration-300 ease-in-out"><IoIosArrowForward/></div>
                                                 </button>
                                             </div>

@@ -8,6 +8,7 @@ import { FiPackage } from "react-icons/fi";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowForward } from "react-icons/io";
 import { enqueueSnackbar } from "notistack";
+import { BiSearch } from "react-icons/bi";
 
 
 const initialState: OrdersInterface = {
@@ -78,54 +79,60 @@ const Orders = () => {
             )
             : 
             <div className="space-y-6">
-                <div className="flex items-center">
-                    <input
-                        className="border rounded-sm w-full"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                            if(e.key === 'Enter') loadOrders();
-                        }}
-                    ></input>
+                <form 
+                    className="flex items-center gap-2"
+                    onSubmit={(e) => {e.preventDefault(); loadOrders();}}
+                >
+                    <div className="relative flex items-center w-full">
+                        <BiSearch className="absolute mt-0.5 mx-3 text-gray-400"></BiSearch>
+                        <input
+                            className="flex py-2 pl-9 outline-hidden border rounded-md w-full"
+                            placeholder="Enter book title or author name..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            aria-label="Search orders"
+                        ></input>
+                    </div>
 
-                    <select
-                        className=""
-                        value={searchOrderStatus}
-                        onChange={(e) => setSearchOrderStatus(e.target.value as OrderStatus || '')}
-                    >
-                        <option value="">All Orders</option>
-                        {order_statuses.map((order_status) => (
-                            <option key={order_status} value={order_status}>{prettifyString(order_status)}</option>
-                        ))}
-                    </select>
 
-                    <select
-                        className=""
-                        value={searchPaymentStatus}
-                        onChange={(e) => setSearchPaymentStatus(e.target.value as PaymentStatus || '')}
-                    >
-                        <option value="">All Orders</option>
-                        {payment_statuses.map((payment_status) => (
-                            <option key={payment_status} value={payment_status}>{prettifyString(payment_status)}</option>
-                        ))}
-                    </select>
+                    <div className="py-2 px-4 outline-hidden border rounded-md">
+                        <select
+                            value={searchOrderStatus}
+                            onChange={(e) => setSearchOrderStatus(e.target.value as OrderStatus || '')}
+                            aria-label="Order status"
+                            >
+                            <option value="">All Orders</option>
+                            {order_statuses.map((order_status) => (
+                                <option key={order_status} value={order_status}>{prettifyString(order_status)}</option>
+                            ))}
+                        </select>
+                    </div>
 
-                    <select
-                        className=""
-                        value={dateOrder}
-                        onChange={(e) => setDateOrder(e.target.value as 'desc'|'asc')}
-                    >
-                        <option value='desc'>Newest First</option>
-                        <option value='asc'>Oldest First</option>
-                    </select>
-
-                    <button
-                        className=""
-                        onClick={() => loadOrders()}
-                    >
-                        Search
-                    </button>
-                </div>
+                    <div className="p-2 outline-hidden border rounded-md">
+                        <select
+                            value={searchPaymentStatus}
+                            onChange={(e) => setSearchPaymentStatus(e.target.value as PaymentStatus || '')}
+                            aria-label="Payment status"
+                        >
+                            <option value="">All Orders</option>
+                            {payment_statuses.map((payment_status) => (
+                                <option key={payment_status} value={payment_status}>{prettifyString(payment_status)}</option>
+                            ))}
+                        </select>
+                    </div>
+                    
+                    <div className="p-2 outline-hidden border rounded-md">
+                        <select
+                            
+                            value={dateOrder}
+                            onChange={(e) => setDateOrder(e.target.value as 'desc'|'asc')}
+                            aria-label="Sort by date"
+                        >
+                            <option value='desc'>Newest First</option>
+                            <option value='asc'>Oldest First</option>
+                        </select>
+                    </div>
+                </form>
 
                 {orders.data.length === 0 ? (
                     <div className="text-center py-12 rounded-lg shadow-sm">

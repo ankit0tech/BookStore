@@ -10,6 +10,7 @@ import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 import { enqueueSnackbar } from 'notistack';
 import { BiMinus, BiPlus } from 'react-icons/bi';
 import { MdOutlineDelete } from 'react-icons/md';
+import { formatPrice, prettifyString } from '../utils/formatUtils';
 
 
 const loadScript = (src: string) => {
@@ -27,17 +28,21 @@ const loadScript = (src: string) => {
     });
 }
 
+const deliveryMethods = ['STANDARD', 'EXPRESS', 'NEXT_DAY'];
+
 
 const Checkout = () => {
 
     // Expect that checkout option will be availble only when cart is not empty
     const cartItems = useSelector((state: RootState) => state.cartinfo);
     const [loading, setLoading] = useState<boolean>(true);
-    const [totalAmount, setTotalAmount] = useState<number>(0);
     const [defaultAddress, setDefaultAddress] = useState<Address|null>(null);
     const [allUserAddresses, setAllUserAddresses] = useState<Address[]>([]);
     const [showAllUserAddresses, setShowAllUserAddresses] = useState<boolean>(false);
     const [selectedAddress, setSelectedAddress] = useState<Address|null>(null);
+    const [subTotal, setSubTotal] = useState<number>(0);
+    const [deliveryCharges, setDeliveryCharges] = useState<number>(0);
+    const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<string>('STANDARD');
     const { handleCartUpdate } = useHandleCartUpdate();
 
     const userData = useSelector((state: RootState) => state.userinfo);
@@ -57,20 +62,8 @@ const Checkout = () => {
         await handleBuyBooks();
     }
 
-    const findSubTotal = (cartItems: CartInterface) => {
-        const subTotal = cartItems.data.reduce((accumulator, current) => {
-            const { book, quantity, special_offer } = current;
-            const discount = special_offer?.discount_percentage || 0;
-            const discountedPrice = book.price * (100 - discount) / 100;
-            return accumulator + (quantity * discountedPrice);
-        }, 0);
-        return subTotal;
-    }
-
     useEffect(() => {
         setLoading(true);
-
-        setTotalAmount(findSubTotal(cartItems));
 
         if(!defaultAddress) {
             api.get('http://localhost:5555/addresses/default-address')
@@ -82,7 +75,6 @@ const Checkout = () => {
                 console.log(error);
             })
         }
-
 
         setLoading(false);
 
@@ -97,7 +89,8 @@ const Checkout = () => {
 
             const config = { headers: { Authorization: authToken }};
             const data = {
-                delivery_address_id: selectedAddress?.id
+                delivery_address_id: selectedAddress?.id,
+                delivery_method: selectedDeliveryMethod
             }
             
             api.post('http://localhost:5555/orders/checkout', data, config)
@@ -184,6 +177,16 @@ const Checkout = () => {
         }
     }
     
+    useEffect(()=> {
+        api.get(`http://localhost:5555/cart/cart-summary?delivery_method=${selectedDeliveryMethod}`)
+        .then((response) => {
+            setSubTotal(response.data.subTotal);
+            setDeliveryCharges(response.data.deliveryCharges);
+        })
+        .catch(() => {
+            enqueueSnackbar('Error fetching cart details', {variant: 'error'});
+        });
+    }, [selectedDeliveryMethod, cartItems.data]);
 
     return (
         <div className='p-4'>
@@ -218,16 +221,16 @@ const Checkout = () => {
                                                 <div className="font-semibold mt-2"> 
                                                     {item.special_offer ? 
                                                         <p> 
-                                                            &#8377;{ (item.book.price * (100 - item.special_offer.discount_percentage) / 100).toFixed(2)} 
+                                                            {formatPrice(item.book.price * (100 - item.special_offer.discount_percentage) / 100, item.book.currency)} 
                                                             <span className="m-1 p-1 font-normal rounded-sm text-white bg-red-500"> 
                                                                 {item.special_offer.discount_percentage}% 
                                                             </span>
                                                             <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
-                                                                M.R.P. &#8377;{ item.book.price.toFixed(2)} 
+                                                                M.R.P. {formatPrice(item.book.price, item.book.currency)} 
                                                             </span>
                                                         </p> 
                                                         : 
-                                                        <p> &#8377;{ item.book.price.toFixed(2)} </p>
+                                                        <p> {formatPrice(item.book.price, item.book.currency)} </p>
                                                     }
                                                 </div>
                                             </div>
@@ -254,12 +257,16 @@ const Checkout = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                <p className='text-lg my-4 font-semibold text-gray-800'>Total Amount: &#8377;{totalAmount.toFixed(2)}</p>
+                                <div className='my-4 max-w-sm'>
+                                    <div className='flex justify-between text-md text-gray-800'> <span>Sub Total:</span> <span> {formatPrice(subTotal, cartItems.data[0].book.currency)}</span> </div>
+                                    <div className='flex justify-between text-md text-gray-800'> <span>Delivery Charges:</span> <span> {formatPrice(deliveryCharges, cartItems.data[0].book.currency)}</span> </div>
+                                    <div className='flex justify-between font-semibold my-2 text-gray-950'> <span>Total Amount:</span> <span> {formatPrice(subTotal+deliveryCharges, cartItems.data[0].book.currency)}</span> </div>
+                                </div>
                             </div>
                             <div className='flex flex-col gap-4'>
                                 { selectedAddress && 
                                 (<div className='flex flex-col gap-4'>
-                                    <div className='text-lg font-medium tet-gray-700'> Delivery Address: </div>
+                                    <div className='text-lg font-medium text-gray-950'> Delivery Address: </div>
                                     <div className='flex flex-col py-2 px-4 border rounded-lg text-sm bg-gray-100'> 
                                         <div className='font-semibold'> {selectedAddress.house_number} </div>
                                         <div className='text-gray-700 '> {selectedAddress.zip_code} </div>
@@ -303,6 +310,26 @@ const Checkout = () => {
                                         ))}
                                     </ul>
                                 }
+
+                                <div className='my-4'>
+                                    <div className='text-lg font-medium text-gray-950 my-2'>Select Delivery Method</div>
+                                    <select 
+                                        className='w-full p-2 rounded-md outline-none border'
+                                        name = "deliveryMethod"
+                                        value = {selectedDeliveryMethod}
+                                        onChange = {(e) => {setSelectedDeliveryMethod(e.target.value)}}
+                                    >
+                                        {deliveryMethods.map((method) => (
+                                            <option 
+                                                className='text-gray-700'
+                                                key={method} 
+                                                value={method}
+                                            >
+                                                {prettifyString(method.toLowerCase())}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
 
                                 <button 
                                     type='button' 

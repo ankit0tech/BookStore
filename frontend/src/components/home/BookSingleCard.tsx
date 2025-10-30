@@ -4,6 +4,7 @@ import { VscHeart } from "react-icons/vsc";
 import { FaStar } from "react-icons/fa";
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
+import { formatPrice } from "../../utils/formatUtils";
 
 const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
 
@@ -31,13 +32,13 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
     return (
         <div
             key={book.id}
-            className="relative isolate flex flex-col px-2 py-4 rounded-lg border hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all duration-200"
+            className="relative isolate flex flex-col px-2 py-4 rounded-lg border hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all duration-200 bg-white"
         >   
             <div 
                 className="absolute -right-0 right-4 z-10 p-1"
                 onClick={() => handleAddToWishList(Number(book.id))}
             >
-                <VscHeart className="text-2xl text-gray-800 hover:text-red-500"></VscHeart>
+                <VscHeart className="text-2xl text-gray-800 cursor-pointer hover:text-red-500"></VscHeart>
             </div>
 
             <div className="w-56 h-56 _border _rounded-lg flex justify-center w-full">
@@ -74,11 +75,11 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
 
                     <div className="space-x-2">
                         { book.special_offers?.length == 0 ?
-                            <span className="inline-block font-semibold text-gray-900">&#8377;{book.price}</span>
+                            <span className="inline-block font-semibold text-gray-900">{formatPrice(book.price, book.currency)}</span>
                         :
                             <>
-                                <span className="inline-block font-semibold text-gray-900">&#8377;{calculateDiscountedPrice(book)}</span>
-                                <span className="inline-block line-through text-sm font-light text-gray-700">&#8377;{book.price}</span>
+                                <span className="inline-block font-semibold text-gray-900">{formatPrice(calculateDiscountedPrice(book), book.currency)}</span>
+                                <span className="inline-block line-through text-sm font-light text-gray-700">{formatPrice(book.price, book.currency)}</span>
                                 <span className="inline-block font-medium text-sm text-cyan-500">({findMaxDiscountPercentage(book)}%OFF)</span>
                             </>
                     }

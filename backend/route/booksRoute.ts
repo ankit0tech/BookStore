@@ -124,7 +124,7 @@ router.get('/search', optionalAuthMiddleware, async (req, res) => {
                     }
                 ],
                 category_id: categoryId || undefined,
-                price: { gte: minPrice , lte: maxPrice },
+                price: { gte: minPrice, lte: maxPrice },
                 average_rating: sortByAverageRating ? { gte: 4 } : undefined,
                 special_offers: selectWithSpecialOffer ? 
                     {
@@ -239,7 +239,7 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
         books = await prisma.book.findMany({
             where: {
                 category_id: categoryId || undefined,
-                price: { gte: minPrice , lte: maxPrice },
+                price: { gte: minPrice, lte: maxPrice },
                 average_rating: sortByAverageRating ? { gte: 4 } : undefined,
                 special_offers: selectWithSpecialOffer ? 
                     {
@@ -320,7 +320,13 @@ router.get('/:id(\\d+)', optionalAuthMiddleware, async (req, res) => {
             },
             include: {
                 category: true,
-                special_offers: true,
+                special_offers: {
+                    where: {
+                        offer_valid_until: {
+                            gte: new Date()
+                        }
+                    }
+                },
             }
         });
 

@@ -3,7 +3,7 @@ import { OrderInterface } from "../types";
 import { useEffect, useState } from 'react';
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
-import { prettifyStatus } from "../utils/formatUtils";
+import { formatPrice, prettifyString } from "../utils/formatUtils";
 import { CancelOrReturnOverlay } from "../components/orders/CancelOrReturnOverlay";
 
 const OrderDetails = () => {
@@ -89,11 +89,11 @@ const OrderDetails = () => {
                                     </p>
                                     <p className="flex flex-row justify-between text-sm items-center">
                                         <span className="text-gray-700">Order Status: </span>
-                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-700">{prettifyStatus(orderDetails.order_status.toLowerCase())}</span>
+                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-700">{prettifyString(orderDetails.order_status.toLowerCase())}</span>
                                     </p>
                                     <p className="flex flex-row justify-between text-sm items-center">
                                         <span className="text-gray-700">Payment: </span>
-                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{prettifyStatus(orderDetails.payment_status.toLowerCase())}</span>
+                                        <span className="font-medium px-2 py-1 rounded-md text-xs bg-green-50 text-green-700">{prettifyString(orderDetails.payment_status.toLowerCase())}</span>
                                     </p>
                                     {orderDetails.order_status.toLowerCase() != 'delivered' && (
                                         <>
@@ -129,7 +129,7 @@ const OrderDetails = () => {
                                             ) : (
                                                 <p className="flex flex-row justify-between text-sm items-center">
                                                     <span className="text-gray-700">Cancellation Status:</span>
-                                                    <span className="font-medium">{prettifyStatus(orderDetails.cancellation_status.toLowerCase())}</span>
+                                                    <span className="font-medium">{prettifyString(orderDetails.cancellation_status.toLowerCase())}</span>
                                                 </p>
                                             )}
                                         </>
@@ -160,7 +160,7 @@ const OrderDetails = () => {
                                             ) : (
                                                 <p className="flex flex-row justify-between text-sm items-center">
                                                     <span className="text-gray-700">Return Status:</span>
-                                                    <span className="font-medium">{prettifyStatus(orderDetails.return_status.toLowerCase())}</span>
+                                                    <span className="font-medium">{prettifyString(orderDetails.return_status.toLowerCase())}</span>
                                                 </p>
                                             )}
                                         </>
@@ -191,7 +191,7 @@ const OrderDetails = () => {
                                                     <p className="text-sm text-gray-700">{item.book.author}</p>
                                                     <div className="mt-2 space-y-1">
                                                         <p className="text-sm text-gray-700">Qty: {item.quantity}</p>
-                                                        <p className="text-sm text-gray-700">Price: &#8377;{item.unit_price}</p>
+                                                        <p className="text-sm text-gray-700">Price: {formatPrice(item.unit_price, item.currency)}</p>
                                                     </div>
                                                 
                                                     <button 
@@ -223,14 +223,14 @@ const OrderDetails = () => {
                                 <p className="font-semibold text-gray-900 mb-2">Price Summary:</p>
                                 <p className="flex flex-row justify-between w-full text-gray-700 text-sm">
                                     <span>Subtotal: </span>
-                                    <span className="font-medium">&#8377;{orderDetails.subtotal.toFixed(2)}</span>
+                                    <span className="font-medium">{formatPrice(orderDetails.subtotal, orderDetails.order_items[0].book.currency)}</span>
                                 </p>
                                 <p className="flex flex-row justify-between w-full text-gray-700 text-sm">
                                     <span>Delivery charges:</span>
-                                    <span className="font-medium">&#8377;{(orderDetails.delivery_charges || 0).toFixed(2)}</span>
+                                    <span className="font-medium">{formatPrice(orderDetails.delivery_charges || 0, orderDetails.order_items[0].book.currency)}</span>
                                 </p>
                                 <p className="flex flex-row justify-between w-full text-gray-900 font-semibold border-t border-gray-100 pt-2 mt-2">
-                                    <span>Total cost:</span>&#8377;{(orderDetails.subtotal + (orderDetails.delivery_charges || 0)).toFixed(2)}
+                                    <span>Total cost:</span>{formatPrice(orderDetails.subtotal + (orderDetails.delivery_charges || 0), orderDetails.order_items[0].book.currency)}
                                 </p>
                             </div>
                         </div>

@@ -9,6 +9,7 @@ import { UserBook, AdminBook, RootState } from '../types';
 import { useSelector } from 'react-redux';
 import { MdOutlineDelete } from 'react-icons/md';
 import { FaRegStar, FaStar } from 'react-icons/fa';
+import { formatPrice } from '../utils/formatUtils';
 
 
 const ShowBook = () => {
@@ -144,7 +145,7 @@ const ShowBook = () => {
                                 </div>
                                 
                                 <p className='font-semibold py-2 text-3xl'>
-                                    &#8377;{book.price}
+                                    {formatPrice(book.price, book.currency)}
                                 </p>
                             </div>
                         </div>
@@ -210,10 +211,10 @@ const ShowBook = () => {
                                     </button>
                                     :
                                     <>
-                                        <button
+                                        {book.is_available && <button
                                             className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
                                             onClick={() => handleCartUpdate(Number(book.id), 1, selectedOffer)}
-                                        >Add to cart</button>
+                                        >Add to cart</button>}
                                         <button
                                             className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
                                             onClick={() => handleAddToWishList(Number(book.id))}

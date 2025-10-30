@@ -63,6 +63,11 @@ enum addressType {
   OTHER
 }
 
+enum Currency {
+  INR
+  USD
+}
+
 model userinfo {
   id Int @id @default(autoincrement())
   email String @unique @db.VarChar(255)
@@ -95,6 +100,7 @@ model book {
   author String
   publish_year Int
   price Int
+  currency Currency @default(INR)
   description String? 
   isbn String? @unique
   publisher String?
@@ -193,6 +199,7 @@ model order_items {
 
   quantity Int @default(0)
   unit_price Int
+  currency Currency @default(INR)
   offer_id Int?
   special_offer special_offers? @relation(fields: [offer_id], references: [id], onDelete: SetNull)
 
@@ -215,8 +222,8 @@ model orders {
   payment_status paymentStatus @default(PENDING)
   delivery_charges Int
   subtotal Int
-  tax_percentage Int @default(18)
   total_amount Int
+  currency Currency @default(INR)
 
   razorpay_order_id String? @unique
   razorpay_payment_id String?

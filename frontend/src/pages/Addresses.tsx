@@ -74,7 +74,7 @@ const Addresses = () => {
                 <h1 className="font-semibold text-2xl">My Addresses</h1>
                 <Link
                     to='/dashboard/address/create'  
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 p-2"  
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600"  
                 >
                     <FaPlus />
                     Add new address
@@ -92,39 +92,27 @@ const Addresses = () => {
                     <div className={`grid grid-cols-1 ${isSidebarOpen ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-3 lg:grid-cols-4'} gap-6 min-w-max`}>
                         {addresses && addresses.map((address, index) => (
                             <div key={index} className="p-6 flex flex-col border rounded-lg hover:shadow-sm ">
-                                <div className="space-y-2">
-                                    <div className="font-medium">{address.name}</div>
-                                    <div className="text-gray-600">{address.house_number}</div>
-                                    <div className="text-gray-600">{address.street_address}</div>
-                                    <div className="text-gray-600 w-full">{address.city}, {address.state} {address.zip_code}</div>
-                                    <div className="text-gray-600">{address.country}</div>
+                                <div className="space-y-1">
+                                    <div className="font-medium my-2">{address.name}</div>
+                                    <div className="text-sm text-gray-600">{address.house_number}</div>
+                                    <div className="text-sm text-gray-600">{address.street_address}</div>
+                                    <div className="text-sm text-gray-600 w-full">{address.city}, {address.state} {address.zip_code}</div>
+                                    <div className="text-sm text-gray-600">{address.country}</div>
                                 </div>
 
-                                {!address.is_default ? (
+                            <div className="flex justify-between">
+                                <div className="flex mt-2 gap-2">
                                     <button 
-                                        className="mt-4 px-4 py-2 w-fit rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors"
-                                        onClick={() => handleMakeAddressDefault(address.id)}
-                                    >
-                                        Make default
-                                    </button> 
-                                ): (
-                                    <div className="mt-4 px-4 py-2 w-fit rounded-md inline-block text-green-600 bg-green-50 hover:bg-green-100">
-                                        Default Address
-                                    </div>
-                                )}
-                                
-                                <div className="flex mt-4 gap-4">
-                                    <button 
-                                        className="p-2 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors" 
+                                        className="p-2 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors" 
                                         onClick={() => navigate(`/dashboard/address/update/${address.id}`)}
-                                    >
+                                        >
                                         <AiOutlineEdit className="text-xl" />
                                     </button>
 
                                     <button
-                                        className="p-2 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+                                        className="p-2 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
                                         onClick={() => setShowAddressToDelete(address.id)}
-                                    >
+                                        >
                                         <MdOutlineDelete className="text-xl"/>
                                     </button>
                                     
@@ -134,8 +122,23 @@ const Addresses = () => {
                                         isOpen={showAddressToDelete === address.id}
                                         onClose={onClose}
                                         onDeleteSuccess={fetchAddresses}
-                                    />
+                                        />
                                 </div>
+
+                                {!address.is_default ? (
+                                    <button 
+                                        className="text-sm mt-2 px-4 py-2 w-fit rounded-md text-blue-500 bg-blue-50 hover:bg-blue-100"
+                                        onClick={() => handleMakeAddressDefault(address.id)}
+                                    >
+                                        Make default
+                                    </button> 
+                                ): (
+                                    <div className="text-sm mt-2 px-4 py-2 w-fit rounded-md inline-block text-green-600 bg-green-100 hover:bg-green-100">
+                                        Default Address
+                                    </div>
+                                )}
+                            </div>
+
                             </div>
                         ))}
                     </div>

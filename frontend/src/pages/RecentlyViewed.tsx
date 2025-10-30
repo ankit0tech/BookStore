@@ -5,6 +5,7 @@ import { RecentlyViewed as RecentlyViewedInterface } from "../types";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
+import { formatPrice } from "../utils/formatUtils";
 
 const RecentlyViewed = () => {
     
@@ -94,7 +95,7 @@ const RecentlyViewed = () => {
                                                 {item.book.title} 
                                             </Link>
                                             <div className="text-sm text-gray-600 truncate">by {item.book.author} </div>
-                                            <div className="font-semibold pt-2">&#8377;{item.book.price} </div>
+                                            <div className="font-semibold pt-2">{formatPrice(item.book.price, item.book.currency)} </div>
                                             <div className="text-sm text-gray-600 py-2"> 
                                                 Added on: {new Date(item.updated_at).toLocaleDateString('en-US', {
                                                     year: 'numeric',

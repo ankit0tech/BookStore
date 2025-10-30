@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch } from "react-redux";
 import { logoutSuccess } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -24,11 +23,9 @@ const Signout = () => {
     }
 
     return (
-        <div>
-            <button className="" onClick={handleSignout}>
-                Signout
-            </ button>
-        </div>
+        <button className="" onClick={handleSignout}>
+            Signout
+        </ button>
     );
 };
 

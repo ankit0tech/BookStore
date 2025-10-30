@@ -9,6 +9,9 @@ import Spinner from "../components/Spinner";
 import { BiMinus, BiPlus } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
+import api from "../utils/api";
+import { enqueueSnackbar } from "notistack";
+import { formatPrice } from "../utils/formatUtils";
 // import { setCartItems as setCartItemsSlice } from "../redux/cartSlice";
 // import { enqueueSnackbar } from "notistack";
 
@@ -17,6 +20,8 @@ const Cart = () => {
 
     const navigate = useNavigate();
     const cartItems = useSelector((state: RootState) => state.cartinfo);
+    const [subTotal, setSubTotal] = useState<number>(0);
+    const [deliveryCharges, setDeliveryCharges] = useState<number>(0);
     // const userinfo = useSelector((state: RootState) => state.userinfo);
     // const dispatch = useDispatch();
     // const authToken = userinfo.token;
@@ -32,6 +37,18 @@ const Cart = () => {
         }, 0);
         return subTotal;
     }
+
+    useEffect(() => {
+        // setSubTotal(findSubTotal(cartItems));
+        api.get(`http://localhost:5555/cart/cart-summary`)
+            .then((response) => {
+                setSubTotal(response.data.subTotal);
+                setDeliveryCharges(response.data.deliveryCharges);
+            })
+            .catch(() => {
+                enqueueSnackbar('Error fetching cart details', {variant: 'error'});
+            });
+    }, [cartItems]);
     
 
     return(
@@ -63,16 +80,16 @@ const Cart = () => {
                                             <div className="font-semibold mt-2"> 
                                                 {item.special_offer ? 
                                                     <p> 
-                                                        &#8377;{ (item.book.price * (100 - item.special_offer.discount_percentage) / 100).toFixed(2)} 
+                                                        {formatPrice(item.book.price * (100 - item.special_offer.discount_percentage)/100, item.book.currency)} 
                                                         <span className="m-1 p-1 font-normal rounded-sm text-white bg-red-500"> 
                                                             {item.special_offer.discount_percentage}% 
                                                         </span>
                                                         <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
-                                                            M.R.P. &#8377;{ item.book.price.toFixed(2)} 
+                                                            M.R.P. {formatPrice(item.book.price, item.book.currency)} 
                                                         </span>
                                                     </p> 
                                                     : 
-                                                    <p> &#8377;{ item.book.price.toFixed(2)} </p>
+                                                    <p> {formatPrice(item.book.price, item.book.currency)} </p>
                                                 }
                                             </div>
                                         </div>
@@ -108,16 +125,16 @@ const Cart = () => {
                                 <div className="space-y-3">
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Sub Total: </span> 
-                                        <span className="font-medium"> &#8377;{findSubTotal(cartItems).toFixed(2)}</span>
+                                        <span className="font-medium"> {formatPrice(subTotal, cartItems.data[0].book.currency)}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Shipping charges: </span>
-                                        <span className="font-medium">Free</span>
+                                        <span className="text-gray-600">Delivery charges: </span>
+                                        <span className="font-medium">{formatPrice(deliveryCharges)}</span>
                                     </div>
                                     <div className="border-t pt-3 mt-3">
                                         <div className="flex justify-between font-semibold text-lg">
                                             <span>Total:</span>
-                                            <span className=""> &#8377;{findSubTotal(cartItems).toFixed(2)}</span>
+                                            <span className=""> {formatPrice(subTotal, cartItems.data[0].book.currency)}</span>
                                         </div>
                                     </div>
                                 </div>

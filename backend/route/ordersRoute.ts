@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { logger } from '../utils/logger';
 import { checkoutZod } from '../zod/cartZod';
-import { generateOrderNumber } from '../utils/orderUtils';
+import { generateOrderNumber, calculateDeliveryCharges } from '../utils/orderUtils';
 import { config } from '../config';
 import Razorpay from 'razorpay';
 import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils';
@@ -21,6 +21,7 @@ const isReturnable = (purchaseDate: Date, days: number): boolean => {
     purchaseDate.setDate(purchaseDate.getDate() + days);
     return purchaseDate > new Date();
 }
+
 
 // checkout
 router.post('/checkout', authMiddleware, async (req, res) => {
@@ -62,16 +63,16 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                     return acc + (quantity * discountedPrice);
                 }, 0);
                 
-                const tax_percentage = req.body.tax_percentage || 18;
-                const delivery_charges = req.body.delivery_charges || 0;
-                const total_amount =  subtotal + delivery_charges + ((subtotal * tax_percentage) / 100);
+                // const delivery_charges = req.body.delivery_charges || 0;
+                const delivery_charges = calculateDeliveryCharges(subtotal, req.body.delivery_method.toUpperCase());
+                const total_amount =  subtotal + delivery_charges;
                 const orderNumber = generateOrderNumber();
                 
                 let razorpayOrder;
                 try {
 
                     const options = {
-                        amount: Math.round(total_amount * 100),
+                        amount: total_amount,
                         currency: "INR",
                         receipt: orderNumber
                     };
@@ -96,9 +97,8 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                             razorpay_order_id: razorpayOrder.id,
                             delivery_charges: delivery_charges,
                             subtotal: subtotal,
-                            tax_percentage: tax_percentage,
                             total_amount: total_amount,
-                            delivery_method: req.body.delivery_method || 'STANDARD',
+                            delivery_method: req.body.delivery_method.toUpperCase() || 'STANDARD',
                             expected_delivery_date: new Date(Date.now() + (7*24*60*60*1000))
                         }
                     });
@@ -180,11 +180,39 @@ router.post('/verify-payment', async (req, res) => {
 router.get('/get-purchased-items', authMiddleware, async (req, res) => {
     try {
         const userId = req.userId;
-        
+        const query = req.query.query as string | undefined;
+        const orderStatus = req.query.orderStatus as string | undefined;
+        const paymentStatus = req.query.paymentStatus as string | undefined;
+        const dateOrder : 'asc'|'desc' = req.query.dateOrder === 'asc' ? 'asc' : 'desc';
+
         if(userId) {
             const purchasedItems = await prisma.orders.findMany({
                 where: { 
                     user_id: userId,
+                    ...(orderStatus && {order_status: orderStatus as any}),
+                    ...(paymentStatus && {payment_status: paymentStatus as any}),
+                    ...(query && {
+                        order_items: {
+                            some: {
+                                book: {
+                                    OR: [
+                                        {
+                                            title: {
+                                                contains: query,
+                                                mode: 'insensitive'
+                                            }
+                                        },
+                                        {
+                                            author: {
+                                                contains: query,
+                                                mode: 'insensitive'
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    })
                 }, 
                 include: {
                     order_items: {
@@ -196,7 +224,7 @@ router.get('/get-purchased-items', authMiddleware, async (req, res) => {
                     address: true
                 },
                 orderBy: {
-                    created_at: 'asc'
+                    created_at: dateOrder
                 }
             });
 

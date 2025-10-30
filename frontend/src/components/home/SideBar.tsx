@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { UserBook, Category } from "../../types";
 import { enqueueSnackbar } from "notistack";
 import api from "../../utils/api";
-import { ChildProps } from "../../App";
 import { HiOutlineSortDescending } from "react-icons/hi";
 import { MdFilterList } from "react-icons/md";
 import { IoFileTrayStackedOutline } from "react-icons/io5";
 
-interface Extended extends ChildProps {
-    handleFetchBooks: (prevBooks: UserBook[], cursor:number|null) => void
+interface Extended {
     categoryId: number | null;
     setCategoryId: React.Dispatch<React.SetStateAction<number|null>>;
     minPrice: number | null;
@@ -25,7 +23,7 @@ interface Extended extends ChildProps {
     setSelectWithSpecialOffer: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAverageRating, setSortByAverageRating, sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, handleFetchBooks, categoryId, setCategoryId, books, setBooks, nextCursor, setNextCursor}: Extended) => {
+const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAverageRating, setSortByAverageRating, sortBy, setSortBy, sortOrder, setSortOrder, maxPrice, setMaxPrice, minPrice, setMinPrice, categoryId, setCategoryId}: Extended) => {
  
     // sort by Price, Rating
 

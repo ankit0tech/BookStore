@@ -41,18 +41,9 @@ import SuperAdminHome from './pages/superadmin/SuperAdminHome';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHome from './pages/admin/AdminHome';
 import BookManagement from './pages/admin/BookManagement';
-export interface ChildProps {
-  books: UserBook[];
-  setBooks: React.Dispatch<React.SetStateAction<UserBook[]>>;
-  nextCursor: number | null;
-  setNextCursor: React.Dispatch<React.SetStateAction<number|null>>;
 
-}
 
 const App = () => {
-  
-  const [books, setBooks] = useState<UserBook[]>([]);
-  const [nextCursor, setNextCursor] = useState<number|null>(null);
 
   const userinfo = useSelector((state: RootState) => state.userinfo);
   const userRole = userinfo.userRole;
@@ -63,19 +54,14 @@ const App = () => {
     <div className='h-screen flex flex-col'>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <div className='shrink-0'>      
-          <NavBar 
-            books={books} setBooks={setBooks} 
-            nextCursor={nextCursor} setNextCursor={setNextCursor}
-          />
+          <NavBar />
         </div>
 
         <div className='flex-1 overflow-auto' >  
           <Routes>
             <Route
               path='/' 
-                element={<Home books={books} setBooks={setBooks}
-                nextCursor={nextCursor} setNextCursor={setNextCursor}
-              />}
+                element={<Home />}
             />
             <Route path='/login' element={<Login /> } />
             <Route path='/signup' element={<Signup />} />

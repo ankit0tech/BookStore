@@ -3,7 +3,7 @@ import { OrderInterface } from "../../types";
 import { useEffect, useState } from 'react';
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
-import { formatPrice, prettifyString } from "../../utils/formatUtils";
+import { formatDate, formatPrice, prettifyString } from "../../utils/formatUtils";
 
 const ManageOrder = () => {
     
@@ -23,15 +23,6 @@ const ManageOrder = () => {
     // const [shippingCarrier, setShippingCarrier] = useState<string>('');
     // const [trackingNumber, setTrackingNumber] = useState<string>('');
     // const navigate = useNavigate();
-
-    const formatDate = (date: Date) => {
-        const d = new Date(date);
-        return new Intl.DateTimeFormat('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        }).format(d);
-    }
 
     const fetchOrderDetails = () => {
         api.get(`http://localhost:5555/orders/order-details/${id}`)

@@ -3,7 +3,7 @@ import { OrdersInterface } from "../../types";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../components/Spinner";
 import api from "../../utils/api";
-import { formatPrice } from "../../utils/formatUtils";
+import { formatDate, formatPrice } from "../../utils/formatUtils";
 
 const initailState: OrdersInterface = {
     data: []
@@ -14,16 +14,6 @@ const OrderManagement = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [orders, setOrders] = useState<OrdersInterface>(initailState);
     const navigate = useNavigate();
-
-    const formatDate = (date: Date) => {
-        const d = new Date(date);
-        return new Intl.DateTimeFormat('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        }).format(d);
-    }
-
 
     useEffect(() => {
         setLoading(true);

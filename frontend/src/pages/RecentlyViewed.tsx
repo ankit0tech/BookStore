@@ -63,7 +63,12 @@ const RecentlyViewed = () => {
                 :
                 <div>
                     { !recentlyViewed.length ? 
-                        <div className="text-2xl font-semibold p-4">No recently viewed item</div> 
+                        <div>
+                        <h2 className="text-2xl font-medium text-gray-950 mb-3">No recently viewed item</h2>
+                        <p className="text-gray-900 mb-8">
+                            Browse the books to update recently viewed items.
+                        </p>
+                    </div>
                     :
                     (
                         <div className="overflow-x-auto">

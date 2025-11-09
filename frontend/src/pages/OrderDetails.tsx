@@ -3,7 +3,7 @@ import { OrderInterface } from "../types";
 import { useEffect, useState } from 'react';
 import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
-import { formatPrice, prettifyString } from "../utils/formatUtils";
+import { formatDate, formatPrice, prettifyString } from "../utils/formatUtils";
 import { CancelOrReturnOverlay } from "../components/orders/CancelOrReturnOverlay";
 import { FiPackage } from "react-icons/fi";
 import { CiCalendar, CiDeliveryTruck } from "react-icons/ci";
@@ -15,15 +15,6 @@ const OrderDetails = () => {
     const [orderDetails, setOrderDetails] = useState<OrderInterface|null>(state?.orderDetails || null);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const navigate = useNavigate();
-    
-    const formatDate = (date: Date) => {
-        const d = new Date(date);
-        return new Intl.DateTimeFormat('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        }).format(d);
-    }
     
     const fetchOrderDetails = (id:number) => {
         api.get(`http://localhost:5555/orders/order-details/${id}`)
@@ -233,7 +224,7 @@ const OrderDetails = () => {
                                                     <button 
                                                         // className="relative mt-4 w-fit h-fit px-4 py-2 text-sm text-gray-700 font-medium transition-all duration-100 rounded-sm hover:bg-gray-50 shadow-[2px_2px_0px_0px_rgba(147,200,255,1.0)] active:shadow-[1px_1px_0px_0px_rgba(102,178,255,1.0)] border border-gray-400 active:translate-x-[1px] active:translate-y-[1px] ease-in-out"
                                                         // className="w-fit text-sm my-4 text-slate-700 font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,0.8)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
-                                                        className="w-fit text-sm my-4 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50/70 border border-sky-300 rounded-sm _shadow-[2px_2px_0px_0px_rgba(0,117,149,0.4)] shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                        className="w-fit text-sm my-4 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
 
                                                         onClick={() => navigate(`/dashboard/review/${item.book.id}`)}
                                                     >

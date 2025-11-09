@@ -3,7 +3,7 @@ import Spinner from "../components/Spinner";
 import api from "../utils/api";
 import { OrdersInterface, order_statuses, payment_statuses, OrderStatus, PaymentStatus } from "../types";
 import { useNavigate } from "react-router-dom";
-import { formatPrice, prettifyString } from "../utils/formatUtils";
+import { formatDate, formatPrice, prettifyString } from "../utils/formatUtils";
 import { FiPackage } from "react-icons/fi";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowForward } from "react-icons/io";
@@ -25,16 +25,6 @@ const Orders = () => {
     const [dateOrder, setDateOrder] = useState<'desc'|'asc'>('desc');
 
     const navigate = useNavigate();
-
-    const formatDate = (date: Date) => {
-        const d = new Date(date);
-        return new Intl.DateTimeFormat('en-US', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        }).format(d);
-    }
-
 
     useEffect(() => {
         loadOrders();

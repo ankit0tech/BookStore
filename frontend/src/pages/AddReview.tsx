@@ -134,7 +134,7 @@ const AddReview = () => {
                 <label className="my-1 font-semibold text-sm text-gray-700" htmlFor="review_text">Your review</label>
                 <textarea 
                     // className="w-full resize-none h-40 appearance-none rounded-lg my-2 px-4 py-3 "
-                    className="w-full min-h-40 appearance-none my-1 px-3 py-2 border border-gray-300 focus:border-blue-400 focus:outline-hidden rounded-lg"
+                    className="w-full min-h-40 appearance-none my-1 px-3 py-2 border border-gray-300 focus:border-blue-200 focus:outline-hidden rounded-lg"
                     id='review_text'
                     name='review_text'
                     value={review}
@@ -147,7 +147,7 @@ const AddReview = () => {
                 
                 <div className="flex gap-2">
                     <button 
-                        className="w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50/70 border border-sky-300 rounded-sm _shadow-[2px_2px_0px_0px_rgba(0,117,149,0.4)] shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                        className="w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                         type='submit'
                     >
                         {updateReview ? 'Update Review' : 'Submit Review'}
@@ -155,7 +155,7 @@ const AddReview = () => {
                     {updateReview && (
                         <button 
                             type="button"
-                            className="w-fit text-sm text-red-600 font-medium px-4 py-2 bg-red-50/40 hover:bg-red-50 _hover:bg-rgba(255,226,226,1.0) border border-red-200 rounded-sm shadow-[2px_2px_0px_0px_rgba(130,0,11,0.2)] active:shadow-[1px_1px_0px_0px_rgba(130,0,11,0.2)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                            className="w-fit text-sm text-red-600 font-medium px-4 py-2 bg-red-50/40 hover:bg-red-50 border border-red-200 rounded-sm shadow-[2px_2px_0px_0px_rgba(130,0,11,0.2)] active:shadow-[1px_1px_0px_0px_rgba(130,0,11,0.2)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                             onClick={() => {setShowConfirmDelete(true)}}
                         >
                             Delete Review

@@ -76,16 +76,16 @@ const Wishlist = () => {
                                 {wishlist && wishlist.map((item) => (
                                     <div 
                                         key={item.id} 
-                                        className="w-[300px] my-4 bg-white overflow-hidden border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
+                                        className="w-[300px] my-4 bg-white overflow-hidden border rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 ease-in-out"
                                     >
                                         <Link
                                             to={`/books/details/${item.book.id}`}
-                                            className="block group h-48 bg-gray-100"
+                                            className="block group/image h-48 bg-gradient-to-tr from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 transition-colors duration-300 ease-in-out"
                                         >
                                             <img 
                                                 src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                                 alt={item.book.title}
-                                                className="w-full h-full object-contain p-4 group-hover:scale-102 transition-all duration-300 ease-in-out"    
+                                                className="w-full h-full object-contain p-4 group-hover/image:scale-102 transition-transform duration-300 ease-in-out"    
                                                 onError={(e) => {
                                                     e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
                                                 }}
@@ -95,12 +95,12 @@ const Wishlist = () => {
                                         <div className="p-4 flex flex-col">
                                             <Link 
                                                 to={`/books/details/${item.book.id}`}
-                                                className="_text-lg font-medium line-clamp-1"
+                                                className="text-lg font-medium line-clamp-1"
                                             >
                                                 {item.book.title} 
                                             </Link>
-                                            <div className="text-xs text-gray-600 truncate">by {item.book.author} </div>
-                                            <div className="_text-lg font-semibold pt-2"> {formatPrice(item.book.price, item.book.currency)} </div>
+                                            <div className="text-sm text-gray-600 truncate">by {item.book.author} </div>
+                                            <div className="font-semibold pt-2"> {formatPrice(item.book.price, item.book.currency)} </div>
                                             <div className="flex items-center gap-1 text-sm text-gray-600 py-2">
                                                 <FaCalendarAlt className="text-xs"></FaCalendarAlt>
                                                 Added on: {formatDate(item.updated_at)}

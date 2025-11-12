@@ -107,18 +107,14 @@ const Wishlist = () => {
                                             </div>
                                             <div className="flex flex-row gap-2 mt-2">
                                                 <button
-                                                    // className="flex-1 text-center whitespace-nowrap text-blue-600 hover:bg-blue-200 bg-blue-100 py-2 px-4 rounded-lg transition-all duration-200"
-                                                    className="w-full text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
-                                                    // className="w-full text-sm text-slate-800 font-medium px-4 py-2 bg-slate-50/80 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                    className="w-full text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                                                     onClick={() => {navigate(`/books/details/${item.book.id}`)}}
                                                 >
                                                     View Details
                                                 </button>
                                                 
                                                 <button
-                                                    // className="flex-1 text-red-600 whitespace-nowrap hover:bg-red-200 bg-red-100 py-2 px-4 rounded-lg transition-all duration-200"
                                                     className="w-full text-sm text-red-600 font-medium px-4 py-2 bg-red-50/40 hover:bg-red-50 border border-red-200 rounded-sm shadow-[2px_2px_0px_0px_rgba(130,0,11,0.2)] active:shadow-[1px_1px_0px_0px_rgba(130,0,11,0.2)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
-                                                    // className="w-full text-sm text-gray-950 font-medium px-4 py-2 bg-gray-50/80 hover:bg-gray-100 border border-gray-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                                                     onClick={() => {heandleRemove(item.book.id)}}
                                                 >
                                                     Remove

@@ -137,19 +137,19 @@ const Categories = () => {
                                     </div>
                                     
                                     <div className="flex flex-row items-center pr-1">
-                                        <div className="m-2 p-2 text-xl text-yellow-600 hover:text-yellow-500 active:text-yellow-700">
-                                            <AiOutlineEdit 
-                                                onClick={() => navigate(`/admin-dashboard/category/edit/${item.id}`)}
-                                            >
-                                            </AiOutlineEdit>
-                                        </div>
+                                        <button 
+                                            className="m-2 px-1.5 py-1 text-lg border border-yellow-200 text-yellow-600 bg-yellow-50/40 hover:bg-yellow-50 rounded-sm shadow-[1px_1px_0px_0px_rgba(200,137,0,0.4)] active:shadow-[0.5px_0.5px_0px_0px_rgba(200,137,0,0.4)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                            onClick={() => navigate(`/admin-dashboard/category/edit/${item.id}`)}
+                                        >
+                                            <AiOutlineEdit></AiOutlineEdit>
+                                        </button>
                                         
-                                        <div className="m-2 p-2 text-xl text-red-600 hover:text-red-500 active:text-red-700">
-                                            <MdOutlineDelete 
-                                                onClick={() => setShowCategoryToDelete(item.id)}
-                                            >
-                                            </MdOutlineDelete>
-                                        </div>
+                                        <button 
+                                            className="m-2 px-1.5 py-1 text-lg text-red-600 bg-red-50/40 hover:bg-red-50 border border-red-200 rounded-sm shadow-[1px_1px_0px_0px_rgba(130,0,11,0.3)] active:shadow-[0.5px_0.5px_0px_0px_rgba(130,0,11,0.3)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                                            onClick={() => setShowCategoryToDelete(item.id)}
+                                        >
+                                            <MdOutlineDelete></MdOutlineDelete>
+                                        </button>
                                     </div>
                                 </div>
 
@@ -169,17 +169,21 @@ const Categories = () => {
                                             >
                                                 {sub.title}
                                                 <div className="flex flex-row">
-                                                    <div className="m-2 p-2 text-xl text-yellow-600 hover:text-yellow-500 active:text-yellow-700">
-                                                        <AiOutlineEdit 
-                                                            onClick={() => navigate(`/admin-dashboard/category/edit/${sub.id}`)}>
-                                                        </AiOutlineEdit>
-                                                    </div>
+                                                    <button 
+                                                        // className="m-2 p-2 text-xl text-yellow-600 hover:text-yellow-500 active:text-yellow-700"
+                                                        className="m-2 px-1.5 py-1 text-lg border border-yellow-200 text-yellow-600 bg-yellow-50/40 hover:bg-yellow-50 rounded-sm shadow-[1px_1px_0px_0px_rgba(200,137,0,0.4)] active:shadow-[0.5px_0.5px_0px_0px_rgba(200,137,0,0.4)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                        onClick={() => navigate(`/admin-dashboard/category/edit/${sub.id}`)}
+                                                    >
+                                                        <AiOutlineEdit></AiOutlineEdit>
+                                                    </button>
                                                     
-                                                    <div className="m-2 p-2 text-xl text-red-600 hover:text-red-500 active:text-red-700">
-                                                        <MdOutlineDelete 
-                                                            onClick={() => setShowCategoryToDelete(sub.id)}>
-                                                        </MdOutlineDelete>
-                                                    </div>
+                                                    <button 
+                                                        // className="m-2 p-2 text-xl text-red-600 hover:text-red-500 active:text-red-700"
+                                                        className="m-2 px-1.5 py-1 text-lg text-red-600 bg-red-50/40 hover:bg-red-50 border border-red-200 rounded-sm shadow-[1px_1px_0px_0px_rgba(130,0,11,0.3)] active:shadow-[0.5px_0.5px_0px_0px_rgba(130,0,11,0.3)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                        onClick={() => setShowCategoryToDelete(sub.id)}
+                                                    >
+                                                        <MdOutlineDelete></MdOutlineDelete>
+                                                    </button>
                                                 </div>
 
                                                 <DeleteOverlay

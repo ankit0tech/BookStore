@@ -26,7 +26,8 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
         }
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         // Send api call on the basis of type
         console.log('submitting');
         handleRequestCancelOrReturn(type, reason);
@@ -36,12 +37,12 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
 
     return (
         <div
-            className='fixed inset-0 z-50 isolate flex justify-center bg-black bg-opacity-50 backdrop-blur-xs'
+            className='fixed inset-0 z-50 isolate flex justify-center bg-black/50 bg-opacity-50 backdrop-blur-xs overflow-y-auto'
             onClick={handleOverlayClick}
         >
             <form 
                 className='relative flex flex-col gap-4 m-4 p-6 h-fit max-h-[85vh] overflow-y-auto w-full max-w-md mt-[15vh] bg-white rounded-xl shadow-lg'
-                onSubmit={handleSubmit}
+                onSubmit={(e) => handleSubmit(e)}
             >
                 <div className='flex flex-row justify-between items-center'>
                     <h2 className='text-xl font-semibold text-gray-900'>{heading}</h2>
@@ -65,7 +66,7 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
                         >Reason <span className='text-red-500'>*</span>
                     </label> 
                     <textarea 
-                        className='text-gray-700 px-2 py-1 min-h-48 border rounded-md focus:outline-hidden focus:border-blue-400'
+                        className='text-gray-700 px-2 py-1 min-h-48 border border-gray-300 rounded-md focus:outline-hidden focus:border-blue-400'
                         placeholder='Please enter your reason...'
                         id="reason-text"
                         maxLength={500}
@@ -77,16 +78,16 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
 
                 <div className='flex flex-row gap-4'>
                     <button
-                        className='w-full px-6 py-2.5 rounded-lg text-gray-700 border hover:bg-gray-50 transition-all duration-200'
+                        className='w-fit px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-sm border border-black shadow-[2px_2px_0px_0px_rgba(96,96,96,1.0)] active:shadow-[1px_1px_0px_0px_rgba(96,96,96,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out'
                         type='button'
                         onClick={onClose}
                         >
                         Cancel
                     </button>
                     <button 
-                        className='w-full px-6 py-2.5 bg-blue-500 rounded-lg text-white hover:bg-blue-600 hover:shdow-lg tranistion-all duration-200'
+                        className='w-fit px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-sm border border-black shadow-[2px_2px_0px_0px_rgba(102,178,255,1.0)] active:shadow-[1px_1px_0px_0px_rgba(102,178,255,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out'
                         type='submit'
-                        >
+                    >
                         Submit
                     </button>
                 </div>

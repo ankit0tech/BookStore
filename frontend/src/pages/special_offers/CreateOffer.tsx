@@ -129,12 +129,12 @@ const CreateOffer = () => {
     return (
     <div className="max-w-2xl mx-auto p-6">
         <h2 className="text-2xl font-semibold mb-6">{updateOffer ? 'Update Offer' : 'Create Offer'}</h2>
-        <form className="space-y-2" onSubmit={handleFormSubmit}>
+        <form className="space-y-2 min-w-xs" onSubmit={handleFormSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="discountPercentage">Discount Percentage</label>
                     <input 
-                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.discountPercentage ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.discountPercentage ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-300`}
                         id="discountPercentage" 
                         type="number"
                         onChange={(e) => setDiscountPercentage(Number(e.target.value))}
@@ -144,11 +144,11 @@ const CreateOffer = () => {
                     {formErrors.discountPercentage && (<p className="text-sm text-red-500">{formErrors.discountPercentage}</p>)}
                 </div>
 
-                <div className="space-y-2">
+                <div className="">
 
                     <label className="block text-sm font-medium text-gray-700" htmlFor="offerType">Offer Type</label>
                     <input 
-                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.offerType ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.offerType ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-300`}
                         id="offerType" 
                         type="text"
                         onChange={(e) => setOfferType(e.target.value)}    
@@ -157,10 +157,10 @@ const CreateOffer = () => {
                     {formErrors.offerType && (<p className="text-sm text-red-500">{formErrors.offerType}</p>)}
                 </div>
 
-                <div className="space-y-2 md:col-span-2">
+                <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="description">Description</label>
                     <input 
-                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.description ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                        className={`appearance-none w-full rounded-lg my-2 px-4 py-2 border ${formErrors.description ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-300`}
                         id="description"
                         type="text"
                         onChange={(e) => setDescription(e.target.value)}
@@ -172,9 +172,9 @@ const CreateOffer = () => {
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="offerValidFrom">Offer valid from</label>
                     
-                    <div className={`flex gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidFrom ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-gray-500`}>
+                    <div className={`w-full flex flex-wrap items-center gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidFrom ? 'border-red-500' : 'border-gray-300'} _focus:outline-hidden focus-within:border-blue-300`}>
                         <input
-                            className="pr-1"
+                            className="w-[7rem] cursor-pointer"
                             id="offerValidFrom" 
                             type="date"
                             onChange={(e) => setOfferValidFromDate(e.target.value)}
@@ -182,7 +182,7 @@ const CreateOffer = () => {
                         ></input>
                         
                         <input 
-                            className="pr-1"
+                            className="w-[7rem] cursor-pointer"
                             id="offerValidFrom" 
                             type="time"
                             onChange={(e) => setOfferValidFromTime(e.target.value)}
@@ -194,17 +194,19 @@ const CreateOffer = () => {
 
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="offerValidUntil">Offer valid until</label>
-                    <div className={`flex gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidUntil ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-gray-500`}> 
+                    <div className={`w-full flex flex-wrap items-center gap-4 rounded-lg my-2 px-4 py-2 border ${formErrors.offerValidUntil ? 'border-red-500' : 'border-gray-300'} _focus:outline-hidden focus-within:border-blue-300`}> 
                     
                         <input 
                             id="offerValidUntil" 
                             type="date"
+                            className="w-[7rem] cursor-pointer"
                             onChange={(e) => setOfferValidUntilDate(e.target.value)}
                             value={offerValidUntilDate}
                         ></input>
                         <input 
                             id="offerValidUntil" 
                             type="time"
+                            className="w-[7rem] cursor-pointer"
                             onChange={(e) => setOfferValidUntilTime(e.target.value)}
                             value={offerValidUntilTime}
                         ></input>
@@ -214,19 +216,21 @@ const CreateOffer = () => {
 
             </div>
             
-            <div className="space-y-2 flex flex-row justify-end gap-2">
+            <div className=" flex flex-row justify-start gap-4">
                 <button
-                    className="rounded-lg mt-2 text-gray-700 bg-white px-4 py-2 border border-gray-300 hover:bg-gray-50 h-auto"
+                    // className="rounded-lg mt-2 text-white bg-purple-500 px-4 py-2 hover:bg-purple-600 h-auto"
+                    className="flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                    type="submit"
+                >
+                    {isLoading ? 'Saving...' : 'Save'}
+                </button>
+                <button
+                    // className="rounded-lg mt-2 text-gray-700 bg-white px-4 py-2 border border-gray-300 hover:bg-gray-50 h-auto"
+                    className="flex items-center justify-center gap-2 w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
                     type="button"
                     onClick={() => navigate(-1)}
                 >
                     Cancel
-                </button>
-                <button
-                    className="rounded-lg mt-2 text-white bg-purple-500 px-4 py-2 hover:bg-purple-600 h-auto"
-                    type="submit"
-                >
-                    {isLoading ? 'Saving...' : 'Save'}
                 </button>
             </div>
         </form>

@@ -59,9 +59,34 @@ router.get('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async(req: Req
 });
 
 router.get('/', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
+
     try {
+        
+        const query = req.query.query as string | undefined;
+        const expiryStatus = req.query.expiryStatus as string | undefined;
+        const percentageFilter = req.query.percentageFilter ? Number(req.query.percentageFilter) : undefined;
+        
         const offers = await prisma.special_offers.findMany({
-            where:{},
+            where: {
+                ...(percentageFilter && {discount_percentage: { gte: percentageFilter }}),
+                ...(expiryStatus?.toLowerCase() === 'valid' && {offer_valid_from: { lte: new Date }, offer_valid_until: { gte: new Date }}),
+                ...(expiryStatus?.toLowerCase() === 'expired' && {offer_valid_until: { lte: new Date }}),
+                ...(query && {
+                    OR: [
+                        {
+                            offer_type: {
+                                contains: query,
+                                mode: 'insensitive'
+                            }
+                        },{
+                            description: {
+                                contains: query,
+                                mode: 'insensitive'
+                            }
+                        }
+                    ]
+                })
+            },
             orderBy: {
                 created_at: 'asc'
             }

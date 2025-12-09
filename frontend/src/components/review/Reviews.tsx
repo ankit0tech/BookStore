@@ -3,6 +3,7 @@ import { Review } from "../../types";
 import { enqueueSnackbar } from "notistack";
 import axios from "axios";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { formatDate } from "../../utils/formatUtils";
 
 
 const Reviews: React.FC<{id: number}> = ({id }) => {
@@ -37,15 +38,6 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
         
     }, [id]);
 
-    const formatDate = (date: Date): string => {
-        const d = new Date(date);
-        
-        return new Intl.DateTimeFormat('en-US', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        }).format(d);
-    }
 
     return (
         <div className="w-full">

@@ -15,3 +15,13 @@ export const formatPrice = (price: number, currency?: string): string => {
         return ('₹' + convertedPrice);
     }
 }
+
+export const formatDate = (date: Date): string => {
+    const d = new Date(date);
+
+    return new Intl.DateTimeFormat('en-US', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    }).format(d);
+}

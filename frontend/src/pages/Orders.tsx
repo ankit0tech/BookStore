@@ -3,7 +3,7 @@ import Spinner from "../components/Spinner";
 import api from "../utils/api";
 import { OrdersInterface, order_statuses, payment_statuses, OrderStatus, PaymentStatus } from "../types";
 import { useNavigate } from "react-router-dom";
-import { formatPrice, prettifyString } from "../utils/formatUtils";
+import { formatDate, formatPrice, prettifyString } from "../utils/formatUtils";
 import { FiPackage } from "react-icons/fi";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowForward } from "react-icons/io";
@@ -25,16 +25,6 @@ const Orders = () => {
     const [dateOrder, setDateOrder] = useState<'desc'|'asc'>('desc');
 
     const navigate = useNavigate();
-
-    const formatDate = (date: Date) => {
-        const d = new Date(date);
-        return new Intl.DateTimeFormat('en-US', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        }).format(d);
-    }
-
 
     useEffect(() => {
         loadOrders();
@@ -68,7 +58,7 @@ const Orders = () => {
     return (
         <div className="min-h-screen max-w-5xl px-2 md:px-8">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Order History</h1>
+                <h1 className="text-3xl font-semibold text-gray-900">Order History</h1>
                 <p className="mt-2 text-sm text-gray-600">View and manage your past orders</p>
             </div>
             
@@ -100,7 +90,7 @@ const Orders = () => {
                             value={searchOrderStatus}
                             onChange={(e) => setSearchOrderStatus(e.target.value as OrderStatus || '')}
                             aria-label="Order status"
-                            >
+                        >
                             <option value="">All Orders</option>
                             {order_statuses.map((order_status) => (
                                 <option key={order_status} value={order_status}>{prettifyString(order_status)}</option>
@@ -175,7 +165,7 @@ const Orders = () => {
                                             <div className="text-gray-500 text-sm font-semibold mb-2 tacking-wider uppercase">Items</div>
                                             <div className="space-y-2">
                                                 {item.order_items.map((order_item) => (
-                                                    <div className="flex justify-between bg-gray-50 hover:bg-gray-100 rounded-md px-4 py-2">
+                                                    <div className="flex justify-between bg-gray-50 hover:bg-gray-100 rounded-md px-4 py-2" key={order_item.id}>
                                                         <div className="font-medium text-gray-800">{order_item.book.title}</div>
                                                         <div className="flex items-center gap-1">
                                                             <span className="text-sm text-gray-600">Qty:</span>

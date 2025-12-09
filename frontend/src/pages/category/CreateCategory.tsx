@@ -86,7 +86,7 @@ const CreateCategory = () => {
                 className="space-y-6"
                 onSubmit={(e) => handleCreateCategory(e)}
             >
-                <div className="space-y-2">
+                <div className="flex flex-col gap-1">
                     <label className="text-sm font-medium text-gray-700" htmlFor="category">Category title</label>
                     <input 
                         type='text' 
@@ -94,7 +94,7 @@ const CreateCategory = () => {
                         name='category'
                         value={categoryTitle}
                         onChange={(e) => setCategoryTitle(e.target.value)}
-                        className="text-gray-800 w-full px-4 py-2 rounded-lg border border-gray-300 outline-hidden focus:border-blue-500"
+                        className="text-gray-800 w-full px-4 py-2 rounded-lg border border-gray-300 outline-hidden focus:border-blue-400"
                         placeholder="Enter category title" 
                         required   
                     >
@@ -105,7 +105,7 @@ const CreateCategory = () => {
                     }
                 </div>
 
-                <div className="space-y-2">
+                <div className="flex flex-col gap-1">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="parentSelection">Parent Category</label>
                     <select
                         className="text-gray-800 w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-400 outline-hidden"
@@ -113,7 +113,7 @@ const CreateCategory = () => {
                         name="parentSelection"
                         value={selectedParent || ""}
                         onChange={(e) => setSelectedParent(e.target.value)}
-                        >   
+                    >   
                         <option value="">No Parent</option>
                         {!(updateCategory && selectedParent == null) && Array.isArray(existingCategories) && existingCategories.length>0 && existingCategories.map((category) => (
                             <option key={category.id} value={category.id}> {category.title} </option>
@@ -123,19 +123,21 @@ const CreateCategory = () => {
 
                 <div className="flex flex-row gap-3 justify-end pt-4">
                     <button
+                        type="submit"
+                        className="flex gap-1 items-center w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                    
+                    >
+                        {updateCategory ? 'Update' : 'Save'}
+                    </button>
+
+                    <button
                         type='button'
-                        className="px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-300 transition-colors duration-200"
+                        className="w-fit text-sm text-slate-600 font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                         onClick={() => navigate(-1)}
                     >
                         Cancel
                     </button>
 
-                    <button
-                        type="submit"
-                        className="px-4 py-2 text-white bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors duration-200"
-                        >
-                        {updateCategory ? 'Update' : 'Save'}
-                    </button>
                 </div>
             </form>
         </div>

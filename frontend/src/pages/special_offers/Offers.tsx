@@ -63,9 +63,9 @@ const Offers = () => {
         })
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchOffers();
-    }, [searchQuery, expiryStatus, percentageFilter]);
+    }, [expiryStatus, percentageFilter]);
 
     return (
         <div className='max-w-6xl mx-auto'>
@@ -96,6 +96,9 @@ const Offers = () => {
                             placeholder="Search offers..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter') fetchOffers();
+                            }}
                             aria-label="Search offers"
                         ></input>
                     </div>

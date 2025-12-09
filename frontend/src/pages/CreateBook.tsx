@@ -108,7 +108,7 @@ const CreateBook = () => {
             title,
             author,
             publish_year: Number(publishYear),
-            price: Number(price),
+            price: Number(price) * 100,
             category_id: Number(selectedCategory),
             cover_image: imgUrl,
             description: description.trim() || undefined,
@@ -420,7 +420,27 @@ const CreateBook = () => {
 
                 </div>
 
-                <div className="flex flex-row justify-end gap-2">
+                <div className=" flex flex-row justify-start gap-4">
+                    <button
+                        // className="rounded-lg mt-2 text-white bg-purple-500 px-4 py-2 hover:bg-purple-600 h-auto"
+                        className={`flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 ${loading ? 'cursor-not-allowed' : 'cursor-pointer'} bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out`}
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? 'Saving...' : 'Save'}
+                    </button>
+                    <button
+                        // className="rounded-lg mt-2 text-gray-700 bg-white px-4 py-2 border border-gray-300 hover:bg-gray-50 h-auto"
+                        className="flex items-center justify-center gap-2 w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                        type="button"
+                        onClick={() => navigate(-1)}
+                    >
+                        Cancel
+                    </button>
+                </div>
+
+
+                {/* <div className="flex flex-row justify-end gap-2">
                     <button
                         className='rounded-lg px-4 py-2 my-2 border border-gray-300 hover:bg-gray-50'
                         type='button'
@@ -434,7 +454,7 @@ const CreateBook = () => {
                     > 
                         Save
                     </button>
-                </div>
+                </div> */}
             </form>
         </div>
     );

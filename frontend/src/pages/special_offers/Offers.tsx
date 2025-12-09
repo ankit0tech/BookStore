@@ -7,12 +7,26 @@ import { MdOutlineDelete } from 'react-icons/md';
 import DeleteOverlay from '../../components/DeleteOverlay';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { CiCalendar } from 'react-icons/ci';
+import { BiSearch } from 'react-icons/bi';
+import { prettifyString } from '../../utils/formatUtils';
+import { enqueueSnackbar } from 'notistack';
+
+const expiry_statuses = ['expired', 'valid'];
+type ExpiryStatus = typeof expiry_statuses[number];
+
+const percentage_filters = [10, 15, 20, 30, 50]
+type PercentageFilter = typeof percentage_filters[number];
+
 
 const Offers = () => {
 
-
+    const [loading, setLoading] = useState<boolean>(false);
     const [offers, setOffers] = useState<Offer[]|null>(null);
     const [offerToDelete, setOfferToDelete] = useState<number|null>(null);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [expiryStatus, setExpiryStatus] = useState<ExpiryStatus|''>('');
+    const [percentageFilter, setPercentageFilter] = useState<PercentageFilter>(0);
+
     const { isSidebarOpen } = useOutletContext<{ isSidebarOpen: boolean }>();
     const navigate = useNavigate();
     const dateFormat : Intl.DateTimeFormatOptions = {
@@ -29,24 +43,37 @@ const Offers = () => {
     }
 
     const fetchOffers = () => {
+        setLoading(true);
 
-        api.get('http://localhost:5555/offers')
+        const params = new URLSearchParams();
+
+        if(searchQuery) params.append('query', searchQuery);
+        if(expiryStatus) params.append('expiryStatus', expiryStatus);
+        if(percentageFilter) params.append('percentageFilter', percentageFilter.toString());
+
+        api.get(`http://localhost:5555/offers?${params.toString()}`)
         .then((response) => {
             setOffers(response.data);
+            setLoading(false);
         })
         .catch((error) => {
             console.log(error);
+            setLoading(false);
+            enqueueSnackbar('Failed to load offers', {variant: "error"});
         })
     }
 
     useEffect(()=>{
         fetchOffers();
-    }, []);
+    }, [searchQuery, expiryStatus, percentageFilter]);
 
     return (
-        <div className='p-4'>
-            <div className='flex flex-row justify-between items-center py-6 mb-6'>
-                <h2 className='font-semibold text-2xl'>Special offers</h2>
+        <div className='max-w-6xl mx-auto'>
+            <div className='flex flex-row justify-between items-center mb-6'>
+                <div className='flex flex-col'>
+                    <h2 className='text-3xl font-semibold text-gray-900'>Special offers</h2>
+                    <p className='mt-2 text-sm text-gray-600'>Manage special offers</p>
+                </div>
                 <Link 
                     // className='flex flex-row items-center py-2 px-4 gap-2 text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200 rounded-lg'
                     className="flex gap-1 items-center w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
@@ -55,6 +82,58 @@ const Offers = () => {
                     <AiOutlinePlus className="inline"/>
                     Create new offer
                 </Link>
+            </div>
+
+            <div className='mb-6'>
+                <form
+                    className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
+                    onSubmit={(e) => {e.preventDefault(); fetchOffers();}}
+                >
+                    <div className="relative flex items-center flex-1 min-w-0">
+                        <BiSearch className="absolute mt-0.5 mx-3 text-gray-400"></BiSearch>
+                        <input
+                            className="w-full py-2 pl-9 outline-hidden border hover:border-gray-400 rounded-md transition-border duration-300"
+                            placeholder="Search offers..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            aria-label="Search offers"
+                        ></input>
+                    </div>
+
+                    <div 
+                        // className='relative flex items-center'
+                        className="py-2 px-4 outline-hidden border hover:border-gray-400 rounded-md transition-border duration-300 cursor-pointer"
+                    >
+                        <select 
+                            className='outline-hidden w-full'
+                            // className="py-2 px-4 outline-hidden border hover:border-gray-400 rounded-md transition-border duration-300 cursor-pointer"
+                            value={expiryStatus}
+                            onChange={(e) => {setExpiryStatus(e.target.value as ExpiryStatus || '')}}
+                            aria-label='Filter by expiry status'
+                        >
+                            <option value="">All Statuses</option>
+                            {expiry_statuses.map((expiry_status) => (
+                                <option key={expiry_status} value={expiry_status}>{prettifyString(expiry_status)}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div 
+                        className="py-2 px-4 outline-hidden border hover:border-gray-400 rounded-md transition-border duration-300"
+                        >
+                        <select 
+                            className='outline-hidden w-full'
+                            value={percentageFilter}
+                            onChange={(e) => {setPercentageFilter(parseInt(e.target.value))}}
+                            aria-label='Filter by discount percentage'
+                        >
+                            <option value="">All Percentages</option>
+                            {percentage_filters.map((percentage_filter) => (
+                                <option key={percentage_filter} value={percentage_filter}> {`≥ ${percentage_filter}%`}</option>
+                            ))}
+                        </select>
+                    </div>
+                </form>
             </div>
                 
             {offers ? 
@@ -71,13 +150,13 @@ const Offers = () => {
                             }
                             
                             <div className='border-b pb-4'>
-                                <div className='flex flex-row justify-between items-center'>
+                                <div className='flex flex-row justify-between items-center mb-2'>
                                     <div className='text-xl font-semibold text-gray-800'>{offer.offer_type}</div>
                                     <div className='px-2 py-1 text-gray-950 font-semibold bg-gray-100 rounded-lg border border-gray-300'>{offer.discount_percentage}% off</div>
                                 </div>
                                 <div className='text-sm text-gray-500'>{offer.description}</div>
                             </div>
-                            <div className='flex flex-col gap-1 border-b pb-4 mb-2'>
+                            <div className='flex flex-col gap-1 border-b pb-4'>
                                 <div className='flex items-center gap-2'>
                                     <span className='flex items-center space-between gap-1 text-gray-800 text-sm font-medium'><CiCalendar className='text-base font-semibold'></CiCalendar> Valid from: </span>
                                     <span className='text-sm text-gray-500'>{new Date(offer.offer_valid_from).toLocaleString('en-US', dateFormat)}</span>
@@ -88,7 +167,7 @@ const Offers = () => {
                                 </div>
                             </div>
                             
-                            <div className='flex flex-row gap-4 pb-4'>
+                            <div className='flex flex-row gap-4'>
                                 <button 
                                     className="flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                                     // className="flex items-center justify-center gap-2 w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
@@ -146,7 +225,7 @@ const Offers = () => {
                     ))}
             </div>
             :
-            <div className='p-4 text-xl font-semibold'> No Offers </div>}
+            <div className='text-xl font-semibold'> No Offers </div>}
         </div>
     );
 }

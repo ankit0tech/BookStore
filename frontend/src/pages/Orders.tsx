@@ -58,7 +58,7 @@ const Orders = () => {
     return (
         <div className="min-h-screen max-w-5xl px-2 md:px-8">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Order History</h1>
+                <h1 className="text-3xl font-semibold text-gray-900">Order History</h1>
                 <p className="mt-2 text-sm text-gray-600">View and manage your past orders</p>
             </div>
             
@@ -90,7 +90,7 @@ const Orders = () => {
                             value={searchOrderStatus}
                             onChange={(e) => setSearchOrderStatus(e.target.value as OrderStatus || '')}
                             aria-label="Order status"
-                            >
+                        >
                             <option value="">All Orders</option>
                             {order_statuses.map((order_status) => (
                                 <option key={order_status} value={order_status}>{prettifyString(order_status)}</option>

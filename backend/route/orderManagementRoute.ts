@@ -14,14 +14,70 @@ const payment_status = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED']
 
 router.get('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
     try {
-        const cursor = Number(req.params.cursor) || 0;
+
+        const query = req.query.query as string | undefined;
+        const orderStatus = req.query.orderStatus as string | undefined;
+        const paymentStatus = req.query.paymentStatus as string | undefined;
+        const dateOrder : 'asc'|'desc' = req.query.dateOrder === 'asc' ? 'asc' : 'desc';
+        const cursor = Number(req.query.nextCursor) || 0;
 
         let orders;
         let nextCursor;
 
         orders = await prisma.orders.findMany({
             where: {
-
+                ...(orderStatus && {order_status: orderStatus as any}),
+                ...(paymentStatus && {payment_status: paymentStatus as any}),
+                ...(query && {
+                    OR: [
+                        {
+                            order_number: {
+                                contains: query,
+                                mode: 'insensitive'
+                            }
+                        },
+                        {
+                            user: {
+                                OR: [
+                                    {
+                                        email: {
+                                            contains: query,
+                                            mode: 'insensitive'
+                                        }
+                                    },
+                                    {
+                                        first_name: {
+                                            contains: query,
+                                            mode: 'insensitive'
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            order_items: {
+                                some: {
+                                    book: {
+                                        OR: [
+                                            {
+                                                title: {
+                                                    contains: query,
+                                                    mode: 'insensitive'
+                                                }
+                                            },
+                                            {
+                                                author: {
+                                                    contains: query,
+                                                    mode: 'insensitive'
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                })
             },
             include: {
                 order_items: {
@@ -33,13 +89,12 @@ router.get('/', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
                 address: true,
                 user: true
             },
-
             take: 11,
             orderBy: [
+                { created_at: dateOrder },
                 { id: 'asc' }
             ],
-
-            cursor: cursor ? { id: cursor } : undefined
+            cursor: cursor ? { id: cursor } : undefined,
         });
 
         if(orders.length > 10) {

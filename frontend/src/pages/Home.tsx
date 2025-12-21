@@ -123,8 +123,8 @@ const Home = () => {
     return (
         <div className='px-4 h-full'>
             
-            <div className='flex gap-1 h-full'>
-                <div className='overflow-y-auto pe-3 border-r w-fit'>
+            <div className='flex h-full'>
+                <div className='overflow-y-auto pe-3 border-r-3 border-gray-100 w-fit'>
                     <SideBar
                         selectWithSpecialOffer={selectWithSpecialOffer} 
                         setSelectWithSpecialOffer={setSelectWithSpecialOffer}
@@ -137,7 +137,7 @@ const Home = () => {
                         categoryId={categoryId} setCategoryId={setCategoryId} 
                     />
                 </div>
-                <div className='flex-1 overflow-y-auto bg-gray-50'>
+                <div className='flex-1 overflow-y-auto'>
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
                     { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
                 </div>

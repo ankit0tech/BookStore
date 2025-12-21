@@ -9,7 +9,7 @@ const generateOrderNumber = () => {
 }
 
 const validateOrderNumber = (orderNumber: string): boolean => {
-    const orderNumberRegex = /^ORD-\d{8}-\d{5}%/;
+    const orderNumberRegex = /^ORD-\d{8}-\d{5}$/;
     return orderNumberRegex.test(orderNumber);
 }
 

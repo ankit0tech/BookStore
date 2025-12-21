@@ -54,33 +54,35 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
                 </div>
             </div>
              
-            <div className="px-1 flex flex-col h-[calc(380px-224px-32px)]">
+            <div className="px-1 flex flex-col h-[calc(380px-224px-24px)]">
                 
-                <h2 className="font-medium leading-tight line-clamp-2 mt-2 ">
+                <h2 className="font-medium leading-tight line-clamp-2 mt-2">
                     <Link to={`/books/details/${book.id}`}>
                         <span className="absolute inset-0"></span>
                         {book.title}
                     </Link>
                 </h2>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                     <p className="text-sm font-light text-gray-600">by {book.author}</p>
                     
                     {book.average_rating != 0 &&
-                        <div className="flex gap-1 items-center w-fit px-3 py-0.5 text-sm font-semibold bg-neutral-100 rounded-full ">
+                        <div className="flex gap-1 items-center w-fit px-2 py-0.5 text-sm font-semibold bg-neutral-100 rounded-full ">
                             {book.average_rating}
                             <FaStar className="inline-block text-cyan-600"></FaStar>
                         </div>
                     }
 
-                    <div className="space-x-2">
+                    <div className="">
                         { book.special_offers?.length == 0 ?
                             <span className="inline-block font-semibold text-gray-900">{formatPrice(book.price, book.currency)}</span>
                         :
                             <>
-                                <span className="inline-block font-semibold text-gray-900">{formatPrice(calculateDiscountedPrice(book), book.currency)}</span>
-                                <span className="inline-block line-through text-sm font-light text-gray-700">{formatPrice(book.price, book.currency)}</span>
-                                <span className="inline-block font-medium text-sm text-cyan-500">({findMaxDiscountPercentage(book)}%OFF)</span>
+                                <div className="inline-block font-semibold text-gray-900">{formatPrice(calculateDiscountedPrice(book), book.currency)}</div>
+                                <div className="flex gap-2">
+                                    <span className="inline-block line-through text-sm font-light text-gray-700">{formatPrice(book.price, book.currency)}</span>
+                                    <span className="inline-block font-medium text-sm text-cyan-500">({findMaxDiscountPercentage(book)}%OFF)</span>
+                                </div>
                             </>
                     }
                     </div>

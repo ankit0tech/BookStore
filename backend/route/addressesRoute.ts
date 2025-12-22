@@ -9,19 +9,12 @@ const router = express.Router();
 
 router.post('/', authMiddleware, async (req, res) => {
     try {
-        const userMail = req.authEmail;
-        const user = await prisma.userinfo.findUnique({
-            where: {email: userMail}
-        })
-        if(!user) {
-            return res.status(401).json({message: "Authentication failed"});
-        }
 
         const result = addressZod.safeParse(req.body);
         if(result.success) {
             const addressData = {
                 ...req.body,
-                user_id: user.id,
+                user_id: req.userId,
             }
 
             // If we are setting address as default then make others non default
@@ -29,7 +22,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
                 if (req.body.is_default == true) {
                     await prisma.address.updateMany({
-                        where: { user_id: user.id },
+                        where: { user_id: req.userId },
                         data: { is_default: false },
                     });                
                 }
@@ -54,14 +47,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
 router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
     try {
-        const userMail = req.authEmail;
         const { id } = req.params;
-        const user = await prisma.userinfo.findUnique({
-            where: {email: userMail}
-        })
-        if(!user) {
-            return res.status(401).json({message: "Authentication failed"});
-        }
 
         const address = await prisma.address.findUnique({
             where: {
@@ -85,17 +71,10 @@ router.get('/:id(\\d+)', authMiddleware, async (req, res) => {
 
 router.get('/default-address', authMiddleware, async(req, res) => {
     try {
-        const userMail = req.authEmail;
-        const user = await prisma.userinfo.findUnique({
-            where: {email: userMail}
-        });
-        if(!user) {
-            return res.status(401).json({message: "Authentication failed"});
-        }
 
         const address = await prisma.address.findFirst({
             where: {
-                    user_id: user.id,
+                    user_id: req.userId,
                     is_default: true,
                     is_deleted: false
             }
@@ -115,17 +94,10 @@ router.get('/default-address', authMiddleware, async(req, res) => {
 
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        const userMail = req.authEmail;
-        const user = await prisma.userinfo.findUnique({
-            where: {email: userMail}
-        })
-        if(!user) {
-            return res.status(401).json({message: "Authentication failed"});
-        }
 
         const addresses = await prisma.address.findMany({
             where: {
-                user_id: user.id,
+                user_id: req.userId,
                 is_deleted: false
             },
             orderBy: {
@@ -143,14 +115,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
     try {
-        const userMail = req.authEmail;
         const { id } = req.params;
-        const user = await prisma.userinfo.findUnique({
-            where: {email: userMail}
-        })
-        if(!user) {
-            return res.status(401).json({message: "Authentication failed"});
-        }
 
         const existingAddress = await prisma.address.findUnique({
             where: { 
@@ -172,7 +137,7 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
                 // If we are setting address as default then make other non default
                 if (updatedData.is_default == true) {
                     await prisma.address.updateMany({
-                        where: { user_id: user.id },
+                        where: { user_id: req.userId },
                         data: { is_default: false },
                     });                
                 }
@@ -200,20 +165,12 @@ router.put('/:id(\\d+)', authMiddleware, async (req, res) => {
 
 router.delete('/:id(\\d+)', authMiddleware, async (req, res) => {
     try {
-        const userMail = req.authEmail;
-        const user = await prisma.userinfo.findUnique({
-            where: {email: userMail}
-        })
-        if(!user) {
-            return res.status(401).json({message: "Authentication failed"});
-        }
-
         const { id } = req.params;
 
         const address = await prisma.address.findUnique({
             where: {
                 id: Number(id),
-                user_id: user.id
+                user_id: req.userId
             }
         });
 

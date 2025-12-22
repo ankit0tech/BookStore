@@ -22,29 +22,42 @@ declare global {
 }
 
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const bearerToken = req.headers.authorization;
     if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
         return res.status(401).send({ message: 'Authentication failed: Token not found or invalid' });
     }
     const authToken = bearerToken.split(' ')[1];
 
-    jwt.verify(authToken, config.auth.jwtSecret, (err, decoded)=> {
+    jwt.verify(authToken, config.auth.jwtSecret, async (err, decoded)=> {
         if(err || !decoded) {
-            return res.status(401).send({ message: 'Authentication failed, Invalid token' });
+            return res.status(401).send({ message: 'Authentication failed: Invalid token' });
         }
-
+        
         const { email, userId, type } = decoded as JwtPayload;
         const parsedUserId = Number(userId);
+
         if(type === 'login' && userId && email && !isNaN(parsedUserId)) {
-            req.authEmail = email;
-            req.userId = parsedUserId;
+            try {
+                const user = await prisma.userinfo.findUnique({
+                    where: { email: email },
+                    select: { id: true }
+                });
+
+                if(!user) {
+                    return res.status(401).json({ message: 'Authentication failed: user not found'});
+                }
+
+                req.authEmail = email;
+                req.userId = user.id;
+                next();
+            } catch (error: any) {
+                logger.error(`Database error in authMiddleware: ${error.message}`);
+                return res.status(500).json({ message: 'Authentication failed: Internal server error'});
+            }
         } else {
-            return res.status(401).send({message: 'Authentication failed, Invalid token'});
+            return res.status(401).json({ message: 'Authentication failed: invalid token'});
         }
-        // const mail = req.authEmail || 'Guest';
-        // logger.info(mail);
-        next();
     });
     
 }
@@ -58,43 +71,47 @@ export const roleMiddleware = (allowedRoles: string[]) => {
                     const user = await prisma.userinfo.findUnique({
                         where: {
                             email: req.authEmail
+                        }, 
+                        select: {
+                            id: true,
+                            role: true,
+                            email: true,
                         }
                     });
+
                     if(!user) {
                         return res.status(401).json({message: "Authentication failed"});
                     }
-        
+                    
                     if(!allowedRoles.includes(user.role)) {
                         logger.error(`Access denied for ${user.email}`);
                         return res.status(403).json({message: "Access denied!"});
                     }
-                    
+
                     next();        
                 }
             );
-        
         } catch(error: any) {
-            logger.error(error.message);
+            logger.error(`Authorization failed: ${error.message}`);
             return res.status(401).json({message: error.message});
         }
     } 
 }
 
 export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    req.authEmail = undefined;
+    req.userId = undefined;
     const bearerToken = req.headers.authorization;
     
     if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
-        req.authEmail = undefined;
-        req.userId = undefined;
         return next();
     }
 
     const authToken = bearerToken.split(' ')[1];
     
-    jwt.verify(authToken, config.auth.jwtSecret, (err, decoded)=> {
+    jwt.verify(authToken, config.auth.jwtSecret, async (err, decoded)=> {
+
         if(err || !decoded) {
-            req.authEmail = undefined;
-            req.userId = undefined;
             return next();
         }
 
@@ -102,11 +119,23 @@ export const optionalAuthMiddleware = (req: Request, res: Response, next: NextFu
         const parsedUserId = Number(userId);
 
         if(type === 'login' && userId && email && !isNaN(parsedUserId)) {
-            req.authEmail = email;
-            req.userId = parsedUserId;
-        } else {
-            req.authEmail = undefined;
-            req.userId = undefined;
+            try {
+                const user = await prisma.userinfo.findUnique({
+                    where: {
+                        email: email
+                    }, 
+                    select: {
+                        id: true
+                    }
+                });
+
+                if(user) {
+                    req.authEmail = email;
+                    req.userId = parsedUserId;
+                } 
+            } catch(error: any) {
+                logger.info(`Authentication failed for ${email}`);
+            }
         }
 
         next();

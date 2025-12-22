@@ -65,7 +65,7 @@ const OrderDetails = () => {
             {orderDetails ? (
                 <div>
                     <div className="space-y-1 mb-2">
-                        <h2 className="text-3xl font-bold text-gray-900">Order Details</h2>
+                        <h2 className="text-3xl font-semibold text-gray-900">Order Details</h2>
                         <p className="px-4 py-2 text-gray-600 text-sm font-medium bg-gray-50 border rounded-lg w-fit">
                             #{orderDetails.order_number}
                         </p>
@@ -217,7 +217,7 @@ const OrderDetails = () => {
                                                 <div className="flex flex-col">
                                                     <p className="font-medium text-gray-900">{item.book.title}</p>
                                                     <p className="text-sm text-gray-600">{item.book.author}</p>
-                                                    <div className="mt-2 space-x-4">
+                                                    <div className="mt-2">
                                                         <p className="text-md text-gray-950 font-semibold">{formatPrice(item.unit_price, item.currency)}</p>
                                                         <p className="text-md text-gray-700">Qty: {item.quantity}</p>
                                                     </div>

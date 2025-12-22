@@ -116,7 +116,7 @@ const NavBar = () => {
 
 
     return (
-        <nav className="flex justify-between px-4 bg-white h-16 items-center border">
+        <nav className="flex justify-between px-4 bg-white h-16 items-center border shadow-xs">
             <button className="flex items-center gap-2 text-purple-600 text-lg font-semibold ml-6" onClick={() =>navigate('/')}> 
                 <AiOutlineHome className="font-bold text-2xl"></AiOutlineHome> 
                 <p>BookStore</p>
@@ -125,7 +125,7 @@ const NavBar = () => {
             <div className="relative flex items-center px-4 text-black font-normal">                    
                 <BiSearch className="absolute mx-3 mt-0.5 text-gray-400 " ></BiSearch>
                 <input 
-                    className="transition-all duration-300 ease-in-out py-1.5 w-3xs lg:w-md px-2 focus:w-64 lg:focus:w-md rounded-lg focus:outline-hidden focus:ring focus:ring-purple-400 border border-gray-300 bg-gray-100 focus:border-none focus:bg-white pl-9" 
+                    className="transition-all duration-300 ease-in-out py-1.75 _w-3xs lg:w-md px-2 _focus:w-64 _lg:focus:w-md rounded-full focus:outline-hidden focus:ring focus:ring-purple-400 border border-gray-300 bg-gray-100 focus:border-none focus:bg-white pl-9" 
                     type="search" 
                     name="q" 
                     ref={searchBarRef}

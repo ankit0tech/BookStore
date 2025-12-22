@@ -65,10 +65,6 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
             // 1. check if entry exists
             // 2. update the existing entry. if we go below 1 then remove the entry from table
             // 3. create new entry if entry doesn't exist and make sure quantity is >=1
-            const userEmail = req.authEmail;
-            const user = await prisma.userinfo.findUnique({
-                where: { email: userEmail }
-            });
 
             const book_data = await prisma.book.findUnique({
                 where: {
@@ -84,10 +80,10 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                 return res.status(404).json({message: "Book unavailable"});
             }
 
-            if (user) {
+            if (req.userId) {
                 const existingCartItem = await prisma.cart.findFirst({
                     where: {
-                        user_id: user.id, 
+                        user_id: req.userId, 
                         book_id: req.body.book_id, 
                         offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : null,
                     }
@@ -99,7 +95,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                     if((existingCartItem.quantity + req.body.quantity) == 0) {
                         await prisma.cart.deleteMany({ 
                             where: {
-                                user_id: user.id, 
+                                user_id: req.userId, 
                                 book_id: req.body.book_id,
                                 offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : null,
                             }
@@ -112,7 +108,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 
                     await prisma.cart.updateMany({
                         where: {
-                            user_id: user.id, 
+                            user_id: req.userId, 
                             book_id: req.body.book_id, 
                             offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : null,
                         },
@@ -135,14 +131,14 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
                     }
 
                     const newCart = {
-                        user_id: user.id,
+                        user_id: req.userId,
                         book_id: req.body.book_id,
                         quantity: req.body.quantity,
                         offer_id: req.body.selected_offer_id ? req.body.selected_offer_id : undefined,
                     };
 
                     await prisma.cart.create({data: newCart});
-                    logger.info(`Added book to cart: ${book.title} for user: ${user.id}`);
+                    logger.info(`Added book to cart: ${book.title} for user: ${req.userId}`);
 
                     return res.status(200).send({message: "Cart updated successfully"});
                 }
@@ -163,15 +159,11 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 // retrieve current user cart
 router.get('/get-cart-items', authMiddleware, async (req, res) => {
     try {
-        
-        const userEmail = req.authEmail;
-        const user = await prisma.userinfo.findUnique({ 
-            where: { email:userEmail }
-        });
-        if(user) {
+
+        if(req.userId) {
             const cartItems = await prisma.cart.findMany({
                 where: {
-                    user_id: user.id, 
+                    user_id: req.userId, 
                 },
                 select: {
                     id: true,
@@ -184,13 +176,10 @@ router.get('/get-cart-items', authMiddleware, async (req, res) => {
             });
             
             return res.status(200).send({ data: cartItems });
-        
-        }
-        else {
+        } else {
             return res.status(400).send({message: "Issue with your login"});
         }
-    }
-    catch (error: any) {
+    } catch (error: any) {
         logger.error(error.message);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
     }

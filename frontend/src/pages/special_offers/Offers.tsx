@@ -63,9 +63,9 @@ const Offers = () => {
         })
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchOffers();
-    }, [searchQuery, expiryStatus, percentageFilter]);
+    }, [expiryStatus, percentageFilter]);
 
     return (
         <div className='max-w-6xl mx-auto'>
@@ -96,13 +96,16 @@ const Offers = () => {
                             placeholder="Search offers..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter') fetchOffers();
+                            }}
                             aria-label="Search offers"
                         ></input>
                     </div>
 
                     <div 
                         // className='relative flex items-center'
-                        className="py-2 px-4 outline-hidden border hover:border-gray-400 rounded-md transition-border duration-300 cursor-pointer"
+                        className="px-4 py-2 outline-hidden border hover:border-gray-400 rounded-md transition-border duration-300 cursor-pointer"
                     >
                         <select 
                             className='outline-hidden w-full'

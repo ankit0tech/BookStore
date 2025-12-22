@@ -25,10 +25,6 @@ const Orders = () => {
     const [dateOrder, setDateOrder] = useState<'desc'|'asc'>('desc');
 
     const navigate = useNavigate();
-
-    useEffect(() => {
-        loadOrders();
-    }, [searchOrderStatus, searchPaymentStatus, dateOrder]);
     
     const loadOrders = () => {    
         setLoading(true);
@@ -49,10 +45,13 @@ const Orders = () => {
         .catch((error) => {
             console.log(error);
             setLoading(false);
-            enqueueSnackbar("Error while loading orders", {variant: "error"});
+            enqueueSnackbar("Error occurred while loading orders", {variant: "error"});
         });
     }
 
+    useEffect(() => {
+        loadOrders();
+    }, [searchOrderStatus, searchPaymentStatus, dateOrder]);
 
 
     return (
@@ -66,8 +65,7 @@ const Orders = () => {
                 <div className="flex justify-center items-center h-32">
                     <Spinner />
                 </div>
-            )
-            : 
+            ) : (
             <div className="space-y-6">
                 <form 
                     className="flex items-center gap-2"
@@ -113,7 +111,6 @@ const Orders = () => {
                     
                     <div className="p-2 outline-hidden border rounded-md">
                         <select
-                            
                             value={dateOrder}
                             onChange={(e) => setDateOrder(e.target.value as 'desc'|'asc')}
                             aria-label="Sort by date"
@@ -200,7 +197,7 @@ const Orders = () => {
                         </ul>
                     </div>
                 )}
-            </div> }
+            </div>) }
         </div>
     );
 }

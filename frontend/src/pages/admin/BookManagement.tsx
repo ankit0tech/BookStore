@@ -154,6 +154,7 @@ const BookManagement = () => {
                         <input 
                             className="w-full min-w-48 pl-9 py-2 rounded-md border outline-hidden"
                             placeholder="Search books..."
+                            value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyDown={(e) => {
                                 if(e.key === 'Enter') handleFetchBooks([], null);

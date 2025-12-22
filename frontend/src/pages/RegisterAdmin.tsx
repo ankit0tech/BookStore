@@ -55,7 +55,7 @@ const RegisterAdmin = () => {
                 <h2 className="text-2xl text-gray-800 font-semibold my-6">Register new admin user</h2>
                 <form 
                     onSubmit={ handleSubmit }
-                    className="flex flex-col space-y-2"
+                    className="flex flex-col gap-2"
                 >
                     <label className="text-sm font-medium text-gray-700" htmlFor='adminEmail'>Enter mail to send invite</label>
                     <input 
@@ -69,7 +69,8 @@ const RegisterAdmin = () => {
                     {formErrors.email && (<p className="text-sm text-red-500">{formErrors.email}</p>)}
                     
                     <button 
-                        className="w-max px-4 py-2 my-6 rounded-lg text-white bg-purple-500 border border-gray-300 hover:bg-purple-600"
+                        className="w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                        // className="w-max px-4 py-2 my-6 rounded-lg text-white bg-purple-500 border border-gray-300 hover:bg-purple-600"
                         type='submit'
                     >
                         Send invite

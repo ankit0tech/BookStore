@@ -1,4 +1,4 @@
-import z, { ZodPromise } from 'zod';
+import z from 'zod';
 
 const offerZod = z.object({
     discount_percentage: z.number(),

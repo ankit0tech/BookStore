@@ -10,7 +10,6 @@ const prisma = new PrismaClient();
 
 router.get('/active-offers', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
     try {
-
         const offers = await prisma.special_offers.findMany({
             where: {
                 offer_valid_until: {

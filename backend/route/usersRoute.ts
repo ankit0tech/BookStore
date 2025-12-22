@@ -115,26 +115,6 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
 
 })
 
-router.get('/access', authMiddleware,  async (req: Request, res: Response) => {
-    // logger.info("Auth Email:", req.authEmail);
-    return res.status(200).json({message: 'Access is granted to you'});
-
-    // const token = req.headers.authorization;
-
-    // if(!token) {
-    //     return res.status(401).send('Please send Auth Token');
-    // }
-
-    // jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    //     if (err) {
-    //         return res.status(401).send('JWT verification failed');
-    //     }
-    //     else{
-    //         return res.status(200).send('Access is granted to you');
-    //     }
-    // })
-})
-
 router.post('/signin', async (req: Request, res: Response) => {
     try {
         const result = signinZod.safeParse(req.body);        
@@ -146,7 +126,7 @@ router.post('/signin', async (req: Request, res: Response) => {
                         email: req.body.email
                     }
                 }
-            )
+            );
             
             if (!user || user.provider == 'google' || !user.password || !(await bcrypt.compare(req.body.password, user.password))) {
                 return res.status(401).json({message: 'Invalid email or password'});
@@ -171,12 +151,12 @@ router.get('/dashboard', authMiddleware, async (req: Request, res: Response) => 
     try {
         const userMail = req.authEmail;
         const user = await prisma.userinfo.findUnique({ 
-            where:{email: userMail}
+            where: { email: userMail }
         });
+
         if (!user) {
             return res.status(400).json({message: "Authentication Issue"});
-        }
-        else {
+        } else {
             const { email, first_name, last_name, role } = user;
             const selectedProps = { email, first_name, last_name, role };
             return res.status(200).json({user: selectedProps});
@@ -196,10 +176,10 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
                 email: req.body.email,
             }
         });
+        
         logger.info(`Sending mail to reset password for ${req.body.email}`);
         
         if (user) {
-
             const token = jwt.sign({email: user.email, type: 'reset_password'}, config.auth.jwtSecret, {expiresIn: '1h'});
             // const verificationLink = `http://localhost:5173reset-password/verify/${token}`
             const verificationLink = `http://localhost:5173/reset-password/verify?verificationToken=${token}`
@@ -210,6 +190,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
             
             return res.status(200).json({message: "verification mail sent"});
         }
+
         return res.status(400).json({message: "Error sending reset password mail"});
 
     } catch (error: any) {
@@ -236,8 +217,9 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
             }
 
             const { email, type } = decoded as JwtPayload;
-            if(type === 'reset-password') {
+            if (type === 'reset-password') {
                 const hashedPassword = await bcrypt.hash(password, 10);
+
                 const user = await prisma.userinfo.update({
                     where: {
                         email: email
@@ -246,6 +228,7 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
                         password: hashedPassword
                     }
                 });
+
                 if (user) {
                     logger.info(`Password reset done for user: ${user.email}`);
                     return res.status(200).json({message: 'password updated'});

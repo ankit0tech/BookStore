@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { reviewZod } from '../zod/reviewZod';
 import { logger } from '../utils/logger';
-import { retrieveUser } from '../utils/userUtils';
-
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -39,8 +37,7 @@ router.get('/book/:id(\\d+)', async (req: Request, res: Response) => {
 router.get('/book/:id(\\d+)/user', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const user = await retrieveUser(req, prisma);
-        if (!user) {
+        if (!req.userId) {
             logger.error('Error occurred fetching user while adding review');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
@@ -48,7 +45,7 @@ router.get('/book/:id(\\d+)/user', authMiddleware, async (req: Request, res: Res
         const review = await prisma.review.findUnique({
             where: {
                 user_id_book_id: {
-                    user_id: user.id,
+                    user_id: req.userId,
                     book_id: Number(id)
                 }
             }
@@ -64,16 +61,14 @@ router.get('/book/:id(\\d+)/user', authMiddleware, async (req: Request, res: Res
 
 router.get('/user', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const user = await retrieveUser(req, prisma);
-        
-        if (!user) {
+        if (req.userId) {
             logger.error('Error occurred while fetching user while adding review');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
 
         const reviews = await prisma.review.findMany({
             where: {
-                user_id: user.id,
+                user_id: req.userId,
             },
             include: {
                 book: {
@@ -106,20 +101,19 @@ router.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) =>
         const result = reviewZod.safeParse(req.body);
         
         if (result.success) {
-            
-            const user = await retrieveUser(req, prisma);
-            if (!user) {
+            if (!req.userId) {
                 logger.error('Error occurred while fetching user while adding review');
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
-        
+            
+            const userId = req.userId;
             const review = await prisma.$transaction(async (prisma) => {
 
                 const newReview = await prisma.review.create({
                     data: {
                         rating: req.body.rating,
                         review_text: req.body.review_text,
-                        user_id: user.id,
+                        user_id: userId,
                         book_id: bookId
                     }
                 });
@@ -129,7 +123,7 @@ router.post('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) =>
                     where: { book_id: bookId}
                 });
                 
-                const book = await prisma.book.update({
+                await prisma.book.update({
                     where: {
                         id: bookId
                     },
@@ -171,9 +165,8 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
 
         const result = reviewZod.safeParse(req.body);
         if(result.success) {
-
-            const user = await retrieveUser(req, prisma);
-            if (!user) {
+            const userId = req.userId;
+            if (!userId) {
                 logger.error('Error occurred while fetching user while adding review');
                 return res.status(401).json({ message: 'Error occurred, try again'});
             }
@@ -184,7 +177,7 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
                 const updatedReview = await prisma.review.update({
                     where: {
                         user_id_book_id: {
-                            user_id: user.id,
+                            user_id: userId,
                             book_id: Number(id)
                         }
                     },
@@ -199,7 +192,7 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
                     where: { book_id: bookId}
                 });
                 
-                const book = await prisma.book.update({
+                await prisma.book.update({
                     where: {
                         id: bookId
                     },
@@ -210,7 +203,6 @@ router.put('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) => 
 
                 return updatedReview;
             });
-
 
             if(review) {
                 logger.info('Updated the review');
@@ -238,8 +230,8 @@ router.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) 
             return res.status(400).json({message: 'Invalid book id'});
         }
 
-        const user = await retrieveUser(req, prisma);
-        if (!user) {
+        const userId = req.userId;
+        if (!userId) {
             logger.error('Error occurred while fetching user while adding review');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
@@ -249,7 +241,7 @@ router.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) 
             const deletedReview = await prisma.review.delete({
                 where: {
                     user_id_book_id: {
-                        user_id: user.id,
+                        user_id: userId,
                         book_id: Number(id)
                     }
                 }
@@ -260,7 +252,7 @@ router.delete('/:id(\\d+)', authMiddleware, async (req: Request, res: Response) 
                 where: { book_id: bookId}
             });
             
-            const book = await prisma.book.update({
+            await prisma.book.update({
                 where: {
                     id: bookId
                 },

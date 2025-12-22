@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authMiddleware } from './middleware';
 import { logger } from '../utils/logger';
-import { retrieveUser } from '../utils/userUtils';
 
 
 const router = express.Router();
@@ -12,8 +11,7 @@ router.post('/add/:id(\\d+)', authMiddleware, async (req: Request, res: Response
     try {
 
         const { id } = req.params;
-        const user = await retrieveUser(req, prisma);
-        if (!user) {
+        if (!req.userId) {
             logger.error('Error fetching user while adding item to wishlist');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
@@ -31,7 +29,7 @@ router.post('/add/:id(\\d+)', authMiddleware, async (req: Request, res: Response
         const existingWishlist = await prisma.wishlist.findUnique({
             where: {
                 user_id_book_id: {
-                    user_id: user.id,
+                    user_id: req.userId,
                     book_id: Number(id)
                 },
             },
@@ -45,7 +43,7 @@ router.post('/add/:id(\\d+)', authMiddleware, async (req: Request, res: Response
         });
 
         if(existingWishlist) {
-            logger.info(`User ${user.email} attempted to add book ${existingWishlist.book.title} in wishlist`);
+            logger.info(`User ${req.authEmail} attempted to add book ${existingWishlist.book.title} in wishlist`);
             return res.status(200).json({ 
                 message: 'Alreay part of wishlist',
                 bookTitle: existingWishlist.book.title
@@ -54,7 +52,7 @@ router.post('/add/:id(\\d+)', authMiddleware, async (req: Request, res: Response
         
         const wishlistItem = await prisma.wishlist.create({
             data: {
-                user_id: user.id,
+                user_id: req.userId,
                 book_id: Number(id)
             },
             include: {
@@ -84,15 +82,14 @@ router.post('/add/:id(\\d+)', authMiddleware, async (req: Request, res: Response
 router.get('/items', authMiddleware, async ( req: Request, res: Response) => {
     try {
         
-        const user = await retrieveUser(req, prisma);
-        if (!user) {
+        if (!req.userId) {
             logger.error('Error fetching user while adding item to wishlist');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
         
         const wishlist = await prisma.wishlist.findMany({
             where: {
-                user_id: user.id
+                user_id: req.userId
             },
             include: {
                 book: true
@@ -107,7 +104,7 @@ router.get('/items', authMiddleware, async ( req: Request, res: Response) => {
             return res.status(400).json({ message: 'Error while fetching wishlist'});
         }
 
-        logger.info(`Fetching wishlist for user: ${user.email}`);
+        logger.info(`Fetching wishlist for user: ${req.authEmail}`);
         return res.status(200).json(wishlist);
 
     } catch (e) {
@@ -120,8 +117,7 @@ router.delete('/remove/:id(\\d+)', authMiddleware, async ( req: Request, res: Re
 
     try {
         const { id } = req.params;
-        const user = await retrieveUser(req, prisma);
-        if (!user) {
+        if (!req.userId) {
             logger.error('Error fetching user while deleting item from wishlist');
             return res.status(401).json({ message: 'Error occurred, try again'});
         }
@@ -129,7 +125,7 @@ router.delete('/remove/:id(\\d+)', authMiddleware, async ( req: Request, res: Re
         const deletedItem = await prisma.wishlist.delete({
             where: {
                 user_id_book_id: {
-                    user_id: user.id,
+                    user_id: req.userId,
                     book_id: Number(id)
                 }
             }

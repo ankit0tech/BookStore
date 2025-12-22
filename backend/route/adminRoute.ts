@@ -23,7 +23,10 @@ router.post('/generate-admin-signup-token', roleMiddleware(['superadmin']), asyn
         const { email } = req.body;
 
         const existingUser = await prisma.userinfo.findUnique({
-            where: { email: req.body.email }
+            where: { 
+                email: req.body.email,
+                role: 'admin'
+            }
         });
         if (existingUser) {
             return res.status(401).json({message: "Admin user already exists, please try with different email"});
@@ -37,6 +40,7 @@ router.post('/generate-admin-signup-token', roleMiddleware(['superadmin']), asyn
         sendVerificationMail(email, subject, message, signupLink);
         
         return res.status(200).json({message: "Mail sent for new admin signup"});
+        
     } catch(error: any) {
         logger.error(error.message);
         return res.status(401).json({message: error.message});

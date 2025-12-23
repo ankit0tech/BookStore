@@ -1,7 +1,7 @@
 import { UserState } from "../redux/userSlice";
 // import { CartInterface } from "../redux/cartSlice";
 
-export const order_statuses = ['PENDING', 'PROCESSING', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED', 'RETURNED'] as const;
+export const order_statuses = ['PENDING', 'PROCESSING', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED', 'RETURNED', 'FAILED'] as const;
 export type OrderStatus = typeof order_statuses[number];
 
 export const payment_statuses = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED']

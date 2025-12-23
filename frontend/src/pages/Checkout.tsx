@@ -95,20 +95,8 @@ const Checkout = () => {
             
             api.post('http://localhost:5555/orders/checkout', data, config)
             .then((response) => {
-                console.log("checkout response", response);
                 
                 const razorpayOrder = response.data.razorpayOrder;
-
-                getCartItems(authToken)
-                .then((response) => {
-                    // Update the cart items
-                    dispatch(setCartItemsSlice(response));
-                })
-                .catch((error) => {
-                    console.error('Error while fetching cart:', error);
-                    enqueueSnackbar('Error while fetching cart:', {variant: 'error'});
-                });
-
                 const options = {
                     "key": import.meta.env.VITE_RAZORPAY_KEY_ID,
                     "amount": razorpayOrder.amount,
@@ -131,28 +119,49 @@ const Checkout = () => {
                             razorpay_signature: response.razorpay_signature
                         }, config)
                         .then((response) =>{
-                            console.log("verify payment: ", response);
-        
+                            getCartItems(authToken)
+                            .then((response) => {
+                                dispatch(setCartItemsSlice(response));
+                            })
+                            .catch((error) => {
+                                enqueueSnackbar('Error while fetching cart:', {variant: 'error'});
+                            });
+
+                            enqueueSnackbar('Payment successful', {variant: 'success'});
                         })
                         .catch((error) => {
-                            console.log("verify payment error: ", error);
-                        })
-                    }
+                            enqueueSnackbar('Payment verification failed', {variant: 'error'});
+                        });
+                    },
                 };
                 
                 const paymentObject = new window.Razorpay(options);
+                paymentObject.on('payment.failed', (response: any) => {
+                    
+                    enqueueSnackbar(response.error.description, {variant: 'error'});
+
+                    api.post('http://localhost:5555/orders/payment-failure', {
+                        'razorpay_order_id': razorpayOrder.id,
+                        'error': response.error.description
+                    }, config)
+                    .then((response) => {
+                        
+                    })
+                    .catch((error) => {
+                        enqueueSnackbar('Error updating payment failure status', {variant: 'warning'});
+                    });
+                });
+
                 paymentObject.open();
 
             })
             .catch((error) => {
-                console.log(error);
                 enqueueSnackbar('Error while checkout', {variant: 'error'});
             });
 
         } catch (error) {
             console.log('Error while checkout', error);
         }
-
     }
 
     const loadAllUserAddresses = () => {

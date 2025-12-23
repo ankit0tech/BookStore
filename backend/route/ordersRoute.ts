@@ -85,10 +85,6 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                 }
 
                 await prisma.$transaction(async (prisma) => {
-                    
-                    await prisma.cart.deleteMany({ where: { user_id: userId } });
-
-                    // how to validate correct delivery charges are given from the frontend
                     const order = await prisma.orders.create({
                         data: {
                             user_id: userId,
@@ -145,19 +141,40 @@ router.post('/checkout', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/verify-payment', async (req, res) => {
+router.post('/verify-payment', authMiddleware, async (req, res) => {
     try {
+        const userId = req.userId;
+        if(!userId) {
+            return res.status(401).json({message: 'Authentcation failed'});
+        }
+
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+        const order = await prisma.orders.findUnique({
+            where: {
+                razorpay_order_id: razorpay_order_id
+            }, select: {
+                razorpay_payment_id: true,
+                razorpay_signature: true
+            }
+        });
+
+        if(order?.razorpay_payment_id) {
+            logger.error(`Repeated /verify-payment request for razorpay_order_id ${razorpay_order_id}`);
+            return res.status(409).json({message: 'Repeated request'});
+        }
+        
         const razorpay_secret = config.razorpay.key_secret || "";
         const isValidSignature = validateWebhookSignature(razorpay_order_id + '|' + razorpay_payment_id, razorpay_signature, razorpay_secret);
-
+        
         if(isValidSignature) {
+            await prisma.cart.deleteMany({ where: { user_id: userId } });
             await prisma.orders.update({
                 where: {
                     razorpay_order_id: razorpay_order_id
                 },
                 data: {
                     payment_status: "COMPLETED",
+                    order_status: "PENDING",
                     razorpay_payment_id: razorpay_payment_id,
                     razorpay_signature: razorpay_signature
                 }
@@ -167,9 +184,66 @@ router.post('/verify-payment', async (req, res) => {
             return res.status(200).json({message: "Payment verified"});
 
         } else {
+            await prisma.orders.update({
+                where: {
+                    razorpay_order_id: razorpay_order_id
+                },
+                data: {
+                    payment_status: "FAILED",
+                    order_status: "FAILED"
+                }
+            });
+
             logger.error("Payment verification failed");
             return res.status(400).json({message: "Payment verification failed"});
         }
+    } catch (error: any) {
+        logger.error(error);
+        return res.status(500).send({message: "An unexpected error occurred. Please try again later."});
+    }
+});
+
+router.post('/payment-failure', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        if(!userId) {
+            return res.status(400).json({message: "Authentication failed"});
+        }
+
+        const { razorpay_order_id, error } = req.body;
+        if(!razorpay_order_id) {
+            return res.status(400).json({message: "razorpay_order_id is required"});
+        }
+
+        const order = await prisma.orders.findUnique({
+            where: {
+                razorpay_order_id: razorpay_order_id,
+                user_id: userId
+            }
+        });
+
+        if(!order) {
+            return res.status(400).json({message: "Order not found"});
+        }
+
+        if(order.payment_status === 'PENDING') {
+            await prisma.orders.update({
+                where: {
+                    razorpay_order_id: razorpay_order_id,
+                    user_id: userId
+                },
+                data: {
+                    payment_status: 'FAILED',
+                    order_status: 'FAILED'
+                }
+            });
+            logger.info(`Payment failed for ${razorpay_order_id} : ${error?.description || 'Unknown error'}`);
+            return res.status(200).json({message: "Payment failure recorded"});
+        } else {
+            logger.info(`Not able to mark payment to failed for order ${razorpay_order_id}, as it is already processed`);
+            return res.status(200).json({message: "Payment already processed for the order"});
+        }
+
     } catch (error: any) {
         logger.error(error);
         return res.status(500).send({message: "An unexpected error occurred. Please try again later."});

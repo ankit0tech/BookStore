@@ -25,13 +25,13 @@ declare global {
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const bearerToken = req.headers.authorization;
     if (!bearerToken || !bearerToken.startsWith('Bearer ')) {
-        return res.status(401).send({ message: 'Authentication failed: Token not found or invalid' });
+        return res.status(401).json({ message: 'Authentication failed: Token not found or invalid' });
     }
     const authToken = bearerToken.split(' ')[1];
 
     jwt.verify(authToken, config.auth.jwtSecret, async (err, decoded)=> {
         if(err || !decoded) {
-            return res.status(401).send({ message: 'Authentication failed: Invalid token' });
+            return res.status(401).json({ message: 'Authentication failed: Invalid token' });
         }
         
         const { email, userId, type } = decoded as JwtPayload;

@@ -142,7 +142,7 @@ const Checkout = () => {
 
                     api.post('http://localhost:5555/orders/payment-failure', {
                         'razorpay_order_id': razorpayOrder.id,
-                        'error': response.error.description
+                        'error': response.error
                     }, config)
                     .then((response) => {
                         

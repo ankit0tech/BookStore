@@ -37,7 +37,7 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
 
     return (
         <div
-            className='fixed inset-0 z-50 isolate flex justify-center bg-black/50 bg-opacity-50 backdrop-blur-xs overflow-y-auto'
+            className='fixed inset-0 z-50 isolate flex justify-center bg-black/50 backdrop-blur-xs overflow-y-auto'
             onClick={handleOverlayClick}
         >
             <form 

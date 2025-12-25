@@ -246,7 +246,6 @@ router.put('/update-shipping-details/:id(\\d+)', roleMiddleware(['admin', 'super
 
         const { id } = req.params;
         const result = updateOrderShippingZod.safeParse(req.body);
-        console.log(req.body);
 
         if(result.success) {
             const order = await prisma.orders.update({

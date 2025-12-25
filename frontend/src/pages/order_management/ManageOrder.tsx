@@ -456,7 +456,7 @@ const ManageOrder = () => {
 
                                     {showShippingUpdate && (
                                         <div 
-                                            className="fixed z-50 inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs _bg-opacity-50 overflow-y-auto"
+                                            className="fixed z-50 inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs overflow-y-auto"
                                             onClick={(e) => handleShippingOverlayClick(e)}
                                         >
                                             <form className="w-full max-w-md min-w-xs p-6 bg-white border rounded-lg flex flex-col gap-4">

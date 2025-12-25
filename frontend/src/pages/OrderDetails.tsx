@@ -118,7 +118,41 @@ const OrderDetails = () => {
                                     <p className="text-sm text-gray-500">Payment Status</p>
                                     <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{prettifyString(orderDetails.payment_status.toLowerCase())}</div>
                                 </div>
+                                
+                                {orderDetails.shipping_carrier && (
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Shipping Carrier</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_carrier}</div>
+                                    </div>
+                                )}
 
+                                { orderDetails.tracking_number &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Tracking Number</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.tracking_number}</div>
+                                    </div>
+                                )}
+
+                                { orderDetails.shipping_label_url &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Shipping Label Url</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_label_url}</div>
+                                    </div>
+                                )}
+
+                                { orderDetails.return_tracking_number &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Return Tracking Number</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_tracking_number}</div>
+                                    </div>
+                                )}
+
+                                { orderDetails.return_shipping_label_url &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Return Shipping Label Url</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_shipping_label_url}</div>
+                                    </div>
+                                )}
 
                                 <div className="col-span-2">
                                 {orderDetails.order_status.toLowerCase() != 'delivered' && (

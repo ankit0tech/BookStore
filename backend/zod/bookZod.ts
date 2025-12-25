@@ -13,9 +13,9 @@ const createBookZod = z.object({
     }).min(1, "Category id is invalid"),
     cover_image: z.union([
         z.string().regex(urlRegex, { message: "Invalid URL"}),
-        z.string().min(0).max(0),
-        z.string().optional(),
-    ]),
+        z.string().length(0)
+    ]).optional(),
+
 
     description: z.string().optional(),
     isbn: z.string().optional(),

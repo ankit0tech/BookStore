@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import express from 'express';
 import { roleMiddleware } from './middleware';
 import { logger } from '../utils/logger';
+import { updateOrderShippingZod } from '../zod/orderZod';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -212,7 +213,7 @@ router.post('/process-return/:id(\\d+)', roleMiddleware(['admin', 'superadmin'])
             where: {
                 id: Number(id)
             }
-        })
+        });
         if(!order) {
             return res.status(404).json({message: 'Order not found'});
         }
@@ -240,5 +241,50 @@ router.post('/process-return/:id(\\d+)', roleMiddleware(['admin', 'superadmin'])
     }
 });
 
+router.put('/update-shipping-details/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req, res) => {
+    try {
+
+        const { id } = req.params;
+        const result = updateOrderShippingZod.safeParse(req.body);
+        console.log(req.body);
+
+        if(result.success) {
+            const order = await prisma.orders.update({
+                where: {
+                    id: Number(id)
+                },
+                data: result.data,
+                include: {
+                    order_items: {
+                        include: {
+                            book: true,
+                            special_offer: true
+                        }
+                    },
+                    address: true,
+                    user: true
+                }
+            });
+
+            logger.info(`Shipping details update for ${id} by user ${req.userId}`);
+            return res.status(200).json({
+                message: "Updated order successfully",
+                data: order
+            });
+
+        } else {
+            return res.status(400).json({
+                message: "Please send valid data for all required fields",
+                error: result.error.format()
+            });
+        }
+    } catch (error: any) {
+        if(error.code === 'P2025') {
+            return res.status(404).json({message: "Order not found"});
+        }
+        logger.error(error.message);
+        return res.status(500).json({message: "An unexpected error occurred. please try again later"});
+    }
+});
 
 export default router;

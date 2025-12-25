@@ -6,6 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { formatDate, formatPrice, prettifyString } from "../../utils/formatUtils";
 import { FiPackage } from "react-icons/fi";
 import { CiCalendar, CiDeliveryTruck } from "react-icons/ci";
+import { RxCross2 } from 'react-icons/rx';
 
 const ManageOrder = () => {
     
@@ -17,13 +18,20 @@ const ManageOrder = () => {
     const [paymentStatus, setPaymentStatus] = useState<string>(orderDetails?.payment_status.toLowerCase() || '');
     const [cancellationStatus, setCancellationStatus] = useState<string>(orderDetails?.cancellation_status.toLowerCase() || '');
     const [returnStatus, setReturnStatus] = useState<string>(orderDetails?.return_status.toLowerCase() || '');
+    const [shippingCarrier, setShippingCarrier] = useState<string>(orderDetails?.shipping_carrier || '');
+    const [trackingNumber, setTrackingNumber] = useState<string>(orderDetails?.tracking_number || '');
+    const [shippingLabelUrl, setShippingLabelUrl] = useState<string>(orderDetails?.shipping_label_url || '');
+    const [returnTrackingNumber, setReturnTrackingNumber] = useState<string>(orderDetails?.return_tracking_number || '');
+    const [returnShippingLabelUrl, setReturnShippingLabelUrl] = useState<string>(orderDetails?.return_shipping_label_url || '');
+    const [showShippingUpdate, setShowShippingUpdate] = useState<boolean>(false);
+    const [showReturnShippingUpdate, setShowReturnShippingUpdate] = useState<boolean>(false);
 
     const paymentOptions = ['pending', 'completed', 'failed', 'refunded'];
     const deliveryOptions = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned'];
     const cancellationOptions = ['requested', 'approved', 'rejected'];
     const returnOptions = ['requested', 'approved', 'rejected'];
-    // const [shippingCarrier, setShippingCarrier] = useState<string>('');
-    // const [trackingNumber, setTrackingNumber] = useState<string>('');
+
+
     // const navigate = useNavigate();
 
     const fetchOrderDetails = () => {
@@ -32,8 +40,8 @@ const ManageOrder = () => {
             setOrderDetails(response.data.data);
         })
         .catch((error) => {
-            enqueueSnackbar('Error while fetching order details', {variant: 'error'});
             console.log(error);
+            enqueueSnackbar('Error while fetching order details', {variant: 'error'});
         });
     }
 
@@ -47,6 +55,11 @@ const ManageOrder = () => {
             setCancellationStatus(orderDetails.cancellation_status.toLowerCase() || '');
             setPaymentStatus(orderDetails.payment_status.toLowerCase() || '');
             setReturnStatus(orderDetails.return_status.toLowerCase() || '');
+            setShippingCarrier(orderDetails.shipping_carrier || '');
+            setTrackingNumber(orderDetails.tracking_number || '');
+            setShippingLabelUrl(orderDetails?.shipping_label_url || '');
+            setReturnTrackingNumber(orderDetails?.return_tracking_number || '');
+            setReturnShippingLabelUrl(orderDetails?.return_shipping_label_url || '');
         }
     }, [orderDetails]);
 
@@ -75,7 +88,6 @@ const ManageOrder = () => {
     //     console.log('form submitted');
     // }
 
-
     const handleOrderUpdate = (optionName: string, optionValue: string) => {
 
         const data = {
@@ -94,6 +106,76 @@ const ManageOrder = () => {
         });
     }
 
+    const handleShippingOverlayClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {        
+        if (e.target === e.currentTarget) {
+            setShowShippingUpdate(false);
+        }
+    }
+
+    const handleReturnShippingOverlayClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {        
+        if (e.target === e.currentTarget) {
+            setShowReturnShippingUpdate(false);
+        }
+    }
+
+    const handleUpdateShippingDetails = (type: 'return'|'ship') => {
+        const data: Record<string, string> = {};
+        let hasChanged: boolean = false;
+
+        if(type === 'return') {
+            const trimmedReturnTrackingNumber = returnTrackingNumber.trim();
+            const trimmedReturnShippingLabelUrl = returnShippingLabelUrl.trim();
+            
+            if(trimmedReturnTrackingNumber !== (orderDetails?.return_tracking_number || '')) {
+                hasChanged = true;
+            }
+            if(trimmedReturnShippingLabelUrl !== (orderDetails?.return_shipping_label_url || '')) {
+                hasChanged = true;
+            }
+
+            data.return_tracking_number = trimmedReturnTrackingNumber;
+            data.return_shipping_label_url = trimmedReturnShippingLabelUrl;
+
+        } else {
+            const trimmedShippingCarrier = shippingCarrier.trim();
+            const trimmedTrackingNumber = trackingNumber.trim();
+            const trimmedShippingLabelUrl = shippingLabelUrl.trim();
+
+            if(trimmedShippingCarrier !== (orderDetails?.shipping_carrier || '')) {
+                hasChanged = true;
+            }
+            if(trimmedTrackingNumber !== (orderDetails?.tracking_number || '')) {
+                hasChanged = true;
+            }
+            if(trimmedShippingLabelUrl !== (orderDetails?.shipping_label_url || '')) {
+                hasChanged = true;
+            }
+            
+            data.shipping_carrier = trimmedShippingCarrier;
+            data.tracking_number = trimmedTrackingNumber;
+            data.shipping_label_url = trimmedShippingLabelUrl;
+            
+        }
+
+
+        if(!hasChanged) {
+            enqueueSnackbar('Please provide atleast one field to update', {variant: 'warning'});
+            return;
+        }
+
+        api.put(`http://localhost:5555/order-management/update-shipping-details/${id}`, data)
+        .then((response) => {
+            enqueueSnackbar('Order updated successfully', {variant: 'success'});
+            setOrderDetails(response.data.data);
+            setShowShippingUpdate(false);
+            setShowReturnShippingUpdate(false);
+        })
+        .catch((error: any) => {
+            console.log(error);
+            enqueueSnackbar('Error while updating order shipping details', {variant: 'error'});
+        });
+
+    }
 
 
     return (
@@ -102,7 +184,7 @@ const ManageOrder = () => {
                 <div>
                     <div className="space-y-1 mb-4">
                         <h2 className="text-3xl font-semibold text-gray-900">Order Details</h2>
-                        <p className="px-4 py-2 text-gray-600 text-sm font-medium bg-gray-50 border rounded-lg w-fit">
+                        <p className="px-4 py-2 text-gray-700 text-sm font-medium bg-gray-50 border rounded-lg w-fit">
                             #{orderDetails.order_number}
                         </p>
                     </div>
@@ -124,7 +206,7 @@ const ManageOrder = () => {
                                 </div>
 
                                 <div className="flex flex-col gap-1">
-                                    <p className="flex gap-2 items-center text-sm text-gray-600">Placed</p>
+                                    <p className="flex gap-2 items-center text-sm text-gray-700">Placed</p>
                                     <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
                                         <CiCalendar className="text-base"></CiCalendar>
                                         <div>{formatDate(orderDetails.purchase_date)}</div>
@@ -134,7 +216,7 @@ const ManageOrder = () => {
                                 <div className="flex flex-col gap-1">
                                     {orderDetails.order_status.toLowerCase() !== 'delivered' ? (
                                         <>
-                                            <p className="flex gap-2 items-center text-sm text-gray-600">Expected Delivery Date</p>
+                                            <p className="flex gap-2 items-center text-sm text-gray-700">Expected Delivery Date</p>
                                             <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
                                                 <CiDeliveryTruck className="text-xl"></CiDeliveryTruck>
                                                 <div>{formatDate(orderDetails.expected_delivery_date)}</div>
@@ -143,7 +225,7 @@ const ManageOrder = () => {
                                     ) : (
                                         orderDetails.actual_delivery_date && 
                                         <>
-                                            <p className="flex gap-2 items-center text-sm text-gray-600">Delivery Date</p>
+                                            <p className="flex gap-2 items-center text-sm text-gray-700">Delivery Date</p>
                                             <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
                                                 <CiDeliveryTruck className="text-xl"></CiDeliveryTruck>
                                                 <div>{formatDate(orderDetails.actual_delivery_date)}</div>
@@ -166,20 +248,43 @@ const ManageOrder = () => {
                                     <p className="text-sm text-gray-500">Placed by</p>
                                     <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.user?.email}</div>
                                 </div> */}
+                                {orderDetails.shipping_carrier && (
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Shipping Carrier</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_carrier}</div>
+                                    </div>
+                                )}
+
+                                { orderDetails.tracking_number &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Tracking Number</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.tracking_number}</div>
+                                    </div>
+                                )}
+
+                                { orderDetails.shipping_label_url &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Shipping Label Url</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_label_url}</div>
+                                    </div>
+                                )}
+
+                                { orderDetails.return_tracking_number &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Return Tracking Number</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_tracking_number}</div>
+                                    </div>
+                                )}
+
+                                { orderDetails.return_shipping_label_url &&(
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-sm text-gray-500">Return Shipping Label Url</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_shipping_label_url}</div>
+                                    </div>
+                                )}
 
 
                                 <div className="col-span-2">
-
-                                    { orderDetails.shipping_carrier && (<p className="flex flex-row justify-between text-sm items-center">
-                                        <span className="text-gray-700">Shipping Carrier: </span>
-                                        <span className="font-medium">{orderDetails.shipping_carrier}</span>
-                                    </p>)}
-
-                                    { orderDetails.tracking_number &&(
-                                    <p className="flex flex-row justify-between text-sm items-center">
-                                        <span className="text-gray-700">Tracking Number: </span>
-                                        <span className="font-medium">{orderDetails.tracking_number}</span>
-                                    </p>)}
                                     
                                     { orderDetails.cancellation_status.toLowerCase() !== 'none' && (
                                             <div className="flex flex-col gap-1">
@@ -212,6 +317,8 @@ const ManageOrder = () => {
                                 </div>
                                 
                             </div>
+                            
+                            
 
                             <form className="flex flex-col sm:w-4/5 gap-8">
                                 <div className="flex flex-col gap-2">
@@ -225,7 +332,7 @@ const ManageOrder = () => {
                                         <select
                                             className="text-sm px-2 py-2 rounded-md text-gray-900 border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-all duration-200 cursor-pointer"
                                             value={deliveryStatus || ''}
-                                            id='order-status'
+                                            id='delivery-status'
                                             onChange={(e) => setDeliveryStatus(e.target.value)}
                                             >
                                             {deliveryOptions.map((item, index) => (
@@ -250,7 +357,7 @@ const ManageOrder = () => {
                                             className="text-sm font-semibold text-gray-700" 
                                             htmlFor='payment-status'
                                         >
-                                                payment status:
+                                                Payment status:
                                         </label>
                                         <select
                                             className="text-sm px-2 py-2 rounded-md text-gray-900 border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-all duration-200 cursor-pointer"
@@ -310,7 +417,7 @@ const ManageOrder = () => {
                                             <label 
                                                 className="text-sm font-semibold text-gray-700" 
                                                 htmlFor='return-status'
-                                            >
+                                                >
                                                     Return status:
                                             </label>
                                             <select
@@ -318,7 +425,7 @@ const ManageOrder = () => {
                                                 value={returnStatus || ''}
                                                 onChange={(e) => setReturnStatus(e.target.value)}
                                                 id='return-status'
-                                            >
+                                                >
                                                 {returnOptions.map((item, index) => (
                                                     <option key={index} value={item}>{prettifyString(item)}</option>
                                                 ))}
@@ -329,13 +436,199 @@ const ManageOrder = () => {
                                             className="w-fit text-sm my-2 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                                             type='button' 
                                             onClick={ () => handleOrderUpdate('return', returnStatus) }
-                                        >
+                                            >
                                             Save return status
                                         </button>
                                     </div> 
                                 )}
 
                             </form>
+
+                            <div className="flex flex-row gap-4">
+                                <div className="">
+                                    <button
+                                        type="button"
+                                        className="w-fit text-sm my-2 text-sky-800 font-medium p-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                        onClick={() => setShowShippingUpdate(!showShippingUpdate)}
+                                    >
+                                        Update Shipping Details
+                                    </button>
+
+                                    {showShippingUpdate && (
+                                        <div 
+                                            className="fixed z-50 inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs _bg-opacity-50 overflow-y-auto"
+                                            onClick={(e) => handleShippingOverlayClick(e)}
+                                        >
+                                            <form className="w-full max-w-md min-w-xs p-6 bg-white border rounded-lg flex flex-col gap-4">
+                                                <div className="flex flex-col gap-0">
+                                                    <div className="flex justify-between">
+                                                        <h2 className="text-xl font-semibold text-gray-900">Shipping Details</h2>
+                                                        <button 
+                                                            type='button'
+                                                            className="font-semibold text-gray-500 hover:text-gray-700 cursor-pointer"
+                                                            onClick={() => setShowShippingUpdate(false)}
+                                                            aria-label="Close"
+                                                        >
+                                                            <RxCross2 />
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-sm text-gray-600">Update the shipping details for the order</p>
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <label
+                                                        className="text-sm font-semibold text-gray-700"
+                                                        htmlFor="shipping-carrier"
+                                                    >
+                                                        Shipping Carrier:
+                                                    </label>
+                                                    <input 
+                                                        className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                        type="text"
+                                                        id="shipping-carrier"
+                                                        value={shippingCarrier}
+                                                        onChange={(e) => setShippingCarrier(e.target.value)}
+                                                    >
+                                                    </input>
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <label
+                                                        className="text-sm font-semibold text-gray-700"
+                                                        htmlFor="tracking-number"
+                                                    >
+                                                        Tracking Number:
+                                                    </label>
+                                                    <input 
+                                                        className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                        type="text"
+                                                        id="tracking-number"
+                                                        value={trackingNumber}
+                                                        onChange={(e) => setTrackingNumber(e.target.value)}
+                                                    >
+                                                    </input>
+                                                </div>
+
+                                                <div className="flex flex-col gap-1">
+                                                    <label
+                                                        className="text-sm font-semibold text-gray-700"
+                                                        htmlFor="shipping-label-url"
+                                                    >
+                                                        Shipping Label Url:
+                                                    </label>
+                                                    <input 
+                                                        className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                        type="text"
+                                                        id="shipping-label-url"
+                                                        value={shippingLabelUrl}
+                                                        onChange={(e) => setShippingLabelUrl(e.target.value)}
+                                                    >
+                                                    </input>
+                                                </div>
+                                                <div className="flex gap-4">
+                                                    <button
+                                                        type="button"
+                                                        className="w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                        onClick={() => handleUpdateShippingDetails('ship')}
+                                                    >
+                                                        Update
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                                                        onClick={() => setShowShippingUpdate(false)}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {(orderDetails.return_status.toLowerCase() != 'none') && (
+                                    <div className="">
+                                        <button
+                                            type="button"
+                                            className="w-fit text-sm my-2 text-sky-800 font-medium p-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                            onClick={() => setShowReturnShippingUpdate(!showReturnShippingUpdate)}
+                                            >
+                                            Update Return Shipping Details
+                                        </button>
+        
+                                        {showReturnShippingUpdate && (
+                                            <div 
+                                            className="fixed z-50 inset-0 flex items-center justify-center bg-black/40 backdrop-blur-xs _bg-opacity-50 overflow-y-auto"
+                                            onClick={(e) => handleReturnShippingOverlayClick(e)}
+                                            >
+                                                <form className="w-full max-w-md min-w-xs p-6 bg-white border rounded-lg flex flex-col gap-4">
+                                                    <div className="flex flex-col gap-0">
+                                                        <div className="flex justify-between">
+                                                            <h2 className="text-xl font-semibold text-gray-900">Return Shipping Details</h2>
+                                                            <button 
+                                                                type='button'
+                                                                className="font-semibold text-gray-500 hover:text-gray-700 cursor-pointer"
+                                                                onClick={() => setShowReturnShippingUpdate(false)}
+                                                                aria-label="Close"
+                                                                >
+                                                                <RxCross2 />
+                                                            </button>
+                                                        </div>
+                                                        <p className="text-sm text-gray-600">Update the return shipping details for the order</p>
+                                                    </div>
+                                                    <div className="flex flex-col gap-1">
+                                                        <label
+                                                            className="text-sm font-semibold text-gray-700"
+                                                            htmlFor="return-tracking-number"
+                                                            >
+                                                            Return Tracking Number:
+                                                        </label>
+                                                        <input 
+                                                            className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                            type="text"
+                                                            id="return-tracking-number"
+                                                            value={returnTrackingNumber}
+                                                            onChange={(e) => setReturnTrackingNumber(e.target.value)}
+                                                            >
+                                                        </input>
+                                                    </div>
+        
+                                                    <div className="flex flex-col gap-1">
+                                                        <label
+                                                            className="text-sm font-semibold text-gray-700"
+                                                            htmlFor="return-shipping-label-url"
+                                                            >
+                                                            Return Shipping Label Url:
+                                                        </label>
+                                                        <input 
+                                                            className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                            type="text"
+                                                            id="return-shipping-label-url"
+                                                            value={returnShippingLabelUrl}
+                                                            onChange={(e) => setReturnShippingLabelUrl(e.target.value)}
+                                                            >
+                                                        </input>
+                                                    </div>
+                                                    <div className="flex gap-4">
+                                                        <button
+                                                            type="button"
+                                                            className="w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                            onClick={() => handleUpdateShippingDetails('return')}
+                                                            >
+                                                            Update
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                                                            onClick={() => setShowReturnShippingUpdate(false)}
+                                                            >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
 
                             <div className="mt-4">
                                 <div className="flex font-medium text-xl pb-2 border-b border-gray-100 gap-2">

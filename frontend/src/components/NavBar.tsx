@@ -86,14 +86,14 @@ const NavBar = () => {
         const fetchCartItems = async () => {
 
             if (authToken) {
-                const items = await getCartItems(authToken);
+                const items = await getCartItems();
                 dispatch(setCartItemsSlice(items));
             }
         }
 
         fetchCartItems();
 
-    }, [userinfo.token])
+    }, [userinfo.token, dispatch])
 
 
     

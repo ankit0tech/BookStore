@@ -19,14 +19,12 @@ const updateCart = async (book_id: number, quantity: number, authToken: string, 
     await api.post('http://localhost:5555/cart/update-cart', data, config);
 }
 
-const getCartItems = async (authToken: string): Promise<CartInterface> => {
-    const config = {headers: { Authorization: authToken }};
+const getCartItems = async (): Promise<CartInterface> => {
     
     try {
-        const response = await axios.get('http://localhost:5555/cart/get-cart-items', config);
+        const response = await api.get('http://localhost:5555/cart/get-cart-items');        
         return response.data;
-    }
-    catch (error) {
+    } catch (error) {
         enqueueSnackbar("Error while fetching cart items", {variant: 'error'});
         throw error;
     }
@@ -47,7 +45,7 @@ const useHandleCartUpdate = () => {
             }
             else {
                 await updateCart(bookId, count, authToken, selectedOfferId);
-                const items = await getCartItems(authToken);
+                const items = await getCartItems();
                 dispatch(setCartItemsSlice(items));
                 enqueueSnackbar('Cart updated', {variant: 'success'});
             }

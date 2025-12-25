@@ -128,7 +128,7 @@ router.post('/signin', async (req: Request, res: Response) => {
                 }
             );
             
-            if (!user || user.provider == 'google' || !user.password || !(await bcrypt.compare(req.body.password, user.password))) {
+            if (!user || user.provider === 'google' || !user.password || !(await bcrypt.compare(req.body.password, user.password))) {
                 return res.status(401).json({message: 'Invalid email or password'});
             }
 

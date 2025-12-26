@@ -23,20 +23,10 @@ const Cart = () => {
     const [subTotal, setSubTotal] = useState<number>(0);
     const [deliveryCharges, setDeliveryCharges] = useState<number>(0);
     // const userinfo = useSelector((state: RootState) => state.userinfo);
-    // const dispatch = useDispatch();
     // const authToken = userinfo.token;
     const { handleCartUpdate } = useHandleCartUpdate();
     // console.log(cartItems);
 
-    const findSubTotal = (cartItems: CartInterface) => {
-        const subTotal = cartItems.data.reduce((accumulator, current) => {
-            const { book, quantity, special_offer } = current;
-            const discount = special_offer?.discount_percentage || 0;
-            const discountedPrice = book.price * (100 - discount) / 100;
-            return accumulator + (quantity * discountedPrice);
-        }, 0);
-        return subTotal;
-    }
 
     useEffect(() => {
         // setSubTotal(findSubTotal(cartItems));

@@ -41,6 +41,7 @@ import SuperAdminHome from './pages/superadmin/SuperAdminHome';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHome from './pages/admin/AdminHome';
 import BookManagement from './pages/admin/BookManagement';
+import useSyncCart from './hooks/useSyncCart';
 
 
 const App = () => {
@@ -49,6 +50,7 @@ const App = () => {
   const userRole = userinfo.userRole;
   
   useAuth();
+  useSyncCart();
 
   return (
     <div className='h-screen flex flex-col'>

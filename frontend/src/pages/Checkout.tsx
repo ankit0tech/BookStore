@@ -62,23 +62,6 @@ const Checkout = () => {
         await handleBuyBooks();
     }
 
-    useEffect(() => {
-        setLoading(true);
-
-        if(!defaultAddress) {
-            api.get('http://localhost:5555/addresses/default-address')
-            .then((response) => {
-                setDefaultAddress(response.data);
-                setSelectedAddress(response.data);
-            })
-            .catch((error: any) => {
-                console.log(error);
-            })
-        }
-
-        setLoading(false);
-
-    },[cartItems.data]);
 
     const handleBuyBooks = async () => {
         try {
@@ -118,8 +101,8 @@ const Checkout = () => {
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature
                         }, config)
-                        .then((response) =>{
-                            getCartItems(authToken)
+                        .then((response) => {
+                            getCartItems()
                             .then((response) => {
                                 dispatch(setCartItemsSlice(response));
                             })
@@ -196,6 +179,35 @@ const Checkout = () => {
             enqueueSnackbar('Error fetching cart details', {variant: 'error'});
         });
     }, [selectedDeliveryMethod, cartItems.data]);
+
+    useEffect(() => {
+       getCartItems()
+        .then((response) => {
+            dispatch(setCartItemsSlice(response));
+        })
+        .catch(() => {
+            enqueueSnackbar('Error fetching cart details', {variant: 'warning'});
+        });
+    }, [dispatch]);
+
+    useEffect(() => {
+        setLoading(true);
+
+        if(!defaultAddress) {
+            api.get('http://localhost:5555/addresses/default-address')
+            .then((response) => {
+                setDefaultAddress(response.data);
+                setSelectedAddress(response.data);
+            })
+            .catch((error: any) => {
+                console.log(error);
+            })
+        }
+
+        setLoading(false);
+
+    },[]);
+
 
     return (
         <div className='p-4'>

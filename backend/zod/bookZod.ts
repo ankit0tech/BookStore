@@ -10,7 +10,7 @@ const createBookZod = z.object({
     category_id: z.number({
         required_error: "Category is required",
         invalid_type_error: "Category must be a number"
-    }).min(1, "Category id is invalid"),
+    }).min(1, "Category id is invalid").nullable().optional(),
     cover_image: z.union([
         z.string().regex(urlRegex, { message: "Invalid URL"}),
         z.string().length(0)

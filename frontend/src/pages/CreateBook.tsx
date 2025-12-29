@@ -71,7 +71,7 @@ const CreateBook = () => {
             newErrors.price = 'Price is invalid';
         }
 
-        if(isNaN(Number(selectedCategory)) || Number(selectedCategory) <= 0) {
+        if(selectedCategory && (isNaN(Number(selectedCategory)) || Number(selectedCategory) <= 0)) {
             newErrors.selectedCategory = 'Category is invalid';
         }
 
@@ -79,7 +79,7 @@ const CreateBook = () => {
             newErrors.pages = 'Invalid number of pages'
         }
         
-        if(quantity && (isNaN(Number(quantity)) || Number(quantity) <= 0)) {
+        if(quantity && (isNaN(Number(quantity)) || Number(quantity) < 0)) {
             newErrors.quantity = 'Quantity is invlaid';
         }
 
@@ -109,7 +109,7 @@ const CreateBook = () => {
             author,
             publish_year: Number(publishYear),
             price: Number(price) * 100,
-            category_id: Number(selectedCategory),
+            category_id: selectedCategory ? Number(selectedCategory) : null,
             cover_image: imgUrl,
             description: description.trim() || undefined,
             isbn: isbn.trim() || undefined,
@@ -122,8 +122,6 @@ const CreateBook = () => {
             shelf_location: shelfLocation.trim() || undefined,
             sku: sku.trim() || undefined
         };
-        
-        console.log(data);
         
         const apiCall = updateBook ? 
             api.put(`http://localhost:5555/books/${id}`, data)
@@ -198,9 +196,10 @@ const CreateBook = () => {
         });
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchCategories();
     }, []);
+
     useEffect(() => {
         if(id) {
             fetchBook(id);
@@ -259,6 +258,7 @@ const CreateBook = () => {
                             onChange={(e) => setSelectedCategory(e.target.value)}
                             disabled={!categories?.length}
                         >
+                            <option value=''>None (No Category)</option>
                             { categories?.map((category) => (
                                 <optgroup key={category.id} label={category.title}>
                                     {category.sub_category.map((sub)=> (

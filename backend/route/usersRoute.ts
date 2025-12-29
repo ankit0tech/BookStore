@@ -71,7 +71,7 @@ router.post('/signup', async (req: Request, res: Response) => {
         logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
-})
+});
 
 router.get('/verify-mail', async (req: Request, res: Response) => {
 
@@ -111,9 +111,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
         logger.error(error.message);
         return res.status(400).json({ message: error.message });
     }
-
-
-})
+});
 
 router.post('/signin', async (req: Request, res: Response) => {
     try {
@@ -138,14 +136,14 @@ router.post('/signin', async (req: Request, res: Response) => {
             // logger.info("User signed in: ", user.email);
             logger.info(`User signed in: ${user.email}`);
             
-            return res.status(200).json({token: `Bearer ${token}`});
+            return res.status(200).json({ token: `Bearer ${token}` });
         }
-        return res.status(401).json({message: 'Please enter valid inputs'});
+        return res.status(401).json({ message: 'Please enter valid inputs' });
     } catch(error: any) {
         logger.error(error.message);
-        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+        return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
-})
+});
 
 router.get('/dashboard', authMiddleware, async (req: Request, res: Response) => {
     try {
@@ -244,6 +242,9 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."})
     }
 });
+
+
+// update user's own details
 
 
 export default router;

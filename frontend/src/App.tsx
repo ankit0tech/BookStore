@@ -42,6 +42,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminHome from './pages/admin/AdminHome';
 import BookManagement from './pages/admin/BookManagement';
 import useSyncCart from './hooks/useSyncCart';
+import UserManagement from './pages/user_management/UserManagement';
+import UserUpdate from './pages/user_management/UserUpdate';
 
 
 const App = () => {
@@ -108,6 +110,9 @@ const App = () => {
                   <Route path='books/edit/:id' element={<CreateBook />} />
                   <Route path='books/delete/:id' element={<DeleteBook />} />
                   <Route path='book-management' element={<BookManagement />} />
+                  
+                  <Route path='user-management' element={<UserManagement />} />
+                  <Route path='users/edit/:id' element={<UserUpdate />} />
                   
                   <Route path='order-management' element={<OrderManagement />} />
                   <Route path='manage-order/:id' element={<ManageOrder />} />

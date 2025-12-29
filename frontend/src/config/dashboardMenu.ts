@@ -83,7 +83,6 @@ export const getSuperAdminMenuItems = (): {label: string, path: string, style: s
 }
 
 
-
 export const getAdminMenuItems = (): {label: string, path: string, style: string, description: string}[] => {
     return [
         { 
@@ -113,6 +112,12 @@ export const getAdminMenuItems = (): {label: string, path: string, style: string
         {
             label: 'Book management',
             path: 'book-management',
+            style: '',
+            description: ''
+        },
+        {
+            label: 'User management',
+            path: 'user-management',
             style: '',
             description: ''
         }

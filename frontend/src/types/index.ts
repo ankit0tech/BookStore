@@ -47,6 +47,9 @@ export interface UserInterface {
     provider: string;
     role: string;
     verified: boolean;
+    verified_at: Date;
+    deactivated: boolean;
+    deactivated_at: Date;
     created_at: Date;
     updated_at: Date;
   

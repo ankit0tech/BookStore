@@ -82,7 +82,7 @@ const UserUpdate = () => {
             data.deactivated = deactivated
         }
 
-        const apiUrl = isAdmin ? `http://localhost:5555/user-management/${id}` : 'http://localhost:5555/users/update';
+        const apiUrl = (id && isAdmin) ? `http://localhost:5555/user-management/${id}` : 'http://localhost:5555/users/update';
 
         api.put(apiUrl, data)
         .then((response: AxiosResponse) => {

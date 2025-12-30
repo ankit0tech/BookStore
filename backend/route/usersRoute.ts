@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User, IUser } from '../models/userModel';
-import { signupZod, signinZod } from '../zod/userZod';
+import { signupZod, signinZod, userUpdateZod } from '../zod/userZod';
 import { config } from '../config';
 import { authMiddleware } from './middleware';
 import { PrismaClient } from "@prisma/client";
@@ -71,7 +70,7 @@ router.post('/signup', async (req: Request, res: Response) => {
         logger.error(error.message);
         return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
     }
-})
+});
 
 router.get('/verify-mail', async (req: Request, res: Response) => {
 
@@ -111,9 +110,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
         logger.error(error.message);
         return res.status(400).json({ message: error.message });
     }
-
-
-})
+});
 
 router.post('/signin', async (req: Request, res: Response) => {
     try {
@@ -128,7 +125,7 @@ router.post('/signin', async (req: Request, res: Response) => {
                 }
             );
             
-            if (!user || user.provider == 'google' || !user.password || !(await bcrypt.compare(req.body.password, user.password))) {
+            if (!user || user.provider === 'google' || !user.password || !(await bcrypt.compare(req.body.password, user.password))) {
                 return res.status(401).json({message: 'Invalid email or password'});
             }
 
@@ -138,14 +135,14 @@ router.post('/signin', async (req: Request, res: Response) => {
             // logger.info("User signed in: ", user.email);
             logger.info(`User signed in: ${user.email}`);
             
-            return res.status(200).json({token: `Bearer ${token}`});
+            return res.status(200).json({ token: `Bearer ${token}` });
         }
-        return res.status(401).json({message: 'Please enter valid inputs'});
+        return res.status(401).json({ message: 'Please enter valid inputs' });
     } catch(error: any) {
         logger.error(error.message);
-        return res.status(500).json({message: "An unexpected error occurred. Please try again later."});
+        return res.status(500).json({ message: "An unexpected error occurred. Please try again later." });
     }
-})
+});
 
 router.get('/dashboard', authMiddleware, async (req: Request, res: Response) => {
     try {
@@ -180,7 +177,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
         logger.info(`Sending mail to reset password for ${req.body.email}`);
         
         if (user) {
-            const token = jwt.sign({email: user.email, type: 'reset_password'}, config.auth.jwtSecret, {expiresIn: '1h'});
+            const token = jwt.sign({email: user.email, type: 'reset-password'}, config.auth.jwtSecret, {expiresIn: '1h'});
             // const verificationLink = `http://localhost:5173reset-password/verify/${token}`
             const verificationLink = `http://localhost:5173/reset-password/verify?verificationToken=${token}`
             // Action to send verification mail to user
@@ -245,5 +242,74 @@ router.post('/reset-password/verify', passwordResetRateLimit, async(req: Request
     }
 });
 
+router.get('/details', authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const user = await prisma.userinfo.findUnique({
+            where: {
+                email: req.authEmail
+            },
+            omit: {
+                password: true,
+                googleId: true,
+                deactivated_at: true,
+                verified_at: true
+            }
+        });
+        console.log(user);
+
+        return res.status(200).json({
+            data: user
+        });
+    } catch(error: any) {
+        if(error.code === 'P2025') {
+            logger.info(`While updating user with ${req.params.id} not found`);
+            return res.status(404).json({ message: `User with id ${req.params.id} not found` });
+        }
+
+        logger.info(`Error while retrieving users ${error.message}`);
+        return res.status(500).json({ message: 'An unexpected error occurred, please try again later' });
+    }
+});
+
+router.put('/update', authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = userUpdateZod.safeParse(req.body);
+
+        if(result.success) {
+            const user = await prisma.userinfo.update({
+                where: {
+                    email: req.authEmail
+                },
+                data: result.data,
+                omit: {
+                    password: true,
+                    googleId: true,
+                    deactivated_at: true,
+                    verified_at: true
+                }
+            });
+            
+            return res.status(200).json({
+                message: `user with ${id} updated successfully`,
+                data: user
+            });
+        } else {
+            return res.status(400).json({
+                message: 'Please send valid data',
+                error: result.error.format()
+            });
+        }
+        
+    } catch(error: any) {
+        if(error.code === 'P2025') {
+            logger.info(`While updating user with ${req.params.id} not found`);
+            return res.status(404).json({ message: `User with id ${req.params.id} not found` });
+        }
+
+        logger.info(`Error while retrieving users ${error.message}`);
+        return res.status(500).json({ message: 'An unexpected error occurred, please try again later' });
+    }
+});
 
 export default router;

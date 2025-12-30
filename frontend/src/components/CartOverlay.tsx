@@ -106,7 +106,11 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
 
                     <div className="flex flex-row justify-between align-center py-4 text-lg font-semibold border-t">
                         <span>Subtotal:</span>
-                        <span className="text-blue-700">{formatPrice(findSubTotal(cartItems), cartItems.data[0].book.currency)}</span>
+                        { !cartItems?.data.length ? 
+                            (<span className="text-blue-700">0</span>)
+                        :
+                            (<span className="text-blue-700">{formatPrice(findSubTotal(cartItems), cartItems.data[0].book.currency)}</span>)
+                        }
                     </div>
 
                     <div className="flex flex-row gap-4 mt-6 justify-end">

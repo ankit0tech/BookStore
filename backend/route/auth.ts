@@ -83,19 +83,19 @@ router.post('/login/federated/google', async (req, res) => {
     }
 });
 
-router.get('/logout', function(req, res, next) {
-    try {
-        res.status(200).json({
-            success: true,
-            message: 'Logged out successfully'
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Logout failed'
-        });
-    }
-});
+// router.get('/logout', function(req, res, next) {
+//     try {
+//         res.status(200).json({
+//             success: true,
+//             message: 'Logged out successfully'
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             message: 'Logout failed'
+//         });
+//     }
+// });
 
 
 export default router;

@@ -180,8 +180,8 @@ router.post('/verify-payment', authMiddleware, async (req, res) => {
                 }
             });
 
-            logger.info("Payment verified");
-            return res.status(200).json({message: "Payment verified"});
+            logger.info(`Payment verified for order ${razorpay_order_id}`);
+            return res.status(200).json({message: `Payment verified for order ${razorpay_order_id}`});
 
         } else {
             await prisma.orders.update({

@@ -37,7 +37,7 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
 
     return (
         <div
-            className='fixed inset-0 z-50 isolate flex justify-center bg-black/50 bg-opacity-50 backdrop-blur-xs overflow-y-auto'
+            className='fixed inset-0 z-50 isolate flex justify-center bg-black/50 backdrop-blur-xs overflow-y-auto'
             onClick={handleOverlayClick}
         >
             <form 
@@ -77,18 +77,18 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
                 </div>
 
                 <div className='flex flex-row gap-4'>
+                    <button 
+                        className='w-fit px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-sm border border-black shadow-[2px_2px_0px_0px_rgba(102,178,255,1.0)] active:shadow-[1px_1px_0px_0px_rgba(102,178,255,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out'
+                        type='submit'
+                    >
+                        Submit
+                    </button>
                     <button
                         className='w-fit px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-sm border border-black shadow-[2px_2px_0px_0px_rgba(96,96,96,1.0)] active:shadow-[1px_1px_0px_0px_rgba(96,96,96,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out'
                         type='button'
                         onClick={onClose}
                         >
                         Cancel
-                    </button>
-                    <button 
-                        className='w-fit px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-sm border border-black shadow-[2px_2px_0px_0px_rgba(102,178,255,1.0)] active:shadow-[1px_1px_0px_0px_rgba(102,178,255,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out'
-                        type='submit'
-                    >
-                        Submit
                     </button>
                 </div>
 

@@ -41,6 +41,7 @@ const BookManagement = () => {
         })
         .catch((error: any) => {
             console.log(error);
+            enqueueSnackbar('Error while loading categories', { variant: 'error' });
         });
 
         api.get('http://localhost:5555/books/')
@@ -50,6 +51,7 @@ const BookManagement = () => {
         })
         .catch((error: any) => {
             console.log(error);
+            enqueueSnackbar('Error while loading books', { variant: 'error' });
         });
     }, []);
 

@@ -30,7 +30,7 @@ const DashboardHome = () => {
                         className="p-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center gap-2"
                         onClick={() => handleNavigate(item.path)}
                     >
-                        {iconMap[item.path.replace('/', '') as keyof typeof iconMap]}
+                        {iconMap[item.path as keyof typeof iconMap]}
                         <span>{item.label}</span>
                     </button>
                 ))}

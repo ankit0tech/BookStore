@@ -5,7 +5,7 @@ import { config } from '../config';
 import { sendVerificationMail } from '../utils/emailUtils';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { adminSignupZod, signinZod, signupZod } from '../zod/userZod';
+import { adminSignupZod, signinZod } from '../zod/userZod';
 import { logger } from '../utils/logger';
 
 interface JwtPayload {

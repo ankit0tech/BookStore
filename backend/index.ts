@@ -14,6 +14,7 @@ import wishlistRoute from './route/wishlistRoute';
 import recentlyviewedRoute from './route/recentlyviewedRoute';
 import categoriesRoute from './route/categoriesRoute';
 import offersRoute from './route/offersRoute';
+import userManagementRoute from './route/userManagementRoute';
 import { logger } from './utils/logger';
 
 
@@ -85,6 +86,7 @@ app.use('/wishlist', wishlistRoute);
 app.use('/recently-viewed', recentlyviewedRoute);
 app.use('/categories', categoriesRoute);
 app.use('/offers', offersRoute);
+app.use('/user-management', userManagementRoute);
 
 
 app.listen(config.server.port, () => {

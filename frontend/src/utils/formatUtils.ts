@@ -25,3 +25,12 @@ export const formatDate = (date: Date): string => {
         year: 'numeric'
     }).format(d);
 }
+
+export const formatDateTime = (date: Date): string => {
+    const d = new Date(date);
+
+    return new Intl.DateTimeFormat('en-US', {
+        timeStyle: 'short',
+        dateStyle: 'long'
+    }).format(d);
+}

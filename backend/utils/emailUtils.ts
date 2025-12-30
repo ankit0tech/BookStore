@@ -33,7 +33,7 @@ export const sendVerificationMail = (userMail: string, subject: string, message:
         if (error) {
             return logger.error(error);
         }
-        logger.info('Message sent: %s', info.messageId)
+        logger.info(`Message sent: ${info.messageId}`)
     });
     
 }

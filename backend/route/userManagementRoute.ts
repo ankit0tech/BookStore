@@ -2,7 +2,7 @@ import express, {Request, Response} from "express";
 import { PrismaClient } from "@prisma/client";
 import { logger } from "../utils/logger";
 import { roleMiddleware } from "./middleware";
-import { userUpdateZod } from "../zod/userZod";
+import { adminUserUpdateZod } from "../zod/userZod";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -53,8 +53,8 @@ router.get('/', roleMiddleware(['admin', 'superadmin']), async (req: Request, re
                 })
             },
             omit: {
-                password: false,
-                googleId: false,
+                password: true,
+                googleId: true,
             },
             orderBy: [
                 { id: 'desc' }
@@ -83,25 +83,28 @@ router.get('/', roleMiddleware(['admin', 'superadmin']), async (req: Request, re
 
 router.get('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
     try {
-        const { id} = req.params;
+        const { id } = req.params;
 
         const user = await prisma.userinfo.findUnique({
             where: {
                 id: Number(id)
             },
             omit: {
-                password: false,
-                googleId: false,
+                password: true,
+                googleId: true,
             }
         });
 
-        if(!user) {
-            return res.status(404).json({ message: `User with ${id} not found` });
-        }
-
-        return res.status(200).json({user});
+        return res.status(200).json({
+            data: user
+        });
 
     } catch(error: any) {
+
+        if(error.code === 'P2025') {
+            logger.info(`While updating user with ${req.params.id} not found`);
+            return res.status(404).json({ message: `User with id ${req.params.id} not found` });
+        }
         logger.info(`Error while retrieving users ${error.message}`);
         return res.status(500).json({ message: 'An unexpected error occurred, please try again later' });
     }
@@ -110,10 +113,7 @@ router.get('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req: Re
 router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        console.log('id', id);
-        console.log('data', req.body);
-
-        const result = userUpdateZod.safeParse(req.body);
+        const result = adminUserUpdateZod.safeParse(req.body);
 
         if(result.success) {
             const oldUser = await prisma.userinfo.findUnique({
@@ -136,8 +136,8 @@ router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req: Re
                         deactivated_at: updateDeactivatedAt ? new Date() : undefined
                     },
                 omit: {
-                    password: false,
-                    googleId: false,
+                    password: true,
+                    googleId: true,
                 }
             });
             

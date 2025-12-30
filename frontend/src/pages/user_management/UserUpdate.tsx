@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { UserInterface } from "../../types";
+import { RootState, UserInterface } from "../../types";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../utils/api";
 import { AxiosResponse } from "axios";
 import { enqueueSnackbar } from "notistack";
 import Spinner from "../../components/Spinner";
+import { useSelector } from "react-redux";
 
 const userRoles: string[] = ['user', 'admin', 'superadmin'];
 
@@ -18,15 +19,21 @@ const UserUpdate = () => {
     const [deactivated, setDeactivated] = useState<boolean>(false);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
+    const userinfo = useSelector((state: RootState) => state.userinfo);
+    const isAdmin: boolean = userinfo.userRole === 'admin' || userinfo.userRole === 'superadmin';
+
     const navigate = useNavigate();
     const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+
 
     const handleLoadUser = (id: number|undefined) => {
         setLoading(true);
 
-        api.get(`http://localhost:5555/user-management/${id}`)
+        const apiUrl = (id && isAdmin) ? `http://localhost:5555/user-management/${id}` : 'http://localhost:5555/users/details';
+
+        api.get(apiUrl)
         .then((response: AxiosResponse) => {
-            const user: UserInterface = response.data.user;
+            const user: UserInterface = response.data.data;
             setEmail(user.email);
             setFirstName(user.first_name || '');
             setLastName(user.last_name || '');
@@ -62,17 +69,22 @@ const UserUpdate = () => {
             return;
         }
 
-        const data = {
-            email: email,
-            first_name: firstName.trim() || undefined,
-            last_name: lastName.trim() || undefined,
-            role: role.trim() || undefined,
-            deactivated: deactivated,
-        };
-
         setLoading(true);
 
-        api.put(`http://localhost:5555/user-management/${id}`, data)
+        const data: Record<string, string|boolean|null|undefined> = {
+            email: email,
+            first_name: firstName.trim() === '' ? null : (firstName.trim() || undefined),
+            last_name: lastName.trim() === '' ? null : (lastName.trim() || undefined),
+        };
+
+        if(id && isAdmin) {
+            data.role = role.trim() || undefined
+            data.deactivated = deactivated
+        }
+
+        const apiUrl = isAdmin ? `http://localhost:5555/user-management/${id}` : 'http://localhost:5555/users/update';
+
+        api.put(apiUrl, data)
         .then((response: AxiosResponse) => {
             const user = response.data.data;
             setEmail(user.email);
@@ -139,43 +151,46 @@ const UserUpdate = () => {
                         { formErrors.firstName && (<p className='text-sm text-red-500 mt-1'> {formErrors.firstName} </p>)}
                    </div>
 
-
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Role</label>
-                       <select
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.selectedCategory ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
-                            value={role}
-                            onChange={(e) => {setRole(e.target.value)}}
-                            disabled={!userRoles.length}
-                        >
-                            {userRoles?.map((role) => (
-                                <option 
-                                    key={role}
-                                    value={role}
-                                >
-                                    {role}
-                                </option>
-                            ))}
-                        </select>
-                        { formErrors.price && (<p className='text-sm text-red-500 mt-1'> {formErrors.price} </p>)}
-                   </div>
-
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>User Status</label>
-                        <div className='flex items-center mt-2 space-x-3'>
-                            <button 
-                                className={`inline-flex items-center rounded-full transition-colors w-11 h-6 ${deactivated ? 'bg-gray-200' : 'bg-blue-600' } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
-                                type='button'  
-                                onClick={() => setDeactivated(!deactivated)}  
+                    {(id && isAdmin) && (
+                    <>
+                        <div className=''>
+                            <label className='text-sm font-semibold text-gray-600'>Role</label>
+                            <select
+                                className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.selectedCategory ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                                value={role}
+                                onChange={(e) => {setRole(e.target.value)}}
+                                disabled={!userRoles.length}
                             >
-                                <span className={`inlne-block rounded-full h-4 w-4 bg-white transform transition-transform ${deactivated ? 'translate-x-1' : 'translate-x-6' }`}></span>
-                            </button>
-                            <span className={`text-md ${deactivated ? 'text-gray-500' : 'text-green-500'}`}>{deactivated ? 'Deactivated' : 'Active'}</span>
+                                {userRoles?.map((role) => (
+                                    <option 
+                                        key={role}
+                                        value={role}
+                                    >
+                                        {role}
+                                    </option>
+                                ))}
+                            </select>
+                            { formErrors.price && (<p className='text-sm text-red-500 mt-1'> {formErrors.price} </p>)}
                         </div>
-                        {formErrors.deactivated && (
-                            <p className='text-sm text-red-500 mt-1'>{formErrors.deactivated}</p>
-                        )}
-                    </div>
+                        
+                        <div className=''>
+                            <label className='text-sm font-semibold text-gray-600'>User Status</label>
+                            <div className='flex items-center mt-2 space-x-3'>
+                                <button 
+                                    className={`inline-flex items-center rounded-full transition-colors w-11 h-6 ${deactivated ? 'bg-gray-200' : 'bg-blue-600' } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+                                    type='button'  
+                                    onClick={() => setDeactivated(!deactivated)}  
+                                    >
+                                    <span className={`inlne-block rounded-full h-4 w-4 bg-white transform transition-transform ${deactivated ? 'translate-x-1' : 'translate-x-6' }`}></span>
+                                </button>
+                                <span className={`text-md ${deactivated ? 'text-gray-500' : 'text-green-500'}`}>{deactivated ? 'Deactivated' : 'Active'}</span>
+                            </div>
+                            {formErrors.deactivated && (
+                                <p className='text-sm text-red-500 mt-1'>{formErrors.deactivated}</p>
+                            )}
+                        </div>
+                    </>
+                    )}
                 </div>
 
                 <div className=" flex flex-row justify-start gap-4">

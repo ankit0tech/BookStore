@@ -6,7 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { FaUserFriends } from "react-icons/fa";
 import { BiSearch } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
 import DeleteOverlay from "../../components/DeleteOverlay";
 
@@ -225,9 +225,15 @@ const UserManagement = () => {
                             </td>
                             <td>
                                 <div className="flex items-center gap-2">
+                                    <button
+                                        className="text-blue-700 text-lg"
+                                        onClick={() => navigate(`/admin-dashboard/user/details/${user.id}`)}
+                                    >
+                                        <AiOutlineEye />
+                                    </button>
                                     <button 
                                         className="text-yellow-600 text-lg"
-                                        onClick={() => navigate(`/admin-dashboard/users/edit/${user.id}`)}
+                                        onClick={() => navigate(`/admin-dashboard/user/edit/${user.id}`)}
                                     >
                                         <AiOutlineEdit/>
                                     </button>

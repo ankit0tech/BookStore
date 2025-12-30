@@ -34,10 +34,10 @@ const ResetPassword = () => {
                 password: password1
             });
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 enqueueSnackbar("Password reset done", {variant: 'success'});
                 navigate('/login');
-            } else if(response.status == 429) {
+            } else if(response.status === 429) {
                 enqueueSnackbar(response.data.message, {variant: 'error'});
             } else {
                 enqueueSnackbar("Issue while resetting password", {variant: 'error'});

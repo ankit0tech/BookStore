@@ -31,6 +31,12 @@ export const getDashboardMenuItems = (userRole: string): {label: string, path: s
             style:'',
             description: ''
         },
+        {
+            label: 'My Account',
+            path: 'user/details',
+            style: '',
+            description: ''
+        },
 
         ...(userRole === 'admin' || userRole == 'superadmin' ? [
             {

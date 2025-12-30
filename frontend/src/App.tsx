@@ -44,6 +44,7 @@ import BookManagement from './pages/admin/BookManagement';
 import useSyncCart from './hooks/useSyncCart';
 import UserManagement from './pages/user_management/UserManagement';
 import UserUpdate from './pages/user_management/UserUpdate';
+import UserDetails from './pages/user_management/UserDetails';
 
 
 const App = () => {
@@ -90,6 +91,8 @@ const App = () => {
               <Route path='review/:id' element={<AddReview />} />
               <Route path='wishlist' element={<Wishlist />} />
               <Route path='recently-viewed' element={<RecentlyViewed />} />
+              <Route path='user/details' element={<UserDetails />} />
+              <Route path='user/edit' element={<UserUpdate />} />
               
             </Route>
               
@@ -112,7 +115,8 @@ const App = () => {
                   <Route path='book-management' element={<BookManagement />} />
                   
                   <Route path='user-management' element={<UserManagement />} />
-                  <Route path='users/edit/:id' element={<UserUpdate />} />
+                  <Route path='user/details/:id' element={<UserDetails />} />
+                  <Route path='user/edit/:id' element={<UserUpdate />} />
                   
                   <Route path='order-management' element={<OrderManagement />} />
                   <Route path='manage-order/:id' element={<ManageOrder />} />

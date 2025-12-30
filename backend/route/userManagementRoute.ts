@@ -147,7 +147,6 @@ router.put('/:id(\\d+)', roleMiddleware(['admin', 'superadmin']), async (req: Re
             });
 
         } else {
-            console.log(result.error);
             return res.status(400).json({
                 message: 'Please send valid data',
                 error: result.error.format()

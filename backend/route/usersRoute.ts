@@ -255,7 +255,6 @@ router.get('/details', authMiddleware, async (req: Request, res: Response) => {
                 verified_at: true
             }
         });
-        console.log(user);
 
         return res.status(200).json({
             data: user
@@ -273,7 +272,6 @@ router.get('/details', authMiddleware, async (req: Request, res: Response) => {
 
 router.put('/update', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const { id } = req.params;
         const result = userUpdateZod.safeParse(req.body);
 
         if(result.success) {
@@ -291,7 +289,7 @@ router.put('/update', authMiddleware, async (req: Request, res: Response) => {
             });
             
             return res.status(200).json({
-                message: `user with ${id} updated successfully`,
+                message: `user with ${user.id} updated successfully`,
                 data: user
             });
         } else {
@@ -303,8 +301,8 @@ router.put('/update', authMiddleware, async (req: Request, res: Response) => {
         
     } catch(error: any) {
         if(error.code === 'P2025') {
-            logger.info(`While updating user with ${req.params.id} not found`);
-            return res.status(404).json({ message: `User with id ${req.params.id} not found` });
+            logger.info(`While updating user with mail ${req.authEmail} not found`);
+            return res.status(404).json({ message: `User with id ${req.authEmail} not found` });
         }
 
         logger.info(`Error while retrieving users ${error.message}`);

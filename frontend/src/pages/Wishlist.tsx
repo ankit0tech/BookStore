@@ -22,7 +22,7 @@ const Wishlist = () => {
         
             setLoading(true);
     
-            await api.get(`http://localhost:5555/wishlist/items`)
+            await api.get(`/wishlist/items`)
             .then((response)=> {
                 setWishlist(response.data);
                 setLoading(false);
@@ -45,7 +45,7 @@ const Wishlist = () => {
 
         setWishlist((prev) => prev.filter((item) => item.book.id != id));
 
-        await api.delete(`http://localhost:5555/wishlist/remove/${id}`)
+        await api.delete(`/wishlist/remove/${id}`)
         .then((response) =>{
             enqueueSnackbar('Removed from wishlist successfully', { variant: 'success'});
         })

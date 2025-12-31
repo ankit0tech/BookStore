@@ -21,7 +21,7 @@ const RecentlyViewed = () => {
         
             setLoading(true);
     
-            await api.get(`http://localhost:5555/recently-viewed`)
+            await api.get(`/recently-viewed`)
             .then((response)=> {
                 setRecentlyViewed(response.data);
                 setLoading(false);
@@ -43,7 +43,7 @@ const RecentlyViewed = () => {
 
         setRecentlyViewed((prev) => prev.filter((item) => item.book.id != id));
 
-        await api.delete(`http://localhost:5555/recently-viewed/remove/${id}`)
+        await api.delete(`/recently-viewed/remove/${id}`)
         .then((response) =>{
             enqueueSnackbar('Removed from recently viewed successfully', { variant: 'success'});
         })

@@ -32,7 +32,7 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
     const [activePrice, setActivePrice] = useState<number|null>(null);
 
     const fetchCategories = () => {
-        api.get('http://localhost:5555/categories')
+        api.get('/categories')
         .then((response) => {
             setCategories(response.data.data);
         })

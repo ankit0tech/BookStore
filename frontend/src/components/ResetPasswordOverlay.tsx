@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import React, { useState } from 'react';
+import api from '../utils/api';
 
 interface PasswordOverLayProps {
     isOpen: boolean;
@@ -19,7 +20,7 @@ const ResetPasswordOverlay: React.FC<PasswordOverLayProps> = ({ isOpen, setIsOpe
         };
 
         try {
-            const response = await axios.post('http://localhost:5555/users/reset-password/confirm', data);
+            const response = await api.post('/users/reset-password/confirm', data);
             
             if (response.status === 200) {
                 enqueueSnackbar(`Sent password reset mail to ${email}`, {variant: 'success'});

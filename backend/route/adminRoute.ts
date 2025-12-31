@@ -35,7 +35,7 @@ router.post('/generate-admin-signup-token', roleMiddleware(['superadmin']), asyn
         const token = jwt.sign({email: email, type: 'admin_signup'}, config.auth.jwtSecret, {expiresIn: '1h'});
         const subject = 'BookStore admin registeration';
         const message = 'Please use the link below to sinup as admin in BookStore, valid for one hour';
-        const signupLink = `http://localhost:5173/admin/signup?verificationToken=${token}&email=${email}`;
+        const signupLink = `${config.frontend.url}/admin/signup?verificationToken=${token}&email=${email}`;
 
         sendVerificationMail(email, subject, message, signupLink);
         

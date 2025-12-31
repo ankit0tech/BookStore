@@ -53,7 +53,7 @@ const UserManagement = () => {
         }
 
         
-        api.get(`http://localhost:5555/user-management?${params.toString()}`)
+        api.get(`/user-management?${params.toString()}`)
         .then((response: AxiosResponse) => {
             setUsers(() => {
                 const prevUserIds = new Set(prevUsers.map((u) => u.id));
@@ -69,7 +69,7 @@ const UserManagement = () => {
     }
 
     const handleFetchUserStats = () => {
-        api.get('http://localhost:5555/user-management/user-stats')
+        api.get('/user-management/user-stats')
         .then((response: AxiosResponse) => {
             setTotalUsers(response.data.totalUsers);
             setActiveUsers(response.data.activeUsers);
@@ -252,7 +252,7 @@ const UserManagement = () => {
             </table>
 
             <DeleteOverlay
-                deleteUrl={`http://localhost:5555/user-management/${userToBeDeleted}`}
+                deleteUrl={`/user-management/${userToBeDeleted}`}
                 itemName='user'
                 isOpen={showDeleteOption}
                 onClose={()=>setShowDeleteOption(false)}

@@ -76,7 +76,7 @@ const Checkout = () => {
                 delivery_method: selectedDeliveryMethod
             }
             
-            api.post('http://localhost:5555/orders/checkout', data, config)
+            api.post('/orders/checkout', data, config)
             .then((response) => {
                 
                 const razorpayOrder = response.data.razorpayOrder;
@@ -96,7 +96,7 @@ const Checkout = () => {
                     },
                     handler: function (response: any) {
 
-                        api.post('http://localhost:5555/orders/verify-payment', {
+                        api.post('/orders/verify-payment', {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature
@@ -123,7 +123,7 @@ const Checkout = () => {
                     
                     enqueueSnackbar(response.error.description, {variant: 'error'});
 
-                    api.post('http://localhost:5555/orders/payment-failure', {
+                    api.post('/orders/payment-failure', {
                         'razorpay_order_id': razorpayOrder.id,
                         'error': response.error
                     }, config)
@@ -148,7 +148,7 @@ const Checkout = () => {
     }
 
     const loadAllUserAddresses = () => {
-        api.get('http://localhost:5555/addresses/')
+        api.get('/addresses/')
         .then((response) => {
             setAllUserAddresses(response.data);
             // if (defaultAddress && response.data.some((addr: Address) => addr.id === defaultAddress.id)) {
@@ -170,7 +170,7 @@ const Checkout = () => {
     }
     
     useEffect(()=> {
-        api.get(`http://localhost:5555/cart/cart-summary?delivery_method=${selectedDeliveryMethod}`)
+        api.get(`/cart/cart-summary?delivery_method=${selectedDeliveryMethod}`)
         .then((response) => {
             setSubTotal(response.data.subTotal);
             setDeliveryCharges(response.data.deliveryCharges);
@@ -194,7 +194,7 @@ const Checkout = () => {
         setLoading(true);
 
         if(!defaultAddress) {
-            api.get('http://localhost:5555/addresses/default-address')
+            api.get('/addresses/default-address')
             .then((response) => {
                 setDefaultAddress(response.data);
                 setSelectedAddress(response.data);

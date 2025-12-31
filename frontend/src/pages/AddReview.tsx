@@ -21,7 +21,7 @@ const AddReview = () => {
 
     useEffect( ()=> {
         
-        api.get(`http://localhost:5555/books/${id}`)
+        api.get(`/books/${id}`)
         .then((response) => {
             setBook(response.data);
         })
@@ -29,7 +29,7 @@ const AddReview = () => {
             console.log(error);
         });
 
-        api.get(`http://localhost:5555/reviews/book/${id}/user`)
+        api.get(`/reviews/book/${id}/user`)
         .then((response) => {
             if (response.data) {
                 setUpdateReview(true);
@@ -52,9 +52,9 @@ const AddReview = () => {
         };
         
         const apiCall = updateReview ? 
-        api.put(`http://localhost:5555/reviews/${id}`, data) 
+        api.put(`/reviews/${id}`, data) 
         :
-        api.post(`http://localhost:5555/reviews/${id}`, data)
+        api.post(`/reviews/${id}`, data)
 
         apiCall
         .then((response) =>{
@@ -166,7 +166,7 @@ const AddReview = () => {
 
             {updateReview && (
                 <DeleteOverlay 
-                    deleteUrl={`http://localhost:5555/reviews/${id}`} 
+                    deleteUrl={`/reviews/${id}`} 
                     itemName="review" 
                     isOpen={showConfirmDelete} 
                     onClose={onClose} 

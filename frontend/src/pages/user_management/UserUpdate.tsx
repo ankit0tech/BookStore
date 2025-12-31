@@ -29,7 +29,7 @@ const UserUpdate = () => {
     const handleLoadUser = (id: number|undefined) => {
         setLoading(true);
 
-        const apiUrl = (id && isAdmin) ? `http://localhost:5555/user-management/${id}` : 'http://localhost:5555/users/details';
+        const apiUrl = (id && isAdmin) ? `/user-management/${id}` : '/users/details';
 
         api.get(apiUrl)
         .then((response: AxiosResponse) => {
@@ -82,7 +82,7 @@ const UserUpdate = () => {
             data.deactivated = deactivated
         }
 
-        const apiUrl = (id && isAdmin) ? `http://localhost:5555/user-management/${id}` : 'http://localhost:5555/users/update';
+        const apiUrl = (id && isAdmin) ? `/user-management/${id}` : '/users/update';
 
         api.put(apiUrl, data)
         .then((response: AxiosResponse) => {

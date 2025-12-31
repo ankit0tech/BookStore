@@ -35,7 +35,7 @@ const BookManagement = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        api.get('http://localhost:5555/categories')
+        api.get('/categories')
         .then((response: AxiosResponse) => {
             setCategories(response.data.data);
         })
@@ -44,7 +44,7 @@ const BookManagement = () => {
             enqueueSnackbar('Error while loading categories', { variant: 'error' });
         });
 
-        api.get('http://localhost:5555/books/')
+        api.get('/books/')
         .then((response: AxiosResponse) => {
             setBooks(response.data.data);
             setNextCursor(response.data.nextCursor);
@@ -68,9 +68,9 @@ const BookManagement = () => {
         if(nextCursor) params.append('cursor', String(nextCursor));
 
         const apiUrl = query === '' ? 
-            `http://localhost:5555/books?${params.toString()}` 
+            `/books?${params.toString()}` 
             : 
-            `http://localhost:5555/books/search?${params.toString()}`;
+            `/books/search?${params.toString()}`;
 
         api.get(apiUrl)
         .then((response: AxiosResponse) => {
@@ -88,7 +88,7 @@ const BookManagement = () => {
     }
 
     const handleFetchStockData = () => {
-        api.get('http://localhost:5555/books/inventory-overview')
+        api.get('/books/inventory-overview')
         .then((response: AxiosResponse) => {
             setTotalBookCount(response.data.totalBookCount);
             setActiveBookCount(response.data.activeBookCount);
@@ -291,7 +291,7 @@ const BookManagement = () => {
             </table>
 
             <DeleteOverlay
-                deleteUrl={`http://localhost:5555/books/${bookToBeDeleted}`}
+                deleteUrl={`/books/${bookToBeDeleted}`}
                 itemName='book'
                 isOpen={showDeleteOption}
                 onClose={()=>setShowDeleteOption(false)}

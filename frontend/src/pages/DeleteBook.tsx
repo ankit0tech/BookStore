@@ -18,7 +18,7 @@ const DeleteBook = () => {
             setLoading(true);
         
             api
-            .delete(`http://localhost:5555/books/${id}`)
+            .delete(`/books/${id}`)
             .then(()=>{
                 setLoading(false);
                 enqueueSnackbar('Book deleted Successfully', {variant: 'success'})

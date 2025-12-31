@@ -31,7 +31,7 @@ const ShowBook = () => {
 
     const handleAddToWishList = (id: number) => {
 
-        api.post(`http://localhost:5555/wishlist/add/${id}`)
+        api.post(`/wishlist/add/${id}`)
         .then((response) => {
             enqueueSnackbar(response.data.message, { variant: 'success' });
         })
@@ -46,7 +46,7 @@ const ShowBook = () => {
             "offerId": offerId,
         }
 
-        api.delete(`http://localhost:5555/books/remove-offer/${id}`, { data })
+        api.delete(`/books/remove-offer/${id}`, { data })
         .then((response) => {
             console.log(response);
             enqueueSnackbar('Offer removed successfully', { variant: "success" });
@@ -59,7 +59,7 @@ const ShowBook = () => {
     }
 
     const fetchBook = () => {
-        api(`http://localhost:5555/books/${id}`)
+        api(`/books/${id}`)
         .then((response) => {
             console.log(response.data);
             setBook(response.data);
@@ -79,7 +79,7 @@ const ShowBook = () => {
         // If user is logged in then add book to recently viewed
         if (userinfo.isAuthenticated) {
 
-            api.post(`http://localhost:5555/recently-viewed/add/${id}`)
+            api.post(`/recently-viewed/add/${id}`)
             .then(() => {
             })
             .catch((error) =>{

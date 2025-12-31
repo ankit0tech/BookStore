@@ -5,6 +5,7 @@ import { loginSuccess, setUserRole } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import api from "../utils/api";
 
 interface JwtPayload {
     email: string,
@@ -29,7 +30,7 @@ const AdminLogin = () => {
                 "password": password
             }
             
-            const response = await axios.post('http://localhost:5555/admin/signin', data)
+            const response = await api.post('/admin/signin', data)
             const token = response.data.token;
             const user = jwtDecode(token.split(' ')[1]) as JwtPayload;
             

@@ -7,7 +7,7 @@ if(!process.env.JWT_SECRET) {
 }
 
 if(!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    throw new Error('Google OAuth credentails are not defined');
+    throw new Error('Google OAuth credentials are not defined');
 }
 
 if(!process.env.DATABASE_URL) {
@@ -15,7 +15,11 @@ if(!process.env.DATABASE_URL) {
 }
 
 if(!process.env.SMTP_MAIL || !process.env.SMTP_PASSWORD) {
-    throw new Error('SMTP credentails are not provided');
+    throw new Error('SMTP credentials are not provided');
+}
+
+if(!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    throw new Error('Razorpay credentials are not provided');
 }
 
 
@@ -43,5 +47,8 @@ export const config = {
     razorpay: {
         key_id: process.env.RAZORPAY_KEY_ID,
         key_secret: process.env.RAZORPAY_KEY_SECRET
+    },
+    frontend: {
+        url: process.env.FRONTEND_URL || 'http://localhost:5173'
     }
 };

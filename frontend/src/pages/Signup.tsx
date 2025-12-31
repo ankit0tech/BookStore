@@ -2,6 +2,7 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../utils/api";
 // import { RootState } from "../types/index";
 
 
@@ -19,7 +20,7 @@ const Signup = () => {
                 "password": password,
             }
 
-            await axios.post('http://localhost:5555/users/signup', data);
+            await api.post('/users/signup', data);
 
             enqueueSnackbar("Signup successful", {variant: "success"});
             navigate('/login');

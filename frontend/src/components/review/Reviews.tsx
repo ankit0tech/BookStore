@@ -4,6 +4,7 @@ import { enqueueSnackbar } from "notistack";
 import axios from "axios";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { formatDate } from "../../utils/formatUtils";
+import api from "../../utils/api";
 
 
 const Reviews: React.FC<{id: number}> = ({id }) => {
@@ -25,7 +26,7 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
     useEffect(() => {
         if (!id) return;
         try {
-            axios.get(`http://localhost:5555/reviews/book/${id}`)
+            api.get(`/reviews/book/${id}`)
             .then((response)=> {
                 setReviews(response.data);
             })

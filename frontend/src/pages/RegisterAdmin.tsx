@@ -35,7 +35,7 @@ const RegisterAdmin = () => {
                 return;
             }
 
-            await api.post('http://localhost:5555/admin/generate-admin-signup-token', {
+            await api.post('/admin/generate-admin-signup-token', {
                 email: email
             });
             enqueueSnackbar(`Sent admin registration mail to ${email}`, { variant: 'success' });

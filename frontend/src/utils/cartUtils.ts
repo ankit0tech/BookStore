@@ -16,13 +16,13 @@ const updateCart = async (book_id: number, quantity: number, authToken: string, 
         selected_offer_id: selectedOfferId
     };
 
-    await api.post('http://localhost:5555/cart/update-cart', data, config);
+    await api.post('/cart/update-cart', data, config);
 }
 
 const getCartItems = async (): Promise<CartInterface> => {
     
     try {
-        const response = await api.get('http://localhost:5555/cart/get-cart-items');        
+        const response = await api.get('/cart/get-cart-items');        
         return response.data;
     } catch (error) {
         enqueueSnackbar("Error while fetching cart items", {variant: 'error'});

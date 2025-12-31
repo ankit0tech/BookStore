@@ -30,7 +30,7 @@ const Cart = () => {
 
     useEffect(() => {
         // setSubTotal(findSubTotal(cartItems));
-        api.get(`http://localhost:5555/cart/cart-summary`)
+        api.get(`/cart/cart-summary`)
             .then((response) => {
                 setSubTotal(response.data.subTotal);
                 setDeliveryCharges(response.data.deliveryCharges);

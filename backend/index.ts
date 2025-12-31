@@ -21,10 +21,10 @@ import { logger } from './utils/logger';
 const app = express();
 
 app.use(express.json());
-// app.use(cors());        // allow all origins
+
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: config.frontend.url,
         methods: ['GET', 'POST', 'DELETE', 'PUT'],
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
@@ -32,11 +32,9 @@ app.use(
 );
 
 app.use((req, res, next) => {
-    // res.removeHeader('Cross-Origin-Opener-Policy');
-    // res.removeHeader('Cross-Origin-Embedder-Policy');
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
-    res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none'); // Use cautiously
 
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
     res.setHeader(
         'Content-Security-Policy',
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://www.gstatic.com https://accounts.google.com; " +
@@ -46,7 +44,6 @@ app.use((req, res, next) => {
         "default-src 'self';"
     );
     
-
     next();
 });
 

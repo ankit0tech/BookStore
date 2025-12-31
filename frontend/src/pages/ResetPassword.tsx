@@ -2,6 +2,7 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import api from "../utils/api";
 
 
 const ResetPassword = () => {
@@ -29,7 +30,7 @@ const ResetPassword = () => {
         if (password1 != password2) {
             enqueueSnackbar("Passwords don't match", {variant: 'error'});
         } else {
-            const response = await axios.post('http://localhost:5555/users/reset-password/verify', {
+            const response = await api.post('/users/reset-password/verify', {
                 verificationToken: token,
                 password: password1
             });

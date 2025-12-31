@@ -1,9 +1,9 @@
 import express from 'express';
-import { cartZod } from '../zod/cartZod';
-import { authMiddleware, optionalAuthMiddleware } from './middleware';
+import { cartZod } from '../zod/cartZod.js';
+import { authMiddleware, optionalAuthMiddleware } from './middleware.js';
 import { book, PrismaClient } from '@prisma/client';
-import { logger } from '../utils/logger';
-import { calculateDeliveryCharges } from '../utils/orderUtils';
+import { logger } from '../utils/logger.js';
+import { calculateDeliveryCharges } from '../utils/orderUtils.js';
 
 const router = express.Router();
 const prisma = new PrismaClient();

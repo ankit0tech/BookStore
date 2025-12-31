@@ -1,10 +1,8 @@
 import express, {Request, Response } from "express";
-import { IBook } from "../models/bookModel";
-import { createBookZod, updateBookZod } from "../zod/bookZod";
-import { authMiddleware, roleMiddleware, optionalAuthMiddleware} from "./middleware";
-import { IUser, User } from "../models/userModel";
+import { createBookZod, updateBookZod } from "../zod/bookZod.js";
+import { authMiddleware, roleMiddleware, optionalAuthMiddleware} from "./middleware.js";
 import { PrismaClient, review } from "@prisma/client";
-import { logger } from "../utils/logger";
+import { logger } from "../utils/logger.js";
 
 const prisma = new PrismaClient();
 const router = express.Router();

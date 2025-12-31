@@ -1,21 +1,21 @@
 import express from "express";
 import cors from 'cors';
-import { config } from "./config";
-import booksRoute from './route/booksRoute';
-import usersRoute from './route/usersRoute';
-import cartRoute from './route/cartRoute';
-import ordersRoute from './route/ordersRoute';
-import orderManagementRoute from './route/orderManagementRoute';
-import authRoute from './route/auth';
-import addressesRoute from "./route/addressesRoute";
-import adminRoute from './route/adminRoute';
-import reviewsRoute from './route/reviewsRoute';
-import wishlistRoute from './route/wishlistRoute';
-import recentlyviewedRoute from './route/recentlyviewedRoute';
-import categoriesRoute from './route/categoriesRoute';
-import offersRoute from './route/offersRoute';
-import userManagementRoute from './route/userManagementRoute';
-import { logger } from './utils/logger';
+import { config } from "./config.js";
+import booksRoute from './route/booksRoute.js';
+import usersRoute from './route/usersRoute.js';
+import cartRoute from './route/cartRoute.js';
+import ordersRoute from './route/ordersRoute.js';
+import orderManagementRoute from './route/orderManagementRoute.js';
+import authRoute from './route/auth.js';
+import addressesRoute from "./route/addressesRoute.js";
+import adminRoute from './route/adminRoute.js';
+import reviewsRoute from './route/reviewsRoute.js';
+import wishlistRoute from './route/wishlistRoute.js';
+import recentlyviewedRoute from './route/recentlyviewedRoute.js';
+import categoriesRoute from './route/categoriesRoute.js';
+import offersRoute from './route/offersRoute.js';
+import userManagementRoute from './route/userManagementRoute.js';
+import { logger } from './utils/logger.js';
 
 
 const app = express();

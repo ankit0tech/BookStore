@@ -1,8 +1,8 @@
 import express, {Request, Response} from 'express';
 import { PrismaClient } from '@prisma/client';
-import { offerZod } from '../zod/offerZod';
-import { logger } from '../utils/logger';
-import { roleMiddleware } from './middleware';
+import { offerZod } from '../zod/offerZod.js';
+import { logger } from '../utils/logger.js';
+import { roleMiddleware } from './middleware.js';
 
 const router = express.Router();
 const prisma = new PrismaClient();

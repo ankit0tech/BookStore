@@ -1,12 +1,12 @@
 import express , {Request, Response }from 'express';
-import { authMiddleware, roleMiddleware } from './middleware';
+import { authMiddleware, roleMiddleware } from './middleware.js';
 import jwt from 'jsonwebtoken';
-import { config } from '../config';
-import { sendVerificationMail } from '../utils/emailUtils';
+import { config } from '../config.js';
+import { sendVerificationMail } from '../utils/emailUtils.js';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { adminSignupZod, signinZod } from '../zod/userZod';
-import { logger } from '../utils/logger';
+import { adminSignupZod, signinZod } from '../zod/userZod.js';
+import { logger } from '../utils/logger.js';
 
 interface JwtPayload {
     email: string,

@@ -29,7 +29,7 @@ const Addresses = () => {
             setLoading(true);
             
             api
-            .get('http://localhost:5555/addresses')
+            .get('/addresses')
             .then((response) => {
                 setAddresses(response.data);
                 setLoading(false);
@@ -57,7 +57,7 @@ const Addresses = () => {
             }))
         );
         
-        api.put(`http://localhost:5555/addresses/${address_id}`, {is_default: true})
+        api.put(`/addresses/${address_id}`, {is_default: true})
             .then((address) => {
                 enqueueSnackbar("Address set to default successfully", {variant: 'success'});
             })
@@ -118,7 +118,7 @@ const Addresses = () => {
                                     
                                     <DeleteOverlay
                                         itemName='address'
-                                        deleteUrl={`http://localhost:5555/addresses/${address.id}`}
+                                        deleteUrl={`/addresses/${address.id}`}
                                         isOpen={showAddressToDelete === address.id}
                                         onClose={onClose}
                                         onDeleteSuccess={fetchAddresses}

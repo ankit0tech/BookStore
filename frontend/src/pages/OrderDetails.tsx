@@ -17,7 +17,7 @@ const OrderDetails = () => {
     const navigate = useNavigate();
     
     const fetchOrderDetails = (id:number) => {
-        api.get(`http://localhost:5555/orders/order-details/${id}`)
+        api.get(`/orders/order-details/${id}`)
         .then((response)=> {
             setOrderDetails(response.data.data);
         })
@@ -43,7 +43,7 @@ const OrderDetails = () => {
 
         const endpointString = requestName === 'cancel' ? 'request-cancellation' : 'request-return';
 
-        api.post(`http://localhost:5555/orders/${endpointString}/${id}`, data)
+        api.post(`/orders/${endpointString}/${id}`, data)
         .then((response)=> {
             enqueueSnackbar(`Request to ${requestName} added`, {variant: 'success'});
             fetchOrderDetails(Number(id));

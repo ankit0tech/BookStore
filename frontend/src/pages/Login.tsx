@@ -8,6 +8,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import ResetPasswordOverlay from "../components/ResetPasswordOverlay";
 import SignInForm from "../components/SignInForm";
 import { enqueueSnackbar } from "notistack";
+import api from "../utils/api";
 
 interface JwtPayload {
     email: string,
@@ -25,7 +26,7 @@ const Login = () => {
     const login = useGoogleLogin({
         onSuccess: async (loginCredentials) => {
             try {
-                const response = await axios.post('http://localhost:5555/auth/login/federated/google', {
+                const response = await api.post('/auth/login/federated/google', {
                     token: loginCredentials.access_token
                 },
                 {
@@ -65,7 +66,7 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5555/users/signin', data)
+            const response = await api.post('/users/signin', data)
             const token = response.data.token;
             const user = jwtDecode(token.split(' ')[1]) as JwtPayload;
             

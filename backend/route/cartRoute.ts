@@ -1,6 +1,6 @@
 import express from 'express';
 import { cartZod } from '../zod/cartZod';
-import { authMiddleware } from './middleware';
+import { authMiddleware, optionalAuthMiddleware } from './middleware';
 import { book, PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
 import { calculateDeliveryCharges } from '../utils/orderUtils';
@@ -157,7 +157,7 @@ router.post('/update-cart', authMiddleware, async (req, res) =>{
 });
 
 // retrieve current user cart
-router.get('/get-cart-items', authMiddleware, async (req, res) => {
+router.get('/get-cart-items', optionalAuthMiddleware, async (req, res) => {
     try {
 
         if(req.userId) {

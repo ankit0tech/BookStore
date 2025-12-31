@@ -27,11 +27,8 @@ const passwordResetRateLimit = rateLimit({
 
 router.post('/signup', async (req: Request, res: Response) => {
     try {
-        // if(!req.body.email || !req.body.password) {
-        //     return res.status(401).send({message: 'Invalide input'});
-        // }
-
         const result = signupZod.safeParse(req.body);
+
         if(result.success) {
 
             const existingUser = await prisma.userinfo.findUnique({
@@ -56,7 +53,7 @@ router.post('/signup', async (req: Request, res: Response) => {
             logger.info(user);
 
             const token = jwt.sign({email: user.email, type: 'verification'}, config.auth.jwtSecret, {expiresIn: '1h'});
-            const verificationLink = `http://localhost:5555/users/verify-mail?verificationToken=${token}`
+            const verificationLink = `${config.frontend.url}/verify-user-mail?verificationToken=${token}`
             // Action to send verification mail to user
             const message = 'Please verify your mail by clicking on the link below, valid for one hour.';
             const subject = 'BookStore account verification';
@@ -72,11 +69,13 @@ router.post('/signup', async (req: Request, res: Response) => {
     }
 });
 
-router.get('/verify-mail', async (req: Request, res: Response) => {
-
+router.post('/verify-mail', async (req: Request, res: Response) => {
     try {
-
-        const token: string = typeof req.query.verificationToken === 'string' ? req.query.verificationToken : '';
+        const token: string = req.body.verificationToken || '';
+        
+        if(!token) {
+            return res.status(400).json({message: "Please send verification token"});
+        }
 
         jwt.verify(token, config.auth.jwtSecret, async (err, decoded) => {
             if (err) {
@@ -85,11 +84,12 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
             if(!decoded) {
                 logger.error('Error while decoding token');
             }
-    
             if (err || !decoded) {
-                return res.status(401).json({ message: 'Authentication failed, Invalid token' })
+                return res.status(400).json({ message: 'Authentication failed, Invalid token' })
             }
+            
             const { email, type } = decoded as JwtPayload;
+
             if (type === 'verification') {
                 await prisma.userinfo.update({
                     where: {
@@ -102,7 +102,7 @@ router.get('/verify-mail', async (req: Request, res: Response) => {
                 logger.info(`${email} is verified!`);
                 return res.status(200).json({message: "your email have been verified!"});
             } else {
-                return res.status(401).json({message: "Invalid token"});
+                return res.status(400).json({message: "Invalid token"});
             }
         });
 
@@ -152,7 +152,7 @@ router.get('/dashboard', authMiddleware, async (req: Request, res: Response) => 
         });
 
         if (!user) {
-            return res.status(400).json({message: "Authentication Issue"});
+            return res.status(401).json({message: "Authentication Issue"});
         } else {
             const { email, first_name, last_name, role } = user;
             const selectedProps = { email, first_name, last_name, role };
@@ -178,8 +178,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
         
         if (user) {
             const token = jwt.sign({email: user.email, type: 'reset-password'}, config.auth.jwtSecret, {expiresIn: '1h'});
-            // const verificationLink = `http://localhost:5173reset-password/verify/${token}`
-            const verificationLink = `http://localhost:5173/reset-password/verify?verificationToken=${token}`
+            const verificationLink = `${config.frontend.url}/reset-password/verify?verificationToken=${token}`
             // Action to send verification mail to user
             const message = 'Please click the link below to reset your password, valid for one hour.';
             const subject = 'BookStore password reset';

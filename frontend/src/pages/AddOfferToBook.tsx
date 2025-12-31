@@ -21,7 +21,7 @@ const AddOfferToBook = () => {
         
         setLoading(true);
         
-        api.get('http://localhost:5555/offers/active-offers')
+        api.get('/offers/active-offers')
         .then((response) => {
             setLoading(false);
             setActiveOffers(response.data);            
@@ -55,7 +55,7 @@ const AddOfferToBook = () => {
             "offerId": Number(selectedOffer),
         }
 
-        api.post(`http://localhost:5555/books/add-offer-for-book/${id}`, data)
+        api.post(`/books/add-offer-for-book/${id}`, data)
         .then((response) => {
             console.log(response);
             enqueueSnackbar('Offer add successfully', { variant: "success" });

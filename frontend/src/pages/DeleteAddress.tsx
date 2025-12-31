@@ -18,7 +18,7 @@ const DeleteAddress = () => {
             setLoading(loading);
     
             api
-            .delete(`http://localhost:5555/addresses/${id}`)
+            .delete(`/addresses/${id}`)
             .then(()=>{
                 setLoading(false);
                 enqueueSnackbar('Address deleted Successfully', {variant: 'success'})

@@ -37,7 +37,7 @@ const OrderManagement = () => {
         if(nextCursor) params.append('nextCursor', String(nextCursor));
                 
         api
-        .get(`http://localhost:5555/order-management?${params.toString()}`)
+        .get(`/order-management?${params.toString()}`)
         .then((response: AxiosResponse) => {
             
             setOrders(() => {

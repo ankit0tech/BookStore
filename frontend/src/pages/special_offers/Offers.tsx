@@ -51,7 +51,7 @@ const Offers = () => {
         if(expiryStatus) params.append('expiryStatus', expiryStatus);
         if(percentageFilter) params.append('percentageFilter', percentageFilter.toString());
 
-        api.get(`http://localhost:5555/offers?${params.toString()}`)
+        api.get(`/offers?${params.toString()}`)
         .then((response) => {
             setOffers(response.data);
             setLoading(false);
@@ -217,7 +217,7 @@ const Offers = () => {
 
                                 <DeleteOverlay
                                     itemName='offer'
-                                    deleteUrl={`http://localhost:5555/offers/${offer.id}`}
+                                    deleteUrl={`/offers/${offer.id}`}
                                     isOpen={offerToDelete === offer.id}
                                     onClose={onClose}
                                     onDeleteSuccess={fetchOffers}

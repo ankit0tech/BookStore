@@ -41,7 +41,7 @@ const NavBar = () => {
 
 
     const handleSearchBarClick = () => {
-        api.get('http://localhost:5555/recently-viewed')
+        api.get('/recently-viewed')
             .then((response) => {
                 setShowRecentlyViewedPalet(true);
                 setRecentlyViewed(response.data);
@@ -60,7 +60,7 @@ const NavBar = () => {
         const originalRecentlyViewed = [...recentlyViewed];
         setRecentlyViewed((prev) => prev.filter((item) => item.book.id != id));
 
-        await api.delete(`http://localhost:5555/recently-viewed/remove/${id}`)
+        await api.delete(`/recently-viewed/remove/${id}`)
         .then(() =>{
         })
         .catch((error) => {

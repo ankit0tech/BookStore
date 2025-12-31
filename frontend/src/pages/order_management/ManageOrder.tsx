@@ -35,7 +35,7 @@ const ManageOrder = () => {
     // const navigate = useNavigate();
 
     const fetchOrderDetails = () => {
-        api.get(`http://localhost:5555/orders/order-details/${id}`)
+        api.get(`/orders/order-details/${id}`)
         .then((response)=> {
             setOrderDetails(response.data.data);
         })
@@ -95,7 +95,7 @@ const ManageOrder = () => {
             optionValue: optionValue
         }
         
-        api.post(`http://localhost:5555/order-management/update/${id}`, data)
+        api.post(`/order-management/update/${id}`, data)
         .then((response)=> {
             fetchOrderDetails();
             enqueueSnackbar('Order updated successfully', {variant: 'success'});
@@ -163,7 +163,7 @@ const ManageOrder = () => {
             return;
         }
 
-        api.put(`http://localhost:5555/order-management/update-shipping-details/${id}`, data)
+        api.put(`/order-management/update-shipping-details/${id}`, data)
         .then((response) => {
             enqueueSnackbar('Order updated successfully', {variant: 'success'});
             setOrderDetails(response.data.data);

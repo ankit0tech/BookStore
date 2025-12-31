@@ -124,9 +124,9 @@ const CreateBook = () => {
         };
         
         const apiCall = updateBook ? 
-            api.put(`http://localhost:5555/books/${id}`, data)
+            api.put(`/books/${id}`, data)
             :
-            api.post('http://localhost:5555/books', data);
+            api.post('/books', data);
 
         setLoading(true);
 
@@ -145,7 +145,7 @@ const CreateBook = () => {
     }
 
     const fetchCategories = () => {
-        api.get('http://localhost:5555/categories')
+        api.get('/categories')
         .then((response) => {
             const categories = response.data.data;
             setCategories(categories);
@@ -166,7 +166,7 @@ const CreateBook = () => {
     const fetchBook = (id: string) => {
         setLoading(true);
         
-        api.get(`http://localhost:5555/books/${id}`)
+        api.get(`/books/${id}`)
         .then((response) => {
             setUpdateBook(true);
 

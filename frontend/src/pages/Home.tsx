@@ -43,7 +43,7 @@ const Home = () => {
         setLoading(true);
 
         if(searchQuery) {
-            api.get(`http://localhost:5555/books/search?query=${searchQuery}`)
+            api.get(`/books/search?query=${searchQuery}`)
             .then((response) => {
                 setBooks(response.data.data);
                 setNextCursor(response.data.nextCursor);
@@ -69,7 +69,7 @@ const Home = () => {
             if(selectWithSpecialOffer) params.append('selectWithSpecialOffer', '');
             
 
-            const url = `http://localhost:5555/books?${params.toString()}`;
+            const url = `/books?${params.toString()}`;
 
             api
             .get(url)

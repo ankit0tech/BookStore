@@ -18,7 +18,7 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
 
     const handleAddToWishList = (id: number) => {
 
-        api.post(`http://localhost:5555/wishlist/add/${id}`)
+        api.post(`/wishlist/add/${id}`)
         .then((response) => {
             enqueueSnackbar(response.data.message, { variant: 'success' });
         })

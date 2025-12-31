@@ -26,7 +26,7 @@ const UserDetails = () => {
     const fetchUser = () => {
         setLoading(true);
 
-        const apiUrl = (id && isAdmin) ? `http://localhost:5555/user-management/${id}` : 'http://localhost:5555/users/details'
+        const apiUrl = (id && isAdmin) ? `/user-management/${id}` : '/users/details'
 
         api.get(apiUrl)
         .then((response: AxiosResponse) => {

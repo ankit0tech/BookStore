@@ -1,12 +1,13 @@
 import axios from 'axios';
 import store from '../redux/store';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5555';
+
 const api = axios.create({
-    baseURL: 'localhost',
+    baseURL: API_URL,
     headers: {
       'Content-Type': 'application/json',
     },
-  
 });
 
 api.interceptors.request.use((config) => {
@@ -25,8 +26,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status == 401) {
-
+        if(error.response && error.response.status === 401) {
             const currentPath = window.location.pathname;
             if(currentPath !== '/login' && currentPath !== '/signup') {
                 window.location.href = '/login'

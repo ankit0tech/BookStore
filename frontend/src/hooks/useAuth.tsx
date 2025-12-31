@@ -3,7 +3,6 @@ import api from "../utils/api"
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../types/index";
 import { logoutSuccess, setUserRole } from "../redux/userSlice";
-import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 
@@ -26,7 +25,6 @@ const useAuth = () => {
     const userData = useSelector((state: RootState) => state.userinfo);
     const authToken = userData.token || localStorage.getItem('authToken');
     const token = authToken?.split(' ')[1] || '';
-    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -37,7 +35,7 @@ const useAuth = () => {
         
         const fetchRole = () => {
             
-            api.get('http://localhost:5555/users/dashboard')
+            api.get('/users/dashboard')
             .then((response) => {
                 dispatch(setUserRole({'userRole': response.data.user.role}));
                 setHasFailed(false);
@@ -48,7 +46,6 @@ const useAuth = () => {
                 setHasFailed(true);
                 if(error.response?.status == 401) {
                     dispatch(logoutSuccess());
-                    navigate('/login');
                 }
             });
         }
@@ -56,8 +53,7 @@ const useAuth = () => {
         if(!hasFailed) {
             fetchRole();
         }
-
-    }, [authToken, dispatch, navigate]);
+    }, [authToken, dispatch, hasFailed, token]);
     
 }
 

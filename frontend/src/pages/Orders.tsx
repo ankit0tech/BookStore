@@ -37,7 +37,7 @@ const Orders = () => {
         params.append('dateOrder', dateOrder);
         
         api
-        .get(`http://localhost:5555/orders/get-purchased-items?${params.toString()}`)
+        .get(`/orders/get-purchased-items?${params.toString()}`)
         .then((response) => {
             setOrders(response.data);
             setLoading(false);

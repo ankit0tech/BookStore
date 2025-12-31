@@ -2,6 +2,7 @@ import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import api from "../utils/api";
 
 const AdminSignup = () => {
     
@@ -16,7 +17,7 @@ const AdminSignup = () => {
     const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5555/admin/signup', 
+            await api.post('/admin/signup', 
                 {
                     password: password
                 },

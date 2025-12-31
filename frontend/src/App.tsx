@@ -45,6 +45,7 @@ import useSyncCart from './hooks/useSyncCart';
 import UserManagement from './pages/user_management/UserManagement';
 import UserUpdate from './pages/user_management/UserUpdate';
 import UserDetails from './pages/user_management/UserDetails';
+import UserMailVerification from './pages/UserMailVerification';
 
 
 const App = () => {
@@ -64,10 +65,7 @@ const App = () => {
 
         <div className='flex-1 overflow-auto' >  
           <Routes>
-            <Route
-              path='/' 
-                element={<Home />}
-            />
+            <Route path='/'  element={<Home />} />
             <Route path='/login' element={<Login /> } />
             <Route path='/signup' element={<Signup />} />
             
@@ -76,6 +74,7 @@ const App = () => {
             
             <Route path='/books/details/:id' element={<ShowBook />} />
             <Route path='/reset-password/verify' element={<ResetPassword />} />
+            <Route path='/verify-user-mail' element={<UserMailVerification />} />
             
             <Route path='/dashboard' element={<Dashboard />} >
               <Route index element={<DashboardHome />} />

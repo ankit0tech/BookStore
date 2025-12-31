@@ -5,12 +5,12 @@ import { PrismaClient } from '@prisma/client';
 // import { error } from 'console';
 // import { JWT, LoginTicket, OAuth2Client } from 'google-auth-library';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 const prisma = new PrismaClient();
 const router = express.Router();
 // const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-import { config } from '../config';
+import { config } from '../config.js';
 // import { json } from 'stream/consumers';
 
 interface UserInfo {

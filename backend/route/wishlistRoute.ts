@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { authMiddleware } from './middleware';
-import { logger } from '../utils/logger';
+import { authMiddleware } from './middleware.js';
+import { logger } from '../utils/logger.js';
 
 
 const router = express.Router();

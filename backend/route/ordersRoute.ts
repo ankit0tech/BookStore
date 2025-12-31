@@ -1,10 +1,10 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { authMiddleware } from './middleware';
-import { logger } from '../utils/logger';
-import { checkoutZod } from '../zod/cartZod';
-import { generateOrderNumber, calculateDeliveryCharges } from '../utils/orderUtils';
-import { config } from '../config';
+import { authMiddleware } from './middleware.js';
+import { logger } from '../utils/logger.js';
+import { checkoutZod } from '../zod/cartZod.js';
+import { generateOrderNumber, calculateDeliveryCharges } from '../utils/orderUtils.js';
+import { config } from '../config.js';
 import Razorpay from 'razorpay';
 import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils';
 
@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 
 
 const isCancellable = (purchaseDate: Date, hours: number): boolean => {
-    purchaseDate.setHours(purchaseDate.getHours() + hours);
+    purchaseDate.setHours(purchaseDate.getHours() + hours)
     return purchaseDate > new Date();
 }
 

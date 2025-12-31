@@ -1,13 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { signupZod, signinZod, userUpdateZod } from '../zod/userZod';
-import { config } from '../config';
-import { authMiddleware } from './middleware';
+import { signupZod, signinZod, userUpdateZod } from '../zod/userZod.js';
+import { config } from '../config.js';
+import { authMiddleware } from './middleware.js';
 import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 import rateLimit from 'express-rate-limit';
-import { sendVerificationMail } from '../utils/emailUtils';
-import { logger } from '../utils/logger';
+import { sendVerificationMail } from '../utils/emailUtils.js';
+import { logger } from '../utils/logger.js';
 
 const prisma = new PrismaClient();
 const router = express.Router();

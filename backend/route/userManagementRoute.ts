@@ -1,8 +1,8 @@
 import express, {Request, Response} from "express";
 import { PrismaClient } from "@prisma/client";
-import { logger } from "../utils/logger";
-import { roleMiddleware } from "./middleware";
-import { adminUserUpdateZod } from "../zod/userZod";
+import { logger } from "../utils/logger.js";
+import { roleMiddleware } from "./middleware.js";
+import { adminUserUpdateZod } from "../zod/userZod.js";
 
 const prisma = new PrismaClient();
 const router = express.Router();

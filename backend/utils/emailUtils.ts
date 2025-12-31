@@ -1,6 +1,6 @@
-import { config } from "../config";
+import { config } from "../config.js";
 import nodemailer from 'nodemailer';
-import { logger } from "./logger";
+import { logger } from "./logger.js";
 
 
 export const sendVerificationMail = (userMail: string, subject: string, message: string, verificationLink: string): void => {

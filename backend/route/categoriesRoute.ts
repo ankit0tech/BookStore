@@ -1,9 +1,8 @@
 import express from 'express'
-import { authMiddleware, roleMiddleware } from './middleware';
+import { authMiddleware, roleMiddleware } from './middleware.js';
 import { PrismaClient } from '@prisma/client';
-import { logger } from '../utils/logger';
-import { categoryZod } from '../zod/categoryZod';
-import { retrieveUser } from '../utils/userUtils';
+import { logger } from '../utils/logger.js';
+import { categoryZod } from '../zod/categoryZod.js';
 
 
 const router = express.Router();

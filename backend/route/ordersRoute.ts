@@ -6,7 +6,7 @@ import { checkoutZod } from '../zod/cartZod.js';
 import { generateOrderNumber, calculateDeliveryCharges } from '../utils/orderUtils.js';
 import { config } from '../config.js';
 import Razorpay from 'razorpay';
-import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils';
+import { validateWebhookSignature } from 'razorpay/dist/utils/razorpay-utils.js';
 
 const router = express.Router();
 const prisma = new PrismaClient();

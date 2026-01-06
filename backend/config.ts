@@ -22,6 +22,10 @@ if(!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
     throw new Error('Razorpay credentials are not provided');
 }
 
+if(!process.env.BREVO_API_KEY) {
+    throw new Error('Brevo API key is not provided');
+}
+
 
 export const config = {
     server: {
@@ -50,5 +54,8 @@ export const config = {
     },
     frontend: {
         url: process.env.FRONTEND_URL || 'http://localhost:5173'
+    },
+    brevo: {
+        api_key: process.env.BREVO_API_KEY
     }
 };

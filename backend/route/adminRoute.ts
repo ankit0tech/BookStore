@@ -37,7 +37,7 @@ router.post('/generate-admin-signup-token', roleMiddleware(['superadmin']), asyn
         const message = 'Please use the link below to sinup as admin in BookStore, valid for one hour';
         const signupLink = `${config.frontend.url}/admin/signup?verificationToken=${token}&email=${email}`;
 
-        sendVerificationMail(email, subject, message, signupLink);
+        sendVerificationMail(email, "", subject, message, signupLink);
         
         return res.status(200).json({message: "Mail sent for new admin signup"});
         

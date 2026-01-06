@@ -1,39 +1,20 @@
 import { config } from "../config.js";
-import nodemailer from 'nodemailer';
 import { logger } from "./logger.js";
+import { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 
+export const sendVerificationMail = (userMail: string, userName: string, subject: string, message: string, verificationLink: string): void => {
+    const emailAPI = new TransactionalEmailsApi();
+    emailAPI.setApiKey(TransactionalEmailsApiApiKeys.apiKey, config.brevo.api_key);
 
-export const sendVerificationMail = (userMail: string, subject: string, message: string, verificationLink: string): void => {
-    const senderMail: string = config.smtp.email
-    const senderPassword: string = config.smtp.password
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: senderMail,
-            pass: senderPassword,
-        }
+    const sendSmtpEmail = new SendSmtpEmail();
+    sendSmtpEmail.subject = subject;
+    sendSmtpEmail.textContent = `Hi, ${userMail} \n${message} \n${verificationLink}\nRegards,\nBookStore Team`
+    sendSmtpEmail.sender = { name: "BookStore Team", email: config.smtp.email };
+    sendSmtpEmail.to = [{ email: userMail, name: userName }];
+
+    emailAPI.sendTransacEmail(sendSmtpEmail).then(res => {
+        logger.info(JSON.stringify(res.body));
+    }).catch(err => {
+        logger.error("Error sending email:", err.body);
     });
-
-    transporter.verify((error, success) => {
-        if (error) {
-            logger.error("SMTP configuration error: ", error);
-        } else {
-            logger.info("SMTP configuration is correct", success);
-        }
-    })
-    
-    transporter.sendMail({
-        from: `"BookStore team" <${senderMail}>`,
-        to: userMail,
-        subject: subject,
-        text: `Hi, ${userMail} \n${message} \n${verificationLink}\nRegards,\nBookStore Team`,
-    }, (error, info) => {
-        if (error) {
-            return logger.error(error);
-        }
-        logger.info(`Message sent: ${info.messageId}`)
-    });
-    
 }

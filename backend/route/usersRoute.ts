@@ -57,7 +57,7 @@ router.post('/signup', async (req: Request, res: Response) => {
             // Action to send verification mail to user
             const message = 'Please verify your mail by clicking on the link below, valid for one hour.';
             const subject = 'BookStore account verification';
-            sendVerificationMail(user.email, subject, message, verificationLink);
+            sendVerificationMail(user.email, user.first_name || "", subject, message, verificationLink);
 
             return res.status(200).json({message: 'Signup done!'});
         }
@@ -182,7 +182,7 @@ router.post('/reset-password/confirm', passwordResetRateLimit, async (req: Reque
             // Action to send verification mail to user
             const message = 'Please click the link below to reset your password, valid for one hour.';
             const subject = 'BookStore password reset';
-            sendVerificationMail(user.email, subject, message, verificationLink);
+            sendVerificationMail(user.email, user.first_name || "", subject, message, verificationLink);
             
             return res.status(200).json({message: "verification mail sent"});
         }

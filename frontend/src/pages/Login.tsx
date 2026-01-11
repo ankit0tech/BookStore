@@ -89,33 +89,46 @@ const Login = () => {
     }
 
     return (
-        <div className="p-4">
-            <div className="text-3xl flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto font-serif my-2">BookStore</div>
+        <div className="flex flex-col items-center p-4 ">
+            <div className="flex flex-col items-center _min-w-1/4 _w-[320px] min-w-xs divide-y gap-4">
+                <div className="flex flex-col gap-4 items-center w-full py-6">
+                    <div className="text-3xl font-serif">BookStore</div>
 
-            <SignInForm handleSignin={handleSignin} />
+                    <div className="flex flex-col gap-1 w-full">
+                        <SignInForm handleSignin={handleSignin} />
+                        <div className="flex w-full">
+                            <button 
+                                className="_text-md text-amber-600 hover:text-amber-700 _text-sky-500 _hover:text-sky-600 hover:underline w-fit transition-color duration-200" 
+                                onClick={handleForgotPasswordClick}
+                            >
+                                forgot password?
+                            </button>
+                            <ResetPasswordOverlay isOpen={isOpen} setIsOpen={setIsOpen}></ResetPasswordOverlay>
+                        </div>
+                    </div>
 
-            <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button className="text-left" onClick={handleForgotPasswordClick}>
-                    forgot password
-                </button>
-            </div>
-            <ResetPasswordOverlay isOpen={isOpen} setIsOpen={setIsOpen}></ResetPasswordOverlay>
+                    <button 
+                        className="w-full py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                        onClick={() => login()}
+                    >
+                        Sing in with google
+                    </button>
+                </div>
 
-            <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button className="rounded-full text-white bg-blue-500 my-3 px-4 py-2 border border-blue-500 " onClick={() => login()}>
-                    Sing in with google
-                </button>
-            </div>
-
-            <div className="relative flex flex-col items-center min-w-1/4 max-w-[300px] mx-auto">
-                <hr className="w-full h-px my-2 bg-gray-200 border-0 dark:bg-gray-700" />
-                <div className="">New to the BookStore?</div>
-            </div>
-
-            <div className="flex flex-col min-w-1/4 max-w-[300px] mx-auto">
-                <button className="rounded-full my-4 text-white bg-purple-500 my-3 px-4 py-2 border border-gray-300 " onClick={navigateToSignup}> 
-                    Sign up 
-                </button>
+                <div className="flex flex-col items-center w-full gap-2">
+                    {/* <hr className="w-full h-px my-2 bg-gray-200 border-0 dark:bg-gray-700" /> */}
+                    <div 
+                        className="flex gap-1 text-md text-gray-800 hover:text-gray-950"
+                    >
+                        <span>New to the BookStore?</span>
+                        <span
+                            className="hover:underline text-amber-600 hover:text-amber-700 _text-sky-500 _hover:text-sky-600 cursor-pointer transition-colors duration-200"
+                            onClick={navigateToSignup}
+                        >
+                            Sign up
+                        </span>
+                    </div>
+               </div>
             </div>
         </div>
     );

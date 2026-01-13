@@ -5,22 +5,49 @@ const SignInForm = ({ handleSignin }: { handleSignin: (e: React.FormEvent, email
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [formErrors, setFormErrors] = useState<Record<string,string>>({});
+
+    const validateForm = (): boolean => {
+        const newFromErrors: Record<string, string> = {};
+        const trimmedEmail = email.trim();
+        const trimmedPassword = password.trim();
+
+        if(!trimmedEmail) {
+            newFromErrors.email = 'Please enter email';
+        } else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+            newFromErrors.email = 'Please enter a valid email';
+        }
+
+        if(!trimmedPassword) {
+            newFromErrors.password = 'Please enter password';
+        }
+        
+        setFormErrors(newFromErrors);
+        
+        return Object.keys(newFromErrors).length === 0;
+    }
+
 
     const handleFormSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if(!validateForm()) {
+            return;
+        }
+
         handleSignin(e, email, password);
     }
 
 
     return (
     <div
-        className="flex flex-col items-center gap-2 w-full _min-w-1/4 _max-w-[300px]"
+        className="flex flex-col items-center gap-2 w-full"
     >
         <div className="text-2xl font-serif my-2">Sign in</div>
         <form 
-            className="flex _flex-shrink-0 flex-col gap-4 items-center w-full"
+            className="flex flex-col items-center gap-4 w-full"
             onSubmit={handleFormSubmit}
         >
-            <div className="flex _flex-grow flex-col w-full">
+            <div className="flex flex-col w-full">
                 <label 
                     className="text-gray-800"
                     htmlFor="input-email"
@@ -36,6 +63,7 @@ const SignInForm = ({ handleSignin }: { handleSignin: (e: React.FormEvent, email
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
+                {formErrors.email && <span className="text-xs text-red-600">{formErrors.email}</span>}
             </div>
 
             <div className="flex flex-col mx-auto w-full">
@@ -53,6 +81,7 @@ const SignInForm = ({ handleSignin }: { handleSignin: (e: React.FormEvent, email
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                {formErrors.password && <span className="text-xs text-red-600">{formErrors.password}</span>}
             </div>
 
             <button 

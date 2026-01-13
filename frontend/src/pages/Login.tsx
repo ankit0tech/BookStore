@@ -90,7 +90,7 @@ const Login = () => {
 
     return (
         <div className="flex flex-col items-center p-4 ">
-            <div className="flex flex-col items-center _min-w-1/4 _w-[320px] min-w-xs divide-y gap-4">
+            <div className="flex flex-col items-center max-w-sm min-w-[320px] divide-y gap-4">
                 <div className="flex flex-col gap-4 items-center w-full py-6">
                     <div className="text-3xl font-serif">BookStore</div>
 
@@ -98,7 +98,7 @@ const Login = () => {
                         <SignInForm handleSignin={handleSignin} />
                         <div className="flex w-full">
                             <button 
-                                className="_text-md text-amber-600 hover:text-amber-700 _text-sky-500 _hover:text-sky-600 hover:underline w-fit transition-color duration-200" 
+                                className="_text-md text-amber-600 hover:text-amber-700 _text-sky-500 _hover:text-sky-600 hover:underline transition-color duration-200" 
                                 onClick={handleForgotPasswordClick}
                             >
                                 forgot password?

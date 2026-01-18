@@ -121,10 +121,9 @@ const Home = () => {
 
 
     return (
-        <div className='px-4 h-full'>
-            
+        <div className='h-full'>
             <div className='flex h-full'>
-                <div className='overflow-y-auto pe-3 border-r-3 border-gray-100 w-fit'>
+                <div className='overflow-y-auto px-3 border-r-[1.5px] border-gray-300 w-fit'>
                     <SideBar
                         selectWithSpecialOffer={selectWithSpecialOffer} 
                         setSelectWithSpecialOffer={setSelectWithSpecialOffer}
@@ -141,9 +140,7 @@ const Home = () => {
                     {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
                     { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
                 </div>
-
             </div>
-            
         </div>
     );
 }

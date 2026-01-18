@@ -6,7 +6,7 @@ export const useClickOutside = <T extends HTMLElement = HTMLElement> (ref: RefOb
 
   useEffect(() => {
     const listener = (event: Event) => {
-      const el = ref?.current;
+      const el = ref.current;
       if(!el || el.contains(event.target as Node)) {
         return;
       }

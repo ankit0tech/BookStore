@@ -37,7 +37,7 @@ const NavBar = () => {
     const cartItems = useSelector((state: RootState) => state.cartinfo);
     const cartSize = cartItems.data.length;
 
-    useClickOutside(profileMenuRef, () => setShowProfileMenu(false));
+    useClickOutside(profileMenuRef, (event: MouseEvent|TouchEvent) => setShowProfileMenu(false));
 
 
     const handleSearchBarClick = () => {
@@ -116,16 +116,16 @@ const NavBar = () => {
 
 
     return (
-        <nav className="flex justify-between px-4 bg-white h-16 items-center border shadow-xs">
-            <button className="flex items-center gap-2 text-purple-600 text-lg font-semibold ml-6" onClick={() =>navigate('/')}> 
+        <nav className="flex justify-between px-4 h-16 items-center border-[1.5px] border-gray-300">
+            <button className="flex items-center gap-2 text-orange-600 hover:text-orange-700 text-lg font-semibold ml-6" onClick={() =>navigate('/')}> 
                 <AiOutlineHome className="font-bold text-2xl"></AiOutlineHome> 
                 <p>BookStore</p>
             </button>
 
-            <div className="relative flex items-center px-4 text-black font-normal">                    
+            <div className="relative flex items-center px-2 font-normal _w-full">                    
                 <BiSearch className="absolute mx-3 mt-0.5 text-gray-400 " ></BiSearch>
                 <input 
-                    className="transition-all duration-300 ease-in-out py-1.75 _w-3xs lg:w-md px-2 _focus:w-64 _lg:focus:w-md rounded-full focus:outline-hidden focus:ring focus:ring-purple-400 border border-gray-300 bg-gray-100 focus:border-none focus:bg-white pl-9" 
+                    className="w-full transition-color transition-[width] duration-300 ease-out px-2 py-1.75 w-3xs sm:w-2xs md:w-sm lg:w-md rounded-lg bg-gray-50 focus:outline-hidden border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:bg-white pl-9" 
                     type="search" 
                     name="q" 
                     ref={searchBarRef}
@@ -139,21 +139,21 @@ const NavBar = () => {
                 >
                 </input>
                     
-                { (showRecentlyViewedPalet && recentlyViewed.length > 0) && 
+                <div className={`transition-opacity z-50 duration-200 ease-out ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <ul 
-                        className="flex flex-col z-50 absolute top-full mt-2 left-0 w-full text-gray-950 shadow-lg rounded-lg p-2 bg-purple-100/40 backdrop-blur-xs border-1 border-gray-300 outline-none"
+                        className={`flex flex-col p-3 mt-2 absolute top-full w-full left-0 shadow-lg rounded-lg border border-gray-300 outline-hidden bg-white overflow-hidden transition-opacity transition-transform duration-200 ease-out ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100 scale-100 transition-y-0' : 'opacity-0 scale-90 transitino-y-1'}`}
                         onMouseDown={(e) => e.preventDefault()}
                     >
                         {recentlyViewed.map((item) => (
                             <li
                                 key={item.id}
-                                className="flex justify-between items-center py-1.5 px-4 border rounded-md m-0.75 bg-white hover:scale-101 hover:shadow-sm transistion-all duration-100"
+                                className={`flex justify-between items-center py-2 px-3 rounded-sm hover:bg-gray-50 active:bg-gray-200 transition-all duration-300 hover:ring hover:ring-gray-300`}
                             >
                                 <Link className="w-full" to={`/books/details/${item.book.id}`}> 
                                     {item.book.title}
                                 </Link>
                                 <AiOutlineClose 
-                                    className="m-1 text-gray-500 text-2xl p-1 cursor-pointer hover:bg-red-100 rounded-full hover:text-red-500"
+                                    className="m-1 text-amber-600 text-sm hover:scale-105 hover:text-amber-700 text-2xl cursor-pointer rounded-sm transition-transform duration-200"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         heandleRemoveRecentlyViewed(item.book.id)
@@ -162,7 +162,7 @@ const NavBar = () => {
                             </li>
                         ))}
                     </ul> 
-                }
+                </div>
             </div>
 
             <div className="flex">
@@ -172,65 +172,51 @@ const NavBar = () => {
                         className="relative flex items-center gap-4 mr-6 _transition-all duration-200"
                         ref={profileMenuRef}    
                         >   
-                            <div className="relative p-2 rounded-md"
+                            <div className="group relative p-2 rounded-md"
                                 onClick={() => {setShowProfileMenu(false); setIsOpen(!isOpen)}}
                             >
-                                <IoCartOutline className="text-2xl text-gray-800 hover:text-black cursor-pointer"></IoCartOutline>
-                                {cartSize>0 && (<div className="absolute right-0 top-1 text-xs rounded-full bg-cyan-400 px-1 cursor-pointer">{cartSize}</div>)}
+                                <IoCartOutline className="text-2xl text-gray-700 group-hover:text-gray-950 cursor-pointer transition-color duration-200"></IoCartOutline>
+                                {cartSize>0 && (<div className="absolute right-0 top-1 text-xs rounded-full bg-orange-500 group-hover:bg-orange-600 _bg-sky-300 _group-hover:bg-sky-400 px-1 cursor-pointer transition-color duration-200">{cartSize}</div>)}
                             </div>
 
                             <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
                         
-                            <div className="p-2 rounded-md relative">
+                            <div className="p-4 rounded-md relative">
                                 <AiOutlineUser
-                                    className="text-2xl text-gray-800 hover:text-black cursor-pointer"
+                                    className="text-2xl text-gray-700 hover:text-gray-950 cursor-pointer"
                                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                                 >
                                 </AiOutlineUser>
 
-                                {showProfileMenu && 
-                                    <div 
-                                        className="flex flex-col items-start _gap-2 absolute z-50 right-0 rounded-lg shadow-lg _transition-all _duration-200 bg-white"
-                                    >   
-                                        <div className="p-3 mb-1.5 bg-linear-to-r rounded-t-lg from-blue-600 to-blue-500 space-y-2">
-                                            <p className="text-xs font-medium text-blue-200 tracking-wider uppercase">Signed in as</p>
-                                            <div className="flex flex-row justify-between items-center gap-2">
-                                                <div className="bg-white rounded-full p-2 text-blue-800"><FaRegUser/></div>
-                                                <p className="text-sm font-medium text-white truncate">{email}</p>
+                                <div className={`absolute z-50 right-0 mt-2 rounded-lg overflow-hidden shadow-lg transition-opacity duration-200 ease-out ${showProfileMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                                    
+                                    <div className={`flex flex-col items-center rounded-lg overflow-hidden border border-gray-300 bg-white transition-opacity transition-transform duration-200 ease-out ${showProfileMenu ? 'opacity-100 scale-100 transform-y-0' : 'opacity-0 scale-95 transform-y-1 border-transparent'}`}>   
+                                        <div className="py-3 px-4 font-medium _bg-gray-50 text-gray-950 truncate">{email}</div>
+                                        <div className="border-t-[1.25px] border-gray-300 _mb-2 w-full -mx-2"></div>
+                                        
+                                        <div className="flex flex-col w-full p-3">
+                                            <div className="w-full hover:bg-gray-50 py-1.75 px-3 rounded-sm cursor-pointer transition-all duration-200 hover:ring hover:ring-gray-300">
+                                                <button 
+                                                    onClick={() => {setShowProfileMenu(false); navigate(('/dashboard'))}}
+                                                >Dashboard</button>
+                                            </div>
+                                            <div className="w-full hover:bg-gray-50 py-1.75 px-3 rounded-sm cursor-pointer transition-all duration-200 hover:ring hover:ring-gray-300">
+                                                <button 
+                                                    onClick={() => {setShowProfileMenu(false); handleSignout()}}
+                                                >Signout</button>
                                             </div>
                                         </div>
 
-                                        <button 
-                                            className="relative flex flex-row gap-2 items-center justify-between group hover:bg-blue-50 px-3 py-3 w-full cursor-pointer _transition-all _duration-200"
-                                            onClick={() => {setShowProfileMenu(false); navigate(('/dashboard'))}}
-                                        > 
-                                            <div className="absolute top-1 left-0 bottom-1 w-1 rounded-r bg-white group-hover:bg-blue-500 scale-y-80 group-hover:scale-y-100 transition-all duration-200"></div>
-                                            <div className="flex flex-row items-center gap-2">
-                                                <div className="text-sm p-2 text-blue-600 bg-blue-100 group-hover:bg-blue-200 rounded-lg"><MdOutlineDashboard /></div> 
-                                                <p className="text-gray-800 text-sm font-medium">Dashboard</p>
-                                            </div>
-                                            <IoIosArrowForward className="text-xs group-hover:text-blue-500"/>
-                                        </button>
-                                        
-                                        <button 
-                                            className="relative flex flex-row gap-2 items-center justify-between group hover:bg-red-50 px-3 py-3 cursor-pointer _transition-all _duration-200 w-full rounded-b-lg"
-                                            onClick={() => {setShowProfileMenu(false); handleSignout()}}
-                                        >   
-                                            <div className="absolute top-1 left-0 bottom-1 w-1 rounded-r bg-white group-hover:bg-red-500 scale-y-80 group-hover:scale-y-100 transition-all duration-200"></div>
- 
-                                            <div className="flex flex-row items-center gap-2">
-                                                <div className="text-sm p-2 text-red-600 bg-red-100 group-hover:bg-red-200 rounded-lg"><LuLogOut/></div> 
-                                                <p className="text-gray-800 text-sm font-medium">Signout</p>
-                                            </div>
-                                            <IoIosArrowForward className="text-xs group-hover:text-red-500"/>
-                                        </button>
                                     </div>
-                                }
+                                </div>
                             </div>
                         </div>
                     )
                     :
-                    (<Link to='/login'>
+                    (<Link 
+                        className="text-gray-700 hover:text-gray-950 px-2"
+                        to='/login'
+                    >
                         Login
                     </Link>)
                 }

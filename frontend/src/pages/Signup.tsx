@@ -65,7 +65,7 @@ const Signup = () => {
     return (
         <div className="p-4 flex flex-col items-center gap-2">
             
-            <div className="p-4 flex flex-col items-center gap-4 max-w-sm min-w-[320px] divide-y">
+            <div className="flex flex-col items-center gap-4 max-w-sm min-w-[320px] divide-y">
                 <div className="flex flex-col gap-2 w-full py-6">
                     <div className="flex flex-col items-center">
                         <div className="text-3xl font-serif my-2">BookStore</div>

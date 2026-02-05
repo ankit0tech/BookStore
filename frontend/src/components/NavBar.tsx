@@ -125,7 +125,7 @@ const NavBar = () => {
             <div className="relative flex items-center px-2 font-normal _w-full">                    
                 <BiSearch className="absolute mx-3 mt-0.5 text-gray-400 " ></BiSearch>
                 <input 
-                    className="w-full transition-color transition-[width] duration-300 ease-out px-2 py-1.75 w-3xs sm:w-2xs md:w-sm lg:w-md rounded-lg bg-gray-50 focus:outline-hidden border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:bg-white pl-9" 
+                    className="w-full transition-color transition-[width] duration-300 ease-out px-2 py-1.75 w-3xs sm:w-2xs md:w-sm lg:w-md rounded-md bg-gray-50 focus:outline-hidden border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:bg-white pl-9" 
                     type="search" 
                     name="q" 
                     ref={searchBarRef}
@@ -141,7 +141,7 @@ const NavBar = () => {
                     
                 <div className={`transition-opacity z-50 duration-200 ease-out ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <ul 
-                        className={`flex flex-col p-3 mt-2 absolute top-full w-full left-0 shadow-lg rounded-lg border border-gray-300 outline-hidden bg-white overflow-hidden transition-opacity transition-transform duration-200 ease-out ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100 scale-100 transition-y-0' : 'opacity-0 scale-90 transitino-y-1'}`}
+                        className={`flex flex-col p-3 mt-2 absolute top-full w-full left-0 shadow-lg rounded-md border border-gray-300 outline-hidden bg-white overflow-hidden transition-opacity transition-transform duration-200 ease-out ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100 scale-100 transition-y-0' : 'opacity-0 scale-90 transitino-y-1'}`}
                         onMouseDown={(e) => e.preventDefault()}
                     >
                         {recentlyViewed.map((item) => (
@@ -153,7 +153,7 @@ const NavBar = () => {
                                     {item.book.title}
                                 </Link>
                                 <AiOutlineClose 
-                                    className="m-1 text-amber-600 text-sm hover:scale-105 hover:text-amber-700 text-2xl cursor-pointer rounded-sm transition-transform duration-200"
+                                    className="m-1 text-amber-600 text-sm hover:scale-105 hover:text-amber-700 text-2xl cursor-pointer transition-transform duration-200"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         heandleRemoveRecentlyViewed(item.book.id)
@@ -188,9 +188,9 @@ const NavBar = () => {
                                 >
                                 </AiOutlineUser>
 
-                                <div className={`absolute z-50 right-0 mt-2 rounded-lg overflow-hidden shadow-lg transition-opacity duration-200 ease-out ${showProfileMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                                <div className={`absolute z-50 right-0 mt-2 rounded-md overflow-hidden shadow-lg transition-opacity duration-200 ease-out ${showProfileMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                     
-                                    <div className={`flex flex-col items-center rounded-lg overflow-hidden border border-gray-300 bg-white transition-opacity transition-transform duration-200 ease-out ${showProfileMenu ? 'opacity-100 scale-100 transform-y-0' : 'opacity-0 scale-95 transform-y-1 border-transparent'}`}>   
+                                    <div className={`flex flex-col items-center rounded-md overflow-hidden border border-gray-300 bg-white transition-opacity transition-transform duration-200 ease-out ${showProfileMenu ? 'opacity-100 scale-100 transform-y-0' : 'opacity-0 scale-95 transform-y-1 border-transparent'}`}>   
                                         <div className="py-3 px-4 font-medium _bg-gray-50 text-gray-950 truncate">{email}</div>
                                         <div className="border-t-[1.25px] border-gray-300 _mb-2 w-full -mx-2"></div>
                                         

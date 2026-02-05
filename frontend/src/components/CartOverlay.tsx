@@ -75,9 +75,9 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                                 {cartItems.data.map((item) => (
                                     <li key={item.id}>
                                         <div className="flex justify-between items-center gap-x-4 font-medium text-gray-700 bg-gray-50 p-3 rounded-lg">
-                                            <div className="flex flex-col gap-2">
+                                            <div className="flex flex-col">
                                                 { item.book.title } 
-                                                { item.special_offer && <div className="text-red-500 text-sm"> {item.special_offer.discount_percentage}% OFF</div> }
+                                                { item.special_offer && <div className="text-amber-600 text-xs"> {item.special_offer.discount_percentage}% OFF</div> }
                                             </div>
                                             <div className="flex flex-row items-center bg-white gap-2 border border-gray-200 rounded-full px-3 py-1 hover:shadow-xs _hover:shadow-sm">
                                                 {item.quantity == 1 ?

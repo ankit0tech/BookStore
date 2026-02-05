@@ -118,7 +118,7 @@ const ShowBook = () => {
                             </div>
 
                             <div className='flex flex-col'>
-                                <h2 className='text-3xl font-semibold'>
+                                <h2 className='text-2xl text-gray-950 font-semibold'>
                                     {book.title}
                                 </h2>
                                 <p className='pb-2 text-gray-700 text-sm'>
@@ -144,7 +144,7 @@ const ShowBook = () => {
                                     </span>
                                 </div>
                                 
-                                <p className='font-semibold py-2 text-3xl'>
+                                <p className='font-semibold text-gray-800 text-xl'>
                                     {formatPrice(book.price, book.currency)}
                                 </p>
                             </div>

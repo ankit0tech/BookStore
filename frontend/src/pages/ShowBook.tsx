@@ -30,7 +30,6 @@ const ShowBook = () => {
     }
 
     const handleAddToWishList = (id: number) => {
-
         api.post(`/wishlist/add/${id}`)
         .then((response) => {
             enqueueSnackbar(response.data.message, { variant: 'success' });
@@ -73,21 +72,17 @@ const ShowBook = () => {
 
     useEffect(() => {
         setLoading(true);
-
         fetchBook();
 
         // If user is logged in then add book to recently viewed
         if (userinfo.isAuthenticated) {
-
             api.post(`/recently-viewed/add/${id}`)
             .then(() => {
             })
             .catch((error) =>{
                 console.log('Error fetching recently viewed items');
             });
-
         }
-
     }, [id]);
 
     return (
@@ -95,14 +90,14 @@ const ShowBook = () => {
             {loading || !book ? (
                 <Spinner />
             ) : (
-                <div className="flex flex-col">
-                    <div className='flex flex min-w-[200px] p-4 shrink-0 gap-4 justify-between max-w-6xl'>
-                        <div className='flex flex-row gap-6'>
-                            <div className='relative h-72 w-56 bg-gray-100 flex items-center justify-center shrink-0 rounded-lg'>
+                <div className="flex flex-col min-w-[280px] max-w-6xl">
+                    <div className='flex flex-col md:flex-row p-4 shrink-0 gap-4 justify-between'>
+                        <div className='flex flex-col sm:flex-row gap-6'>
+                            <div className='relative _h-96 _w-72 sm:h-72 sm:w-56 bg-gray-100 flex items-center justify-center shrink-0 rounded-lg transition-all duration-200'>
                                 <img
                                     src={book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                     alt={book.title}
-                                    className='object-contain max-w-full max-h-full'
+                                    className='object-cover max-w-full max-h-full p-2'
                                     onError={(e) => {
                                         e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
                                     }}
@@ -150,19 +145,18 @@ const ShowBook = () => {
                             </div>
                         </div>
 
-                        <div className="min-w-[200px]">
+                        <div className="w-[200px]">
                             { book.special_offers?.length !=0 && (
                             <div className=''>
                                 { showAdminFeatures ? 
                                     (<>
                                         <div className='font-medium py-2'>Offers:</div>
-                                        <ul className='text-gray-700 text-sm'>
+                                        <ul className='flex flex-col gap-1 text-gray-700 text-sm'>
                                             { book.special_offers?.map((offer) => (
                                                 <li key={offer.id} className='flex flex-row items-center justify-between gap-x-4'>
-                                                    <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
-                                                    
+                                                    <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage}% </label>
                                                     <button
-                                                        className='p-1 rounded-full text-red-500 hover:text-red-600 hover:scale-105 active:scale-98 transition-all duration-200'
+                                                        className='rounded-full text-red-500 hover:text-red-600 hover:scale-105 active:scale-98 transition-all duration-200'
                                                         onClick={() => handleRemoveOffer(offer.id)}
                                                     >
                                                         <MdOutlineDelete className='text-xl _hover:scale-105 ease-in-out transition-all duration-200' /> 
@@ -170,32 +164,36 @@ const ShowBook = () => {
                                                 </li>
                                             ))}
                                         </ul>
-                                    </>) 
-                                : 
+                                    </>)
+                                    :
                                     (<>
                                         <div className='font-medium py-2'>Select one offer: </div> 
-                                        <ul className='text-gray-700 text-sm space-y-0.5'>
+                                        <ul className='flex flex-col gap-1 items-start text-gray-700 text-sm'>
                                             { book.special_offers?.map((offer) => (
                                                 <li key={offer.id} className='flex flex-row items-center justify-between gap-x-4'> 
-                                                    <div className='flex flex-row justify-center gap-2'>
+                                                    <div className='flex flex-row justify-center items-center gap-2'>
                                                         <input 
+                                                            className="appearance-none bg-white color-current w-[14px] h-[14px] border-[1.5px] border-gray-800 rounded-full grid place-items-center 
+                                                                        before:content-[''] before:w-[8px] before:h-[8px] before:rounded-full before:scale-0 before:bg-amber-600 before:inset-shadow-[8px_8px_0px_0px] before:inset-shadow-amber-600 
+                                                                        checked:before:scale-100 before:transition-transform before:duration-200"
                                                             type='radio' 
                                                             id={offer.id.toString()} 
                                                             value={offer.id}
                                                             checked={selectedOffer?.toString() === offer.id.toString()}
-                                                            onChange={(e) => setSelectedOffer(Number(e.target.value))} 
+                                                            onChange={(e) => setSelectedOffer(Number(e.target.value))}
                                                         ></input>
-                                                        <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage} % </label>
+                                                        <label htmlFor={offer.id.toString()}>{offer.offer_type} - {offer.discount_percentage}% </label>
                                                     </div>
-
-                                                    
                                                 </li>
                                             ))}
 
-                                            {(book.special_offers && selectedOffer) && 
-                                                <button className='mt-1 text-gray-400 hover:text-gray-500' onClick={() => setSelectedOffer(null)}>Clear offer</button> 
-                                            }
                                         </ul>
+                                        {(book.special_offers && selectedOffer) && 
+                                            <button 
+                                                className='text-sm text-gray-400 hover:text-gray-500' 
+                                                onClick={() => setSelectedOffer(null)}
+                                            > Clear offer </button> 
+                                        }
                                     </>)
                                 }
                             </div>)
@@ -204,7 +202,8 @@ const ShowBook = () => {
                             <div className='flex flex-col my-4 gap-2'>
                                 { showAdminFeatures ?
                                     <button 
-                                        className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
+                                        // className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
+                                        className="w-full py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                         onClick={() => navigate(`/admin-dashboard/books/add-offer/${book.id}`, {state: {book: book}})}
                                     >
                                         Add new offer
@@ -212,11 +211,13 @@ const ShowBook = () => {
                                     :
                                     <>
                                         {book.is_available && <button
-                                            className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
+                                            // className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
+                                            className="w-full py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                             onClick={() => handleCartUpdate(Number(book.id), 1, selectedOffer)}
                                         >Add to cart</button>}
                                         <button
-                                            className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
+                                            // className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
+                                            className="w-full py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                             onClick={() => handleAddToWishList(Number(book.id))}
                                         >Add to wishlist</button>
                                     </>
@@ -225,7 +226,7 @@ const ShowBook = () => {
                         </div>
                     </div>
                     
-                    <div className='m-4 p-4'>
+                    <div className='m-2 p-2'>
                         <h2 className='pb-4 text-xl font-semibold text-gray-900'>Book Details:</h2>
                         <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 min-w-64'>
                             <div className='max-w-100'>
@@ -295,13 +296,11 @@ const ShowBook = () => {
                                 {book.cancellation_policy && <p className='flex justify-between my-1 text-sm'>
                                     <span className='text-gray-600'>Return Policy:</span><span className='font-semibold'>{book.return_policy}</span>
                                 </p>}
-                                
-    
                             </div>
                         </div>
                     </div>
 
-                    <div className='m-4 p-4 flex'>
+                    <div className='m-2 p-2'>
                         <Reviews id={Number(book.id)} />
                     </div>
                 </div>

@@ -116,7 +116,7 @@ const NavBar = () => {
 
 
     return (
-        <nav className="flex justify-between px-4 h-16 items-center border-[1.5px] border-gray-300">
+        <nav className="flex justify-between px-4 h-16 items-center border-b-[1.5px] border-b-gray-300">
             <button className="flex items-center gap-2 text-orange-600 hover:text-orange-700 text-lg font-semibold ml-6" onClick={() =>navigate('/')}> 
                 <AiOutlineHome className="font-bold text-2xl"></AiOutlineHome> 
                 <p>BookStore</p>

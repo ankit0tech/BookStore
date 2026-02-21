@@ -11,12 +11,15 @@ import { UserBook, RootState } from '../types/index';
 import { enqueueSnackbar } from 'notistack';
 import SideBar from '../components/home/SideBar';
 import api from '../utils/api';
+import { AiOutlineClose } from 'react-icons/ai';
+import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 
 
 const Home = () => {
 
     const [books, setBooks] = useState<UserBook[]>([]);
     const [nextCursor, setNextCursor] = useState<number|null>(null);
+    const [showSidebar, setShowSidebar] = useState<boolean>(false);
 
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
@@ -121,25 +124,40 @@ const Home = () => {
 
 
     return (
-        <div className='h-full'>
-            <div className='flex h-full'>
-                <div className='overflow-y-auto px-3 border-r-[1.5px] border-gray-300 w-fit'>
-                    <SideBar
-                        selectWithSpecialOffer={selectWithSpecialOffer} 
-                        setSelectWithSpecialOffer={setSelectWithSpecialOffer}
-                        sortByAverageRating={sortByAverageRating}
-                        setSortByAverageRating={setSortByAverageRating}
-                        sortBy={sortBy} setSortBy={setSortBy}
-                        sortOrder={sortOrder} setSortOrder={setSortOrder}
-                        minPrice={minPrice} setMinPrice={setMinPrice}
-                        maxPrice={maxPrice} setMaxPrice={setMaxPrice}
-                        categoryId={categoryId} setCategoryId={setCategoryId} 
-                    />
-                </div>
-                <div className='flex-1 overflow-y-auto'>
-                    {showType=='table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)}
-                    { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
-                </div>
+        <div className='flex flex-row h-full min-h-0'>
+            {!showSidebar && 
+                <button
+                    className='self-start h-full flex p-2 text-gray-500 hover:text-gray-800'
+                    onClick={() => setShowSidebar(true)}
+                >
+                    <GoSidebarCollapse className='text-xl' />
+                </button>
+            }
+            
+            <div className={`flex flex-col overflow-y-auto overscroll-contain border-r-[1.5px] border-gray-300 transition-all duration-200 h-full ${showSidebar ? 'w-fit' : 'w-0'}`}>
+                {showSidebar && 
+                    <button 
+                        className='self-end p-2 text-gray-500 hover:text-gray-800'
+                        onClick={() => setShowSidebar(false)}
+                    >
+                        <GoSidebarExpand className='text-xl' />
+                    </button>
+                }
+                <SideBar
+                    selectWithSpecialOffer={selectWithSpecialOffer} 
+                    setSelectWithSpecialOffer={setSelectWithSpecialOffer}
+                    sortByAverageRating={sortByAverageRating}
+                    setSortByAverageRating={setSortByAverageRating}
+                    sortBy={sortBy} setSortBy={setSortBy}
+                    sortOrder={sortOrder} setSortOrder={setSortOrder}
+                    minPrice={minPrice} setMinPrice={setMinPrice}
+                    maxPrice={maxPrice} setMaxPrice={setMaxPrice}
+                    categoryId={categoryId} setCategoryId={setCategoryId} 
+                />
+            </div>
+            <div className='flex-1 overflow-y-auto overscroll-contain'>
+                <BooksCard books={books} />
+                { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
             </div>
         </div>
     );

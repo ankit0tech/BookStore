@@ -145,7 +145,7 @@ const ShowBook = () => {
                             </div>
                         </div>
 
-                        <div className="w-[200px]">
+                        <div className="w-[200px] min-w-[200px]">
                             { book.special_offers?.length !=0 && (
                             <div className=''>
                                 { showAdminFeatures ? 

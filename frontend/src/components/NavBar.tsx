@@ -116,10 +116,10 @@ const NavBar = () => {
 
 
     return (
-        <nav className="flex justify-between px-4 h-16 items-center border-b-[1.5px] border-b-gray-300">
-            <button className="flex items-center gap-2 text-orange-600 hover:text-orange-700 text-lg font-semibold ml-6" onClick={() =>navigate('/')}> 
+        <nav className="flex justify-between px-4 h-16 items-center border-b-[1.5px] border-b-gray-300 min-w-[320px]">
+            <button className="flex items-center gap-2 text-orange-600 hover:text-orange-700 text-lg font-semibold md:ml-6" onClick={() =>navigate('/')}> 
                 <AiOutlineHome className="font-bold text-2xl"></AiOutlineHome> 
-                <p>BookStore</p>
+                <p className="hidden sm:block">BookStore</p>
             </button>
 
             <div className="relative flex items-center px-2 font-normal _w-full">                    
@@ -165,23 +165,25 @@ const NavBar = () => {
                 </div>
             </div>
 
-            <div className="flex">
+            <div className="">
                 { email ? 
                     (
                         <div 
-                        className="relative flex items-center gap-4 mr-6 _transition-all duration-200"
-                        ref={profileMenuRef}    
+                            className="relative flex items-center gap-4 md:mr-6 _transition-all duration-200"
+                            ref={profileMenuRef}    
                         >   
-                            <div className="group relative p-2 rounded-md"
+                            <div 
+                                className="group relative p-2 rounded-md"
                                 onClick={() => {setShowProfileMenu(false); setIsOpen(!isOpen)}}
                             >
                                 <IoCartOutline className="text-2xl text-gray-700 group-hover:text-gray-950 cursor-pointer transition-color duration-200"></IoCartOutline>
-                                {cartSize>0 && (<div className="absolute right-0 top-1 text-xs rounded-full bg-orange-500 group-hover:bg-orange-600 _bg-sky-300 _group-hover:bg-sky-400 px-1 cursor-pointer transition-color duration-200">{cartSize}</div>)}
+                                {cartSize > 0 && (
+                                    <div className="absolute right-0 top-1 text-xs rounded-full bg-orange-500 group-hover:bg-orange-600 _bg-sky-300 _group-hover:bg-sky-400 px-1 cursor-pointer transition-color duration-200">{cartSize}</div>
+                                )}
                             </div>
-
                             <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
                         
-                            <div className="p-4 rounded-md relative">
+                            <div className="rounded-md relative">
                                 <AiOutlineUser
                                     className="text-2xl text-gray-700 hover:text-gray-950 cursor-pointer"
                                     onClick={() => setShowProfileMenu(!showProfileMenu)}

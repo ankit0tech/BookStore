@@ -57,7 +57,7 @@ const App = () => {
   useSyncCart();
 
   return (
-    <div className='h-screen flex flex-col'>
+    <div className='h-screen flex flex-col min-w-[320px]'>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <div className='shrink-0'>      
           <NavBar />

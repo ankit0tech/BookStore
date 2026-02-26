@@ -32,17 +32,17 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
     return (
         <div
             key={book.id}
-            className="relative isolate flex flex-col px-2 py-4 rounded-sm border _hover:border-sky-200 hover:shadow-[0_0_4px_rgba(0,0,0,0.1)] transition-shadow duration-200"
+            className="relative isolate flex flex-col px-2 py-4 h-full rounded-sm border _hover:border-sky-200 hover:shadow-[0_0_4px_rgba(0,0,0,0.1)] transition-shadow duration-200"
         >   
             <div 
-                className="absolute -right-0 right-4 z-10 p-1"
+                className="absolute right-4 top-4 z-10 "
                 onClick={() => handleAddToWishList(Number(book.id))}
             >
-                <VscHeart className="text-2xl text-gray-700 hover:text-amber-600 cursor-pointer transition-color duration-200"></VscHeart>
+                <VscHeart className="text-xl sm:text-2xl text-gray-700 hover:text-amber-600 cursor-pointer transition-color duration-200"></VscHeart>
             </div>
 
-            <div className="w-56 h-56 _border _rounded-lg flex justify-center w-full">
-                <div className="w-36 h-56 bg-gray-100 shadow-xs overflow-hidden flex justify-center items-center">
+            <div className="w-32 h-32 sm:w-56 sm:h-56 _border _rounded-lg flex justify-center w-full">
+                <div className="w-20 h-32 sm:w-36 sm:h-56 bg-gray-100 shadow-xs overflow-hidden flex justify-center items-center">
                     <img 
                         src={book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                         alt="Book Cover"
@@ -54,9 +54,9 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
                 </div>
             </div>
              
-            <div className="px-1 flex flex-col h-[calc(380px-224px-24px)]">
+            <div className="px-1 flex flex-col h-[calc(296px-128px-8px)] sm:h-[calc(392px-224px-24px)]">
                 
-                <h2 className="font-medium leading-tight line-clamp-1 mt-2">
+                <h2 className="font-medium leading-tight line-clamp-2 sm:line-clamp-1 mt-2">
                     <Link to={`/books/details/${book.id}`}>
                         <span className="absolute inset-0"></span>
                         {book.title}
@@ -66,7 +66,7 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
                 <div className="flex flex-col gap-2">
                     <p className="text-xs font-light text-gray-600">by {book.author}</p>
                     
-                    {book.average_rating != 0 &&
+                    { book.average_rating != 0 &&
                         <div className="flex gap-1 items-center w-fit px-2 py-0.5 text-sm font-semibold bg-gray-50 border border-gray-200 rounded-full">
                             {book.average_rating}
                             <FaStar className="inline-block text-orange-500"></FaStar>

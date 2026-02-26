@@ -11,15 +11,14 @@ import { UserBook, RootState } from '../types/index';
 import { enqueueSnackbar } from 'notistack';
 import SideBar from '../components/home/SideBar';
 import api from '../utils/api';
-import { AiOutlineClose } from 'react-icons/ai';
-import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
+import { MdFilterAlt } from 'react-icons/md';
 
 
 const Home = () => {
 
     const [books, setBooks] = useState<UserBook[]>([]);
     const [nextCursor, setNextCursor] = useState<number|null>(null);
-    const [showSidebar, setShowSidebar] = useState<boolean>(false);
+    const [showSidebar, setShowSidebar] = useState<boolean>(localStorage.getItem('showSidebar') == 'true');
 
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
@@ -94,7 +93,12 @@ const Home = () => {
 
     useEffect(() => {
         localStorage.setItem('homeState', showType);
-    },[showType]);
+    }, [showType]);
+
+    const updateShowSidebar = (state: boolean) => {
+        setShowSidebar(state);
+        localStorage.setItem('showSidebar', state.toString());
+    }
 
     useEffect(()=> {
         setNextCursor(null);
@@ -110,7 +114,10 @@ const Home = () => {
                     handleFetchBooks(books, nextCursor);
                 }
             },
-            { threshold: 1 }
+            { 
+                rootMargin: '50px',
+                threshold: 0.1 
+            }
         );
 
         if (observeRef.current) observer.observe(observeRef.current);
@@ -121,43 +128,57 @@ const Home = () => {
         }
     }, [nextCursor, books.length]);
 
+    useEffect(() => {
+        if(!showSidebar) return;
+
+        const listener = (event: KeyboardEvent) => {
+            if(event.key === 'Escape') {
+                updateShowSidebar(false); 
+            }
+        };
+
+        document.addEventListener("keydown", listener);
+
+        return () => {
+            document.removeEventListener("keydown", listener);
+        }
+    }, [updateShowSidebar]);
 
 
     return (
-        <div className='flex flex-row h-full min-h-0'>
-            {!showSidebar && 
-                <button
-                    className='self-start h-full flex p-2 text-gray-500 hover:text-gray-800'
-                    onClick={() => setShowSidebar(true)}
-                >
-                    <GoSidebarCollapse className='text-xl' />
-                </button>
-            }
+        <div className='relative isolate flex flex-row h-full min-h-0'> 
+            <div 
+                className={`absolute z-50 inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-200 sm:opacity-0 sm:pointer-events-none ${!showSidebar && 'opacity-0 pointer-events-none' }`} 
+                onClick={() => updateShowSidebar(false)}
+            />
             
-            <div className={`flex flex-col overflow-y-auto overscroll-contain border-r-[1.5px] border-gray-300 transition-all duration-200 h-full ${showSidebar ? 'w-fit' : 'w-0'}`}>
-                {showSidebar && 
-                    <button 
-                        className='self-end p-2 text-gray-500 hover:text-gray-800'
-                        onClick={() => setShowSidebar(false)}
-                    >
-                        <GoSidebarExpand className='text-xl' />
-                    </button>
-                }
-                <SideBar
-                    selectWithSpecialOffer={selectWithSpecialOffer} 
-                    setSelectWithSpecialOffer={setSelectWithSpecialOffer}
-                    sortByAverageRating={sortByAverageRating}
-                    setSortByAverageRating={setSortByAverageRating}
-                    sortBy={sortBy} setSortBy={setSortBy}
-                    sortOrder={sortOrder} setSortOrder={setSortOrder}
-                    minPrice={minPrice} setMinPrice={setMinPrice}
-                    maxPrice={maxPrice} setMaxPrice={setMaxPrice}
-                    categoryId={categoryId} setCategoryId={setCategoryId} 
-                />
+            <div className={`absolute sm:relative z-50 bg-white shadow-lg flex flex-row ${showSidebar && 'border-r-[1.5px]'} border-gray-300 h-full z-20`}>
+                <div className={`overflow-y-auto overscroll-contain [transition:width_300ms,opacity_150ms] ease-in-out ${showSidebar ? 'w-[240px] opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}>
+                    <SideBar
+                        selectWithSpecialOffer={selectWithSpecialOffer} 
+                        setSelectWithSpecialOffer={setSelectWithSpecialOffer}
+                        sortByAverageRating={sortByAverageRating}
+                        setSortByAverageRating={setSortByAverageRating}
+                        sortBy={sortBy} setSortBy={setSortBy}
+                        sortOrder={sortOrder} setSortOrder={setSortOrder}
+                        minPrice={minPrice} setMinPrice={setMinPrice}
+                        maxPrice={maxPrice} setMaxPrice={setMaxPrice}
+                        categoryId={categoryId} setCategoryId={setCategoryId} 
+                        />
+                </div>
+
+                <button
+                    className={`absolute ${showSidebar ? '-right-[36.5px]' : '-right-[35px]'} z-50 size-fit p-2 my-2 bg-white rounded-r-lg _hover:bg-gray-50 border-y-1 border-r-1 shadow-sm hover:shadow-md`}
+                    onClick={() => updateShowSidebar(!showSidebar)}
+                >
+                    <MdFilterAlt className='text-lg text-gray-600 hover:text-gray-800'/>
+                </button>
             </div>
+
+
             <div className='flex-1 overflow-y-auto overscroll-contain'>
                 <BooksCard books={books} />
-                { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
+                { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-20 w-full'></div>}
             </div>
         </div>
     );

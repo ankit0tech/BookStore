@@ -33,9 +33,9 @@ const UserMailVerification = () => {
 
 
     return (
-        <div className="p-6">
+        <div className="flex flex-col items-center w-full p-6">
             <form
-                className="flex flex-col gap-6 items-center"
+                className="flex flex-col items-center max-w-sm min-w-[280px] _sm:min-w-[320px] gap-6 items-center"
                 onSubmit={(e) => handleFormSubmit(e)}
             >
                 <div className="flex flex-col gap-2">
@@ -44,7 +44,7 @@ const UserMailVerification = () => {
                 </div>
 
                 <button
-                    className={`flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 ${loading ? 'cursor-not-allowed' : 'cursor-pointer'} bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out`}
+                    className="w-full py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                     type="submit"
                     disabled={loading}
                 >

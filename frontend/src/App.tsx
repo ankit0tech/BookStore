@@ -69,8 +69,8 @@ const App = () => {
             <Route path='/login' element={<Login /> } />
             <Route path='/signup' element={<Signup />} />
             
-            <Route path='/admin/signup' element={<AdminSignup />} />
-            <Route path='/admin/login' element={<AdminLogin />} />
+            {/* <Route path='/admin/signup' element={<AdminSignup />} /> */}
+            {/* <Route path='/admin/login' element={<AdminLogin />} /> */}
             
             <Route path='/books/details/:id' element={<ShowBook />} />
             <Route path='/reset-password/verify' element={<ResetPassword />} />

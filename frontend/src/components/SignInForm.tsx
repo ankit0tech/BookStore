@@ -47,9 +47,9 @@ const SignInForm = ({ handleSignin }: { handleSignin: (e: React.FormEvent, email
             className="flex flex-col items-center gap-4 w-full"
             onSubmit={handleFormSubmit}
         >
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col gap-1 w-full">
                 <label 
-                    className="text-gray-800"
+                    className="block font-medium text-gray-700"
                     htmlFor="input-email"
                 >
                     Email
@@ -66,9 +66,9 @@ const SignInForm = ({ handleSignin }: { handleSignin: (e: React.FormEvent, email
                 {formErrors.email && <span className="text-xs text-red-600">{formErrors.email}</span>}
             </div>
 
-            <div className="flex flex-col mx-auto w-full">
+            <div className="flex flex-col gap-1 w-full">
                 <label 
-                    className="text-gray-800"
+                    className="block font-medium text-gray-700"
                     htmlFor="input-password"
                 >
                     Password
@@ -87,7 +87,7 @@ const SignInForm = ({ handleSignin }: { handleSignin: (e: React.FormEvent, email
             <button 
                 className="w-full py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                 type='submit'
-                > 
+            > 
                     Sign in 
             </button>
         </form>

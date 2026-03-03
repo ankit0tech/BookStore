@@ -18,7 +18,7 @@ const Home = () => {
 
     const [books, setBooks] = useState<UserBook[]>([]);
     const [nextCursor, setNextCursor] = useState<number|null>(null);
-    const [showSidebar, setShowSidebar] = useState<boolean>(localStorage.getItem('showSidebar') == 'true');
+    const [showSidebar, setShowSidebar] = useState<boolean>(localStorage.getItem('showSidebar') === 'true');
 
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState(() => {
@@ -95,10 +95,9 @@ const Home = () => {
         localStorage.setItem('homeState', showType);
     }, [showType]);
 
-    const updateShowSidebar = (state: boolean) => {
-        setShowSidebar(state);
-        localStorage.setItem('showSidebar', state.toString());
-    }
+    useEffect(() => {
+        localStorage.setItem('showSidebar', showSidebar.toString());
+    }, [showSidebar]);
 
     useEffect(()=> {
         setNextCursor(null);
@@ -133,7 +132,7 @@ const Home = () => {
 
         const listener = (event: KeyboardEvent) => {
             if(event.key === 'Escape') {
-                updateShowSidebar(false); 
+                setShowSidebar(false); 
             }
         };
 
@@ -142,18 +141,18 @@ const Home = () => {
         return () => {
             document.removeEventListener("keydown", listener);
         }
-    }, [updateShowSidebar]);
+    }, [showSidebar]);
 
 
     return (
         <div className='relative isolate flex flex-row h-full min-h-0'> 
-            <div 
+            <button 
                 className={`absolute z-50 inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-200 sm:opacity-0 sm:pointer-events-none ${!showSidebar && 'opacity-0 pointer-events-none' }`} 
-                onClick={() => updateShowSidebar(false)}
+                onClick={() => setShowSidebar(false)}
             />
             
-            <div className={`absolute sm:relative z-50 bg-white shadow-lg flex flex-row ${showSidebar && 'border-r-[1.5px]'} border-gray-300 h-full z-20`}>
-                <div className={`overflow-y-auto overscroll-contain [transition:width_300ms,opacity_150ms] ease-in-out ${showSidebar ? 'w-[240px] opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}>
+            <div className={`absolute sm:relative z-50 bg-white shadow-lg flex flex-row ${showSidebar && 'border-r-[1.5px]'} h-full z-20`}>
+                <div className={`overflow-y-auto overscroll-y-contain [transition:width_300ms,opacity_150ms] ease-in-out ${showSidebar ? 'w-[240px] opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}>
                     <SideBar
                         selectWithSpecialOffer={selectWithSpecialOffer} 
                         setSelectWithSpecialOffer={setSelectWithSpecialOffer}
@@ -169,14 +168,14 @@ const Home = () => {
 
                 <button
                     className={`absolute ${showSidebar ? '-right-[36.5px]' : '-right-[35px]'} z-50 size-fit p-2 my-2 bg-white rounded-r-lg _hover:bg-gray-50 border-y-1 border-r-1 shadow-sm hover:shadow-md`}
-                    onClick={() => updateShowSidebar(!showSidebar)}
+                    onClick={() => setShowSidebar(!showSidebar)}
                 >
                     <MdFilterAlt className='text-lg text-gray-600 hover:text-gray-800'/>
                 </button>
             </div>
 
 
-            <div className='flex-1 overflow-y-auto overscroll-contain'>
+            <div className='flex-1 overflow-y-auto overscroll-y-contain'>
                 <BooksCard books={books} />
                 { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-20 w-full'></div>}
             </div>

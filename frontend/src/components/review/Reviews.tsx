@@ -16,8 +16,8 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
             <div className="my-1 flex items-center gap-1">
                 {[...Array(5)].map((_, index) => (
                     index < stars ?
-                    <FaStar key={index} className="text-yellow-400 text-md" /> :
-                    <FaRegStar key={index} className="text-gray-300 text-md" />
+                    <FaStar key={index} className="text-yellow-400" /> :
+                    <FaRegStar key={index} className="text-gray-300" />
                 ))}
             </div>
         );
@@ -71,7 +71,7 @@ const Reviews: React.FC<{id: number}> = ({id }) => {
                                     </div>
 
                                     {review.review_text.length > 0 && 
-                                        <div className="text-md text-gray-800"> {review.review_text} </div>
+                                        <div className="text-sm text-gray-800"> {review.review_text} </div>
                                     }
                                     
                                 </div>

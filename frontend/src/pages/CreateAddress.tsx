@@ -94,129 +94,139 @@ const CreateAddress = () => {
 
     return (
     <div className="p-6 max-w-2xl mx-auto">
-        {loading ? <Spinner /> : ''}
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6">Add New Address</h1>
-        
-        <form 
-            onSubmit={handleSaveAddress} 
-            className="space-y-6"
-        >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> 
-                
-                <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Name </label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
+        {loading ? <Spinner /> : (
+        <>
+            <h1 className="text-xl font-semibold text-gray-800 mb-6">Add New Address</h1>
+            
+            <form 
+                onSubmit={handleSaveAddress} 
+                className="flex flex-col gap-6"
+            >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                    
+                    <div className="flex flex-col gap-1 w-full">
+                        <label htmlFor="input-name" className="block text-sm font-medium text-gray-700">Name </label>
+                        <input
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            type="text"
+                            id="input-name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            >
+                        </input>
+                    </div>
+                    <div className="flex flex-col gap-1 w-full">
+                        <label htmlFor="input-house-number" className="block text-sm font-medium text-gray-700">House Number / Apartment </label>
+                        <input
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            type="text"
+                            id="input-house-number"
+                            value={houseNumber}
+                            onChange={(e) => setHouseNumber(e.target.value)}
+                            required
+                            >
+                        </input>
+                    </div>
+
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor="input-street" className="block text-sm font-medium text-gray-700">Street</label>
+                        <input
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            type="text"
+                            id="input-street"
+                            value={street}
+                            onChange={(e) => setStreet(e.target.value)}
+                            >
+                        </input>
+                    </div>
+
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor="input-city" className="block text-sm font-medium text-gray-700">City</label>
+                        <input
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            type="text"
+                            id="input-city"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
                         >
-                    </input>
-                </div>
-                <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">House Number / Apartment </label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
-                        type="text"
-                        value={houseNumber}
-                        onChange={(e) => setHouseNumber(e.target.value)}
-                        required
+                        </input>
+                    </div>
+
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor="input-state" className="block text-sm font-medium text-gray-700">State</label>
+                        <input
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            type="text"
+                            id="input-state"
+                            value={state}
+                            onChange={(e) => setState(e.target.value)}
+                            >
+                        </input>
+                    </div>
+
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor="input-zipcode" className="block text-sm font-medium text-gray-700">Zip code </label>
+                        <input
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            type="text"
+                            id="input-zipcode"
+                            value={zipCode}
+                            onChange={(e) => setZipcode(e.target.value)}
                         >
-                    </input>
+                        </input>
+                    </div>
+
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label id="input-country" className="block text-sm font-medium text-gray-700">Country </label>
+                        <input
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            type="text"
+                            id="input-country"
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                        >
+                        </input>
+                    </div>
                 </div>
 
-                <div className='space-y-2'>
-                    <label className="block text-sm font-medium text-gray-700">Street</label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
-                        type="text"
-                        value={street}
-                        onChange={(e) => setStreet(e.target.value)}
-                        >
-                    </input>
+                <div className="flex items-center gap-2">
+                    <input 
+                        type="checkbox"
+                        id="defaultAddress"
+                        checked={isDefault}
+                        onChange={() => setIsDefault(!isDefault)}
+                        className="appearance-none bg-white checked:bg-amber-600 current-color w-[16px] h-[16px] border-[1.5px] border-amber-900 rounded-sm grid place-items-center 
+                                    before:content-[''] before:w-[5px] before:h-[9px] before:scale-0 before:border-b-2 before:border-r-2 before:rotate-40 before:border-white before:inset-shadow-[8px_8px_0px_0px] before:inset-shadow-amber-600
+                                    checked:before:scale-100 before:translate-x-[0.5px] before:-translate-y-[0.5px]
+                                    hover:ring hover:ring-amber-300"
+                    />
+                    <label htmlFor="defaultAddress" className="text-sm text-gray-700">
+                        Make address default
+                    </label>
                 </div>
 
-                <div className='space-y-2'>
-                    <label className="block text-sm font-medium text-gray-700">City</label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
-                        type="text"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
+                <div className="flex justify-end gap-4"> 
+
+                    <button 
+                        className="whitespace-nowrap w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                        type="submit"
+                        disabled={loading}
+                        > 
+                            {loading ? <Spinner /> : 'Save Address'} 
+                    </button>
+                    <button
+                        className="whitespace-nowrap w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                        onClick={() => navigate(-1)}
+                        type="button"
                     >
-                    </input>
+                        Cancel
+                    </button>
                 </div>
-
-                <div className='space-y-2'>
-                    <label className="block text-sm font-medium text-gray-700">State</label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
-                        type="text"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                        >
-                    </input>
-                </div>
-
-                <div className='space-y-2'>
-                    <label className="block text-sm font-medium text-gray-700">Zip code </label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
-                        type="text"
-                        value={zipCode}
-                        onChange={(e) => setZipcode(e.target.value)}
-                    >
-                    </input>
-                </div>
-
-                <div className='space-y-2'>
-                    <label className="block text-sm font-medium text-gray-700">Country </label>
-                    <input
-                        className="w-full px-4 py-2 rounded-lg border border border-gray-300 focus:border-blue-400 outline-hidden"
-                        type="text"
-                        value={country}
-                        onChange={(e) => setCountry(e.target.value)}
-                    >
-                    </input>
-                </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-                <input 
-                    type="checkbox"
-                    id="defaultAddress"
-                    checked={isDefault}
-                    onChange={() => setIsDefault(!isDefault)}
-                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded-sm"
-                />
-                <label htmlFor="defaultAddress" className="text-sm text-gray-700">
-                    Make address default
-                </label>
-            </div>
-
-            <div className="flex justify-end space-x-4"> 
-                <button
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                    onClick={() => navigate(-1)}
-                    type="button"
-                >
-                    Cancel
-                </button>
-
-                <button 
-                    className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 focus:outline-hidden focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 disabled:opacity-50"
-                    type="submit"
-                    disabled={loading}
-                    > 
-                        {loading ? <Spinner /> : 'Save Address'} 
-                </button>
-            </div>
-
-        </form>
-
-    </div>
-    );
+            </form>
+        </>
+        )}
+    </div>);
 }
 
 export default CreateAddress;

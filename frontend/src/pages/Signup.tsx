@@ -65,7 +65,7 @@ const Signup = () => {
     return (
         <div className="p-4 flex flex-col items-center gap-2">
             
-            <div className="flex flex-col items-center gap-4 max-w-sm min-w-[320px] divide-y">
+            <div className="flex flex-col items-center gap-4 max-w-sm min-w-[280px] sm:min-w-[320px] divide-y">
                 <div className="flex flex-col gap-2 w-full py-6">
                     <div className="flex flex-col items-center">
                         <div className="text-3xl font-serif my-2">BookStore</div>
@@ -76,9 +76,9 @@ const Signup = () => {
                         className="flex flex-col gap-4 items-center w-full"
                         onSubmit={handleSignup}
                     >
-                        <div className="flex flex-col w-full">
+                        <div className="flex flex-col gap-1 w-full">
                             <label 
-                                className="text-gray-800"
+                                className="block font-medium text-gray-700"
                                 htmlFor="input-email"
                             >
                                 Email
@@ -93,11 +93,13 @@ const Signup = () => {
                             />
                             {formErrors.email && <span className="text-xs text-red-600">{formErrors.email}</span>}
                         </div>
-                        <div className="flex flex-col w-full">
+                        <div className="flex flex-col gap-1 w-full">
                             <label
-                                className="text-gray-800"
+                                className="block font-medium text-gray-700"
                                 htmlFor="password"                    
-                            >Password</label>
+                            >
+                                Password
+                            </label>
                             <input
                                 className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
                                 type="password"

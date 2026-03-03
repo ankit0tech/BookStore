@@ -86,7 +86,7 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
     }
 
     return (
-        <div className="min-w-fit truncate whitespace-nowrap p-2">
+        <div className="min-w-fit truncate p-2">
 
             <div className="">
                 <div className="flex items-center gap-1 my-2"><span className="inline-block text-xl"><HiOutlineSortDescending/></span> <span className="inline-block font-semibold">Sort By</span></div>

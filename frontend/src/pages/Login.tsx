@@ -90,7 +90,7 @@ const Login = () => {
 
     return (
         <div className="flex flex-col items-center p-4 ">
-            <div className="flex flex-col items-center max-w-sm min-w-[320px] divide-y gap-4">
+            <div className="flex flex-col items-center max-w-sm min-w-[280px] sm:min-w-[320px] divide-y gap-4">
                 <div className="flex flex-col gap-4 items-center w-full py-6">
                     <div className="text-3xl font-serif">BookStore</div>
 

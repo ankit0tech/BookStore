@@ -3,14 +3,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "../types";
 import { getDashboardMenuItems } from "../config/dashboardMenu";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const Dashboard = () => {
 
     const navigate = useNavigate();
     const userRole = useSelector((state: RootState) => state.userinfo.userRole);
-    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(localStorage.getItem('showDashboardSidebar') === 'true');
     
     const handleNavigate = (url: string) => {
         if(url[0] != '/') {
@@ -26,13 +26,20 @@ const Dashboard = () => {
 
     const menuItems = getDashboardMenuItems(userRole ?? '');
 
+    useEffect(() => {
+        localStorage.setItem('showDashboardSidebar', isSidebarOpen.toString());
+    }, [isSidebarOpen]);
 
     return (
-        <div className="h-full flex">
-            <aside className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'} overflow-y-auto`}>
+        <div className="isolate relative h-full flex flex-row h-full min-h-0">
+            <button 
+                className={`absolute inset-0 sm:opacity-0 sm:pointer-events-none transition-opacity duration-200 backdrop-blur-xs bg-black/50 ${!isSidebarOpen && 'opacity-0 pointer-events-none'}`}
+                onClick={() => setIsSidebarOpen(false)} 
+            />
+            <aside className={`absolute sm:relative z-50 bg-white h-full border-r-[1.5px] sm:border-none shadow-sm sm:shadow-none overflow-auto overscroll-y-contain transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'}`}>
                 <div className="flex items-center justify-between mb-6">
                     <button 
-                        className="text-2xl font-semibold px-4 m-2 text-gray-800" 
+                        className="text-xl font-semibold px-4 text-gray-800" 
                         onClick={() => navigate('/dashboard')}
                     >
                         Dashboard
@@ -47,11 +54,11 @@ const Dashboard = () => {
                 </div>
 
                 <nav>
-                    <ul className="">
+                    <ul className="flex flex-col gap-4">
                         {menuItems.map((item) => (
                             <li key={item.label}>
                                 <button 
-                                    className={`w-full text-left m-2 px-4 py-3 border-none rounded-[8px] ${isActive(item.path) ? 'bg-[#e0e7ff]' : 'bg-[#f8f9fa]'} cursor-pointer transition duration-200 hover:bg-[#e0e7ff]`} 
+                                    className={`whitespace-nowrap w-full text-left px-4 py-3 border-none rounded-[8px] ${isActive(item.path) ? 'bg-gray-200' : 'bg-gray-50'} cursor-pointer transition duration-200 hover:bg-gray-200`}
                                     onClick={() => handleNavigate(item.path)}>
                                         {item.label}
                                 </button>
@@ -61,15 +68,13 @@ const Dashboard = () => {
                 </nav>
             </aside>
 
-            <main className='flex-1 p-6 overflow-y-auto'>
-                {!isSidebarOpen && (
-                    <button
-                        className="p-2 mx-2 rounded-lg hover:bg-gray-50"
-                        onClick={() => setIsSidebarOpen(true)}
-                    >
-                        <FaBars className="text-gray-600" />
-                    </button>
-                )}
+            <main className='flex-1 p-6 overflow-auto overscroll-y-contain'>
+                <button
+                    className={`p-2 mx-4 rounded-lg hover:bg-gray-50 ${isSidebarOpen ? 'invisible' : 'inline-block'}`}
+                    onClick={() => setIsSidebarOpen(true)}
+                >
+                    <FaBars className="text-gray-600" />
+                </button>
                 <Outlet context={{ isSidebarOpen }}/>
             </main>
         </div>

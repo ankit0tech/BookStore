@@ -68,7 +68,7 @@ const Dashboard = () => {
                 </nav>
             </aside>
 
-            <main className='flex-1 p-6 overflow-auto overscroll-y-contain'>
+            <main className='flex-1 p-4 sm:p-6 overflow-auto overscroll-y-contain'>
                 <button
                     className={`p-2 mx-4 rounded-lg hover:bg-gray-50 ${isSidebarOpen ? 'invisible' : 'inline-block'}`}
                     onClick={() => setIsSidebarOpen(true)}

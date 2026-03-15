@@ -7,6 +7,9 @@ export type OrderStatus = typeof order_statuses[number];
 export const payment_statuses = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED']
 export type PaymentStatus = typeof payment_statuses[number];
 
+export const date_order = ["asc", "desc"]
+export type DateOrderStatus = typeof date_order[number];
+
 export interface RootState { 
     userinfo: UserState;
     cartinfo: CartInterface;

@@ -152,7 +152,7 @@ const Home = () => {
             />
             
             <div className={`absolute sm:relative z-50 bg-white shadow-lg flex flex-row ${showSidebar && 'border-r-[1.5px]'} h-full z-20`}>
-                <div className={`overflow-y-auto overscroll-y-contain [transition:width_300ms,opacity_150ms] ease-in-out ${showSidebar ? 'w-[240px] opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}>
+                <div className={`overflow-y-auto [transition:width_300ms,opacity_150ms] ease-in-out ${showSidebar ? 'w-[240px] opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}>
                     <SideBar
                         selectWithSpecialOffer={selectWithSpecialOffer} 
                         setSelectWithSpecialOffer={setSelectWithSpecialOffer}
@@ -175,7 +175,7 @@ const Home = () => {
             </div>
 
 
-            <div className='flex-1 overflow-y-auto overscroll-y-contain'>
+            <div className='flex-1 overflow-y-auto'>
                 <BooksCard books={books} />
                 { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-20 w-full'></div>}
             </div>

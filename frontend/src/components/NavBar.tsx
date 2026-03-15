@@ -27,13 +27,13 @@ const NavBar = () => {
     const userinfo = useSelector((state: RootState) => state.userinfo);
     const navigate = useNavigate();
     const searchBarRef = useRef(null);
+    const profileMenuRef = useRef(null);
     const [isOpen, setIsOpen] = useState(false);
     const email: string | null = userinfo.email;
     const dispatch = useDispatch();
     const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewedInterface[]>([]);
     const [showRecentlyViewedPalet, setShowRecentlyViewedPalet] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
-    const profileMenuRef = useRef(null);    
     const cartItems = useSelector((state: RootState) => state.cartinfo);
     const cartSize = cartItems.data.length;
 
@@ -122,8 +122,8 @@ const NavBar = () => {
                 <p className="hidden sm:block">BookStore</p>
             </button>
 
-            <div className="relative flex items-center px-2 font-normal _w-full">                    
-                <BiSearch className="absolute mx-3 mt-0.5 text-gray-400 " ></BiSearch>
+            <div className="relative flex items-center px-2 font-normal">                    
+                <BiSearch className="absolute mx-3 mt-0.5 text-gray-400"></BiSearch>
                 <input 
                     className="w-full transition-color transition-[width] duration-300 ease-out px-2 py-1.75 w-3xs sm:w-2xs md:w-sm lg:w-md rounded-md bg-gray-50 focus:outline-hidden border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:bg-white pl-9" 
                     type="search" 
@@ -141,7 +141,8 @@ const NavBar = () => {
                     
                 <div className={`transition-opacity z-50 duration-200 ease-out ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                     <ul 
-                        className={`flex flex-col p-3 mt-2 absolute top-full w-full left-0 shadow-lg rounded-md border border-gray-300 outline-hidden bg-white overflow-hidden transition-opacity transition-transform duration-200 ease-out ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100 scale-100 transition-y-0' : 'opacity-0 scale-90 transitino-y-1'}`}
+                        className={`flex flex-col p-3 mt-2 absolute top-full w-full left-0 shadow-lg rounded-md border border-gray-300 outline-hidden bg-white overflow-hidden transition-opacity transition-transform duration-200 ease-out 
+                                    ${(showRecentlyViewedPalet && recentlyViewed.length > 0) ? 'opacity-100 scale-100 transition-y-0' : 'opacity-0 scale-90 transition-y-1'}`}
                         onMouseDown={(e) => e.preventDefault()}
                     >
                         {recentlyViewed.map((item) => (
@@ -181,7 +182,7 @@ const NavBar = () => {
                                     <div className="absolute right-0 top-1 text-xs rounded-full bg-orange-500 group-hover:bg-orange-600 _bg-sky-300 _group-hover:bg-sky-400 px-1 cursor-pointer transition-color duration-200">{cartSize}</div>
                                 )}
                             </div>
-                            <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay>
+                            { isOpen && <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay> }
                         
                             <div className="rounded-md relative">
                                 <AiOutlineUser
@@ -196,20 +197,22 @@ const NavBar = () => {
                                         <div className="py-3 px-4 font-medium _bg-gray-50 text-gray-950 truncate">{email}</div>
                                         <div className="border-t-[1.25px] border-gray-300 _mb-2 w-full -mx-2"></div>
                                         
-                                        <div className="flex flex-col w-full p-3">
-                                            <div className="w-full hover:bg-gray-50 py-1.75 px-3 rounded-sm cursor-pointer transition-all duration-200 hover:ring hover:ring-gray-300">
-                                                <button 
-                                                    onClick={() => {setShowProfileMenu(false); navigate(('/dashboard'))}}
-                                                >Dashboard</button>
-                                            </div>
-                                            <div className="w-full hover:bg-gray-50 py-1.75 px-3 rounded-sm cursor-pointer transition-all duration-200 hover:ring hover:ring-gray-300">
-                                                <button 
-                                                    onClick={() => {setShowProfileMenu(false); handleSignout()}}
-                                                >Signout</button>
-                                            </div>
+                                        <div className="flex flex-col items-start w-full p-3">
+                                            <button 
+                                                className="w-full text-left hover:bg-gray-50 py-1.75 px-3 rounded-sm cursor-pointer transition-all duration-200 hover:ring hover:ring-gray-300"
+                                                onClick={() => {setShowProfileMenu(false); navigate('/dashboard')}}
+                                            > 
+                                                Dashboard 
+                                            </button> 
+                                            <button 
+                                                className="w-full text-left hover:bg-gray-50 py-1.75 px-3 rounded-sm cursor-pointer transition-all duration-200 hover:ring hover:ring-gray-300"
+                                                onClick={() => {setShowProfileMenu(false); handleSignout()}}
+                                            >
+                                                Signout
+                                            </button>
                                         </div>
-
                                     </div>
+
                                 </div>
                             </div>
                         </div>

@@ -367,7 +367,7 @@ const Checkout = () => {
                                     </select>
                                 </div>
 
-                                <div className="sticky top-4 flex flex-col gap-2 h-min _max-w-[320px]">
+                                <div className="sticky top-4 flex flex-col gap-2 h-min _max-w-[320px] pb-6">
                                     <p className="font-medium text-gray-950">Order Summary</p>
                                     <div className="flex flex-col gap-2">
                                         <div className="flex flex-col gap-1 text-sm text-gray-800">

@@ -33,10 +33,10 @@ const Dashboard = () => {
     return (
         <div className="isolate relative h-full flex flex-row h-full min-h-0">
             <button 
-                className={`absolute inset-0 sm:opacity-0 sm:pointer-events-none transition-opacity duration-200 backdrop-blur-xs bg-black/50 ${!isSidebarOpen && 'opacity-0 pointer-events-none'}`}
+                className={`absolute z-40 inset-0 sm:opacity-0 sm:pointer-events-none transition-opacity duration-200 backdrop-blur-xs bg-black/50 ${!isSidebarOpen && 'opacity-0 pointer-events-none'}`}
                 onClick={() => setIsSidebarOpen(false)} 
             />
-            <aside className={`absolute sm:relative z-50 bg-white h-full border-r-[1.5px] sm:border-none shadow-sm sm:shadow-none overflow-auto overscroll-y-contain transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'}`}>
+            <aside className={`absolute sm:relative z-50 bg-white h-full border-r-[1.5px] sm:border-none shadow-sm sm:shadow-none overflow-auto transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'}`}>
                 <div className="flex items-center justify-between mb-6">
                     <button 
                         className="text-xl font-semibold px-4 text-gray-800" 
@@ -68,7 +68,7 @@ const Dashboard = () => {
                 </nav>
             </aside>
 
-            <main className='flex-1 p-4 sm:p-6 overflow-auto overscroll-y-contain'>
+            <main className='flex-1 p-4 sm:p-6 overflow-auto'>
                 <button
                     className={`p-2 mx-4 rounded-lg hover:bg-gray-50 ${isSidebarOpen ? 'invisible' : 'inline-block'}`}
                     onClick={() => setIsSidebarOpen(true)}

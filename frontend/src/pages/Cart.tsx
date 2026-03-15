@@ -56,8 +56,8 @@ const Cart = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl">
-                        <div className="md:col-span-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="lg:col-span-2">
                             <ul className="flex flex-col gap-2">
                                 {cartItems.data.map((item) => (
                                     <li key={item.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 py-4 border-b last:border-b-0">
@@ -117,8 +117,8 @@ const Cart = () => {
                             </ul>
                         </div>
                         
-                        <div className="lg:col-span-1 pb-20">
-                            <div className="sticky top-4 p-2 flex flex-col gap-4 h-min">
+                        <div className="lg:col-span-1">
+                            <div className="sticky top-4 p-2 flex flex-col gap-4 h-min pb-6">
                                 <p className="text-lg font-medium">Cart Summary</p>
                                 <div className="flex flex-col gap-2">
                                     <div className="flex flex-col gap-1 text-sm text-gray-800">

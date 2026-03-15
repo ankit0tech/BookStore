@@ -111,7 +111,7 @@ const Login = () => {
                         className="w-full py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                         onClick={() => login()}
                     >
-                        Sing in with google
+                        Sign in with google
                     </button>
                 </div>
 

@@ -81,7 +81,7 @@ const AddReview = () => {
             {book &&
                 <div className="flex flex-row gap-2">
                     <img 
-                        className="w-32 h-44 object-scale-down rounded-md bg-gray-100"
+                        className="shrink-0 w-32 h-44 object-scale-down rounded-md bg-gray-100"
                         src={book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'} 
                         alt={book.title}
                         onError={(e) => {
@@ -168,7 +168,9 @@ const AddReview = () => {
 
                     {updateReview && (
                         <button 
-                            className="whitespace-nowrap w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                            // className="w-fit py-2 px-4 font-medium text-red-600 hover:bg-red-50 rounded-sm border border-red-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                            // className="whitespace-nowrap w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                            className="whitespace-nowrap w-fit py-2 px-4 font-medium text-gray-800 hover:text-red-600 hover:bg-red-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                             // className="w-fit text-sm text-red-600 font-medium px-4 py-2 bg-red-50/40 hover:bg-red-50 border border-red-200 rounded-sm shadow-[2px_2px_0px_0px_rgba(130,0,11,0.2)] active:shadow-[1px_1px_0px_0px_rgba(130,0,11,0.2)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                             type="button"
                             onClick={() => {setShowConfirmDelete(true)}}

@@ -176,7 +176,9 @@ const OrderDetails = () => {
                                                         isOpen && <CancelOrReturnOverlay onClose={onClose} type='cancel' handleRequestCancelOrReturn={handleRequestCancelOrReturn}/>
                                                     }
                                                     <button 
-                                                        className="w-fit py-2 px-4 font-medium text-red-600 hover:bg-red-50 rounded-sm border border-red-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                                        // className="w-fit py-2 px-4 font-medium text-red-600 hover:bg-red-50 rounded-sm border border-red-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                                        className="whitespace-nowrap w-fit py-2 px-4 font-medium text-gray-800 hover:text-red-600 hover:bg-red-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+
                                                         // className="w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                         // className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-100 bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                         // className="relative mt-4 w-fit h-fit px-4 py-2 text-sm text-gray-950 font-medium transition-all duration-100 rounded-sm hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(102,178,255,1.0)] active:shadow-[1px_1px_0px_0px_rgba(102,178,255,1.0)] border border-black active:translate-x-[1px] active:translate-y-[1px] ease-in-out"
@@ -214,7 +216,9 @@ const OrderDetails = () => {
                                                         isOpen && <CancelOrReturnOverlay onClose={onClose} type='return' handleRequestCancelOrReturn={handleRequestCancelOrReturn}/>
                                                     }
                                                     <button
-                                                        className="w-fit py-2 px-4 font-medium text-red-500 hover:text-red-600 hover:bg-red-50 rounded-sm border border-red-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                                        // className="w-fit py-2 px-4 font-medium text-red-500 hover:text-red-600 hover:bg-red-50 rounded-sm border border-red-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                                        className="whitespace-nowrap w-fit py-2 px-4 font-medium text-gray-800 hover:text-red-600 hover:bg-red-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+
                                                         // className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                         // className="relative mt-4 w-fit h-fit px-4 py-2 text-sm text-gray-950 font-medium transition-all duration-100 rounded-sm hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(102,178,255,1.0)] active:shadow-[1px_1px_0px_0px_rgba(102,178,255,1.0)] border border-black active:translate-x-[1px] active:translate-y-[1px] ease-in-out"
                                                         type='button' 
@@ -257,7 +261,7 @@ const OrderDetails = () => {
                                         <li className="flex flex-row gap-6 pb-6 border-b border-gray-100 last:border-b-0" key={item.id}>
                                             <div className="flex flex-row gap-6">
                                                 <img
-                                                    className="w-32 h-44 object-scale-down rounded-md bg-gray-100"
+                                                    className="shrink-0 w-32 h-44 object-scale-down rounded-md bg-gray-100"
                                                     src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                                     alt={item.book.title}
                                                     onError={(e) => {

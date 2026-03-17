@@ -80,7 +80,7 @@ export const CancelOrReturnOverlay: React.FC<OverlayProps> = ({ onClose, handleR
                     <p className='text-xs text-gray-500 ml-auto'>{reason.length}/500</p>
                 </div>
 
-                <div className='flex flex-row gap-4'>
+                <div className='flex flex-row justify-end gap-4'>
                     <button 
                         // className='w-fit px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-sm border border-black shadow-[2px_2px_0px_0px_rgba(102,178,255,1.0)] active:shadow-[1px_1px_0px_0px_rgba(102,178,255,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out'
                         className="w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"

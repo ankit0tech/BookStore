@@ -39,7 +39,7 @@ const DropDownMenu = <T extends string> ({title, defaultValue, selectedOptionSta
             >
                 { defaultValue && (
                     <div
-                        className="w-full text-nowrap cursor-pointer px-4 py-1.5 box-border hover:text-gray-950 hover:bg-gray-100 rounded-lg transition-color duration-200"
+                        className="w-full text-nowrap cursor-pointer px-4 py-1.5 box-border hover:text-gray-950 hover:bg-gray-100 rounded-lg transition-colors duration-200"
                         onClick={() => {setSelectedOptionStatus(''); setShowDropdown(false)}}
                     >
                         {defaultValue}
@@ -48,7 +48,7 @@ const DropDownMenu = <T extends string> ({title, defaultValue, selectedOptionSta
 
                 {options.map((option) => (
                     <div 
-                        className="w-full text-nowrap cursor-pointer px-4 py-1.5 box-border hover:text-gray-950 hover:bg-gray-100 rounded-lg transition-color duration-200"
+                        className="w-full text-nowrap cursor-pointer px-4 py-1.5 box-border hover:text-gray-950 hover:bg-gray-100 rounded-lg transition-colors duration-200"
                         key={option}
                         onClick={() => {setSelectedOptionStatus(option); setShowDropdown(false)}}
                     >

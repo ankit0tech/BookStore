@@ -84,7 +84,7 @@ const Signup = () => {
                                 Email
                             </label>
                             <input
-                                className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                                className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                                 type="text"
                                 placeholder="Enter email address..."
                                 id="input-email"
@@ -101,7 +101,7 @@ const Signup = () => {
                                 Password
                             </label>
                             <input
-                                className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                                className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                                 type="password"
                                 placeholder="Enter password..."
                                 id="password"

@@ -107,7 +107,7 @@ const CreateAddress = () => {
                     <div className="flex flex-col gap-1 w-full">
                         <label htmlFor="input-name" className="block text-sm font-medium text-gray-700">Name </label>
                         <input
-                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
                             id="input-name"
                             value={name}
@@ -119,7 +119,7 @@ const CreateAddress = () => {
                     <div className="flex flex-col gap-1 w-full">
                         <label htmlFor="input-house-number" className="block text-sm font-medium text-gray-700">House Number / Apartment </label>
                         <input
-                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
                             id="input-house-number"
                             value={houseNumber}
@@ -132,7 +132,7 @@ const CreateAddress = () => {
                     <div className='flex flex-col gap-1 w-full'>
                         <label htmlFor="input-street" className="block text-sm font-medium text-gray-700">Street</label>
                         <input
-                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
                             id="input-street"
                             value={street}
@@ -144,7 +144,7 @@ const CreateAddress = () => {
                     <div className='flex flex-col gap-1 w-full'>
                         <label htmlFor="input-city" className="block text-sm font-medium text-gray-700">City</label>
                         <input
-                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
                             id="input-city"
                             value={city}
@@ -156,7 +156,7 @@ const CreateAddress = () => {
                     <div className='flex flex-col gap-1 w-full'>
                         <label htmlFor="input-state" className="block text-sm font-medium text-gray-700">State</label>
                         <input
-                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
                             id="input-state"
                             value={state}
@@ -168,7 +168,7 @@ const CreateAddress = () => {
                     <div className='flex flex-col gap-1 w-full'>
                         <label htmlFor="input-zipcode" className="block text-sm font-medium text-gray-700">Zip code </label>
                         <input
-                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
                             id="input-zipcode"
                             value={zipCode}
@@ -180,7 +180,7 @@ const CreateAddress = () => {
                     <div className='flex flex-col gap-1 w-full'>
                         <label id="input-country" className="block text-sm font-medium text-gray-700">Country </label>
                         <input
-                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
                             id="input-country"
                             value={country}

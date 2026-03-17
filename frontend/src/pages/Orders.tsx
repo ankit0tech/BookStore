@@ -156,7 +156,7 @@ const Orders = () => {
                                             <div className="text-gray-600 text-sm font-semibold mb-2 tacking-wider uppercase">Items</div>
                                             <div className="flex flex-col gap-2">
                                                 {item.order_items.map((order_item) => (
-                                                    <div className="flex gap-2 justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-md transition-color duration-200" key={order_item.id}>
+                                                    <div className="flex gap-2 justify-between px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors duration-200" key={order_item.id}>
                                                         <div className="text-gray-900 truncate">{order_item.book.title}</div>
                                                         <div className="flex items-center gap-1">
                                                             <span className="text-sm text-gray-600">Qty:</span>

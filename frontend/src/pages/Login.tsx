@@ -98,7 +98,7 @@ const Login = () => {
                         <SignInForm handleSignin={handleSignin} />
                         <div className="flex w-full">
                             <button 
-                                className="_text-md text-amber-600 hover:text-amber-700 _text-sky-500 _hover:text-sky-600 hover:underline transition-color duration-200" 
+                                className="_text-md text-amber-600 hover:text-amber-700 _text-sky-500 _hover:text-sky-600 hover:underline transition-colors duration-200" 
                                 onClick={handleForgotPasswordClick}
                             >
                                 forgot password?

@@ -302,14 +302,14 @@ const Checkout = () => {
                                         <div className='flex flex-row gap-4 text-gray-800'>
                                             <button 
                                                 onClick={handleChangeAddressClick}
-                                                className='text-sm w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-color duration-200'
+                                                className='text-sm w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200'
                                             >
                                                 {showAllUserAddresses ? 'Hide Addresses' : 'Change Address' }
                                             </button>
                                             { showAllUserAddresses && 
                                                 <Link 
                                                     to='/dashboard/address/create' 
-                                                    className='block text-sm w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-color duration-200' 
+                                                    className='block text-sm w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200' 
                                                 >
                                                     Add new address
                                                 </Link>
@@ -323,7 +323,7 @@ const Checkout = () => {
                                         {allUserAddresses.map((address) => (
                                             <li 
                                                 key={address.id}
-                                                className='text-gray-800 w-full hover:bg-gray-100 transition-color duration-300 border rounded-lg'
+                                                className='text-gray-800 w-full hover:bg-gray-100 transition-colors duration-300 border rounded-lg'
                                             > 
                                                 <label className='flex flex-row items-center gap-2 p-2'>
                                                     <input

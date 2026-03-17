@@ -125,7 +125,7 @@ const NavBar = () => {
             <div className="relative flex items-center px-2 font-normal">                    
                 <BiSearch className="absolute mx-3 mt-0.5 text-gray-400"></BiSearch>
                 <input 
-                    className="w-full transition-color transition-[width] duration-300 ease-out px-2 py-1.75 w-3xs sm:w-2xs md:w-sm lg:w-md rounded-md bg-gray-50 focus:outline-hidden border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:bg-white pl-9" 
+                    className="w-full transition-colors transition-[width] duration-300 ease-out px-2 py-1.75 w-3xs sm:w-2xs md:w-sm lg:w-md rounded-md bg-gray-50 focus:outline-hidden border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:bg-white pl-9" 
                     type="search" 
                     name="q" 
                     ref={searchBarRef}
@@ -177,9 +177,9 @@ const NavBar = () => {
                                 className="group relative p-2 rounded-md"
                                 onClick={() => {setShowProfileMenu(false); setIsOpen(!isOpen)}}
                             >
-                                <IoCartOutline className="text-2xl text-gray-700 group-hover:text-gray-950 cursor-pointer transition-color duration-200"></IoCartOutline>
+                                <IoCartOutline className="text-2xl text-gray-700 group-hover:text-gray-950 cursor-pointer transition-colors duration-200"></IoCartOutline>
                                 {cartSize > 0 && (
-                                    <div className="absolute right-0 top-1 text-xs rounded-full bg-orange-500 group-hover:bg-orange-600 _bg-sky-300 _group-hover:bg-sky-400 px-1 cursor-pointer transition-color duration-200">{cartSize}</div>
+                                    <div className="absolute right-0 top-1 text-xs rounded-full bg-orange-500 group-hover:bg-orange-600 _bg-sky-300 _group-hover:bg-sky-400 px-1 cursor-pointer transition-colors duration-200">{cartSize}</div>
                                 )}
                             </div>
                             { isOpen && <CartOverlay isOpen={isOpen} onClose={onClose}></CartOverlay> }

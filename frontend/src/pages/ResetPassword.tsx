@@ -66,7 +66,7 @@ const ResetPassword = () => {
                     > Enter new password </label>
                     <input 
                         // className="appearance-none rounded-full my-2 px-4 py-2 border border-gray-300 focus:outline-hidden focus:border-gray-500" 
-                        className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                        className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                         type="password" 
                         id="password1" 
                         placeholder="Enter password..."
@@ -81,7 +81,7 @@ const ResetPassword = () => {
                         className="text-gray-800"
                     > Re-enter new password </label>
                     <input
-                        className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-color duration-200"
+                        className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                         type="password" 
                         id="password2" 
                         placeholder="Enter password again..."

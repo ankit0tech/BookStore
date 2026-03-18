@@ -56,7 +56,7 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
              
             <div className="px-1 flex flex-col h-[calc(296px-128px-8px)] sm:h-[calc(392px-224px-24px)]">
                 
-                <h2 className="font-medium leading-tight line-clamp-2 sm:line-clamp-1 mt-2">
+                <h2 className="font-medium text-gray-900 leading-tight line-clamp-2 sm:line-clamp-1 mt-2">
                     <Link to={`/books/details/${book.id}`}>
                         <span className="absolute inset-0"></span>
                         {book.title}

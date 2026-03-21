@@ -25,8 +25,12 @@ const AdminDashboard = () => {
 
 
     return (
-        <div className="h-full flex">
-            <aside className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'} overflow-y-auto`}>
+        <div className="isolate relative h-full flex flex-row h-full min-h-0">
+            <button 
+                className={`absolute z-40 inset-0 sm:opacity-0 sm:pointer-events-none transition-opacity duration-200 backdrop-blur-xs bg-black/50 ${!isSidebarOpen && 'opacity-0 pointer-events-none'}`}
+                onClick={() => setIsSidebarOpen(false)} 
+            />
+            <aside className={`absolute sm:relative z-50 bg-white h-full border-r-[1.5px] sm:border-none shadow-sm sm:shadow-none overflow-auto transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-56 p-4' : 'w-0'}`}>
                 <div className="flex items-center justify-between mb-6">
                     <button 
                         className="text-xl font-semibold m-2 text-gray-800" 
@@ -44,11 +48,11 @@ const AdminDashboard = () => {
                 </div>
 
                 <nav>
-                    <ul className="">
+                    <ul className="flex flex-col gap-4">
                         {menuItems.map((item) => (
                             <li key={item.label}>
                                 <button 
-                                    className={`w-full text-left m-2 px-4 py-3 border-none rounded-[8px] ${isActive(item.path) ? 'bg-[#e0e7ff]' : 'bg-[#f8f9fa]'} cursor-pointer transition duration-200 hover:bg-[#e0e7ff]`} 
+                                    className={`whitespace-nowrap w-full text-left px-4 py-3 border-none rounded-[8px] ${isActive(item.path) ? 'bg-gray-200' : 'bg-gray-50'} cursor-pointer transition duration-200 hover:bg-gray-200`}
                                     onClick={() => handleNavigate(item.path)}>
                                         {item.label}
                                 </button>
@@ -58,10 +62,10 @@ const AdminDashboard = () => {
                 </nav>
             </aside>
 
-            <main className='flex-1 p-6 overflow-y-auto'>
+            <main className='flex-1 p-4 sm:p-6 overflow-y-auto'>
                 {!isSidebarOpen && (
                     <button
-                        className="p-2 mx-2 rounded-lg hover:bg-gray-50"
+                        className={`p-2 mx-4 rounded-lg hover:bg-gray-50 ${isSidebarOpen ? 'invisible' : 'inline-block'}`}
                         onClick={() => setIsSidebarOpen(true)}
                     >
                         <FaBars className="text-gray-600" />

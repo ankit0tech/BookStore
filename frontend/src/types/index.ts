@@ -4,8 +4,14 @@ import { UserState } from "../redux/userSlice";
 export const order_statuses = ['PENDING', 'PROCESSING', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED', 'RETURNED', 'FAILED'] as const;
 export type OrderStatus = typeof order_statuses[number];
 
-export const payment_statuses = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED']
+export const payment_statuses = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'];
 export type PaymentStatus = typeof payment_statuses[number];
+
+export const date_order = ["asc", "desc"];
+export type DateOrderStatus = typeof date_order[number];
+
+export const user_roles = ['user', 'admin', 'superadmin'];
+export type UserRoles = typeof user_roles[number];
 
 export interface RootState { 
     userinfo: UserState;

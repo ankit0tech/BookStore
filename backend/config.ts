@@ -26,6 +26,14 @@ if(!process.env.BREVO_API_KEY) {
     throw new Error('Brevo API key is not provided');
 }
 
+if(!process.env.FRONTEND_URL) {
+    throw new Error('Url for frontend app is not defined');
+}
+
+if(!process.env.CORS_ORIGINS) {
+    throw new Error('cors origin urls are not defined');
+}
+
 
 export const config = {
     server: {
@@ -53,7 +61,8 @@ export const config = {
         key_secret: process.env.RAZORPAY_KEY_SECRET
     },
     frontend: {
-        url: process.env.FRONTEND_URL || 'http://localhost:5173'
+        url: process.env.FRONTEND_URL || 'http://localhost:5173',
+        origins: (process.env.CORS_ORIGINS || 'http://localhost:5173').split(',').map(s => s.trim()),
     },
     brevo: {
         api_key: process.env.BREVO_API_KEY

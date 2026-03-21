@@ -57,20 +57,20 @@ const App = () => {
   useSyncCart();
 
   return (
-    <div className='h-screen flex flex-col'>
+    <div className='h-screen flex flex-col min-w-[320px]'>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <div className='shrink-0'>      
           <NavBar />
         </div>
 
-        <div className='flex-1 overflow-auto' >  
+        <div className='h-full min-h-0 flex-1 overflow-auto'>
           <Routes>
             <Route path='/'  element={<Home />} />
             <Route path='/login' element={<Login /> } />
             <Route path='/signup' element={<Signup />} />
             
-            <Route path='/admin/signup' element={<AdminSignup />} />
-            <Route path='/admin/login' element={<AdminLogin />} />
+            {/* <Route path='/admin/signup' element={<AdminSignup />} /> */}
+            {/* <Route path='/admin/login' element={<AdminLogin />} /> */}
             
             <Route path='/books/details/:id' element={<ShowBook />} />
             <Route path='/reset-password/verify' element={<ResetPassword />} />
@@ -81,7 +81,7 @@ const App = () => {
               <Route path='addresses' element={<Addresses />} />
               <Route path='address/create' element={<CreateAddress />} />
               <Route path='address/update/:id' element={<CreateAddress />} />
-              <Route path='address/delete/:id' element={<DeleteAddress />} />
+              {/* <Route path='address/delete/:id' element={<DeleteAddress />} /> */}
 
               <Route path='cart' element={<Cart />} />
               <Route path='orders' element={<Orders />} />

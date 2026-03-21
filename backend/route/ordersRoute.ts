@@ -72,7 +72,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                 try {
 
                     const options = {
-                        amount: total_amount,
+                        amount: Math.round(total_amount),
                         currency: "INR",
                         receipt: orderNumber
                     };
@@ -80,7 +80,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
                     razorpayOrder = await razorpay.orders.create(options);
 
                 } catch (error: any) {
-                    logger.error("Razorpay order creation failed: " + error);
+                    logger.error("Razorpay order creation failed: " + JSON.stringify(error, null, 2));
                     return res.status(400).json({ message: "Payment gateway error" });
                 }
 

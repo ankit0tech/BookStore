@@ -12,7 +12,6 @@ import { prettifyString } from "../../utils/formatUtils";
 import { useSelector } from "react-redux";
 
 
-
 const UserDetails = () => {
 
     const { id } = useParams();
@@ -56,124 +55,134 @@ const UserDetails = () => {
 
 
     return (
-        <div>
+        <div className="p-2 md:p-4 min-w-[320px]">
             {loading || !user ? (
                 <Spinner />
             ) : (
-                <div className="flex flex-col gap-4 p-4 _max-w-">
+                <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-1 _mb-4">
-                        <h2 className="text-3xl font-semibold text-gray-900">User Details</h2>
+                        <h2 className="text-xl font-semibold text-gray-900">User Details</h2>
                         <p className="text-sm text-gray-600">View and manage user information</p>
                     </div>
 
-                    <div className="flex flex-col _gap-4 divide-y">
-                        <div className="flex gap-4 px-4 py-6">
-                            <div className="rounded-md p-8 h-fit shadow-sm bg-linear-to-r from-blue-500 to-blue-600">
-                                <FaUser className="text-6xl text-white"/>
+                    <div className="flex flex-col gap-6 divide-y">
+                        <div className="flex gap-4 pb-6">
+                            <div className="rounded-md p-4 sm:p-8 h-fit shadow-sm">
+                                <FaUser className="text-4xl sm:text-6xl text-orange-500"/>
                             </div>
 
-                            <div className="flex flex-col gap-2">
-                                <div className="text-2xl font-semibold text-gray-900 font-medium_">
+                            <div className="flex flex-col gap-1">
+                                <div className="text-xl font-medium text-gray-900">
                                     {[user.first_name, user.last_name].filter((item) => Boolean(item)).join(' ') || '(No Name)'}
                                 </div>
                                 <div className="flex gap-2 items-center">
                                     <span className="text-gray-600 text-sm"><FaEnvelope/></span>
                                     <span className="text-gray-700">{user.email}</span>
                                 </div>
-                                <div className="flex gap-2 py-2">
-                                    {user.verified ? (
-                                        <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-green-800 bg-green-100 rounded-full">
-                                            <FaCheckCircle />
-                                            <span>Verified</span>
-                                        </div>
-                                    ) : (
-                                        <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-red-700 bg-red-100 rounded-full">
-                                            <FaTimesCircle />
-                                            <span>Unverified</span>
-                                        </div>
-                                    )}
-                                    {!user.deactivated ? (
-                                        <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-green-800 bg-green-100 rounded-full">
-                                            <FaCheckCircle />
-                                            <span>Active</span>
-                                        </div>
-                                    ) : (
-                                        <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-red-700 bg-red-100 rounded-full">
-                                            <FaTimesCircle />
-                                            <span>Deactivated</span>
-                                        </div>
-                                    )}
-                                    <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-blue-800 bg-blue-100 rounded-full">
+
+                                <div className="flex flex-col sm:flex-row gap-2 py-2">
+                                    <div className="flex gap-2">
+                                        {user.verified ? (
+                                            <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                                                <FaCheckCircle />
+                                                <span>Verified</span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-red-700 bg-red-100 rounded-full">
+                                                <FaTimesCircle />
+                                                <span>Unverified</span>
+                                            </div>
+                                        )}
+                                        {!user.deactivated ? (
+                                            <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                                                <FaCheckCircle />
+                                                <span>Active</span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-red-700 bg-red-100 rounded-full">
+                                                <FaTimesCircle />
+                                                <span>Deactivated</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-1 items-center py-1.5 px-2.5 size-fit text-xs font-medium text-amber-700 text-blue-800 bg-blue-100 rounded-full">
                                         <FaUserTag/>
                                         <span>{user.role}</span>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-6 px-4 py-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6">
+                            
                             <div className="flex flex-col gap-2">
-                                <div className="flex gap-2 items-center text-gray-600">
+                                <div className="flex gap-2 items-center text-sm font-medium text-gray-700">
                                     <FaEnvelope />
                                     <span className="text-sm font-medium">Email Address</span>
                                 </div>
-                                <div className="text-gray-800 bg-gray-50 py-2.5 px-4 rounded-md border">
+                                <div className="text-gray-800 bg-gray-50 py-2 px-4 rounded-md border line-clamp-1">
                                     {user.email}
                                 </div>
                             </div>
+
                             <div className="flex flex-col gap-2">
-                                <div className="flex gap-2 items-center text-gray-600">
+                                <div className="flex gap-2 items-center text-sm font-medium text-gray-700">
                                     <MdAccountCircle className="text-lg" />
                                     <span className="text-sm font-medium">Full Name</span>
                                 </div>
-                                <div className="text-gray-800 bg-gray-50 py-2.5 px-4 rounded-md border">
+                                <div className="text-gray-800 bg-gray-50 py-2 px-4 rounded-md border line-clamp-2">
                                     {(user.first_name || user.last_name) ? `${user.first_name} ${user.last_name}` : 'Not Provided'}
                                 </div>
                             </div>
+
                             <div className="flex flex-col gap-2">
-                                <div className="flex gap-2 items-center text-gray-600">
+                                <div className="flex gap-2 items-center text-sm font-medium text-gray-700">
                                     <FaUserTag />
                                     <span className="text-sm font-medium">Role</span>
                                 </div>
-                                <div className="text-gray-800 bg-gray-50 py-2.5 px-4 rounded-md border">
+                                <div className="text-gray-800 bg-gray-50 py-2 px-4 rounded-md border line-clamp-1">
                                     {prettifyString(user.role)}
                                 </div>
                             </div>
+
                             <div className="flex flex-col gap-2">
                                 <div className="flex gap-2 items-center text-gray-600">
                                     <FaShieldAlt />
                                     <span className="text-sm font-medium">Authentication Provider</span>
                                 </div>
-                                <div className="text-gray-800 bg-gray-50 py-2.5 px-4 rounded-md border">
+                                <div className="text-gray-800 bg-gray-50 py-2 px-4 rounded-md border line-clamp-1">
                                     {prettifyString(user.provider)}
                                 </div>
                             </div>
+
                             <div className="flex flex-col gap-2">
                                 <div className="flex gap-2 items-center text-gray-600">
                                     <FaCheckCircle />
                                     <span className="text-sm font-medium">Verification Status</span>
                                 </div>
                                 {user.verified ? (
-                                    <div className="text-gray-800 bg-gray-50 py-2.5 px-4 rounded-md border">
+                                    <div className="text-gray-800 bg-gray-50 py-2 px-4 rounded-md border line-clamp-1">
                                         Verified
                                     </div>
                                 ) : (
-                                    <div className="text-red-700 bg-red-50 py-2.5 px-4 rounded-md border border-red-200">
+                                    <div className="text-red-700 bg-red-50 py-2 px-4 rounded-md border border-red-200">
                                         Unverified
                                     </div>
                                 )}
                             </div>
+
                             <div className="flex flex-col gap-2">
                                 <div className="flex gap-2 items-center text-gray-600">
                                     <MdAccountCircle className="text-lg" />
                                     <span className="text-sm font-medium">Account Status</span>
                                 </div>
                                 {!user.deactivated ? (
-                                    <div className="text-gray-800 bg-gray-50 py-2.5 px-4 rounded-md border">
+                                    <div className="text-gray-800 bg-gray-50 py-2 px-4 rounded-md border line-clamp-1">
                                         Active
                                     </div>
                                 ) : (
-                                    <div className="text-red-700 bg-red-50 py-2.5 px-4 rounded-md border border-red-200">
+                                    <div className="text-red-700 bg-red-50 py-2 px-4 rounded-md border border-red-200">
                                         Deactivated
                                     </div>
                                 )}
@@ -185,17 +194,18 @@ const UserDetails = () => {
                                         <MdLockClock />
                                         <span className="text-sm font-medium">Deactivated At</span>
                                     </div>
-                                    <div className="flex gap-2 items-center bg-gray-50 py-2.5 px-4 rounded-md border">
+                                    <div className="flex gap-2 items-center bg-gray-50 py-2 px-4 rounded-md border">
                                         <FaCalendarAlt className="text-gray-500"/>
                                         <span className="text-gray-900 font-medium_">{formatDateTime(user.deactivated_at)}</span>
                                     </div>
-                                </div>)
-                            }
+                                </div>
+                            )}
                         </div>
                         
-                        <div className="px-4 py-6">
+                        <div className="">
                             <button
-                                className={`flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 ${loading ? 'cursor-not-allowed' : 'cursor-pointer'} bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out`}
+                                className="whitespace-nowrap w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                // className={`flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 ${loading ? 'cursor-not-allowed' : 'cursor-pointer'} bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out`}
                                 type="button"
                                 disabled={loading}
                                 onClick={() => handleEditClick()}

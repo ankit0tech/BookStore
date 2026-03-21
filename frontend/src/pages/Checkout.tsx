@@ -151,9 +151,6 @@ const Checkout = () => {
         api.get('/addresses/')
         .then((response) => {
             setAllUserAddresses(response.data);
-            // if (defaultAddress && response.data.some((addr: Address) => addr.id === defaultAddress.id)) {
-            //     setSelectedAddress(defaultAddress);
-            // }
         })
         .catch((error:any) => {
             console.log(error);
@@ -210,121 +207,139 @@ const Checkout = () => {
 
 
     return (
-        <div className='p-4'>
+        <div className='lg:p-4'>
             {loading ? (
                 <Spinner />
             ):(
-                <div className='w-full mx-auto max-w-[1000px] rounded-lg'>
+                <div className='w-full mx-auto rounded-lg'>
                         {cartItems.data.length === 0 ? (
-                            <p>Cart is empty...</p>
+                        <div className='flex flex-row items-center gap-2 w-fit'>
+                            <p className='text-gray-700'>Cart is empty</p>
+                            <button 
+                                type='button' 
+                                onClick={() => navigate('/')}  
+                                className='text-amber-600 hover:underline hover:text-amber-700'
+                            >
+                                Home
+                            </button>
+                        </div>
                         ) : (
-                        
-                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl'>
                             <div className='lg:col-span-2'>
-                                <ul className='flex flex-col gap-4'>
+                                <ul className='flex flex-col gap-2'>
                                     {cartItems.data.map((item) => (
-                                        <li className='flex gap-4' key={item.book.id}>
-                                            <Link to={`/books/details/${item.book.id}`}>
-                                                <div className='w-24 h-32 bg-gray-100 shadow-xs rounded-sm overflow-hidden flex justify-center items-center'>
-                                                    <img 
-                                                        src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'} 
-                                                        alt={item.book.title} 
-                                                        className='w-full h-full object-contain'
-                                                        onError={(e) => {
-                                                            e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
-                                                        }}
-                                                    />
-                                                </div>
-                                            </Link>
-                                            <div className="ml-4 grow">
-                                                <p className="font-medium text-lg">{ item.book.title }</p>
-                                                <p className="text-gray-600">{ item.book.author }</p>
-                                                <div className="font-semibold mt-2"> 
-                                                    {item.special_offer ? 
-                                                        <p> 
-                                                            {formatPrice(item.book.price * (100 - item.special_offer.discount_percentage) / 100, item.book.currency)} 
-                                                            <span className="m-1 p-1 font-normal rounded-sm text-white bg-red-500"> 
-                                                                {item.special_offer.discount_percentage}% 
-                                                            </span>
-                                                            <span className="block py-1 font-normal text-sm text-gray-500 line-through"> 
-                                                                M.R.P. {formatPrice(item.book.price, item.book.currency)} 
-                                                            </span>
-                                                        </p> 
-                                                        : 
-                                                        <p> {formatPrice(item.book.price, item.book.currency)} </p>
-                                                    }
+                                        <li key={item.book.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 py-4 border-b last:border-b-0">
+                                            <div className="flex items-center gap-2">
+                                                <Link to={`/books/details/${item.book.id}`}>
+                                                    <div className="w-28 h-36 rounded-lg overflow-hidden shrink-0">
+                                                        <img
+                                                            src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
+                                                            alt={item.book.title}
+                                                            className="w-full h-full object-cover object-scale-down" 
+                                                            onError={(e) => {
+                                                                e.currentTarget.src = 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'
+                                                            }}
+                                                        ></img>
+                                                    </div>
+                                                </Link>
+                                                <div className="flex flex-col min-w-0">
+                                                    <Link to={`/books/details/${item.book.id}`} className="font-medium line-clamp-2">{ item.book.title }</Link>
+                                                    <p className="text-gray-600 text-sm line-clamp-1">{ item.book.author }</p>
+                                                    <div className="font-semibold mt-2"> 
+                                                        {item.special_offer ? 
+                                                            <p className="flex flex-col gap-1 _text-nowrap">
+                                                                <div className="flex flex-col items-baseline lg:flex-row lg:gap-1 lg:items-end">
+                                                                    <p className="text-base font-medium"> {formatPrice(item.book.price * (100 - item.special_offer.discount_percentage)/100, item.book.currency)} </p>
+                                                                    <p className="font-semibold text-sm text-amber-600 truncate min-w-0"> 
+                                                                        {item.special_offer.discount_percentage}% OFF
+                                                                    </p>
+                                                                </div>
+                                                                <p className="block font-normal text-sm text-gray-500 line-through"> 
+                                                                    M.R.P. {formatPrice(item.book.price, item.book.currency)} 
+                                                                </p>
+                                                            </p> 
+                                                            : 
+                                                            <p className="font-medium"> {formatPrice(item.book.price, item.book.currency)} </p>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="inline-flex items-center rounded-full border-2 border-purple-500 w-fit h-fit">
+                                            <div className="justify-self-end bg-white py-1.5 px-4 hover:shadow-xs flex flex-row gap-4 items-center rounded-full w-fit h-fit transition-shadow duration-200 border">
                                                 <button 
-                                                    className="p-1 px-4"
                                                     onClick={() => {handleCartUpdate(item.book.id, -1, item.special_offer?.id)}}    
                                                 >
                                                     {item.quantity === 1 ? <MdOutlineDelete className="text-xl" /> : <BiMinus className="text-xl" /> }
                                                 </button>
 
-                                                <p className="p-1">
-                                                    { item.quantity }
-                                                </p>
-
+                                                <p className=""> {item.quantity} </p>
+                                                
                                                 <button 
-                                                    className="p-1 px-4" 
                                                     onClick={() => {handleCartUpdate(item.book.id, 1, item.special_offer?.id)}}
                                                 >
                                                     <BiPlus className="text-xl" />
                                                 </button>
                                             </div>
-
                                         </li>
                                     ))}
                                 </ul>
-                                <div className='my-4 max-w-sm'>
+                                {/* <div className='my-4 max-w-sm'>
                                     <div className='flex justify-between text-md text-gray-800'> <span>Sub Total:</span> <span> {formatPrice(subTotal, cartItems.data[0].book.currency)}</span> </div>
                                     <div className='flex justify-between text-md text-gray-800'> <span>Delivery Charges:</span> <span> {formatPrice(deliveryCharges, cartItems.data[0].book.currency)}</span> </div>
                                     <div className='flex justify-between font-semibold my-2 text-gray-950'> <span>Total Amount:</span> <span> {formatPrice(subTotal+deliveryCharges, cartItems.data[0].book.currency)}</span> </div>
-                                </div>
+                                </div> */}
                             </div>
-                            <div className='flex flex-col gap-4'>
+                            <div className='flex flex-col gap-6'>
                                 { selectedAddress && 
-                                (<div className='flex flex-col gap-4'>
-                                    <div className='text-lg font-medium text-gray-950'> Delivery Address: </div>
-                                    <div className='flex flex-col py-2 px-4 border rounded-lg text-sm bg-gray-100'> 
-                                        <div className='font-semibold'> {selectedAddress.house_number} </div>
-                                        <div className='text-gray-700 '> {selectedAddress.zip_code} </div>
-                                        <div className='text-gray-700'> {selectedAddress.street_address} </div>
-                                    </div>
-                                    
-                                    <div className='flex flex-row gap-4'>
-                                        <button 
-                                            onClick={handleChangeAddressClick}
-                                            className='text-left w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100'
+                                    (<div className='flex flex-col gap-4'>
+                                        <div className='text-lg font-medium text-gray-800'> Delivery Address</div>
+                                        <div className='flex flex-col py-2 px-4 border rounded-lg text-sm bg-gray-100'> 
+                                            <div className='font-semibold'> {selectedAddress.house_number} </div>
+                                            <div className='text-gray-700'>
+                                                <span>{selectedAddress.zip_code},</span> <span>{selectedAddress.street_address}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className='flex flex-row gap-4 text-gray-800'>
+                                            <button 
+                                                onClick={handleChangeAddressClick}
+                                                className='text-sm w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200'
                                             >
-                                            {showAllUserAddresses ? 'Hide Addresses' : 'Change Address' }
-                                        </button>
-                                        { showAllUserAddresses && 
-                                            <Link className='block text-left w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100' to='/dashboard/address/create' >Add new address</Link>
-                                        }
-                                    </div>
-                                
-                                </div>)}
+                                                {showAllUserAddresses ? 'Hide Addresses' : 'Change Address' }
+                                            </button>
+                                            { showAllUserAddresses && 
+                                                <Link 
+                                                    to='/dashboard/address/create' 
+                                                    className='block text-sm w-max py-1 px-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200' 
+                                                >
+                                                    Add new address
+                                                </Link>
+                                            }
+                                        </div>
+                                    </div>)
+                                }
                             
                                 {(showAllUserAddresses && (allUserAddresses.length > 0)) && 
-                                    <ul className='flex flex-col gap-1 text-sm font-medium'>
+                                    <ul className='flex flex-col gap-2 text-sm font-medium'>
                                         {allUserAddresses.map((address) => (
                                             <li 
                                                 key={address.id}
-                                                className='text-gray-800 w-full'
+                                                className='text-gray-800 w-full hover:bg-gray-100 transition-colors duration-300 border rounded-lg'
                                             > 
-                                                <label className='flex flex-row gap-2 p-2 border rounded-lg'>
+                                                <label className='flex flex-row items-center gap-2 p-2'>
                                                     <input
                                                         type="radio"
+                                                        className="shrink-0 appearance-none bg-white current-color rounded-full border-[1.5px] border-gray-800 h-[14px] w-[14px] grid place-items-center
+                                                                    before:content-[''] before:h-[8px] before:w-[8px] before:rounded-full before:bg-amber-600 before:scale-0 
+                                                                    checked:before:scale-100 before:inset-shadow-[8px_8px_0px_0px] before:inset-shadow-amber-600 before:transition-transform before:duration-200"
                                                         value={address.id}
                                                         checked={selectedAddress?.id.toString() === address.id.toString()}
                                                         onChange={() => setSelectedAddress(address)}
                                                     />
-                                                     <div className='flex flex-col gap-1 p-1 text-sm w-full'> 
-                                                        <div className='font-semibold'> {address.house_number} </div>
-                                                        <div className='text-gray-700 '> {address.zip_code}, {address.street_address} </div>
+                                                     <div className='flex flex-col p-1 text-sm w-full'> 
+                                                        <div className='font-semibold text-gray-800'> {address.house_number} </div>
+                                                        <div className='text-gray-700'>
+                                                            <span>{address.zip_code},</span> <span>{address.street_address}</span> 
+                                                        </div>
                                                     </div>
                                                 </label>
                                             </li>
@@ -332,8 +347,8 @@ const Checkout = () => {
                                     </ul>
                                 }
 
-                                <div className='my-4'>
-                                    <div className='text-lg font-medium text-gray-950 my-2'>Select Delivery Method</div>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='font-medium text-gray-950'>Select Delivery Method</div>
                                     <select 
                                         className='w-full p-2 rounded-md outline-none border'
                                         name = "deliveryMethod"
@@ -342,7 +357,7 @@ const Checkout = () => {
                                     >
                                         {deliveryMethods.map((method) => (
                                             <option 
-                                                className='text-gray-700'
+                                                className='_text-sm text-gray-700'
                                                 key={method} 
                                                 value={method}
                                             >
@@ -352,13 +367,34 @@ const Checkout = () => {
                                     </select>
                                 </div>
 
-                                <button 
-                                    type='button' 
-                                    onClick={displayRazorpay} 
-                                    className="bg-blue-500 text-white px-3 py-2 rounded-lg font-bold hover:bg-blue-600" 
-                                    >
-                                        Buy Now
-                                </button>
+                                <div className="sticky top-4 flex flex-col gap-2 h-min _max-w-[320px] pb-6">
+                                    <p className="font-medium text-gray-950">Order Summary</p>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex flex-col gap-1 text-sm text-gray-800">
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-gray-600">Sub Total: </span> 
+                                                <span className=""> {formatPrice(subTotal, cartItems.data[0].book.currency)}</span>
+                                            </div>
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-gray-600">Delivery charges: </span>
+                                                <span className="">{formatPrice(deliveryCharges)}</span>
+                                            </div>
+                                        </div>
+                                        <div className="border-t pt-2">
+                                            <div className="flex justify-between gap-2 font-medium">
+                                                <span>Total:</span>
+                                                <span className=""> {formatPrice(subTotal, cartItems.data[0].book.currency)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        type='button' 
+                                        onClick={displayRazorpay} 
+                                        className="w-fit self-end py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                        >
+                                            Buy Now
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         )}

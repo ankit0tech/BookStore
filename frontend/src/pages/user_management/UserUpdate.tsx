@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { RootState, UserInterface } from "../../types";
+import { RootState, user_roles, UserInterface } from "../../types";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../utils/api";
 import { AxiosResponse } from "axios";
 import { enqueueSnackbar } from "notistack";
 import Spinner from "../../components/Spinner";
 import { useSelector } from "react-redux";
+import DropDownMenu from "../../components/DropDownMenu";
+import { prettifyString } from "../../utils/formatUtils";
 
-const userRoles: string[] = ['user', 'admin', 'superadmin'];
 
 const UserUpdate = () => {
     const { id } = useParams();
@@ -108,18 +109,22 @@ const UserUpdate = () => {
     }, [id]);
 
     return (
-        <div className='p-4 max-w-2xl mx-auto'>
-            <h1 className='my-4 text-2xl font-semibold'>Update User</h1>
-            {loading ? <Spinner />:''}
+        <div className='p-2 md:p-4 flex flex-col gap-4 min-w-[320px] max-w-2xl mx-auto'>
+            <h1 className='text-xl font-semibold text-gray-800'>Update User</h1>
+            { loading ? <Spinner /> : '' }
 
-            <form className='space-y-6' onSubmit={handleUserUpdate}>
+            <form 
+                className="flex flex-col gap-4" 
+                onSubmit={handleUserUpdate}
+            >
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Email</label>
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor="input-email" className="block text-sm font-medium text-gray-700">Email </label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.email ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             >
@@ -127,11 +132,12 @@ const UserUpdate = () => {
                         { formErrors.email && (<p className='text-sm text-red-500 mt-1'> {formErrors.title} </p>)}
                     </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>First Name</label>
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor="input-first-name" className="block text-sm font-medium text-gray-700">First Name</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.firstName ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-first-name"
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                         >
@@ -139,42 +145,35 @@ const UserUpdate = () => {
                         { formErrors.firstName && (<p className='text-sm text-red-500 mt-1'> {formErrors.firstName} </p>)}
                     </div>
                     
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Last Name</label>
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor="input-last-name" className="block text-sm font-medium text-gray-700">Last Name</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.LastName ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-last-name"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
                         >
                         </input>
-                        { formErrors.firstName && (<p className='text-sm text-red-500 mt-1'> {formErrors.firstName} </p>)}
+                        { formErrors.lastName && (<p className='text-sm text-red-500 mt-1'> {formErrors.lastName} </p>)}
                    </div>
 
                     {(id && isAdmin) && (
                     <>
-                        <div className=''>
-                            <label className='text-sm font-semibold text-gray-600'>Role</label>
-                            <select
-                                className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.selectedCategory ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
-                                value={role}
-                                onChange={(e) => {setRole(e.target.value)}}
-                                disabled={!userRoles.length}
-                            >
-                                {userRoles?.map((role) => (
-                                    <option 
-                                        key={role}
-                                        value={role}
-                                    >
-                                        {role}
-                                    </option>
-                                ))}
-                            </select>
-                            { formErrors.price && (<p className='text-sm text-red-500 mt-1'> {formErrors.price} </p>)}
+                        <div className='flex flex-col gap-1 w-full'>
+                            <label htmlFor="input-last-name" className="block text-sm font-medium text-gray-700">Role</label>
+                            <DropDownMenu 
+                                title="Role"
+                                selectedOptionStatus={role}
+                                setSelectedOptionStatus={setRole}
+                                options={user_roles}
+                                getLabel={(status) => prettifyString(status)}                                
+                            />
+                            {formErrors.userRole && (<p className='text-sm text-red-500 mt-1'> {formErrors.userRole} </p>)}
                         </div>
                         
-                        <div className=''>
-                            <label className='text-sm font-semibold text-gray-600'>User Status</label>
+                        <div className='flex flex-col gap-1 w-full'>
+                            <label htmlFor="input-last-name" className="block text-sm font-medium text-gray-700">User Status</label>
                             <div className='flex items-center mt-2 space-x-3'>
                                 <button 
                                     className={`inline-flex items-center rounded-full transition-colors w-11 h-6 ${deactivated ? 'bg-gray-200' : 'bg-blue-600' } focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
@@ -185,26 +184,22 @@ const UserUpdate = () => {
                                 </button>
                                 <span className={`text-md ${deactivated ? 'text-gray-500' : 'text-green-500'}`}>{deactivated ? 'Deactivated' : 'Active'}</span>
                             </div>
-                            {formErrors.deactivated && (
-                                <p className='text-sm text-red-500 mt-1'>{formErrors.deactivated}</p>
-                            )}
+                            {formErrors.deactivated && (<p className='text-sm text-red-500 mt-1'>{formErrors.deactivated}</p>)}
                         </div>
                     </>
                     )}
                 </div>
 
-                <div className=" flex flex-row justify-start gap-4">
+                <div className=" flex flex-row justify-end gap-4">
                     <button
-                        // className="rounded-lg mt-2 text-white bg-purple-500 px-4 py-2 hover:bg-purple-600 h-auto"
-                        className={`flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 ${loading ? 'cursor-not-allowed' : 'cursor-pointer'} bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out`}
+                        className="w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                         type="submit"
                         disabled={loading}
                     >
                         {loading ? 'Saving...' : 'Save'}
                     </button>
                     <button
-                        // className="rounded-lg mt-2 text-gray-700 bg-white px-4 py-2 border border-gray-300 hover:bg-gray-50 h-auto"
-                        className="flex items-center justify-center gap-2 w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                        className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                         type="button"
                         onClick={() => navigate(-1)}
                     >

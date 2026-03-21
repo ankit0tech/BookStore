@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '../redux/store';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5555';
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5555`;
 
 const api = axios.create({
     baseURL: API_URL,

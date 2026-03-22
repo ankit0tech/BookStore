@@ -6,6 +6,8 @@
 
 generator client {
   provider      = "prisma-client-js"
+  // Use native query engine binaries instead of WASM (avoids missing .wasm-base64.js on Linux/CI)
+  engineType    = "binary"
   // Include Linux binary for Render (Ubuntu); "native" is for local dev machine
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }

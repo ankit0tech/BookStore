@@ -91,21 +91,21 @@ const Categories = () => {
 
 
     return (
-        <div className="p-4 flex flex-col gap-4">
-            <div className="flex justify-between items-center my-4">
-                <h2 className="text-2xl font-semibold text-gray-800">Book categories</h2>
+        <div className="p-2 md:p-4 flex flex-col gap-4 min-w-[320px]">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <h2 className="text-xl font-semibold text-gray-900">Book categories</h2>
                 <button
-                    className="flex gap-1 items-center w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                    className="w-fit py-2 px-4 flex flex-row items-center gap-2 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                     onClick={() => navigate('/admin-dashboard/category/create')}
                     >
-                        <AiOutlinePlus className="inline"/> 
+                        <AiOutlinePlus className="inline font-semibold"/> 
                         Create new category
                 </button>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex-1 relative">
                     <input 
-                        className="w-full pl-10 pr-4 border appearance-none focus:border-gray-300 focus:outline-hidden focus:shadow-xs rounded-lg py-2 px-3" 
+                        className="w-full flex py-2 pl-9 outline-hidden border border-gray-300 hover:border-gray-400 rounded-sm text-gray-800"
                         type="text" 
                         placeholder='Search categories...'
                         value = {searchQuery}
@@ -114,11 +114,11 @@ const Categories = () => {
                     <AiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 </div>
                 <button
-                    className="flex items-center gap-2 py-2 px-3 text-sm text-gray-800 border hover:border-gray-300 rounded-lg whitespace-nowrap hover:bg-gray-100 transition-colors duration-200"
+                    className="w-fit flex items-center gap-2 py-2 px-3 text-sm text-gray-800 border border-gray-300 hover:border-gray-400 rounded-sm whitespace-nowrap hover:bg-gray-50 transition-colors duration-100"
                     type='button'
                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                 >
-                    {sortOrder == 'asc' ? <AiOutlineSortAscending/> : <AiOutlineSortDescending/>} Sort
+                    {sortOrder == 'asc' ? <AiOutlineSortAscending /> : <AiOutlineSortDescending />} Sort
                 </button>
             </div>
             
@@ -130,22 +130,21 @@ const Categories = () => {
                     {
                         sortedCategories?.map((item) => (
                             <div className="my-2 hover:shadow-sm transition-shadow duration-100 border rounded-lg truncate" key={item.id}>
-                                <div className="p-4 flex flex-row items-center justify-between w-full">
+                                <div className="p-4 flex flex-col gap-4 md:flex-row items-start md:items-center justify-between w-full">
                                     <div>
-                                        <div className="font-semibold text-xl">{item.title}</div>
+                                        <div className="font-medium text-xl">{item.title}</div>
                                         <div className="text-sm text-gray-500">{item.sub_category.length} sub-categories</div>
                                     </div>
-                                    
-                                    <div className="flex flex-row items-center pr-1">
+                                    <div className="flex flex-row items-center gap-4 pr-1">
                                         <button 
-                                            className="m-2 px-1.5 py-1 text-lg border border-yellow-200 text-yellow-600 bg-yellow-50/40 hover:bg-yellow-50 rounded-sm shadow-[1px_1px_0px_0px_rgba(200,137,0,0.4)] active:shadow-[0.5px_0.5px_0px_0px_rgba(200,137,0,0.4)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                            className="whitespace-nowrap w-fit py-1.5 px-3 font-medium text-gray-800 hover:text-orange-700 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[0.5px] active:translate-y-[0.5px] shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[0.5px_0.5px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                             onClick={() => navigate(`/admin-dashboard/category/edit/${item.id}`)}
                                         >
                                             <AiOutlineEdit></AiOutlineEdit>
                                         </button>
                                         
                                         <button 
-                                            className="m-2 px-1.5 py-1 text-lg text-red-600 bg-red-50/40 hover:bg-red-50 border border-red-200 rounded-sm shadow-[1px_1px_0px_0px_rgba(130,0,11,0.3)] active:shadow-[0.5px_0.5px_0px_0px_rgba(130,0,11,0.3)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                                            className="whitespace-nowrap w-fit py-1.5 px-3 font-medium text-gray-800 hover:text-red-600 hover:bg-red-50 rounded-sm border border-orange-800 active:translate-x-[0.5px] active:translate-y-[0.5px] shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[0.5px_0.5px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                             onClick={() => setShowCategoryToDelete(item.id)}
                                         >
                                             <MdOutlineDelete></MdOutlineDelete>
@@ -164,22 +163,21 @@ const Categories = () => {
                                 {item.sub_category.length > 0 && (
                                     <ul className="w-full">
                                         {item.sub_category.map((sub) => (
-                                            <li key={sub.id}
-                                                className="p-5 pl-8 py-2 flex justify-between items-center text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 border-t border-gray-100"
+                                            <li 
+                                                key={sub.id}
+                                                className="p-4 md:pl-8 py-2 flex flex-col md:flex-row gap-2 justify-between items-start md:items-center text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 border-t border-gray-100"
                                             >
-                                                {sub.title}
-                                                <div className="flex flex-row">
+                                                <p>{sub.title}</p>
+                                                <div className="flex flex-row gap-4">
                                                     <button 
-                                                        // className="m-2 p-2 text-xl text-yellow-600 hover:text-yellow-500 active:text-yellow-700"
-                                                        className="m-2 px-1.5 py-1 text-lg border border-yellow-200 text-yellow-600 bg-yellow-50/40 hover:bg-yellow-50 rounded-sm shadow-[1px_1px_0px_0px_rgba(200,137,0,0.4)] active:shadow-[0.5px_0.5px_0px_0px_rgba(200,137,0,0.4)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                        className="whitespace-nowrap w-fit py-1.5 px-3 font-medium text-gray-800 hover:text-orange-700 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[0.5px] active:translate-y-[0.5px] shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[0.5px_0.5px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                         onClick={() => navigate(`/admin-dashboard/category/edit/${sub.id}`)}
                                                     >
                                                         <AiOutlineEdit></AiOutlineEdit>
                                                     </button>
                                                     
                                                     <button 
-                                                        // className="m-2 p-2 text-xl text-red-600 hover:text-red-500 active:text-red-700"
-                                                        className="m-2 px-1.5 py-1 text-lg text-red-600 bg-red-50/40 hover:bg-red-50 border border-red-200 rounded-sm shadow-[1px_1px_0px_0px_rgba(130,0,11,0.3)] active:shadow-[0.5px_0.5px_0px_0px_rgba(130,0,11,0.3)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                        className="whitespace-nowrap w-fit py-1.5 px-3 font-medium text-gray-800 hover:text-red-600 hover:bg-red-50 rounded-sm border border-orange-800 active:translate-x-[0.5px] active:translate-y-[0.5px] shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[0.5px_0.5px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                         onClick={() => setShowCategoryToDelete(sub.id)}
                                                     >
                                                         <MdOutlineDelete></MdOutlineDelete>

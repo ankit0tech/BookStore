@@ -78,7 +78,7 @@ const Orders = () => {
                     <div className="relative flex items-center w-full">
                         <BiSearch className="absolute mt-0.5 mx-3 text-gray-400"></BiSearch>
                         <input
-                            className="flex py-2 pl-9 outline-hidden border rounded-md w-full"
+                            className="flex py-2 pl-9 outline-hidden border w-full border-gray-300 hover:border-gray-400 rounded-sm text-gray-800"
                             placeholder="Enter book title or author name..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}

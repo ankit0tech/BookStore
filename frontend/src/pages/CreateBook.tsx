@@ -4,6 +4,9 @@ import api from '../utils/api';
 import{ useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { Category } from '../types';
+import DropDownMenu from '../components/DropDownMenu';
+import CategoryGroupDropDownMenu from '../components/CategoryGroupDropDownMenu';
+import { prettifyString } from '../utils/formatUtils';
 
 const CreateBook = () => {
     const {id} = useParams();
@@ -13,7 +16,7 @@ const CreateBook = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [price, setPrice] = useState<string>('');
     const [categories, setCategories] = useState<Category[]|null>([]);
-    const [selectedCategory, setSelectedCategory] = useState<string|null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [imgUrl, setImgUrl] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [isbn, setIsbn] = useState<string>('');
@@ -31,7 +34,7 @@ const CreateBook = () => {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 200}, (_, i) => currentYear - i);
+    const years = Array.from({ length: 200}, (_, i) => (currentYear - i).toString());
 
     const handlePriceInputChange = (e:ChangeEvent<HTMLInputElement>) => {
         const inputValue: string= e.target.value;
@@ -207,18 +210,25 @@ const CreateBook = () => {
     }, [id])
 
     return (
-        <div className='p-4 max-w-2xl mx-auto'>
-            <h1 className='my-4 text-2xl font-semibold'>Create Book</h1>
+        <div className='p-2 md:p-4 flex flex-col gap-4 max-w-2xl mx-auto'>
+            <h1 className='text-xl font-semibold text-gray-900'>Create Book</h1>
             {loading ? <Spinner />:''}
 
-            <form className='space-y-6' onSubmit={handleSaveBook}>
+            <form 
+                className='flex flex-col gap-4' 
+                onSubmit={handleSaveBook}
+            >
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Title</label>
+
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-title'
+                        >Title</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.title ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             >
@@ -226,11 +236,15 @@ const CreateBook = () => {
                         { formErrors.title && (<p className='text-sm text-red-500 mt-1'> {formErrors.title} </p>)}
                     </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Author</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-author'
+                        >Author</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.author ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id='input-author'
                             value={author}
                             onChange={(e) => setAuthor(e.target.value)}
                         >
@@ -238,11 +252,15 @@ const CreateBook = () => {
                         { formErrors.author && (<p className='text-sm text-red-500 mt-1'> {formErrors.author} </p>)}
                    </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Price</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-price'
+                        >Price</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.price ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id='input-price'
                             value={price.toString()}
                             onChange={handlePriceInputChange}
                         >
@@ -250,8 +268,11 @@ const CreateBook = () => {
                         { formErrors.price && (<p className='text-sm text-red-500 mt-1'> {formErrors.price} </p>)}
                    </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Select Category</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-category'
+                        >Select Category</label>
                         <select
                             className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.selectedCategory ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
                             value={selectedCategory || ""}
@@ -268,30 +289,43 @@ const CreateBook = () => {
                             ))}
                         </select>
                         { formErrors.selectedCategory && (<p className='text-sm text-red-500 mt-1'> {formErrors.selectedCategory} </p>)}
-
+                        
+                        <CategoryGroupDropDownMenu 
+                            title='Select Category'
+                            defaultValue='None (No Category)'
+                            selectedOptionStatus={selectedCategory}
+                            setSelectedOptionStatus={setSelectedCategory}
+                            options={categories}
+                            getLabel={prettifyString}                        
+                        />
                     </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Publish Year</label>
-                        <select 
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.publishYear ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
-                            value={publishYear || ''}
-                            onChange={(e) => setPublishYear(e.target.value)}
-                        >
-                            <option value="">Select Year</option>
-                            {years.map((year) => (
-                                <option value={year} key={year}>{year}</option>
-                            ))}
-                        </select>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-publish-year'
+                        >Publish Year</label>
+                        <DropDownMenu
+                            title="Filter Status"
+                            // defaultValue="All Statuses"
+                            selectedOptionStatus={publishYear || ''} 
+                            setSelectedOptionStatus={setPublishYear}
+                            options={years}
+                            // getLabel={(status) => prettifyString(status)}
+                        />
 
                         { formErrors.publishYear && (<p className='text-sm text-red-500 mt-1'> {formErrors.publishYear} </p>)}
                     </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Cover image url</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-image'
+                        >Cover image url</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.imgUrl? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type= "url"
+                            id="input-image"
                             value={imgUrl}
                             onChange={(e) => setImgUrl(e.target.value)}
                         >
@@ -299,78 +333,107 @@ const CreateBook = () => {
                         { formErrors.imgUrl && (<p className='text-sm text-red-500 mt-1'> {formErrors.imgUrl} </p>)}
                     </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Description</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-description'
+                        >Description</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.description? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         >
                         </input>
                         { formErrors.description && (<p className='text-sm text-red-500 mt-1'> {formErrors.description} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>ISBN</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-isbn'
+                        >ISBN</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.isbn? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-isbn"
                             value={isbn}
                             onChange={(e) => setIsbn(e.target.value)}
                         >
                         </input>
                         { formErrors.isbn && (<p className='text-sm text-red-500 mt-1'> {formErrors.isbn} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Publisher</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-publisher'
+                        >Publisher</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.publisher? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-publisher"
                             value={publisher}
                             onChange={(e) => setPublisher(e.target.value)}
                         >
                         </input>
                         { formErrors.publisher && (<p className='text-sm text-red-500 mt-1'> {formErrors.publisher} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Language</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-language'
+                        >Language</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.language? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id="input-language"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
                         >
                         </input>
                         { formErrors.language && (<p className='text-sm text-red-500 mt-1'> {formErrors.language} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Pages</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-pages'
+                        >Pages</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.pages? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="number"
+                            id='input-pages'
                             min={0}
+                            step={1}
                             value={pages}
                             onChange={(e) => setPages(e.target.value)}
                         >
                         </input>
                         { formErrors.pages && (<p className='text-sm text-red-500 mt-1'> {formErrors.pages} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Format</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-format'
+                        >Format</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.format? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="text"
+                            id='input-format'
                             value={format}
                             onChange={(e) => setFormat(e.target.value)}
                         >
                         </input>
                         { formErrors.format && (<p className='text-sm text-red-500 mt-1'> {formErrors.format} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Quantity</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-quantity'
+                        >Quantity</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.quantity? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type="number"
+                            id='input-quantity'
                             min={0}
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
@@ -378,8 +441,8 @@ const CreateBook = () => {
                         </input>
                         { formErrors.quantity && (<p className='text-sm text-red-500 mt-1'> {formErrors.quantity} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Book Status</label>
+                    <div className='flex flex-col gap-1'>
+                        <label className='block text-sm font-semibold text-gray-700'>Book Status</label>
                         <div className='flex items-center mt-2 space-x-3'>
                             <button 
                                 className={`inline-flex items-center rounded-full transition-colors w-11 h-6 ${isActive ? 'bg-blue-600' : 'bg-gray-200'} focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
@@ -395,22 +458,30 @@ const CreateBook = () => {
                         )}
                     </div>
 
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Shelf Location</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-self-location'
+                        >Shelf Location</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.shelfLocation? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type='text'
+                            id="input-self-location"
                             value={shelfLocation}
                             onChange={(e) => setShelfLocation(e.target.value)}
                         >
                         </input>
                         { formErrors.shelfLocation && (<p className='text-sm text-red-500 mt-1'> {formErrors.shelfLocation} </p>)}
                     </div>
-                    <div className=''>
-                        <label className='text-sm font-semibold text-gray-600'>Stock Keeping Unit (SKU)</label>
+                    <div className='flex flex-col gap-1'>
+                        <label 
+                            className='block text-sm font-semibold text-gray-700'
+                            htmlFor='input-sku'    
+                        >Stock Keeping Unit (SKU)</label>
                         <input
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.sku? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
+                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                             type='text'
+                            id='input-sku'
                             value={sku}
                             onChange={(e) => setSku(e.target.value)}
                         >
@@ -420,18 +491,16 @@ const CreateBook = () => {
 
                 </div>
 
-                <div className=" flex flex-row justify-start gap-4">
+                <div className=" flex flex-row justify-end gap-4">
                     <button
-                        // className="rounded-lg mt-2 text-white bg-purple-500 px-4 py-2 hover:bg-purple-600 h-auto"
-                        className={`flex items-center justify-center gap-2 w-fit text-sm text-sky-800 font-medium px-4 py-2 ${loading ? 'cursor-not-allowed' : 'cursor-pointer'} bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(148,217,247,0.6)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out`}
+                        className="w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                         type="submit"
                         disabled={loading}
                     >
                         {loading ? 'Saving...' : 'Save'}
                     </button>
                     <button
-                        // className="rounded-lg mt-2 text-gray-700 bg-white px-4 py-2 border border-gray-300 hover:bg-gray-50 h-auto"
-                        className="flex items-center justify-center gap-2 w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                        className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                         type="button"
                         onClick={() => navigate(-1)}
                     >

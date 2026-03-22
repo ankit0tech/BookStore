@@ -7,7 +7,7 @@ import { useState } from "react";
 const AdminDashboard = () => {
 
     const navigate = useNavigate();
-    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     
     const handleNavigate = (url: string) => {
         if(url[0] != '/') {

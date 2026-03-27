@@ -14,11 +14,12 @@ interface GroupDropDownMenuOptions {
 const CategoryGroupDropDownMenu = ({ title, defaultValue, selectedOptionStatus, setSelectedOptionStatus, options, getLabel }: GroupDropDownMenuOptions) => {
 
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
+    console.log(selectedOptionStatus);
 
     const dropDownTitle = useMemo(() => {
 
         if(selectedOptionStatus === '') {
-            return title;
+            return defaultValue;
         }
 
         if(options) {
@@ -31,7 +32,7 @@ const CategoryGroupDropDownMenu = ({ title, defaultValue, selectedOptionStatus, 
             }
         }
 
-        return title;
+        return defaultValue;
 
     }, [options, selectedOptionStatus, options, getLabel]);
 

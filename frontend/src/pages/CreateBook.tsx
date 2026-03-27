@@ -152,13 +152,6 @@ const CreateBook = () => {
         .then((response) => {
             const categories = response.data.data;
             setCategories(categories);
-            
-            // set default category when no category is selected and categories exist
-            if(!selectedCategory && categories?.length > 0) {
-                if(categories[0].sub_category.length > 0) {
-                    setSelectedCategory(categories[0].sub_category[0].id.toString());
-                }
-            }
         })
         .catch((error) => {
             console.log(error);
@@ -291,7 +284,7 @@ const CreateBook = () => {
                             htmlFor='input-publish-year'
                         >Publish Year</label>
                         <DropDownMenu
-                            title="Filter Status"
+                            title="Publish Year"
                             // defaultValue="All Statuses"
                             selectedOptionStatus={publishYear || ''} 
                             setSelectedOptionStatus={setPublishYear}

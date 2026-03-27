@@ -31,7 +31,7 @@ const DropDownMenu = <T extends string> ({title, defaultValue, selectedOptionSta
             </button>
 
             <div 
-                className={`max-h-[240px] overflow-y-auto bg-white min-w-full text-gray-800 p-2 absolute left-0 top-full mt-1 shadow-md flex flex-col items-start bg-white border border-gray-300 rounded-md z-10 outline-hidden transition-[opacity,scale,tansform] duration-200 
+                className={`max-h-[240px] overflow-y-auto bg-white min-w-full text-gray-800 p-2 absolute left-0 top-full mt-1 shadow-md flex flex-col items-start bg-white border border-gray-300 rounded-md z-10 outline-hidden transition-[opacity,scale,transform] duration-200 
                     ${showDropdown ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 pointer-events-none scale-95 translate-y-1'}
                 `}
                 onMouseDown={(e) => e.preventDefault()}

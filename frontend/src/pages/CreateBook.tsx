@@ -273,22 +273,6 @@ const CreateBook = () => {
                             className='block text-sm font-semibold text-gray-700'
                             htmlFor='input-category'
                         >Select Category</label>
-                        <select
-                            className={`w-full rounded-lg mt-2 px-4 py-2 border ${formErrors.selectedCategory ? 'border-red-500' : 'border-gray-300'} focus:outline-hidden focus:border-blue-400`}
-                            value={selectedCategory || ""}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                            disabled={!categories?.length}
-                        >
-                            <option value=''>None (No Category)</option>
-                            { categories?.map((category) => (
-                                <optgroup key={category.id} label={category.title}>
-                                    {category.sub_category.map((sub)=> (
-                                        <option key={sub.id} value={sub.id}>{sub.title}</option>
-                                    ))}
-                                </optgroup>
-                            ))}
-                        </select>
-                        { formErrors.selectedCategory && (<p className='text-sm text-red-500 mt-1'> {formErrors.selectedCategory} </p>)}
                         
                         <CategoryGroupDropDownMenu 
                             title='Select Category'
@@ -298,6 +282,7 @@ const CreateBook = () => {
                             options={categories}
                             getLabel={prettifyString}                        
                         />
+                        { formErrors.selectedCategory && (<p className='text-sm text-red-500 mt-1'> {formErrors.selectedCategory} </p>)}
                     </div>
 
                     <div className='flex flex-col gap-1'>

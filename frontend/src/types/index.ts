@@ -13,6 +13,13 @@ export type DateOrderStatus = typeof date_order[number];
 export const user_roles = ['user', 'admin', 'superadmin'];
 export type UserRoles = typeof user_roles[number];
 
+export const cancellation_options = ['REQUESTED', 'APPROVED', 'REJECTED']
+export type CancellationOptions = typeof cancellation_options[number];
+
+export const return_options = ['REQUESTED', 'APPROVED', 'REJECTED'];
+export type ReturnOptions = typeof return_options[number];
+
+
 export interface RootState { 
     userinfo: UserState;
     cartinfo: CartInterface;

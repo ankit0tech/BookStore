@@ -59,6 +59,7 @@ const CartOverlay: React.FC<CartOverlayProps> = ({ isOpen, onClose }) => {
                     <button
                         className=""
                         onClick={() => onClose()}
+                        aria-label="close"
                     >
                         <RxCross2 className="text-lg text-amber-600 hover:text-amber-700 hover:scale-105 transition-colors duration-200"/>
                     </button>

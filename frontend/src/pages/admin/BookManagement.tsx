@@ -1,14 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../../utils/api";
 import { AxiosResponse } from "axios";
-import { AdminBook, Category } from "../../types";
+import { AdminBook, Category, date_order } from "../../types";
 import { AiOutlineEdit, AiOutlineEye, AiOutlinePlus, AiOutlineSortAscending, AiOutlineSortDescending } from "react-icons/ai";
 import { MdDeleteOutline, MdInventory } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { BiSearch } from "react-icons/bi";
 import { enqueueSnackbar } from "notistack";
 import DeleteOverlay from "../../components/DeleteOverlay";
-import { formatPrice } from "../../utils/formatUtils";
+import { formatPrice, prettifyString } from "../../utils/formatUtils";
+import CategoryGroupDropDownMenu from "../../components/CategoryGroupDropDownMenu";
+import DropDownMenu from "../../components/DropDownMenu";
+
+const stocks_options = ['Low Stock', 'Out Of Stock'];
+type StocksOptions = typeof stocks_options[number];
 
 
 const BookManagement = () => {
@@ -62,7 +67,15 @@ const BookManagement = () => {
         if(query) params.append('query', query);
         if(filterCategoryId) params.append('cid', filterCategoryId);
         if(filterStatus) params.append('filterStatus', filterStatus);
-        if(filterStock) params.append('filterStock', filterStock);
+        
+        let selected_stock_option: string = '';
+        if(filterStock === 'Low Stock') {
+            selected_stock_option = '10';
+        } else if (filterStock === 'Out Of Stock') {
+            selected_stock_option = '0';
+        }
+        
+        if(selected_stock_option) params.append('filterStock', selected_stock_option);
         if(sortBy) params.append('sortBy', sortBy);
         params.append('sortOrder', sortOrder);
         if(nextCursor) params.append('cursor', String(nextCursor));
@@ -137,25 +150,33 @@ const BookManagement = () => {
 
 
     return (
-        <div className="w-full min-w-[850px]">
-            <div className="flex flex-col gap-4 mb-8 ">
-                <div className="flex justify-between gap-2 mt-4">
-                    <div className="flex items-center gap-2 text-2xl font-semibold"><MdInventory className="inline text-2xl text-violet-700"/> Book Inventory Management</div>
+        <div className="w-full p-2 min-w-[320px] max-w-7xl">
+            <div className="flex flex-col gap-4 mb-4">
+
+                <div className="flex flex-col sm:flex-row justify-between gap-2">
+                    <div className="flex items-center gap-2 text-xl font-semibold">
+                        <MdInventory className="inline text-2xl text-orange-600"/> 
+                        <span>Book Management</span>
+                    </div>
                     <button
-                        className="py-2 px-3 flex items-center gap-2 text-white bg-purple-500 border rounded-lg hover:bg-purple-600 transition-colors duration-200" 
+                        className="w-fit flex flex-row gap-2 items-center py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                         onClick={() => navigate('/admin-dashboard/books/create')}
-                        >
-                            <AiOutlinePlus className="inline"/> 
-                            Add new book
+                    >
+                        <AiOutlinePlus className="inline"/> 
+                        <span>New book</span>
                     </button>
                 </div>
 
-                <div className="my-2 flex items-center gap-2">
+                <form 
+                    className="flex items-center gap-2 flex-col lg:flex-row"
+                    onSubmit={(e) => {e.preventDefault()}}
+                >
                     <div className="relative flex items-center w-full">
-                        <BiSearch className="mx-3 mt-0.5 absolute text-md text-gray-400"/>
-                        <input 
-                            className="w-full min-w-48 pl-9 py-2 rounded-md border outline-hidden"
-                            placeholder="Search books..."
+                        <BiSearch className="absolute mt-0.5 mx-3 text-gray-400"></BiSearch>
+                        <input
+                            className="flex py-2 pl-9 outline-hidden border w-full border-gray-300 hover:border-gray-400 rounded-sm text-gray-800"
+                            placeholder="Enter book title, or author name..."
+                            aria-label="Search orders"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyDown={(e) => {
@@ -163,72 +184,77 @@ const BookManagement = () => {
                             }}
                         ></input>
                     </div>
-                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
-                        <select 
-                            className=""
-                            value={filterCategoryId}
-                            onChange={(e) => setFilterCategoryId(e.target.value)}
-                            disabled={!categories.length}
-                        >
-                            <option value="">All Categories</option>
-                            {categories.map((category) => (
-                                <optgroup key={category.id} label={category.title}>
-                                    {category.sub_category.map((sub)=>(
-                                        <option key={sub.id} value={sub.id} label={sub.title}></option>
-                                    ))}
-                                </optgroup>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
-                        <select 
-                            className=""
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                        >
-                            <option value="">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
-                        <select
-                            className=""
-                            value={filterStock}
-                            onChange={(e) => setFilterStock(e.target.value)}
-                        >
-                            <option value="">All Stock</option>
-                            <option value="10">Low Stock</option>
-                            <option value="0">Out Of Stock</option>
-                        </select>
-                    </div>
-                    <div
-                        className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md"
-                    >
-                        <button 
-                            onClick={handleSortingChange}
-                        >
-                            {sortOrder === 'asc' ? <AiOutlineSortAscending/> : <AiOutlineSortDescending/>}
-                        </button>
-                    </div>
-                </div>
 
-                <div className="my-2 flex flex-row gap-2">
-                    <div className="flex flex-col bg-blue-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-blue-600">Total Books</div>
-                        <div className="font-bold text-xl text-blue-800">{totalBookCount}</div>
+                    <div className="w-full flex flex-col xs:flex-row gap-2 self-start">
+
+                        <div className="w-full flex flex-col lg:flex-row gap-2">
+                            <div className="w-full">
+                                <CategoryGroupDropDownMenu 
+                                    title='Select Category'
+                                    defaultValue='None (No Category)'
+                                    selectedOptionStatus={filterCategoryId}
+                                    setSelectedOptionStatus={setFilterCategoryId}
+                                    options={categories}
+                                    getLabel={prettifyString}                        
+                                />
+                            </div>
+
+                            <div className="w-full">
+                                <DropDownMenu
+                                    title="Active Status"
+                                    defaultValue="All Status"
+                                    selectedOptionStatus={filterStatus}
+                                    setSelectedOptionStatus={setFilterStatus}
+                                    options={['active', 'inactive']}
+                                    getLabel={prettifyString}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="w-full flex flex-col lg:flex-row gap-2">
+                            <div className="w-full">
+                                <DropDownMenu
+                                    title="Filter Stocks"
+                                    defaultValue="All Stocks"
+                                    selectedOptionStatus={filterStock}
+                                    setSelectedOptionStatus={setFilterStock}
+                                    options={stocks_options}
+                                />
+                            </div>
+
+                            <div className="w-fit px-4 py-2 outline-hidden rounded-sm border border-gray-300 hover:border-gray-400">
+                                <button 
+                                    onClick={handleSortingChange}
+                                >
+                                    {sortOrder === 'asc' ? <AiOutlineSortAscending/> : <AiOutlineSortDescending/>}
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
-                    <div className="flex flex-col bg-green-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-green-600">Active Books</div>
-                        <div className="font-bold text-xl text-green-800">{activeBookCount}</div>
+                </form>
+
+                <div className="flex flex-row gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full">
+                        <div className="flex flex-col bg-blue-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-blue-600">Total Books</div>
+                            <div className="font-bold text-xl text-blue-800">{totalBookCount}</div>
+                        </div>
+                        <div className="flex flex-col bg-green-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-green-600">Active Books</div>
+                            <div className="font-bold text-xl text-green-800">{activeBookCount}</div>
+                        </div>
                     </div>
-                    <div className="flex flex-col bg-yellow-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-yellow-600">Low Stock</div>
-                        <div className="font-bold text-xl text-yellow-800">{lowStockCount}</div>
-                    </div>
-                    <div className="flex flex-col bg-red-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-red-600">Out of Stock</div>
-                        <div className="font-bold text-xl text-red-800">{outOfStock}</div>
+
+                    <div className="flex flex-col sm:flex-row gap-2 w-full">
+                        <div className="flex flex-col bg-yellow-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-yellow-600">Low Stock</div>
+                            <div className="font-bold text-xl text-yellow-800">{lowStockCount}</div>
+                        </div>
+                        <div className="flex flex-col bg-red-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-red-600">Out of Stock</div>
+                            <div className="font-bold text-xl text-red-800">{outOfStock}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -237,10 +263,10 @@ const BookManagement = () => {
                 <thead className="">
                     <tr className="text-gray-700 bg-gray-100 text-xs text-left">
                         <th className="px-8 py-4 font-normal">BOOK</th>
-                        <th className="px-2 py-4 font-normal">CATEGORY</th>
-                        <th className="px-2 py-4 font-normal">PRICE</th>
-                        <th className="px-2 py-4 font-normal">STOCK</th>
-                        <th className="px-2 py-4 font-normal">STATUS</th>
+                        <th className="hidden lg:table-cell px-2 py-4 font-normal">CATEGORY</th>
+                        <th className="hidden lg:table-cell px-2 py-4 font-normal">PRICE</th>
+                        <th className="hidden sm:table-cell px-2 py-4 font-normal">STOCK</th>
+                        <th className="hidden xs:table-cell px-2 py-4 font-normal">STATUS</th>
                         <th className="px-2 py-4 font-normal">ACTION</th>
                     </tr>
                 </thead>
@@ -251,20 +277,20 @@ const BookManagement = () => {
                                 <div className="font-medium">{book.title}</div>
                                 <div className="text-gray-500">by {book.author}</div>
                             </td>
-                            <td className="px-2 py-4">{book.category?.title || "Uncategorized"}</td>
-                            <td className="px-2 py-4">{formatPrice(book.price, book.currency)}</td>
-                            <td className="px-2 py-4"> 
+                            <td className="hidden lg:table-cell px-2 py-4">{book.category?.title || "Uncategorized"}</td>
+                            <td className="hidden lg:table-cell px-2 py-4">{formatPrice(book.price, book.currency)}</td>
+                            <td className="hidden sm:table-cell px-2 py-4"> 
                                 <div className={`px-2 py-0.5 rounded-full size-fit text-xs font-medium ${book.quantity == 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
                                     {book.quantity == 0 ? `${book.quantity} - Out of Stock` : `${book.quantity} - In Stock`}
                                 </div>
                             </td>
-                            <td className="px-2 py-4">
+                            <td className="hidden xs:table-cell px-2 py-4">
                                 <div className={`px-3 py-1 rounded-full size-fit text-xs font-medium ${book.is_active ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                                     {book.is_active ? "Active" : "Inactive"}
                                 </div>
                             </td>
                             <td>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 mx-1">
                                     <button 
                                         className="text-blue-700 text-lg"
                                         onClick={() => navigate(`/admin-dashboard/books/details/${book.id}`)}

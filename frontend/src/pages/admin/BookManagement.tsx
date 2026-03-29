@@ -265,7 +265,7 @@ const BookManagement = () => {
                         <th className="px-8 py-4 font-normal">BOOK</th>
                         <th className="hidden lg:table-cell px-2 py-4 font-normal">CATEGORY</th>
                         <th className="hidden lg:table-cell px-2 py-4 font-normal">PRICE</th>
-                        <th className="hidden sm:table-cell px-2 py-4 font-normal">STOCK</th>
+                        <th className="hidden md:table-cell px-2 py-4 font-normal">STOCK</th>
                         <th className="hidden xs:table-cell px-2 py-4 font-normal">STATUS</th>
                         <th className="px-2 py-4 font-normal">ACTION</th>
                     </tr>
@@ -279,7 +279,7 @@ const BookManagement = () => {
                             </td>
                             <td className="hidden lg:table-cell px-2 py-4">{book.category?.title || "Uncategorized"}</td>
                             <td className="hidden lg:table-cell px-2 py-4">{formatPrice(book.price, book.currency)}</td>
-                            <td className="hidden sm:table-cell px-2 py-4"> 
+                            <td className="hidden md:table-cell px-2 py-4"> 
                                 <div className={`px-2 py-0.5 rounded-full size-fit text-xs font-medium ${book.quantity == 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
                                     {book.quantity == 0 ? `${book.quantity} - Out of Stock` : `${book.quantity} - In Stock`}
                                 </div>

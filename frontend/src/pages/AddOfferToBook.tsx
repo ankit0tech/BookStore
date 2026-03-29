@@ -4,7 +4,7 @@ import api from "../utils/api";
 import { enqueueSnackbar } from "notistack";
 import Spinner from "../components/Spinner";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-
+import OffersDropDownMenu from '../components/OffersDropDownMenu';
 
 const AddOfferToBook = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -80,7 +80,7 @@ const AddOfferToBook = () => {
                 <Spinner/>
                 :
                 <form 
-                    className="p-4 flex flex-col justify-between min-w-1/4 max-w-[450px] mx-auto space-y-2"
+                    className="flex flex-col justify-between min-w-[320px] max-w-[450px] mx-auto space-y-2"
                     onSubmit={(e) => handleFormSubmit(e)}    
                 > 
                     <div className="p-4 text-white rounded-t-lg bg-gradient-to-r from-blue-600 to-blue-500 space-y-1">
@@ -107,37 +107,31 @@ const AddOfferToBook = () => {
                     <div className="space-y-4">
                         <div className="">
                             <label className="inline-block my-2 text-sm font-medium text-gray-700">Select offer</label>
-                            <select 
-                                className="py-2 w-full rounded-md border border-gray-200 hover:border-gray-300 focus:outline-hidden"
-                                value = {selectedOffer || ""}
-                                onChange={(e) => setSelectedOffer(e.target.value)}
-                            >
-                                <option value="" disabled>Select an offer</option>
-                                { activeOffers?.map((offer) => (
-                                    <option key={offer.id} value={offer.id} >
-                                        {offer.description}
-                                    </option>
-                                ))}
-                            </select>
-                            {formErrors.selectedOffer && 
-                                <div className="text-sm text-red-500 mt-1">Please select a valid option</div>
-                            }
+                            <OffersDropDownMenu
+                                title="Select Offers"
+                                defaultValue="Select Offers"
+                                selectedOptionStatus={selectedOffer || ''} 
+                                setSelectedOptionStatus={setSelectedOffer}
+                                offers={activeOffers}
+                            />
+
+                            {formErrors.selectedOffer && <div className="text-sm text-red-500 mt-1">Please select a valid option</div>}
 
                         </div>
                     
                         <div className="w-full flex gap-2">
                             <button
-                                className="w-full my-1 px-4 py-2 font-medium text-sm text-gray-800 active:scale-98 border border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-md transition-all ease-in-out duration-200"
+                                className="w-full py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                type="submit"
+                            >
+                                Add Offer
+                            </button>
+                            <button
+                                className="w-full py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                 type='button'
                                 onClick={() => navigate(-1)}
                             >
                                 Cancel
-                            </button>
-                            <button
-                                className="w-full my-1 px-4 py-2 font-medium text-sm text-blue-600 active:scale-98 border border-sky-200 hover:border-sky-300 bg-sky-50 hover:bg-sky-100 rounded-md transition-all ease-in-out duration-200"
-                                type="submit"
-                            >
-                                Add Offer
                             </button>
                         </div>
                     </div>

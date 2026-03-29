@@ -33,7 +33,7 @@ const CategoryGroupDropDownMenu = ({ title, defaultValue, selectedOptionStatus, 
 
         return defaultValue;
 
-    }, [options, selectedOptionStatus, options, getLabel]);
+    }, [options, selectedOptionStatus, getLabel]);
 
 
     return (

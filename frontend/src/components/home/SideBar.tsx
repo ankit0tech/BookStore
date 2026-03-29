@@ -134,31 +134,31 @@ const SideBar = ({selectWithSpecialOffer, setSelectWithSpecialOffer, sortByAvera
                         <li 
                         className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
                             ${activePrice === 0 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
-                        onClick={() => {updateMinPrice(0); updateMaxPrice(100)}} >
+                        onClick={() => {updateMinPrice(0); updateMaxPrice(10000)}} >
                             Under &#8377;100
                         </li>
                         <li 
                         className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900
-                            ${activePrice === 100 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`} 
-                        onClick={() => {updateMinPrice(100); updateMaxPrice(200)}} >
+                            ${activePrice === 10000 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`} 
+                        onClick={() => {updateMinPrice(10000); updateMaxPrice(20000)}} >
                             &#8377;100 - &#8377;200
                         </li>
                         <li 
                         className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
-                            ${activePrice === 200 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`} 
-                        onClick={() => {updateMinPrice(200); updateMaxPrice(500)}} >
+                            ${activePrice === 20000 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`} 
+                        onClick={() => {updateMinPrice(20000); updateMaxPrice(50000)}} >
                             &#8377;200 - &#8377;500
                         </li>
                         <li 
                         className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
-                            ${activePrice === 500 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
-                        onClick={() => {updateMinPrice(500); updateMaxPrice(1000)}} >
+                            ${activePrice === 50000 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
+                        onClick={() => {updateMinPrice(50000); updateMaxPrice(100000)}} >
                             &#8377;500 - &#8377;1000
                         </li>
                         <li 
                         className={`ml-4 py-1 border-l pl-2 cursor-pointer text-sm text-gray-600 hover:border-l hover:border-gray-800/50 hover:text-gray-900 
-                            ${activePrice === 1000 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
-                        onClick={() => {updateMinPrice(1000); updateMaxPrice(null)}} >
+                            ${activePrice === 100000 && "text-gray-900 border-gray-900 hover:border-gray-900 font-semibold"}`}
+                        onClick={() => {updateMinPrice(100000); updateMaxPrice(null)}} >
                             Over &#8377;1000
                         </li>
                     </ul>

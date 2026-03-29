@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { UserInterface } from "../../types";
+import { user_roles, UserInterface } from "../../types";
 import api from "../../utils/api";
 import { AxiosResponse } from "axios";
 import { enqueueSnackbar } from "notistack";
@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 import { MdDeleteOutline } from "react-icons/md";
 import DeleteOverlay from "../../components/DeleteOverlay";
+import DropDownMenu from "../../components/DropDownMenu";
+import { prettifyString } from "../../utils/formatUtils";
 
 
 const UserManagement = () => {
@@ -111,18 +113,25 @@ const UserManagement = () => {
 
 
     return (
-        <div className="w-full min-w-[850px]">
-            <div className="flex flex-col gap-4 mb-8">
-                <div  className="flex flex-col gap-4 mb-8">
-                    <div className="flex items-center gap-2 mt-4 text-2xl font-semibold"><FaUserFriends className="inline text-2xl text-violet-700"/> User Management</div>
+        <div className="w-full p-2 min-w-[320px] max-w-7xl">
+            <div className="flex flex-col gap-4 mb-4">
+                <div  className="flex flex-col sm:flex-row justify-between gap-2">
+                    <div className="flex items-center gap-2 text-2xl font-semibold">
+                        <FaUserFriends className="inline text-2xl text-orange-600"/> 
+                        <span>User Management</span>
+                    </div>
                 </div>
 
-                <div className="my-2 flex items-center gap-2">
+                <form 
+                    className="flex items-center gap-2 flex-col lg:flex-row"
+                    onSubmit={(e) => {e.preventDefault()}}
+                >
                     <div className="relative flex items-center w-full">
-                        <BiSearch className="mx-3 mt-0.5 absolute text-md text-gray-400"/>
+                        <BiSearch className="absolute mt-0.5 mx-3 text-gray-400"/>
                         <input 
-                            className="w-full min-w-48 pl-9 py-2 rounded-md border outline-hidden"
+                            className="flex py-2 pl-9 outline-hidden border w-full border-gray-300 hover:border-gray-400 rounded-sm text-gray-800"
                             placeholder="Search users..."
+                            aria-label="Search user"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={(e) => {
@@ -130,101 +139,108 @@ const UserManagement = () => {
                             }}
                         ></input>
                     </div>
-                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
-                        <select 
-                            className=""
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                        >
-                            <option value="">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="deactivated">Deactivated</option>
-                        </select>
+
+                    <div className="w-full flex flex-col xs:flex-row gap-2 self-start">
+                        
+                        <div className="w-full flex flex-col lg:flex-row gap-2">
+                            <div className="w-full">
+                                <DropDownMenu
+                                    title="Active Statuses"
+                                    defaultValue="All Status"
+                                    selectedOptionStatus={filterStatus}
+                                    setSelectedOptionStatus={setFilterStatus}
+                                    options={['active', 'deactivated']}
+                                    getLabel={prettifyString}
+                                />
+                            </div>
+
+                            <div className="w-full">
+                                <DropDownMenu
+                                    title="User Role"
+                                    defaultValue="All Roles"
+                                    selectedOptionStatus={filterUserRole}
+                                    setSelectedOptionStatus={setFilterUserRole}
+                                    options={user_roles}
+                                    getLabel={prettifyString}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="w-full">
+                            <DropDownMenu
+                                title="Verification Status"
+                                defaultValue="All Users"
+                                selectedOptionStatus={filterVerified}
+                                setSelectedOptionStatus={setFilterVerified}
+                                options={['verified', 'unverified']}
+                                getLabel={prettifyString}
+                            />
+                        </div>
                     </div>
-                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
-                        <select 
-                            className=""
-                            value={filterUserRole}
-                            onChange={(e) => setFilterUserRole(e.target.value)}
-                        >
-                            <option value="">All Roles</option>
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                            <option value="superadmin">Super Admin</option>
-                        </select>
+                </form>
+
+                <div className="w-full my-2 flex flex-col lg:flex-row gap-2">
+                    <div className="w-full flex gap-2">
+                        <div className="flex flex-col bg-blue-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-blue-600">Total Users</div>
+                            <div className="font-bold text-xl text-blue-800">{totalUsers}</div>
+                        </div>
+                        <div className="flex flex-col bg-green-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-green-600">Active Users</div>
+                            <div className="font-bold text-xl text-green-800">{activeUsers}</div>
+                        </div>
+                        <div className="flex flex-col bg-sky-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-sky-600">Verified Users</div>
+                            <div className="font-bold text-xl text-sky-800">{verifiedUsers}</div>
+                        </div>
                     </div>
-                    <div className="px-4 py-2 outline-hidden border focus:border-blue-300 rounded-md">
-                        <select
-                            className=""
-                            value={filterVerified}
-                            onChange={(e) => setFilterVerified(e.target.value)}
-                        >
-                            <option value="">All Verification Status</option>
-                            <option value="verified">Verified</option>
-                            <option value="unverified">Unverified</option>
-                        </select>
+                    <div className="w-full flex gap-2">
+                        <div className="flex flex-col bg-teal-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-teal-600">Normal Users</div>
+                            <div className="font-bold text-xl text-teal-800">{normalUsers}</div>
+                        </div>
+                        <div className="flex flex-col bg-yellow-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-yellow-600">Admin Users</div>
+                            <div className="font-bold text-xl text-yellow-800">{adminUsers}</div>
+                        </div>
+                        <div className="flex flex-col bg-red-50 p-4 w-full rounded-lg">
+                            <div className="text-sm text-red-600">Superadmin Users</div>
+                            <div className="font-bold text-xl text-red-800">{superadminUsers}</div>
+                        </div>
                     </div>
                 </div>
-
-                <div className="my-2 flex flex-row gap-2">
-                    <div className="flex flex-col bg-blue-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-blue-600">Total Users</div>
-                        <div className="font-bold text-xl text-blue-800">{totalUsers}</div>
-                    </div>
-                    <div className="flex flex-col bg-green-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-green-600">Active Users</div>
-                        <div className="font-bold text-xl text-green-800">{activeUsers}</div>
-                    </div>
-                    <div className="flex flex-col bg-sky-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-sky-600">Verified Users</div>
-                        <div className="font-bold text-xl text-sky-800">{verifiedUsers}</div>
-                    </div>
-                    <div className="flex flex-col bg-teal-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-teal-600">Normal Users</div>
-                        <div className="font-bold text-xl text-teal-800">{normalUsers}</div>
-                    </div>
-                    <div className="flex flex-col bg-yellow-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-yellow-600">Admin Users</div>
-                        <div className="font-bold text-xl text-yellow-800">{adminUsers}</div>
-                    </div>
-                    <div className="flex flex-col bg-red-50 p-4 w-full rounded-lg">
-                        <div className="text-sm text-red-600">Superadmin Users</div>
-                        <div className="font-bold text-xl text-red-800">{superadminUsers}</div>
-                    </div>
-                </div>
-
             </div>
 
             <table className="border border-gray-200 w-full">
                 <thead className="">
                     <tr className="text-gray-700 bg-gray-100 text-xs text-left">
                         <th className="px-8 py-4 font-normal">EMAIL</th>
-                        <th className="px-2 py-4 font-normal">ROLE</th>
-                        <th className="px-2 py-4 font-normal">ACTIVATION STATUS</th>
-                        <th className="px-2 py-4 font-normal">VERIFICATION STATUS</th>
+                        <th className="hidden md:table-cell px-2 py-4 font-normal">ROLE</th>
+                        <th className="hidden md:table-cell px-2 py-4 font-normal">ACTIVATION STATUS</th>
+                        <th className="hidden lg:table-cell px-2 py-4 font-normal">VERIFICATION STATUS</th>
                         <th className="px-2 py-4 font-normal">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>
                     {users && users.map((user) => (
                         <tr className="text-sm border" key={user.id}>
-                            <td className="px-8 py-4">
+                            <td className="pl-4 pr-2 py-4">
                                 <div className="font-medium _text-gray-500"> {user.email}</div>
                                 <div className="_font-medium text-gray-500">{user.first_name} {user.last_name}</div>
                             </td>
-                            <td className="px-2 py-4">{user.role || "Uncategorized"}</td>
-                            <td className="px-2 py-4">
+                            <td className="hidden md:table-cell px-2 py-4">{user.role || "Uncategorized"}</td>
+                            <td className="hidden md:table-cell px-2 py-4">
                                 <div className={`px-2 py-0.5 rounded-full size-fit text-xs font-medium ${user.deactivated ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
                                     {user.deactivated ? "deactivated" : "active"}
                                 </div>
                             </td>
-                            <td className="px-2 py-4"> 
+                            <td className="hidden lg:table-cell px-2 py-4"> 
                                 <div className={`px-2 py-0.5 rounded-full size-fit text-xs font-medium ${user.verified ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                                     {user.verified ? 'verified' : 'unverified'}
                                 </div>
                             </td>
                             <td>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 mr-1">
                                     <button
                                         className="text-blue-700 text-lg"
                                         onClick={() => navigate(`/admin-dashboard/user/details/${user.id}`)}

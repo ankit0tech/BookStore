@@ -177,7 +177,7 @@ const Home = () => {
 
             <div className='flex-1 overflow-y-auto'>
                 <BooksCard books={books} />
-                { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-20 w-full'></div>}
+                { nextCursor && <div id='loadNextPage' ref={observeRef} className='h-10 w-full'></div>}
             </div>
         </div>
     );

@@ -1,19 +1,38 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MdKeyboardArrowDown } from 'react-icons/md';
+import { Offer } from '../types';
 
 interface DropDownMenuProps<T extends string> {
     title: string,
     defaultValue?: string,
-    selectedOptionStatus: T | '', 
-    setSelectedOptionStatus: (selectedOptionStatus: T | '') => void,
-    options: readonly T[],
-    getLabel?: (value: T) => string
+    selectedOptionStatus: string, 
+    setSelectedOptionStatus: (selectedOptionStatus: string) => void,
+    offers: readonly Offer[],
+    getLabel?: (value: string) => string
 };
 
 
-const DropDownMenu = <T extends string> ({title, defaultValue, selectedOptionStatus, setSelectedOptionStatus, options, getLabel}: DropDownMenuProps<T>) => {
+const OffersDropDownMenu = <T extends string> ({title, defaultValue, selectedOptionStatus, setSelectedOptionStatus, offers, getLabel}: DropDownMenuProps<T>) => {
     
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
+
+    const dropDownTitle = useMemo(() => {
+
+        if(selectedOptionStatus === '') {
+            return defaultValue;
+        }
+
+        if(offers) {
+            for(const offer of offers) {
+                if(String(offer.id) === selectedOptionStatus) {
+                    return getLabel ? getLabel(offer.offer_type) : offer.offer_type;
+                }
+            }
+        }
+
+        return defaultValue;
+
+    }, [offers, selectedOptionStatus, getLabel]);
 
     return (
         <div 
@@ -26,7 +45,7 @@ const DropDownMenu = <T extends string> ({title, defaultValue, selectedOptionSta
                 aria-label={title}
                 type="button"
             >
-                {selectedOptionStatus === '' ? title : (getLabel ? getLabel(selectedOptionStatus) : selectedOptionStatus)}
+                <div>{dropDownTitle}</div>
                 <MdKeyboardArrowDown className={`text-lg ${showDropdown ? 'rotate-180' : 'rotate-0'} transition-transform duration-300 ease-out`} />
             </button>
 
@@ -46,13 +65,13 @@ const DropDownMenu = <T extends string> ({title, defaultValue, selectedOptionSta
                     </div>)
                 }
 
-                {options.map((option) => (
-                    <div 
+                {offers?.map((offer) => (
+                    <div
                         className="w-full text-nowrap cursor-pointer px-4 py-1.5 box-border hover:text-gray-950 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-                        key={option}
-                        onClick={() => {setSelectedOptionStatus(option); setShowDropdown(false)}}
+                        key={offer.id}
+                        onClick={() => {setSelectedOptionStatus(String(offer.id)); setShowDropdown(false)}}
                     >
-                        {getLabel ? getLabel(option) : option}
+                        {getLabel ? getLabel(offer.offer_type) : offer.offer_type}
                     </div>
                 ))}
             </div>
@@ -60,4 +79,4 @@ const DropDownMenu = <T extends string> ({title, defaultValue, selectedOptionSta
     );
 }
 
-export default DropDownMenu;
+export default OffersDropDownMenu;

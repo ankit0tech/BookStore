@@ -1,5 +1,5 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { OrderInterface } from "../../types";
+import { cancellation_options, order_statuses, OrderInterface, payment_statuses, return_options } from "../../types";
 import { useEffect, useState } from 'react';
 import api from "../../utils/api";
 import { enqueueSnackbar } from "notistack";
@@ -7,6 +7,7 @@ import { formatDate, formatPrice, prettifyString } from "../../utils/formatUtils
 import { FiPackage } from "react-icons/fi";
 import { CiCalendar, CiDeliveryTruck } from "react-icons/ci";
 import { RxCross2 } from 'react-icons/rx';
+import DropDownMenu from "../../components/DropDownMenu";
 
 const ManageOrder = () => {
     
@@ -26,10 +27,10 @@ const ManageOrder = () => {
     const [showShippingUpdate, setShowShippingUpdate] = useState<boolean>(false);
     const [showReturnShippingUpdate, setShowReturnShippingUpdate] = useState<boolean>(false);
 
-    const paymentOptions = ['pending', 'completed', 'failed', 'refunded'];
-    const deliveryOptions = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned'];
-    const cancellationOptions = ['requested', 'approved', 'rejected'];
-    const returnOptions = ['requested', 'approved', 'rejected'];
+    // const paymentOptions = ['pending', 'completed', 'failed', 'refunded'];
+    // const deliveryOptions = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned'];
+    // const cancellationOptions = ['requested', 'approved', 'rejected'];
+    // const returnOptions = ['requested', 'approved', 'rejected'];
 
 
     // const navigate = useNavigate();
@@ -179,150 +180,154 @@ const ManageOrder = () => {
 
 
     return (
-        <div className="p-4 max-w-4xl">
+        <div className="max-w-4xl p-2 md:p-4 min-w-[320px]">
             {orderDetails ? (
-                <div>
-                    <div className="space-y-1 mb-4">
-                        <h2 className="text-3xl font-semibold text-gray-900">Order Details</h2>
-                        <p className="px-4 py-2 text-gray-700 text-sm font-medium bg-gray-50 border rounded-lg w-fit">
-                            #{orderDetails.order_number}
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-row gap-2">
+                        <p className="text-lg font-semibold text-gray-800">
+                            <span className="text-xl text-orange-500">#</span>{orderDetails.order_number}
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="col-span-2 flex flex-col justify-between gap-8 min-w-64 mt-4">
+                        <div className="col-span-2 flex flex-col justify-between gap-6 min-w-64">
 
-
-                            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-
-                                <div className="flex items-center text-lg gap-2 col-span-2">
-                                    <FiPackage className="text-xl text-blue-600"></FiPackage>
-                                    <p className="font-semibold text-gray-900">Order Status</p>
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center text-lg gap-2">
+                                    <FiPackage className="text-xl"></FiPackage>
+                                    <p className="font-medium text-gray-800">Order Status</p>
                                 </div>
 
-                                <div className="flex flex-col gap-1 col-span-2">
-                                    <p className="text-sm text-gray-500">Placed by</p>
-                                    <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.user?.email}</div>
-                                </div>
+                                <div className="grid grid-cols-2 gap-x-6 gap-y-4">
 
-                                <div className="flex flex-col gap-1">
-                                    <p className="flex gap-2 items-center text-sm text-gray-700">Placed</p>
-                                    <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
-                                        <CiCalendar className="text-base"></CiCalendar>
-                                        <div>{formatDate(orderDetails.purchase_date)}</div>
+                                    <div className="flex flex-col gap-1 col-span-2">
+                                        <p className="text-sm text-gray-600">Placed by</p>
+                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.user?.email}</div>
                                     </div>
-                                </div>
 
-                                <div className="flex flex-col gap-1">
-                                    {orderDetails.order_status.toLowerCase() !== 'delivered' ? (
-                                        <>
-                                            <p className="flex gap-2 items-center text-sm text-gray-700">Expected Delivery Date</p>
-                                            <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
-                                                <CiDeliveryTruck className="text-xl"></CiDeliveryTruck>
-                                                <div>{formatDate(orderDetails.expected_delivery_date)}</div>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        orderDetails.actual_delivery_date && 
-                                        <>
-                                            <p className="flex gap-2 items-center text-sm text-gray-700">Delivery Date</p>
-                                            <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
-                                                <CiDeliveryTruck className="text-xl"></CiDeliveryTruck>
-                                                <div>{formatDate(orderDetails.actual_delivery_date)}</div>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-
-                                <div className="flex flex-col gap-1">
-                                    <p className="text-sm text-gray-500">Order Status</p>
-                                    <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{prettifyString(orderDetails.order_status.toLowerCase())}</div>
-                                </div>
-
-                                <div className="flex flex-col gap-1">
-                                    <p className="text-sm text-gray-500">Payment Status</p>
-                                    <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{prettifyString(orderDetails.payment_status.toLowerCase())}</div>
-                                </div>
-
-                                {/* <div className="flex flex-col gap-1">
-                                    <p className="text-sm text-gray-500">Placed by</p>
-                                    <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.user?.email}</div>
-                                </div> */}
-                                {orderDetails.shipping_carrier && (
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-sm text-gray-500">Shipping Carrier</p>
-                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_carrier}</div>
+                                        <p className="text-sm text-gray-600">Placed</p>
+                                        <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
+                                            <CiCalendar className="text-xl shrink-0 self-start"></CiCalendar>
+                                            <div>{formatDate(orderDetails.purchase_date)}</div>
+                                        </div>
                                     </div>
-                                )}
 
-                                { orderDetails.tracking_number &&(
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-sm text-gray-500">Tracking Number</p>
-                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.tracking_number}</div>
+                                        {orderDetails.order_status.toLowerCase() !== 'delivered' ? (
+                                            <>
+                                                <p className="text-sm text-gray-600 line-clamp-1">Expected Delivery Date</p>
+                                                <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
+                                                    <CiDeliveryTruck className="text-xl shrink-0 self-start"></CiDeliveryTruck>
+                                                    <div className="">{formatDate(orderDetails.expected_delivery_date)}</div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            orderDetails.actual_delivery_date && 
+                                            <>
+                                                <p className="text-sm text-gray-600">Delivery Date</p>
+                                                <div className="flex gap-2 px-4 py-2 items-center font-medium text-sm text-gray-950 bg-gray-50 border border-gray-200 rounded-lg w-fit">
+                                                    <CiDeliveryTruck className="text-xl shrink-0 self-start"></CiDeliveryTruck>
+                                                    <div className="">{formatDate(orderDetails.actual_delivery_date)}</div>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
-                                )}
 
-                                { orderDetails.shipping_label_url &&(
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-sm text-gray-500">Shipping Label Url</p>
-                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_label_url}</div>
+                                        <p className="text-sm text-gray-600">Order Status</p>
+                                        <div className="w-fit font-medium px-4 py-2 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{prettifyString(orderDetails.order_status.toLowerCase())}</div>
                                     </div>
-                                )}
 
-                                { orderDetails.return_tracking_number &&(
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-sm text-gray-500">Return Tracking Number</p>
-                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_tracking_number}</div>
+                                        <p className="text-sm text-gray-600">Payment Status</p>
+                                        <div className="w-fit font-medium px-4 py-2 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{prettifyString(orderDetails.payment_status.toLowerCase())}</div>
                                     </div>
-                                )}
-
-                                { orderDetails.return_shipping_label_url &&(
-                                    <div className="flex flex-col gap-1">
-                                        <p className="text-sm text-gray-500">Return Shipping Label Url</p>
-                                        <div className="w-fit font-medium px-4 py-1.5 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_shipping_label_url}</div>
-                                    </div>
-                                )}
-
-
-                                <div className="col-span-2">
                                     
-                                    { orderDetails.cancellation_status.toLowerCase() !== 'none' && (
-                                            <div className="flex flex-col gap-1">
-                                                <div className="text-sm text-gray-500">Cancellation Status</div>
-                                                <div className="w-fit font-medium px-4 py-1.5 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg">{prettifyString(orderDetails.cancellation_status.toLowerCase())}</div>
-                                                {orderDetails.cancellation_reason && 
-                                                    <div className="my-2 flex flex-col gap-1">
-                                                        <div className="text-sm text-gray-500">Cancellation Reason:</div> 
-                                                        <div className="px-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg">{orderDetails.cancellation_reason}</div>   
-                                                    </div>
-                                                }
-                                            </div>
-                                        )
-                                    }
+                                    {orderDetails.shipping_carrier && (
+                                        <div className="flex flex-col gap-1">
+                                            <p className="text-sm text-gray-600">Shipping Carrier</p>
+                                            <div className="w-fit font-medium px-4 py-2 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_carrier}</div>
+                                        </div>
+                                    )}
 
-                                    {orderDetails.return_status.toLowerCase() !== 'none' &&
-                                        (
-                                            <div className="flex flex-col gap-1">
-                                                <div className="text-sm text-gray-500">Return Status</div>
-                                                <div className="w-fit font-medium px-4 py-1.5 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg">{prettifyString(orderDetails.return_status.toLowerCase())}</div>
-                                                {orderDetails.return_reason && 
-                                                    <div className="my-2 flex flex-col gap-1">
-                                                        <div className="text-sm text-gray-500">Return Reason:</div> 
-                                                        <div className="px-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg">{orderDetails.return_reason}</div>   
+                                    { orderDetails.tracking_number &&(
+                                        <div className="flex flex-col gap-1">
+                                            <p className="text-sm text-gray-600">Tracking Number</p>
+                                            <div className="w-fit font-medium px-4 py-2 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.tracking_number}</div>
+                                        </div>
+                                    )}
+
+                                    { orderDetails.shipping_label_url &&(
+                                        <div className="flex flex-col gap-1">
+                                            <p className="text-sm text-gray-600">Shipping Label Url</p>
+                                            <div className="w-fit font-medium px-4 py-2 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.shipping_label_url}</div>
+                                        </div>
+                                    )}
+
+                                    { orderDetails.return_tracking_number &&(
+                                        <div className="flex flex-col gap-1">
+                                            <p className="text-sm text-gray-600">Return Tracking Number</p>
+                                            <div className="w-fit font-medium px-4 py-2 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_tracking_number}</div>
+                                        </div>
+                                    )}
+
+                                    { orderDetails.return_shipping_label_url &&(
+                                        <div className="flex flex-col gap-1">
+                                            <p className="text-sm text-gray-600">Return Shipping Label Url</p>
+                                            <div className="w-fit font-medium px-4 py-2 text-sm bg-gray-50 text-gray-950 border border-gray-200 rounded-lg">{orderDetails.return_shipping_label_url}</div>
+                                        </div>
+                                    )}
+
+                                    <div className="col-span-2">
+                                        { orderDetails.cancellation_status.toLowerCase() !== 'none' && (
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="text-sm text-gray-600">Cancellation Status</div>
+                                                    <div 
+                                                        // className="w-fit font-medium px-4 py-1.5 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg"
+                                                        className={`w-fit font-medium px-4 py-2 text-sm rounded-lg ${orderDetails.cancellation_status.toLowerCase() === 'approved' ? 'bg-green-50 text-green-600 border border-green-300' : 'bg-red-50 text-red-600 border border-red-200'}`}
+                                                    >
+                                                        {prettifyString(orderDetails.cancellation_status.toLowerCase())}
                                                     </div>
-                                                }
-                                            </div>
-                                        )
-                                    }
+                                                    {orderDetails.cancellation_reason && 
+                                                        <div className="my-2 flex flex-col gap-1">
+                                                            <div className="text-sm text-gray-600">Cancellation Reason:</div> 
+                                                            <div className="px-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg">{orderDetails.cancellation_reason}</div>   
+                                                        </div>
+                                                    }
+                                                </div>
+                                            )
+                                        }
+
+                                        { orderDetails.return_status.toLowerCase() !== 'none' &&
+                                            (
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="text-sm text-gray-600">Return Status</div>
+                                                    <div 
+                                                        // className="w-fit font-medium px-4 py-1.5 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg"
+                                                        className={`w-fit font-medium px-4 py-2 text-sm rounded-lg ${orderDetails.return_status.toLowerCase() === 'approved' ? 'bg-green-50 text-green-600 border border-green-300' : 'bg-red-50 text-red-600 border border-red-200'}`}
+                                                    >
+                                                        {prettifyString(orderDetails.return_status.toLowerCase())}
+                                                    </div>
+                                                    {orderDetails.return_reason && 
+                                                        <div className="my-2 flex flex-col gap-1">
+                                                            <div className="text-sm text-gray-600">Return Reason:</div>
+                                                            <div className="px-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg">{orderDetails.return_reason}</div>   
+                                                        </div>
+                                                    }
+                                                </div>
+                                            )
+                                        }
+                                    </div>
                                 </div>
-                                
                             </div>
-                            
-                            
 
-                            <form className="flex flex-col sm:w-4/5 gap-8">
+                            <form 
+                                className="flex flex-col sm:w-4/5 gap-8"
+                                onSubmit={(e) => e.preventDefault()}
+                            >
                                 <div className="flex flex-col gap-2">
-                                    <div className="flex flex-col gap-1">
+                                    {/* <div className="flex flex-col gap-1">
                                         <label 
                                             className="text-sm font-semibold text-gray-700" 
                                             htmlFor='delivery-status'
@@ -339,11 +344,18 @@ const ManageOrder = () => {
                                                 <option key={index} value={item}>{prettifyString(item)}</option>
                                             ))}
                                         </select>
-                                    </div>
+                                    </div> */}
+
+                                    <DropDownMenu
+                                        title="Select Status"
+                                        selectedOptionStatus={deliveryStatus} 
+                                        setSelectedOptionStatus={setDeliveryStatus}
+                                        options={order_statuses}
+                                        getLabel={(status) => prettifyString(status)}
+                                    />
 
                                     <button 
-                                        className="w-fit text-sm my-2 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
-                                        // className="w-max px-3 py-2 text-sm text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors duration-200"
+                                        className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                         type='button' 
                                         onClick={() => handleOrderUpdate('delivery', deliveryStatus)}
                                     >
@@ -359,7 +371,7 @@ const ManageOrder = () => {
                                         >
                                                 Payment status:
                                         </label>
-                                        <select
+                                        {/* <select
                                             className="text-sm px-2 py-2 rounded-md text-gray-900 border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-all duration-200 cursor-pointer"
                                             value={paymentStatus || ''}
                                             onChange={(e) => setPaymentStatus(e.target.value)}
@@ -368,11 +380,20 @@ const ManageOrder = () => {
                                             {paymentOptions.map((item, index) => (
                                                 <option key={index} value={item}>{prettifyString(item)}</option>
                                             ))}
-                                        </select>
+                                        </select> */}
+
+                                        <DropDownMenu
+                                            title="Select Status"
+                                            selectedOptionStatus={paymentStatus} 
+                                            setSelectedOptionStatus={setPaymentStatus}
+                                            options={payment_statuses}
+                                            getLabel={(status) => prettifyString(status)}
+                                        />
+                                    
                                     </div>
 
                                     <button
-                                        className="w-fit text-sm my-2 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                        className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                         type='button' 
                                         onClick={() => handleOrderUpdate('payment', paymentStatus)}
                                     >
@@ -389,7 +410,7 @@ const ManageOrder = () => {
                                             >
                                                     Cancellation status:
                                             </label>
-                                            <select
+                                            {/* <select
                                                 className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-hidden focus:border-blue-400"
                                                 value={cancellationStatus || ''}
                                                 onChange={(e) => setCancellationStatus(e.target.value)}
@@ -398,11 +419,18 @@ const ManageOrder = () => {
                                                 {cancellationOptions.map((item, index) => (
                                                     <option key={index} value={item}>{prettifyString(item)}</option>
                                                 ))}
-                                            </select>
+                                            </select> */}
+                                            <DropDownMenu
+                                                title="Select Status"
+                                                selectedOptionStatus={cancellationStatus} 
+                                                setSelectedOptionStatus={setCancellationStatus}
+                                                options={cancellation_options}
+                                                getLabel={(status) => prettifyString(status)}
+                                            />
                                         </div>
 
                                         <button
-                                            className="w-fit text-sm my-2 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                            className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                             type='button' 
                                             onClick={ () => handleOrderUpdate('cancellation', cancellationStatus) }
                                         >
@@ -420,7 +448,7 @@ const ManageOrder = () => {
                                                 >
                                                     Return status:
                                             </label>
-                                            <select
+                                            {/* <select
                                                 className="text-sm px-2 py-2 rounded-lg text-gray-900 border border-gray-300 focus:outline-hidden focus:border-blue-400"
                                                 value={returnStatus || ''}
                                                 onChange={(e) => setReturnStatus(e.target.value)}
@@ -429,11 +457,19 @@ const ManageOrder = () => {
                                                 {returnOptions.map((item, index) => (
                                                     <option key={index} value={item}>{prettifyString(item)}</option>
                                                 ))}
-                                            </select>
+                                            </select> */}
+                                            <DropDownMenu
+                                                title="Select Status"
+                                                selectedOptionStatus={returnStatus} 
+                                                setSelectedOptionStatus={setReturnStatus}
+                                                options={return_options}
+                                                getLabel={(status) => prettifyString(status)}
+                                            />
                                         </div>
 
                                         <button 
-                                            className="w-fit text-sm my-2 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                            // className="w-fit text-sm my-2 text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                            className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                             type='button' 
                                             onClick={ () => handleOrderUpdate('return', returnStatus) }
                                             >
@@ -448,7 +484,8 @@ const ManageOrder = () => {
                                 <div className="">
                                     <button
                                         type="button"
-                                        className="w-fit text-sm my-2 text-sky-800 font-medium p-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                        className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
+                                        // className="w-fit text-sm my-2 text-sky-800 font-medium p-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
                                         onClick={() => setShowShippingUpdate(!showShippingUpdate)}
                                     >
                                         Update Shipping Details
@@ -456,24 +493,29 @@ const ManageOrder = () => {
 
                                     {showShippingUpdate && (
                                         <div 
-                                            className="fixed z-50 inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs overflow-y-auto"
+                                            // className="fixed z-50 inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs overflow-y-auto"
+                                            className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-50 font-normal text-gray-800 overflow-y-auto"
                                             onClick={(e) => handleShippingOverlayClick(e)}
                                         >
-                                            <form className="w-full max-w-md min-w-xs p-6 bg-white border rounded-lg flex flex-col gap-4">
-                                                <div className="flex flex-col gap-0">
+                                            <form
+                                                className="flex flex-col gap-4 bg-white p-6 rounded-lg border shadow-xl mx-2 w-[360px] min-w-[280px]"
+                                                // className="w-full max-w-md min-w-xs p-6 bg-white border rounded-lg flex flex-col gap-4"
+                                            >
+                                                <div className="flex flex-col">
                                                     <div className="flex justify-between">
-                                                        <h2 className="text-xl font-semibold text-gray-900">Shipping Details</h2>
+                                                        <h2 className="text-xl font-medium text-gray-900">Shipping Details</h2>
                                                         <button 
                                                             type='button'
-                                                            className="font-semibold text-gray-500 hover:text-gray-700 cursor-pointer"
+                                                            // className="font-semibold text-gray-500 hover:text-gray-700 cursor-pointer"
                                                             onClick={() => setShowShippingUpdate(false)}
                                                             aria-label="Close"
                                                         >
-                                                            <RxCross2 />
+                                                            <RxCross2 className="text-lg text-amber-600 hover:text-amber-700 hover:scale-105 transition-colors duration-200"/>
                                                         </button>
                                                     </div>
                                                     <p className="text-sm text-gray-600">Update the shipping details for the order</p>
                                                 </div>
+
                                                 <div className="flex flex-col gap-1">
                                                     <label
                                                         className="text-sm font-semibold text-gray-700"
@@ -482,7 +524,7 @@ const ManageOrder = () => {
                                                         Shipping Carrier:
                                                     </label>
                                                     <input 
-                                                        className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                        className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                                                         type="text"
                                                         id="shipping-carrier"
                                                         value={shippingCarrier}
@@ -490,6 +532,7 @@ const ManageOrder = () => {
                                                     >
                                                     </input>
                                                 </div>
+
                                                 <div className="flex flex-col gap-1">
                                                     <label
                                                         className="text-sm font-semibold text-gray-700"
@@ -498,7 +541,7 @@ const ManageOrder = () => {
                                                         Tracking Number:
                                                     </label>
                                                     <input 
-                                                        className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                        className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                                                         type="text"
                                                         id="tracking-number"
                                                         value={trackingNumber}
@@ -515,7 +558,7 @@ const ManageOrder = () => {
                                                         Shipping Label Url:
                                                     </label>
                                                     <input 
-                                                        className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                        className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                                                         type="text"
                                                         id="shipping-label-url"
                                                         value={shippingLabelUrl}
@@ -523,22 +566,24 @@ const ManageOrder = () => {
                                                     >
                                                     </input>
                                                 </div>
-                                                <div className="flex gap-4">
+
+                                                <div className="flex justify-end gap-4">
                                                     <button
                                                         type="button"
-                                                        className="w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                        className="w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                         onClick={() => handleUpdateShippingDetails('ship')}
                                                     >
                                                         Update
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        className="w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                                                        className="py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                         onClick={() => setShowShippingUpdate(false)}
                                                     >
                                                         Cancel
                                                     </button>
                                                 </div>
+
                                             </form>
                                         </div>
                                     )}
@@ -548,7 +593,7 @@ const ManageOrder = () => {
                                     <div className="">
                                         <button
                                             type="button"
-                                            className="w-fit text-sm my-2 text-sky-800 font-medium p-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                            className="w-fit py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                             onClick={() => setShowReturnShippingUpdate(!showReturnShippingUpdate)}
                                             >
                                             Update Return Shipping Details
@@ -556,24 +601,26 @@ const ManageOrder = () => {
         
                                         {showReturnShippingUpdate && (
                                             <div 
-                                            className="fixed z-50 inset-0 flex items-center justify-center bg-black/40 backdrop-blur-xs _bg-opacity-50 overflow-y-auto"
-                                            onClick={(e) => handleReturnShippingOverlayClick(e)}
+                                                className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-50 font-normal text-gray-800 overflow-y-auto"
+                                                onClick={(e) => handleReturnShippingOverlayClick(e)}
                                             >
-                                                <form className="w-full max-w-md min-w-xs p-6 bg-white border rounded-lg flex flex-col gap-4">
-                                                    <div className="flex flex-col gap-0">
+                                                <form 
+                                                    className="flex flex-col gap-4 bg-white p-6 rounded-lg border shadow-xl mx-2 w-[360px] min-w-[280px]"
+                                                >
+                                                    <div className="flex flex-col">
                                                         <div className="flex justify-between">
-                                                            <h2 className="text-xl font-semibold text-gray-900">Return Shipping Details</h2>
+                                                            <h2 className="text-xl font-medium text-gray-900">Return Shipping Details</h2>
                                                             <button 
                                                                 type='button'
-                                                                className="font-semibold text-gray-500 hover:text-gray-700 cursor-pointer"
                                                                 onClick={() => setShowReturnShippingUpdate(false)}
                                                                 aria-label="Close"
-                                                                >
-                                                                <RxCross2 />
+                                                            >
+                                                                <RxCross2 className="text-lg text-amber-600 hover:text-amber-700 hover:scale-105 transition-colors duration-200"/>
                                                             </button>
                                                         </div>
                                                         <p className="text-sm text-gray-600">Update the return shipping details for the order</p>
                                                     </div>
+
                                                     <div className="flex flex-col gap-1">
                                                         <label
                                                             className="text-sm font-semibold text-gray-700"
@@ -582,7 +629,7 @@ const ManageOrder = () => {
                                                             Return Tracking Number:
                                                         </label>
                                                         <input 
-                                                            className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                                                             type="text"
                                                             id="return-tracking-number"
                                                             value={returnTrackingNumber}
@@ -599,7 +646,7 @@ const ManageOrder = () => {
                                                             Return Shipping Label Url:
                                                         </label>
                                                         <input 
-                                                            className="px-2 py-1.5 _w-full rounded-md border border-gray-300 focus:outline-hidden hover:border-gray-400 focus:border-blue-400 transition-border duration-200 ease-in-out"
+                                                            className="appearance-none rounded-sm px-4 py-2 border border-gray-300 hover:border-gray-400 focus:border-sky-400 focus:outline-hidden transition-colors duration-200"
                                                             type="text"
                                                             id="return-shipping-label-url"
                                                             value={returnShippingLabelUrl}
@@ -607,22 +654,24 @@ const ManageOrder = () => {
                                                             >
                                                         </input>
                                                     </div>
-                                                    <div className="flex gap-4">
+
+                                                    <div className="w-full flex justify-end gap-4">
                                                         <button
                                                             type="button"
-                                                            className="w-fit text-sm text-sky-800 font-medium px-4 py-2 bg-sky-50/40 hover:bg-sky-50 border border-sky-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(148,217,247,0.6)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,0.8)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out"
+                                                            className="w-fit py-2 px-4 font-medium text-white bg-orange-500 hover:bg-orange-600/90 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                             onClick={() => handleUpdateShippingDetails('return')}
                                                             >
                                                             Update
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            className="w-fit text-sm font-medium px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-sm shadow-[2px_2px_0px_0px_rgba(212,212,218,1.0)] active:shadow-[1px_1px_0px_0px_rgba(212,212,218,1.0)] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-200 ease-in-out" 
+                                                            className="py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
                                                             onClick={() => setShowReturnShippingUpdate(false)}
                                                             >
                                                             Cancel
                                                         </button>
                                                     </div>
+
                                                 </form>
                                             </div>
                                         )}
@@ -633,16 +682,18 @@ const ManageOrder = () => {
                             <div className="mt-4">
                                 <div className="flex font-medium text-xl pb-2 border-b border-gray-100 gap-2">
                                     <span>Items</span>
-                                    <span className="flex items-center justify-between px-2 py-1 text-xs font-semibold text-gray-950 bg-gray-100 border border-gray-300 rounded-lg">{orderDetails.order_items.length}</span>
+                                    <span className="flex items-center justify-between px-2 py-1 text-xs font-semibold text-gray-950 bg-gray-100 border border-gray-300 rounded-lg"> 
+                                        {orderDetails.order_items.length}
+                                    </span>
                                 </div>
 
-                                <ul className="w-full space-y-6 mt-4">
+                                <ul className="w-full flex flex-col gap-6 mt-4">
                                     { orderDetails.order_items.map((item: any) => (
                                         // book details
                                         <li className="flex flex-row gap-6 pb-6 border-b border-gray-100 last:border-b-0" key={item.id}>
                                             <div className="flex flex-row gap-6">
                                                 <img
-                                                    className="w-32 h-44 object-scale-down rounded-md"
+                                                    className="shrink-0 w-32 h-44 object-scale-down rounded-md bg-gray-100"
                                                     src={item.book.cover_image || 'https://m.media-amazon.com/images/I/61zgnofiBXL._SY522_.jpg'}
                                                     alt={item.book.title}
                                                     onError={(e) => {
@@ -650,19 +701,24 @@ const ManageOrder = () => {
                                                     }}
                                                 />
 
-                                                <div className="flex flex-col">
-                                                    <p className="font-medium text-gray-900">{item.book.title}</p>
-                                                    <p className="text-sm text-gray-700">{item.book.author}</p>
-                                                    <div className="mt-2 _space-y-1">
-                                                        <p className="text-md text-gray-950 font-semibold">{formatPrice(item.unit_price, item.currency)}</p>
-                                                        <p className="text-md text-gray-700">Qty: {item.quantity}</p>
+                                                <div className="flex flex-col gap-4">
+
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className="">
+                                                            <p className="font-medium text-gray-900">{item.book.title}</p>
+                                                            <p className="text-sm text-gray-600">{item.book.author}</p>
+                                                        </div>
+                                                        <div className="">
+                                                            <p className="text-md text-gray-950 font-semibold">{formatPrice(item.unit_price, item.currency)}</p>
+                                                            <p className="text-md text-gray-700">Qty: {item.quantity}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </li>
                                     ))}
                                 </ul>
+
                             </div>
                         </div>
 
@@ -698,8 +754,9 @@ const ManageOrder = () => {
                 </div>
                 )
             :
-                <div>
-                    <p>No orders found</p>
+                <div className="text-center py-12 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-medium text-gray-900">Order no found</h3>
+                    <p className="text-sm text-gray-500">Order details not present</p>
                 </div>
             }
         </div>

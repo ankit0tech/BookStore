@@ -73,7 +73,7 @@ const Orders = () => {
             <div className="flex flex-col gap-6">
                 <form 
                     className="flex items-center gap-2 flex-col lg:flex-row"
-                    onSubmit={(e) => {e.preventDefault(); loadOrders();}}
+                    onSubmit={(e) => {e.preventDefault()}}
                 >
                     <div className="relative flex items-center w-full">
                         <BiSearch className="absolute mt-0.5 mx-3 text-gray-400"></BiSearch>
@@ -126,7 +126,7 @@ const Orders = () => {
                             {orders.data.map((item) => (
                                 <li className="flex flex-col gap-4 justify-between border rounded-lg hover:shadow-xs transition-shadow duration-200" key={item.id}>
                                     <div className="flex flex-col sm:flex-row justify-between gap-4 bg-black/1 p-4 border-b rounded-t-lg">
-
+                                    
                                         <div className="flex flex-col justify-between gap-2">
                                             <div className="flex items-center gap-2"> 
                                                 <div className="text-xl"><FiPackage></FiPackage></div>

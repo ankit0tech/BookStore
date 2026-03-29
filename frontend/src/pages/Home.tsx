@@ -163,7 +163,7 @@ const Home = () => {
                         minPrice={minPrice} setMinPrice={setMinPrice}
                         maxPrice={maxPrice} setMaxPrice={setMaxPrice}
                         categoryId={categoryId} setCategoryId={setCategoryId} 
-                        />
+                    />
                 </div>
 
                 <button

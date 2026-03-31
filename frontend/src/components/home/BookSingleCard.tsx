@@ -40,7 +40,6 @@ const BookSingleCard: React.FC<{ book: UserBook }> = ({ book }) => {
             >
                 <VscHeart 
                     key={book.id}
-                    data-id={book.id}
                     className="text-xl sm:text-2xl text-gray-700 hover:text-amber-600 cursor-pointer transition-colors duration-200 active:scale-90 transition-transform duration-300 ease-out"
                 >
                 </VscHeart>

@@ -5,15 +5,16 @@ import { Category } from "../../types";
 import { useNavigate, useParams } from "react-router-dom";
 import DropDownMenu from "../../components/DropDownMenu";
 import { prettifyString } from "../../utils/formatUtils";
+import CategoriesDropDownMenu from "../../components/CategoriesDropDownMenu";
 
 
 const CreateCategory = () => {
 
     const { id } = useParams();
     const [categoryTitle, setCategoryTitle] = useState<string>('');
-    const [existingCategories, setExistingCategories] = useState<Category[]|null>(null);
+    const [existingCategories, setExistingCategories] = useState<Category[]>([]);
     const [existingCategoryTitles, setExistingCategoryTitles] = useState<string[]>([]);
-    const [selectedParent, setSelectedParent] = useState<string|null>("");
+    const [selectedParent, setSelectedParent] = useState<string>("");
     const [updateCategory, setUpdateCategory] = useState<boolean>(false);
     const navigate = useNavigate();
 
@@ -106,22 +107,30 @@ const CreateCategory = () => {
                     >
                     </input>
             
-                    { updateCategory && selectedParent == null && 
+                    {/* { updateCategory && selectedParent == null && 
                         <div className="text-xs text-red-500">This category already have sub-categories. You cannot assign it a parent.</div>
-                    }
+                    } */}
                 </div>
 
                 <div className="flex flex-col gap-1">
                     <label className="block text-sm font-medium text-gray-700" htmlFor="parent-category">Parent Category</label>
-                    <DropDownMenu
+                    {/* <DropDownMenu
                         title="Select Parent"
                         defaultValue="No Parent"
                         selectedOptionStatus={selectedParent || ''} 
                         setSelectedOptionStatus={setSelectedParent}
                         options={existingCategoryTitles|| []}
                         getLabel={(status) => prettifyString(status)}
-                    />
- 
+                    /> */}
+
+                        <CategoriesDropDownMenu
+                            title="Select Parent"
+                            defaultValue="No Parent"
+                            selectedOptionStatus={selectedParent || ''}
+                            setSelectedOptionStatus={setSelectedParent}
+                            categories={existingCategories}
+                            getLabel={(status) => prettifyString(status)}
+                        />
                 </div>
 
                 <div className="flex flex-row gap-3 justify-end pt-4">

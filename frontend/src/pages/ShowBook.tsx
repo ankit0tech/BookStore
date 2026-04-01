@@ -40,6 +40,25 @@ const ShowBook = () => {
         });
     }
 
+    const throttle = <T extends (...args: any[]) => void> (func: T, limit: number) => {
+        let flag: boolean = true;
+        
+        return function (...args: Parameters<T>) {
+
+            if(flag) {
+                func(...args);
+                flag = false;
+    
+                setTimeout(() => {
+                    flag = true;
+                }, limit);
+            }
+        };
+    }
+
+    const throttledClick = throttle(handleAddToWishList, 2000);
+
+
     const handleRemoveOffer = (offerId: number) => {
         const data = {
             "offerId": offerId,
@@ -218,7 +237,7 @@ const ShowBook = () => {
                                         <button
                                             // className="px-4 py-2 border-1 border-sky-200 hover:border-sky-300 rounded-md font-medium text-sm text-blue-600 bg-sky-50 hover:bg-sky-100 active:scale-99 ease-in-out transition-all duration-200"
                                             className="w-full py-2 px-4 font-medium text-gray-800 hover:text-gray-900 hover:bg-orange-50 rounded-sm border border-orange-800 active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_hsla(17,100%,31%,1.0)] active:shadow-[1px_1px_0px_0px_hsla(17,100%,31%,1.0)] transition-[box-shadow_200ms,transform_200ms] ease-out"
-                                            onClick={() => handleAddToWishList(Number(book.id))}
+                                            onClick={() => throttledClick(Number(book.id))}
                                         >Add to wishlist</button>
                                     </>
                                 }

@@ -18,15 +18,13 @@ const CategoriesDropDownMenu = <T extends string> ({title, defaultValue, selecte
 
     const dropDownTitle = useMemo(() => {
 
-        console.log(selectedOptionStatus);
-
-        if(selectedOptionStatus === '') {
+        if(!selectedOptionStatus) {
             return defaultValue;
         }
 
         if(categories) {
             for(const category of categories) {
-                if(String(category.id) === selectedOptionStatus) {
+                if(String(category.id) === String(selectedOptionStatus)) {
                     return getLabel ? getLabel(category.title) : category.title;
                 }
             }

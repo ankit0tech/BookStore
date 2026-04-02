@@ -67,7 +67,7 @@ const CreateCategory = () => {
 
             const {title, parent_id} = response.data.data;
             setCategoryTitle(title ?? '');
-            setSelectedParent(parent_id ?? null);
+            setSelectedParent(String(parent_id) ?? null);
             setUpdateCategory(true);
         })
         .catch((error: any) => {
